@@ -100,17 +100,22 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (SessionSaver.LoadPreviousSession)
             {
-                var ray = new Ray(saveData.RayOrigin, saveData.RayDirection);
-                if (TryGetValidWall(ray, out var wall))
-                {
-                    WallMesh = wall;
-                    wallMeshFilter.mesh = WallMesh;
-                    WallIsSelected = true;
+                LoadSelectedWall();
+            }
+        }
 
-                    //complete step after loading wall
-                    //AllowSelection = false;
-                    //MetadataLoader.Instance.PlaatsUitbouw();
-                }
+        private void LoadSelectedWall()
+        {
+            var ray = new Ray(saveData.RayOrigin, saveData.RayDirection);
+            if (TryGetValidWall(ray, out var wall))
+            {
+                WallMesh = wall;
+                wallMeshFilter.mesh = WallMesh;
+                WallIsSelected = true;
+
+                //complete step after loading wall
+                //AllowSelection = false;
+                //MetadataLoader.Instance.PlaatsUitbouw();
             }
         }
 

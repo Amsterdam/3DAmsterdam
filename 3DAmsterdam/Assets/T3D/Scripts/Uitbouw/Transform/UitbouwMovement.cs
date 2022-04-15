@@ -55,7 +55,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
                 LimitPositionOnWall();
             }
-            else
+            else 
             {
                 LimitPositionWithinPerceelRadius(RestrictionChecker.ActivePerceel);
             }
@@ -74,9 +74,9 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        public void SetPosition(Vector3 placeLocation)
+        public void SetPosition(Vector3 pos)
         {
-            transform.position = placeLocation;
+            transform.position = pos;
             ProcessMovementLimits();
         }
 
