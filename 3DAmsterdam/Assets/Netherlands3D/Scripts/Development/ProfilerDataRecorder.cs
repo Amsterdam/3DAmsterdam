@@ -27,8 +27,6 @@ public class ProfilerDataRecorder : MonoBehaviour
 
     Coroutine savingProfilingData;
 
-    public static ProfilerDataRecorder Instance;
-
     public bool recording = false;
 
     private bool isBenchmarkToggled = false;
@@ -43,7 +41,6 @@ public class ProfilerDataRecorder : MonoBehaviour
 
     void Start()
     {
-        Instance = this;
         Profiler.enabled = false;
         Profiler.logFile = "";
     }
@@ -146,7 +143,7 @@ public class ProfilerDataRecorder : MonoBehaviour
                         // Example #2
                         //case 2:
                         //    Profiler.BeginSample("B.MoveToUnloadedArea");
-                        //    CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(5000, 200, -6500);
+                        //    ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = new Vector3(5000, 200, -6500);
                         //    Profiler.EndSample();
                         //    break;
 

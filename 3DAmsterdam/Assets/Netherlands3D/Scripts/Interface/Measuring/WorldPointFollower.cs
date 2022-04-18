@@ -57,7 +57,7 @@ namespace Netherlands3D.Interface
 		public void AutoHideByCamera()
 		{
 			//Always hide outside viewport
-			var screenPosition = CameraModeChanger.Instance.ActiveCamera.WorldToScreenPoint(WorldPosition);
+			var screenPosition = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.WorldToScreenPoint(WorldPosition);
 			if (screenPosition.x > Screen.width || screenPosition.x < 0 || screenPosition.y > Screen.height || screenPosition.y < 0 || screenPosition.z < 0)
 			{
 				DrawGraphics(false);
@@ -65,9 +65,9 @@ namespace Netherlands3D.Interface
 			}
 
 			//Else maybe hide depending on distance from streetview camera
-			if (CameraModeChanger.Instance.CurrentMode == CameraMode.StreetView)
+			if (ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.StreetView)
 			{
-				var distance = WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
+				var distance = WorldPosition - ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
 				if (distance.magnitude > maxRenderDistanceAtGround)
 				{
 					DrawGraphics(false);

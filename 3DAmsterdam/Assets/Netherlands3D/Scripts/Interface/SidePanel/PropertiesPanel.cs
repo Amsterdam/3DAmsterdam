@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.SidePanel
 {
-    public class PropertiesPanel : MonoBehaviour
+    public class PropertiesPanel : MonoBehaviour, IUniqueService
     {
         [SerializeField]
         private RectTransform movePanelRectTransform;
@@ -46,8 +46,6 @@ namespace Netherlands3D.Interface.SidePanel
         private RenderTexture thumbnailRenderTexture;
 
         public DisplayBAGData displayBagData;
-
-        public static PropertiesPanel Instance = null;
 
         [SerializeField]
         private Text titleText;
@@ -110,15 +108,13 @@ namespace Netherlands3D.Interface.SidePanel
         private VerticalLayoutGroup verticalLayoutGroup;
 
         private GameObject thumbnailImage = null;
-        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; } 
+        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+
+        public static PropertiesPanel Instance;
 
 		void Awake()
 		{
-			if (Instance == null)
-			{
-				Instance = this;
-			}
-
+            Instance = this;
             //Open/closed at start
             if (startingActiveTab)
             {
@@ -331,7 +327,7 @@ namespace Netherlands3D.Interface.SidePanel
             switch (thumbnailRenderMethod)
 			{
 				case ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA:
-                    thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
+                    thumbnailRenderer.cullingMask = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.cullingMask;
                     break;
 				case ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS:
                     thumbnailRenderer.cullingMask = renderAllLayersMask.value;
@@ -340,7 +336,7 @@ namespace Netherlands3D.Interface.SidePanel
                     thumbnailRenderer.cullingMask = thumbnailCameraPrefab.cullingMask;
                     break;
                 case ThumbnailRenderMethod.ORTOGRAPHIC:
-                    thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
+                    thumbnailRenderer.cullingMask = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.cullingMask;
                     thumbnailRenderer.orthographic = true;
                     var ortoSize = (Math.Max(bounds.size.x, bounds.size.z) / 2.0f);
                     thumbnailRenderer.orthographicSize = ortoSize + (ortoSize*cameraThumbnailObjectMargin);

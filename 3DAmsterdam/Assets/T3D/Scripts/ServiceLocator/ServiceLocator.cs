@@ -8,25 +8,26 @@ using Netherlands3D.Cameras;
 
 public static class ServiceLocator
 {
-    private static readonly Dictionary<Type, IUniqueService> services;
+    private static Dictionary<Type, IUniqueService> services = new Dictionary<Type, IUniqueService>();
+    public static Dictionary<Type, IUniqueService> Test => services;
 
     static ServiceLocator()
     {
-        services = new Dictionary<Type, IUniqueService>();
+        //services = new Dictionary<Type, IUniqueService>();
         InstallServices();
     }
 
-    private static void InstallServices()
+    public static void InstallServices()
     {
+        services = new Dictionary<Type, IUniqueService>();
         var servicesInScene = UnityEngine.Object.FindObjectsOfType<MonoBehaviour>().OfType<IUniqueService>();
         foreach (var service in servicesInScene)
         {
             RegisterService(service);
-            //RegisterService(service.GetType(), service);
         }
     }
 
-    //private static void RegisterService(Type type, object service)
+    //private static void RegisterService(Type type, IUniqueService service)
     //{
     //    Assert.IsFalse(services.ContainsKey(type), $"Service {type} already registered");
 
@@ -35,13 +36,11 @@ public static class ServiceLocator
     //}
 
     private static void RegisterService<T>(T service) where T : IUniqueService
-    {
+    {        
         var type = service.GetType();
         Assert.IsFalse(services.ContainsKey(type), $"Service {type} already registered");
 
         services.Add(type, service);
-        Debug.Log("service == nukll: " +( service == null));
-        Debug.Log("Service installed: " + type + "\t" + service);
     }
 
     private static void UnregisterService<T>(T service) where T : IUniqueService
@@ -50,18 +49,18 @@ public static class ServiceLocator
         Assert.IsTrue(services.ContainsKey(type), $"Service {type} not registered");
 
         services.Remove(service.GetType());
-        Debug.Log("Service uninstalled: " + type);
     }
 
     public static T GetService<T>() where T : IUniqueService
     {
+        if (services == null)
+            InstallServices();
+
         var type = typeof(T);
-        Debug.Log("trying to get type: " + type);
         if (!services.TryGetValue(type, out var service))
         {
             throw new Exception($"Service {type} not found");
         }
-        Debug.Log("found service: " + service);
         return (T)service;
     }
 }

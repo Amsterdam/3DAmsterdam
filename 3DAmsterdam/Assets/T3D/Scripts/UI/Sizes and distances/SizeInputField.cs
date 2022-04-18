@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -50,7 +50,7 @@ namespace Netherlands3D.T3D.Uitbouw
             // inputfields are disabled in upload mode, so put this in an if statement
             if (inputField)
             {
-                inputField.interactable = T3DInit.Instance.IsEditMode;
+                inputField.interactable = ServiceLocator.GetService<T3DInit>().IsEditMode;
             }
 
             //value = new SaveableFloat(valueKey);

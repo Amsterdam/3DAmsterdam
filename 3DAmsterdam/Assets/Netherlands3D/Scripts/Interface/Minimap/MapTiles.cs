@@ -127,7 +127,7 @@ namespace Netherlands3D.Interface.Minimap
 
         private void PutPointerOnCameraLocation()
         {
-            var cameraRDPosition = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            var cameraRDPosition = CoordConvert.UnitytoRD(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
 
             var posX = Mathf.InverseLerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, (float)cameraRDPosition.x);
             var posY = Mathf.InverseLerp(mapBottomLeftRDCoordinates.y, mapTopRightRDCoordinates.y, (float)cameraRDPosition.y);
@@ -154,8 +154,8 @@ namespace Netherlands3D.Interface.Minimap
                 y = Mathf.Lerp(MapBottomLeftRDCoordinates.y, MapTopRightRDCoordinates.y, localClickPosition.y / mapPixelWidth),
                 z = 0.0
             });
-            RDcoordinate.y = CameraModeChanger.Instance.ActiveCamera.transform.position.y;
-            CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;
+            RDcoordinate.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position.y;
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = RDcoordinate;
         }
 
         private void CalculateMapCoordinates()

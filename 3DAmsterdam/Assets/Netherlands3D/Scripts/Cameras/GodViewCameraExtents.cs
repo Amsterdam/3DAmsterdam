@@ -72,28 +72,28 @@ namespace Netherlands3D.Cameras
             switch (corner)
             {
                 case Corners.TOP_LEFT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
+                    screenPosition.x = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.xMin;
+                    screenPosition.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.yMax;
                     break;
                 case Corners.TOP_RIGHT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
+                    screenPosition.x = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.xMax;
+                    screenPosition.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.yMax;
                     break;
                 case Corners.BOTTOM_LEFT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
+                    screenPosition.x = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.xMin;
+                    screenPosition.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.yMin;
                     break;
                 case Corners.BOTTOM_RIGHT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
+                    screenPosition.x = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.xMax;
+                    screenPosition.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect.yMin;
                     break;
                 default:
                     break;
             }
             var output = new Vector3();
 
-            var topLeftCornerStart = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            var topLeftCornerFar = CameraModeChanger.Instance.ActiveCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
+            var topLeftCornerStart = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
+            var topLeftCornerFar = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
 
             // Calculate direction vector
             Vector3 direction = topLeftCornerStart - topLeftCornerFar;
@@ -104,13 +104,13 @@ namespace Netherlands3D.Cameras
             }
             else
             {
-                factor = ((CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
+                factor = ((ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
             }
 
             // Determine the X, Y, en Z location where the viewline ends
-            output.x = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.x - Mathf.Clamp((factor * direction.x), -1 * maximumViewDistance, maximumViewDistance);
-            output.y = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
-            output.z = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
+            output.x = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.localPosition.x - Mathf.Clamp((factor * direction.x), -1 * maximumViewDistance, maximumViewDistance);
+            output.y = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
+            output.z = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
 
             return output;
         }
@@ -121,7 +121,7 @@ namespace Netherlands3D.Cameras
 
             Gizmos.color = Color.green;
             foreach (var corner in corners)
-                Gizmos.DrawLine(CameraModeChanger.Instance.ActiveCamera.transform.position, corner);
+                Gizmos.DrawLine(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position, corner);
         }
 
         public Extent GetExtent()

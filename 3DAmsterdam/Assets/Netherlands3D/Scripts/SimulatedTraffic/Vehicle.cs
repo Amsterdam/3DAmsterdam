@@ -89,7 +89,7 @@ namespace Netherlands3D.Traffic
                 speed = TrafficSimulator.Instance.vehicleSpeed;
             }
             updateCarFrames++;
-            float distanceToCar = Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position);
+            float distanceToCar = Vector3.Distance(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position, transform.position);
             if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
             else if (distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0)
@@ -217,7 +217,7 @@ namespace Netherlands3D.Traffic
                 {
                     transform.position = compensationVector;
                     // resets the point
-                    foreach (RoadObject obj in GenerateRoads.Instance.shuffledRoadsList)
+                    foreach (RoadObject obj in ServiceLocator.GetService<GenerateRoads>().shuffledRoadsList)
                     {
                         // calculates distance between the car and the 1st object of the found road, this should indicate wether the road is close or not
                         float distance = Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates);

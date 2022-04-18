@@ -10,10 +10,10 @@ namespace Netherlands3D.Cameras
     {
         void Start()
         {
-            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent += Instance_CameraModeChangedEvent;
 
-            //CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
-            //CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
+            //ServiceLocator.GetService<CameraModeChanger>().OnFirstPersonModeEvent += EnableObject;
+            //ServiceLocator.GetService<CameraModeChanger>().OnGodViewModeEvent += DisableObject;
             gameObject.SetActive(false);
         }
 

@@ -53,7 +53,7 @@ namespace Netherlands3D.Interface
             if (waitingForClick)
             {
 			    MoveOnTopOfUI();
-                HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
+                ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
             }
         }
 

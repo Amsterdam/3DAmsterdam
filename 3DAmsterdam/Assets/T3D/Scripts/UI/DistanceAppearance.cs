@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
@@ -60,7 +60,7 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     private void Update()
     {
-        var dist = Vector3.Distance(RotateCamera.CameraTargetPoint, CameraModeChanger.Instance.ActiveCamera.transform.position);
+        var dist = Vector3.Distance(RotateCamera.CameraTargetPoint, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
 
         zoomMultiplier = Mathf.InverseLerp(fadeEndDistance, fadeStartDistance, dist);
 

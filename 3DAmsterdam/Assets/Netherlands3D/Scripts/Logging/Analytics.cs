@@ -8,20 +8,18 @@ using Netherlands3D.Logging.Services;
 
 namespace Netherlands3D.Logging
 {
-	public class Analytics : MonoBehaviour
+	public class Analytics : MonoBehaviour, IUniqueService
     {
 		[Header("You can replace Unity Analytics, or add more services using the AnalyticsService base class")]
 
 		[SerializeField]
 		private AnalyticsService[] analyticsServices;
-		private static Analytics Instance;
 
 		[SerializeField]
 		private bool logInConsole = true;
 
 		void Awake()
         {
-			Instance = this;
 			//Start with adding events to the already existing Selectables in the scene
 			var UISelectables = FindObjectsOfType<Selectable>(true);
             foreach (var selectable in UISelectables)
@@ -46,7 +44,7 @@ namespace Netherlands3D.Logging
 		public static void SendEvent(string eventName, Dictionary<string, object> eventData)
 		{
 			//Show our events in the console
-			if(Instance.logInConsole)
+			if(ServiceLocator.GetService<Analytics>().logInConsole)
 			{
 				Debug.Log($"<color={ConsoleColors.EventHexColor}>[Analytics Event]  {eventName} (Not sent in Editor)</color>");
 				foreach (KeyValuePair<string, object> keyValue in eventData)
@@ -56,7 +54,7 @@ namespace Netherlands3D.Logging
 			}
 
 			//Send the event down to our analytics service(s)
-			foreach (var service in Instance.analyticsServices)
+			foreach (var service in ServiceLocator.GetService<Analytics>().analyticsServices)
 			{
 				if(service.enabled)	service.SendEvent(eventName, eventData);
 			}			

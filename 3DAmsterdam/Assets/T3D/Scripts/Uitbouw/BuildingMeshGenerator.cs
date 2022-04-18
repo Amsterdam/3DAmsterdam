@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,16 +34,16 @@ namespace Netherlands3D.T3D.Uitbouw
         protected void Start()//in start to avoid race conditions
         {
             //base.Start();
-            MetadataLoader.Instance.BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
-            MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
+            ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
+            ServiceLocator.GetService<MetadataLoader>().BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
 
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
         }
 
         private void Loader_LoadingCompleted(bool loadSucceeded)
         {
-            IsMonument = T3DInit.HTMLData.IsMonument;
-            IsBeschermd = T3DInit.HTMLData.IsBeschermd;
+            IsMonument = ServiceLocator.GetService<T3DInit>().HTMLData.IsMonument;
+            IsBeschermd = ServiceLocator.GetService<T3DInit>().HTMLData.IsBeschermd;
         }
 
         private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)

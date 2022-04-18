@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ public class SaveFeedback : MonoBehaviour
 
     private void Start()
     {
-        if (!T3DInit.Instance.IsEditMode)
+        if (!ServiceLocator.GetService<T3DInit>().IsEditMode)
             gameObject.SetActive(false);
     }
 

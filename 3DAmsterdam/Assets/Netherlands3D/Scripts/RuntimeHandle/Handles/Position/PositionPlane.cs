@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using UnityEngine;
 
 namespace RuntimeHandle
@@ -41,7 +41,7 @@ namespace RuntimeHandle
 
         public override void Interact(Vector3 p_previousPosition)
         {
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
             float d = 0.0f;
             _plane.Raycast(ray, out d);
@@ -80,7 +80,7 @@ namespace RuntimeHandle
             
             _plane = new Plane(rperp, _parentTransformHandle.target.position);
             
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
             float d = 0.0f;
             _plane.Raycast(ray, out d);

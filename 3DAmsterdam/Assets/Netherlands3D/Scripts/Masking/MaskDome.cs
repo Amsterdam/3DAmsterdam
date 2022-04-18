@@ -19,7 +19,7 @@ namespace Netherlands3D.Masking
 
 		private void OnEnable()
 		{
-            HelpMessage.Instance.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
+            ServiceLocator.GetService<HelpMessage>().Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
             TakeInteractionPriority();
 		}
 		protected override void OnDisable()
@@ -47,8 +47,8 @@ namespace Netherlands3D.Masking
                 return;
             }
 
-            transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
-            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+            transform.position = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
+            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position.y;
         }
     }
 }

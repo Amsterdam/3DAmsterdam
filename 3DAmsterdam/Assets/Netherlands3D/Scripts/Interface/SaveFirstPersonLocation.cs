@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
         void Start()
         {
             //todo, make these event handlers all a seperate monobehaviour
-            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent += Instance_CameraModeChangedEvent;
             gameObject.SetActive(false);
         }
 
@@ -38,8 +38,8 @@ namespace Netherlands3D.Interface
 
         public void SaveCurrentPosition()
         {
-            Vector3 currentCameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            Quaternion currentCameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+            Vector3 currentCameraPosition = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
+            Quaternion currentCameraRotation = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation;
 
             //Use the same spawner we use to manualy place the camera point, but skip the waiting for a click part.
             firstPersonLocationPlacer.SpawnNewObjectAtPointer("Camera positie");

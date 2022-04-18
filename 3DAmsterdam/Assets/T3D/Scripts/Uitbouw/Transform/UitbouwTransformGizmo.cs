@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
@@ -51,7 +51,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (!GizmoButtons)
             {
-                GizmoButtons = CoordinateNumbers.Instance.CreateUitbouwTransformGizmoButtons();
+                GizmoButtons = ServiceLocator.GetService<CoordinateNumbers>().CreateUitbouwTransformGizmoButtons();
                 GizmoButtons.SubscribeListeners(this);
             }
 

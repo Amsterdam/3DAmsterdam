@@ -13,13 +13,12 @@ using Netherlands3D.Interface.SidePanel;
 
 namespace Netherlands3D.Traffic
 {
-    public class GenerateRoads : MonoBehaviour
+    public class GenerateRoads : MonoBehaviour, IUniqueService
     {
         public GameObject roadObject;
 
         public List<RoadObject> allLoadedRoads = new List<RoadObject>();
         public List<RoadObject> shuffledRoadsList = new List<RoadObject>();
-        public static GenerateRoads Instance = null;
 
         public const string roadsFileName = "traffic/road_line.geojson";
 
@@ -30,13 +29,6 @@ namespace Netherlands3D.Traffic
 
         public GridSelection grid;
         public GameObject stopButton;
-        private void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-        }
 
         public void WaitForGridBounds()
         {
@@ -74,7 +66,7 @@ namespace Netherlands3D.Traffic
             {
                 if (allLoadedRoads.Count > 0)
                 {
-                    shuffledRoadsList = GenerateRoads.Instance.allLoadedRoads.OrderBy(x => Random.value).ToList();
+                    shuffledRoadsList = ServiceLocator.GetService<GenerateRoads>().allLoadedRoads.OrderBy(x => Random.value).ToList();
                 }
             }
         }

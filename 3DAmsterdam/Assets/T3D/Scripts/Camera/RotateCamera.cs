@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using UnityEngine;
 using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.InputHandler;
@@ -95,7 +95,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     {
         //wait until Ground level and building center are known, and  the active uitbouw exists
         Vector3 dir;
-        if (T3DInit.HTMLData.SnapToWall)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
         {
             yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActivePerceel != null);
             dir = RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter;
@@ -125,8 +125,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void AddActionListeners()
     {
         //Mouse actions
-        dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
-        zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
+        dragActionMouse = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GodViewMouse.Drag);
+        zoomScrollActionMouse = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GodViewMouse.Zoom);
 
         //Listeners
         dragActionMouse.SubscribePerformed(Drag);
@@ -241,6 +241,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
+        return ServiceLocator.GetService<CameraModeChanger>().AvailableActionMaps.Contains(actionMap);
     }
 }

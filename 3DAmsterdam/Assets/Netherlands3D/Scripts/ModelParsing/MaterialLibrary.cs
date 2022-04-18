@@ -8,20 +8,13 @@ using Netherlands3D.ObjectInteraction;
 
 namespace Netherlands3D.ModelParsing
 {
-    public class MaterialLibrary : MonoBehaviour
+    public class MaterialLibrary : MonoBehaviour, IUniqueService
     {
         [SerializeField]
         private Material[] materialLibrary;
 
         [SerializeField]
         private float materialColorMatchingThreshold = 0.01f;
-
-        public static MaterialLibrary Instance;
-
-		private void Awake()
-		{
-            Instance = this;
-        }
 
 		/// <summary>
 		/// Remaps materials to this object based on material name / substrings

@@ -154,11 +154,11 @@ namespace Netherlands3D.LayerSystem
             if (selectedIDs.Count == 1)
             {
                 ShowBAGDataForSelectedID(lastSelectedID);
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
             }
             else if (selectedIDs.Count > 1)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
 				PropertiesPanel.Instance.OpenObjectInformation("Selectie", true);
 				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
@@ -168,9 +168,9 @@ namespace Netherlands3D.LayerSystem
 					PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
                 }
             }
-            else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+            else if (ServiceLocator.GetService<ContextPointerMenu>().state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
             }
         }
 
@@ -185,9 +185,9 @@ namespace Netherlands3D.LayerSystem
                 selectedIDs.Clear();
             }
 
-            if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+            if (ServiceLocator.GetService<ContextPointerMenu>().state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
             }
 
             //Remove highlights by highlighting our empty list
@@ -207,7 +207,7 @@ namespace Netherlands3D.LayerSystem
             }
 
             //If we hide something, make sure our context menu is reset to default again.
-            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            //ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Netherlands3D.LayerSystem
         IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
         {
             //Check area that we clicked, and add the (heavy) mesh collider there
-            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+            Vector3 planeHit = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
             containerLayer.AddMeshColliders(planeHit);
 
             //No fire a raycast towards our meshcolliders to see what face we hit 

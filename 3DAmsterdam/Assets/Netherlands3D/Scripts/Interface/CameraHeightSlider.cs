@@ -29,15 +29,15 @@ namespace Netherlands3D.Interface
 
         public void HeightSliderChanged(float sliderValue)
         {
-            CameraModeChanger.Instance.CurrentCameraControls.SetNormalizedCameraHeight(sliderValue);
+            ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.SetNormalizedCameraHeight(sliderValue);
         }
 
         void LateUpdate()
         {
-            heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y - Config.activeConfiguration.zeroGroundLevelY);
+            heightInNAP = Mathf.Round(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position.y - Config.activeConfiguration.zeroGroundLevelY);
             heightText.text = heightInNAP + textSuffix;
 
-            slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
+            slider.normalizedValue = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetNormalizedCameraHeight();
         }
     }
 }

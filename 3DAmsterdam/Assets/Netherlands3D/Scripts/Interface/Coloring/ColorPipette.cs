@@ -47,8 +47,8 @@ namespace Netherlands3D.Interface.Coloring
             defaultIconColor = activeImageIcon.color;
 
             ActionMap = ActionHandler.actions.PickOnClick;
-            pickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.Pick);
-            cancelPickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.CancelPick);
+            pickAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.PickOnClick.Pick);
+            cancelPickAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.PickOnClick.CancelPick);
             pickAction.SubscribePerformed(Pick);
             cancelPickAction.SubscribePerformed(CancelPick);
          }
@@ -87,7 +87,7 @@ namespace Netherlands3D.Interface.Coloring
             parentCanvasGraphicRaycaster.enabled = false;
 
             //We create a new texture once, for the sake of performance
-            viewRectangle = CameraModeChanger.Instance.ActiveCamera.pixelRect;
+            viewRectangle = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.pixelRect;
             screenTexture = new Texture2D((int)viewRectangle.width, (int)viewRectangle.height, TextureFormat.RGB24, false);
 
             activeImageIcon.color = activeIconColor;

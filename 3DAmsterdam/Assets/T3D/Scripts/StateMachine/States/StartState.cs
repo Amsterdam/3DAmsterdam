@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
@@ -8,10 +8,10 @@ public class StartState : State
 {
     public override int GetDesiredStateIndex()
     {
-        if (T3DInit.HTMLData == null)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
             return 0;
 
-        return T3DInit.HTMLData.SnapToWall ? 0 : 1;
+        return ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall ? 0 : 1;
     }
 
     public override void StateEnteredAction()

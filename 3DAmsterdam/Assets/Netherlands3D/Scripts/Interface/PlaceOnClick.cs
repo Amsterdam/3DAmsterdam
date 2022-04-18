@@ -36,7 +36,7 @@ namespace Netherlands3D.Interface
 		public virtual void Start()
         {
             ActionMap = ActionHandler.actions.PlaceOnClick;
-            placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
+            placeAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.PlaceOnClick.Place);
             if (waitingForClick)
             {
                 actionEvent = placeAction.SubscribePerformed(Place);
@@ -104,7 +104,7 @@ namespace Netherlands3D.Interface
         private void FollowMousePointer()
         {
             //Check if the selector has raycast hits, otherwise use our camera world plane
-            targetLocation = (Selector.hits.Length > 0) ? Selector.hits[0].point : CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+            targetLocation = (Selector.hits.Length > 0) ? Selector.hits[0].point : ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
             targetLocation += Vector3.up * 1.8f;
 
             WorldPointerFollower.AlignWithWorldPosition(targetLocation);

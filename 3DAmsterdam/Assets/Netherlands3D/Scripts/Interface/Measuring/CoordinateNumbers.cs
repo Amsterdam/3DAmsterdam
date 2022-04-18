@@ -11,7 +11,7 @@ namespace Netherlands3D.Interface
     /// <summary>
     /// Add 2D numbers on the canvas and return its objects.
     /// </summary>
-    public class CoordinateNumbers : MonoBehaviour
+    public class CoordinateNumbers : MonoBehaviour, IUniqueService
     {
         [SerializeField]
         private Coordinate coordinatePrefab;
@@ -27,13 +27,6 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private UitbouwTransformGizmoButtons uitbouwTransformGizmoButtonsPrefab;
-
-        public static CoordinateNumbers Instance;
-
-        void Awake()
-        {
-            Instance = this;
-        }
 
         public Coordinate CreateCoordinateNumber()
         {

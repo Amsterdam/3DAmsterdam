@@ -106,10 +106,10 @@ namespace Netherlands3D.Interface.Selection
                             return;
 
                         //Our four corners of the bounding box as points on our world plane
-                        Vector3 point1 = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(startMousePosition);
-                        Vector3 point2 = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(startMousePosition + (Vector2.left * (startMousePosition.x - currentMousePosition.x)));
-                        Vector3 point3 = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(currentMousePosition);
-                        Vector3 point4 = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(startMousePosition + (Vector2.down * (startMousePosition.y-currentMousePosition.y)));
+                        Vector3 point1 = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld(startMousePosition);
+                        Vector3 point2 = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld(startMousePosition + (Vector2.left * (startMousePosition.x - currentMousePosition.x)));
+                        Vector3 point3 = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld(currentMousePosition);
+                        Vector3 point4 = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld(startMousePosition + (Vector2.down * (startMousePosition.y-currentMousePosition.y)));
                         
                         vertices.AddRange(new List<Vector3>(){ point1,point2,point3,point4 });
                         onSelectionCompleted?.Invoke();

@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using System;
 using UnityEngine;
 
@@ -53,7 +53,7 @@ namespace RuntimeHandle
         {
             Vector3 mouseVector = (Input.mousePosition - p_previousPosition);
             float mag = mouseVector.magnitude;
-            mouseVector = CameraModeChanger.Instance.ActiveCamera.transform.rotation * mouseVector.normalized;
+            mouseVector = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation * mouseVector.normalized;
 
             Vector3 rperp = _parentTransformHandle.space == HandleSpace.LOCAL ? _parentTransformHandle.target.rotation * _axis : _axis;
             Vector3 projected = Vector3.ProjectOnPlane(mouseVector, rperp);

@@ -32,12 +32,12 @@ namespace Netherlands3D.Interface
 			if(gridSelection)
 				gridSelection.gameObject.SetActive(false);
 
-			cameraModeChanger = CameraModeChanger.Instance;
+			cameraModeChanger = ServiceLocator.GetService<CameraModeChanger>();
             cameraModeChanger.CameraModeChangedEvent += CameraModeChanger_CameraModeChangedEvent;
 
 			if (waitingForClick)
 			{
-				HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
+				ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
 				PropertiesPanel.Instance.OpenCustomObjects();
 			}
 		}
@@ -54,8 +54,8 @@ namespace Netherlands3D.Interface
 		{
 			base.Placed();
 			placedAnimator.enabled = true;
-			savedRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-			HelpMessage.Instance.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
+			savedRotation = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation;
+			ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
 		}
 
 		private void EnableObject()

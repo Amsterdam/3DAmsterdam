@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface.Layers
             if (layerType == LayerType.ANNOTATION)
             {
                 Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
+                ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
                 annotation.StartEditingText();
             }
 
@@ -40,7 +40,7 @@ namespace Netherlands3D.Interface.Layers
             {
                 WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
                 FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
-                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
+                ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
             }
             else
             {

@@ -58,7 +58,7 @@ namespace Netherlands3D.ObjectInteraction
         public virtual void Deselect() { }
         public virtual void Escape() 
         {
-            HelpMessage.Instance.Hide(true); //Instantly hide help message
+            ServiceLocator.GetService<HelpMessage>().Hide(true); //Instantly hide help message
         }
 
 		protected virtual void OnDisable()

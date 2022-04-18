@@ -39,7 +39,7 @@ namespace Netherlands3D.Cameras
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
-			HelpMessage.Instance.Show(helpMessage);
+			ServiceLocator.GetService<HelpMessage>().Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();

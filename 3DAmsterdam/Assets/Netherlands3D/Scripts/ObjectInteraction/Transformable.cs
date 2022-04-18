@@ -56,7 +56,7 @@ namespace Netherlands3D.ObjectInteraction
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
 			ActionMap = ActionHandler.actions.Transformable;
-			placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
+			placeAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Transformable.Place);
 
 			meshCollider = GetComponent<Collider>();
 
@@ -72,7 +72,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void StartPlacementByClick()
 		{
-			HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
+			ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 			PlacementSettings();
 			placeActionEvent = placeAction.SubscribePerformed(Place);
@@ -178,7 +178,7 @@ namespace Netherlands3D.ObjectInteraction
 
 				//If this is a custom made transformable, check for a material remap
 				PropertiesPanel.Instance.ClearGeneratedFields();
-				if (madeWithExternalTool && !MaterialLibrary.Instance.AutoRemap(gameObject))
+				if (madeWithExternalTool && !ServiceLocator.GetService<MaterialLibrary>().AutoRemap(gameObject))
 				{
 					PropertiesPanel.Instance.OpenCustomObjects();
 				}
@@ -300,7 +300,7 @@ namespace Netherlands3D.ObjectInteraction
 		{
 
 			RaycastHit hit;
-			if (Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+			if (Physics.Raycast(Selector.mainSelectorRay, out hit, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 			{
 				if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
 				{
@@ -316,7 +316,7 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			else
 			{
-				return CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+				return ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
 			}
 		}
 

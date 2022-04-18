@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using Netherlands3D.T3D;
@@ -55,16 +55,16 @@ public class WallSelectionState : State
 
     public override int GetDesiredStateIndex()
     {
-        if (T3DInit.Instance == null)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
             desiredNextStateIndex = 0;
         else
-            desiredNextStateIndex = T3DInit.HTMLData.HasFile ? 0 : 1;
+            desiredNextStateIndex = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile ? 0 : 1;
         return desiredNextStateIndex;
     }
 
     public override void StateEnteredAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
+        ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.GodView);
 
         building.SelectedWall.AllowSelection = true;
         building.SelectedWall.WallChanged = false;
@@ -99,7 +99,7 @@ public class WallSelectionState : State
         else
         {
             //create uitbouw since there was no uitbouw previously placed
-            MetadataLoader.Instance.PlaatsUitbouw(location);
+            ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
@@ -52,7 +52,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             var newOrigin = transform.position;
             var groundPlane = new Plane(transform.up, newOrigin);
-            var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
             Vector3 newIntersectionPoint;
             if (groundPlane.Raycast(ray, out float enter))
@@ -61,7 +61,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             else
             {
-                var horizonPlane = new Plane(-CameraModeChanger.Instance.ActiveCamera.transform.forward, previousIntersectionPoint);
+                var horizonPlane = new Plane(-ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward, previousIntersectionPoint);
                 horizonPlane.Raycast(ray, out enter);
                 var planeIntersection = ray.origin + (ray.direction * enter);
                 newIntersectionPoint = groundPlane.ClosestPointOnPlane(planeIntersection);
@@ -80,7 +80,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public virtual void SetAllowRotation(bool allowed)
         {
-            AllowRotation = allowed && T3DInit.Instance.IsEditMode;
+            AllowRotation = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
         }
     }
 }

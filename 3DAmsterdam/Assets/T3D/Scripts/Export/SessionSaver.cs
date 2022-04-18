@@ -1,4 +1,4 @@
-#define DEBUG
+﻿#define DEBUG
 
 using System;
 using System.Collections;
@@ -13,8 +13,8 @@ public static class SessionSaver
 {
     public static bool LoadPreviousSession { get; set; } = true;
 
-    public static JSONSessionLoader Loader { get { return JSONSessionLoader.Instance; } }
-    public static JsonSessionSaver Saver { get { return JsonSessionSaver.Instance; } }
+    public static JSONSessionLoader Loader { get { return ServiceLocator.GetService<JSONSessionLoader>(); } }
+    public static JsonSessionSaver Saver { get { return ServiceLocator.GetService<JsonSessionSaver>(); } }
 
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
@@ -73,24 +73,24 @@ public static class SessionSaver
     private static void Loader_LoadingCompleted(bool loadSucceeded)
     {
         Debug.Log("loaded session: " + SessionId);
-        T3DInit.Instance.LoadBuilding();
+        ServiceLocator.GetService<T3DInit>().LoadBuilding();
         Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 
     public static void AddContainer(SaveDataContainer saveDataContainer)
     {
-        JsonSessionSaver.Instance.AddContainer(saveDataContainer);
+        Saver.AddContainer(saveDataContainer);
     }
 
     public static void RemoveContainer(SaveDataContainer saveDataContainer)
     {
-        JsonSessionSaver.Instance.RemoveContainer(saveDataContainer);
+        Saver.RemoveContainer(saveDataContainer);
     }
 
     public static void LoadContainer(SaveDataContainer saveDataContainer)
     {
         //check if object already exists in the save data, in which case load the save data:
-        if (JSONSessionLoader.Instance.TryGetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId, out string json))
+        if (ServiceLocator.GetService<JSONSessionLoader>().TryGetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId, out string json))
         {
             JsonUtility.FromJsonOverwrite(json, saveDataContainer);
         }
@@ -98,6 +98,6 @@ public static class SessionSaver
 
     public static JSONNode GetJSONNodeOfType(string typeKey)
     {
-        return JSONSessionLoader.Instance.GetJSONNodeOfType(typeKey);
+        return Loader.GetJSONNodeOfType(typeKey);
     }
 }

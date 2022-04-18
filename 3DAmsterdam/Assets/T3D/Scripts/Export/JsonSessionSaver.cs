@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +8,10 @@ using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class JsonSessionSaver : MonoBehaviour//, IDataSaver
+public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
 {
     private JSONNode rootObject = new JSONObject();
     const string uploadURL = "api/upload/";
-
-    public static JsonSessionSaver Instance;
 
     public Coroutine uploadCoroutine;
     private bool autoSaveEnabled = true;
@@ -25,14 +23,9 @@ public class JsonSessionSaver : MonoBehaviour//, IDataSaver
 
     private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>();
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     public void EnableAutoSave(bool enable)
     {
-        autoSaveEnabled = enable && T3DInit.Instance.IsEditMode;
+        autoSaveEnabled = enable && ServiceLocator.GetService<T3DInit>().IsEditMode;
         if (enable)
             StartCoroutine(AutoSaveTimer());
     }

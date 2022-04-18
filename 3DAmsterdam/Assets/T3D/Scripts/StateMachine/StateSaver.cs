@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,7 +34,7 @@ public class StateSaver : MonoBehaviour
     private void OnDisable()
     {
         State.ActiveStateChangedByUser -= State_ActiveStateChanged;
-        //MetadataLoader.Instance.BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
+        //ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
     }
 
     private void Start() // in start to avoid timing issues

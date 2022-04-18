@@ -44,16 +44,16 @@ namespace Netherlands3D.Interface
 		{
 			ActionMap = ActionHandler.actions.GridSelection;
 
-			toggleAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ToggleVoxel);
+			toggleAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GridSelection.ToggleVoxel);
 			toggleAction.SubscribePerformed(Toggle);
 
-			drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.DrawVoxels);
+			drawAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GridSelection.DrawVoxels);
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
 
 			if (freePaint)
 			{
-				clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
+				clearAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
 				clearAction.SubscribePerformed(Clear);
 				clearAction.SubscribeCancelled(Clear);
 			}
@@ -96,7 +96,7 @@ namespace Netherlands3D.Interface
 				}
 				else
 				{
-					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
+					startGridPosition = GetGridPosition(ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld());
 					ScaleSingleVoxelUnderMouse(false);
 				}
 
@@ -117,7 +117,7 @@ namespace Netherlands3D.Interface
 				add = true;
 				if (!freePaint)
 				{
-					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
+					startGridPosition = GetGridPosition(ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld());
 				}
 			}
 		}
@@ -186,7 +186,7 @@ namespace Netherlands3D.Interface
 		{
 			if (Selector.Instance.HoveringInterface()) return;
 			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
+			mouseGridPosition = GetGridPosition(ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld());
 			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
 			{
 				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
@@ -210,7 +210,7 @@ namespace Netherlands3D.Interface
 				scaleBlock = voxels.First().Value;
 			}
 			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());		
+			mouseGridPosition = GetGridPosition(ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld());		
 			scaleBlock.transform.position = mouseGridPosition;
 
 			if (calculateScale)
@@ -257,7 +257,7 @@ namespace Netherlands3D.Interface
 
 		private void MoveSelectionBlock()
 		{
-			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+			gridBlockPosition = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
 			//Offset to make up for grid object origin (centered)
 			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
 			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);

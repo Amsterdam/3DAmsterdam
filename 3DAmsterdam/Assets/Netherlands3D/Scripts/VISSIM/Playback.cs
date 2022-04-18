@@ -101,13 +101,13 @@ namespace Netherlands3D.Traffic.VISSIM
 
         public void SendCameraToVissim()
         {
-             cameraStartPosition = CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position;
-             CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position = new Vector3(fileConverter.allVissimData[0].coordRear.x, cameraStartPosition.y ,fileConverter.allVissimData[0].coordRear.z);
+             cameraStartPosition = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.gameObject.transform.position;
+             ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.gameObject.transform.position = new Vector3(fileConverter.allVissimData[0].coordRear.x, cameraStartPosition.y ,fileConverter.allVissimData[0].coordRear.z);
         }
 
         public void SendCameraToStart()
         {
-            CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position = cameraStartPosition;
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.gameObject.transform.position = cameraStartPosition;
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -74,10 +74,8 @@ namespace Netherlands3D.T3D.Uitbouw
         }
     }
 
-    public class MetadataLoader : MonoBehaviour
+    public class MetadataLoader : MonoBehaviour, IUniqueService
     {
-        public static MetadataLoader Instance;
-
         [SerializeField]
         private GameObject shapableUitbouwPrefab;
         [SerializeField]
@@ -121,12 +119,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
             Building = building;
             Perceel = perceel;
-            Instance = this;
         }
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
-            if (T3DInit.HTMLData.HasFile && (!string.IsNullOrEmpty(T3DInit.HTMLData.ModelId) || !string.IsNullOrEmpty(T3DInit.HTMLData.BlobId)))
+            if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile && (!string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) || !string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.BlobId)))
             { 
                 StartCoroutine(GetBimCityJson());
             }
@@ -200,10 +197,10 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             yield return null;
 
-            var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{T3DInit.HTMLData.ModelId}";
-            var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{T3DInit.HTMLData.BlobId}.json";
+            var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{ServiceLocator.GetService<T3DInit>().HTMLData.ModelId}";
+            var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{ServiceLocator.GetService<T3DInit>().HTMLData.BlobId}.json";
 
-            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(T3DInit.HTMLData.ModelId) == false ? urlIfc : urlSketchup);
+            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) == false ? urlIfc : urlSketchup);
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();
@@ -273,9 +270,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             if (!Uitbouw)
             {
-                if (T3DInit.HTMLData.HasFile)
+                if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
                 {
-                    var obj = CityJsonVisualiser.Instance;
+                    var obj = ServiceLocator.GetService<CityJsonVisualiser>();
                     obj.VisualizeCityJson();
                     obj.SetUitbouwPosition(spawnPosition);
                     Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
