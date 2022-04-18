@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace Netherlands3D.ObjectInteraction
 {
-	public class VisualGrid : MonoBehaviour
+	public class VisualGrid : MonoBehaviour, IUniqueService
 	{
-		public static VisualGrid Instance;
-
 		[SerializeField]
 		private Material gridMaterial;
 
@@ -16,11 +14,6 @@ namespace Netherlands3D.ObjectInteraction
 		[SerializeField]
 		private float cellSize = 100.0f;
 		public float CellSize { get => cellSize; }
-
-		void Awake()
-		{
-			Instance = this;
-		}
 
 		private void Start()
 		{

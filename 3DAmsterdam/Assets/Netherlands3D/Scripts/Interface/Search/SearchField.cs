@@ -45,7 +45,7 @@ namespace Netherlands3D.Interface.Search
 			searchInputField.text = "";
 			GetSuggestions();
 
-			SearchResultMarker.Instance.Hide();
+			ServiceLocator.GetService<SearchResultMarker>().Hide();
 		}
 
 		IEnumerator CatchEnter(){
@@ -97,7 +97,7 @@ namespace Netherlands3D.Interface.Search
 
 				if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
 				{
-					WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de server is zoeken tijdelijk niet mogelijk.");
+					ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de server is zoeken tijdelijk niet mogelijk.");
 				}
 				else
 				{

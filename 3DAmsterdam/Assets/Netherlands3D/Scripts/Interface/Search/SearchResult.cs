@@ -74,7 +74,7 @@ namespace Netherlands3D.Interface.Search
                     ParentList.ShowResultsList(false);
                     
                     ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
-                    SearchResultMarker.Instance.Show(targetLocation, textField.text);
+                    ServiceLocator.GetService<SearchResultMarker>().Show(targetLocation, textField.text);
                 }
             }
         }

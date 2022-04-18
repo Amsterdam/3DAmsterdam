@@ -146,7 +146,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Pand data kon niet opgehaald worden");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Pand data kon niet opgehaald worden");
             }
             else
             {
@@ -184,7 +184,7 @@ namespace Netherlands3D.T3D.Uitbouw
             yield return req.SendWebRequest();
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Perceel data kon niet opgehaald worden");
             }
             else
             {
@@ -206,7 +206,7 @@ namespace Netherlands3D.T3D.Uitbouw
             yield return req.SendWebRequest();
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog(req.error);
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(req.error);
             }
             else
             {

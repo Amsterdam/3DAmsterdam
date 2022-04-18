@@ -110,11 +110,8 @@ namespace Netherlands3D.Interface.SidePanel
         private GameObject thumbnailImage = null;
         public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
 
-        public static PropertiesPanel Instance;
-
 		void Awake()
 		{
-            Instance = this;
             //Open/closed at start
             if (startingActiveTab)
             {
@@ -264,7 +261,7 @@ namespace Netherlands3D.Interface.SidePanel
         {
             if (transformable == null || (transformable != null && transformPanel.TransformableTarget == transformable))
             {
-                Selector.Instance.ClearHighlights();
+                ServiceLocator.GetService<Selector>().ClearHighlights();
                 transformPanel.DisableGizmo();
                 Transformable.lastSelectedTransformable = null;
                 transformPanel.gameObject.SetActive(false);

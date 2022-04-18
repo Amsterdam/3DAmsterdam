@@ -27,20 +27,13 @@ public static class ServiceLocator
         }
     }
 
-    //private static void RegisterService(Type type, IUniqueService service)
-    //{
-    //    Assert.IsFalse(services.ContainsKey(type), $"Service {type} already registered");
-
-    //    services.Add(type, service);
-    //    Debug.Log("Service installed: " + type);
-    //}
-
     private static void RegisterService<T>(T service) where T : IUniqueService
     {        
         var type = service.GetType();
         Assert.IsFalse(services.ContainsKey(type), $"Service {type} already registered");
 
         services.Add(type, service);
+        Debug.Log("Service installed: " + type);
     }
 
     private static void UnregisterService<T>(T service) where T : IUniqueService
@@ -49,6 +42,7 @@ public static class ServiceLocator
         Assert.IsTrue(services.ContainsKey(type), $"Service {type} not registered");
 
         services.Remove(service.GetType());
+        Debug.Log("Service uninstalled: " + type);
     }
 
     public static T GetService<T>() where T : IUniqueService

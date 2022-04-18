@@ -21,23 +21,23 @@ namespace Netherlands3D.Interface
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            TooltipDialog.Instance.Hide();
+            ServiceLocator.GetService<TooltipDialog>().Hide();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (Input.GetMouseButton(0)) return; //Dont show new tooltips when we are still holding our mouse button
-            TooltipDialog.Instance.ShowMessage(tooltipText, rectTransform);
+            ServiceLocator.GetService<TooltipDialog>().ShowMessage(tooltipText, rectTransform);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            TooltipDialog.Instance.Hide();
+            ServiceLocator.GetService<TooltipDialog>().Hide();
         }
 
         public void OnScroll(PointerEventData eventData)
         {
-            TooltipDialog.Instance.Hide();
+            ServiceLocator.GetService<TooltipDialog>().Hide();
         }
     }
 }

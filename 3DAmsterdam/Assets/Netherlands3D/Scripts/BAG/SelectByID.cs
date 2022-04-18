@@ -160,12 +160,12 @@ namespace Netherlands3D.LayerSystem
             {
                 ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
-				PropertiesPanel.Instance.OpenObjectInformation("Selectie", true);
-				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
-				PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("Selectie", true);
+				ServiceLocator.GetService<PropertiesPanel>().RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
+				ServiceLocator.GetService<PropertiesPanel>().AddTitle("Geselecteerde panden");
                 foreach (var id in selectedIDs)
                 {
-					PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+					ServiceLocator.GetService<PropertiesPanel>().AddSelectionOutliner(this.gameObject, "Pand " + id, id);
                 }
             }
             else if (ServiceLocator.GetService<ContextPointerMenu>().state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
@@ -230,18 +230,18 @@ namespace Netherlands3D.LayerSystem
 
             if (id != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectInformation("", true);
-                if (selectedIDs.Count > 1) Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true);
+                if (selectedIDs.Count > 1) ServiceLocator.GetService<PropertiesPanel>().AddActionButtonText("< Geselecteerde panden", (action) =>
                 {
 					HighlightObjectsWithIDs();
                 }
                 );
-				PropertiesPanel.Instance.displayBagData.ShowBuildingData(id);
+				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(id);
             }
             else if (lastSelectedID != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectInformation("", true);
-				PropertiesPanel.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true);
+				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(lastSelectedID);
             }
         }
 
@@ -320,7 +320,7 @@ namespace Netherlands3D.LayerSystem
             yield return hideRequest.SendWebRequest();
             if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
             else
             {
@@ -371,7 +371,7 @@ namespace Netherlands3D.LayerSystem
 
             if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
             else
             {

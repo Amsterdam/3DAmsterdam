@@ -88,7 +88,7 @@ namespace Netherlands3D.Interface
 			if (action.Performed)
 			{
 
-				if (Selector.Instance.HoveringInterface()) return;
+				if (ServiceLocator.GetService<Selector>().HoveringInterface()) return;
 
 				if (freePaint)
 				{
@@ -111,7 +111,7 @@ namespace Netherlands3D.Interface
 				drawing = false;
 				FinishSelection();
 			}
-			else if (!Selector.Instance.HoveringInterface() && action.Performed)
+			else if (!ServiceLocator.GetService<Selector>().HoveringInterface() && action.Performed)
 			{
 				drawing = true;
 				add = true;
@@ -143,12 +143,12 @@ namespace Netherlands3D.Interface
 
 		private void OnEnable()
 		{
-			VisualGrid.Instance.Show();
+			ServiceLocator.GetService<VisualGrid>().Show();
 			TakeInteractionPriority();
 		}
 		protected override void OnDisable()
 		{
-			VisualGrid.Instance.Hide();
+			ServiceLocator.GetService<VisualGrid>().Hide();
 			StopInteraction();
 		}
 
@@ -160,7 +160,7 @@ namespace Netherlands3D.Interface
 
 		private void Update()
 		{
-			if (Selector.Instance.HoveringInterface())
+			if (ServiceLocator.GetService<Selector>().HoveringInterface())
 			{
 				gridSelectionBlock.SetActive(false);
 			}
@@ -184,7 +184,7 @@ namespace Netherlands3D.Interface
 
 		private void DrawVoxelsUnderMouse(bool toggled = false)
 		{
-			if (Selector.Instance.HoveringInterface()) return;
+			if (ServiceLocator.GetService<Selector>().HoveringInterface()) return;
 			
 			mouseGridPosition = GetGridPosition(ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld());
 			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
@@ -200,7 +200,7 @@ namespace Netherlands3D.Interface
 
 		private void ScaleSingleVoxelUnderMouse(bool calculateScale = true)
 		{
-			if (Selector.Instance.HoveringInterface()) return;
+			if (ServiceLocator.GetService<Selector>().HoveringInterface()) return;
 
 			//Just make sure there is one voxel that we can scale
 			if (!scaleBlock)
@@ -221,29 +221,29 @@ namespace Netherlands3D.Interface
 				scaleBlock.transform.position = startGridPosition;
 				scaleBlock.transform.Translate(xDifference / 2.0f, 0, zDifference / 2.0f);
 				scaleBlock.transform.localScale = new Vector3(
-						(mouseGridPosition.x - startGridPosition.x) + ((xDifference < 0 ) ? -VisualGrid.Instance.CellSize : VisualGrid.Instance.CellSize),
-						VisualGrid.Instance.CellSize,
-						(mouseGridPosition.z - startGridPosition.z) + ((zDifference < 0) ? -VisualGrid.Instance.CellSize : VisualGrid.Instance.CellSize)
+						(mouseGridPosition.x - startGridPosition.x) + ((xDifference < 0 ) ? -ServiceLocator.GetService<VisualGrid>().CellSize : ServiceLocator.GetService<VisualGrid>().CellSize),
+						ServiceLocator.GetService<VisualGrid>().CellSize,
+						(mouseGridPosition.z - startGridPosition.z) + ((zDifference < 0) ? -ServiceLocator.GetService<VisualGrid>().CellSize : ServiceLocator.GetService<VisualGrid>().CellSize)
 				);
 			}
 			else{
 				//Just make sure it is default size
-				scaleBlock.transform.localScale = Vector3.one * VisualGrid.Instance.CellSize;
+				scaleBlock.transform.localScale = Vector3.one * ServiceLocator.GetService<VisualGrid>().CellSize;
 			}
 		}
 
 		private Vector3Int GetGridPosition(Vector3 samplePosition)
 		{
-			samplePosition.x += (VisualGrid.Instance.CellSize * 0.5f);
-			samplePosition.z += (VisualGrid.Instance.CellSize * 0.5f);
+			samplePosition.x += (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
+			samplePosition.z += (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
 
-			samplePosition.x = (Mathf.Round(samplePosition.x / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
-			samplePosition.z = (Mathf.Round(samplePosition.z / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
+			samplePosition.x = (Mathf.Round(samplePosition.x / ServiceLocator.GetService<VisualGrid>().CellSize) * ServiceLocator.GetService<VisualGrid>().CellSize) - (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
+			samplePosition.z = (Mathf.Round(samplePosition.z / ServiceLocator.GetService<VisualGrid>().CellSize) * ServiceLocator.GetService<VisualGrid>().CellSize) - (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
 
 			Vector3Int roundedPosition = new Vector3Int
 			{
 				x = Mathf.RoundToInt(samplePosition.x),
-				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (VisualGrid.Instance.CellSize * 0.5f)),
+				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f)),
 				z = Mathf.RoundToInt(samplePosition.z)
 			};
 
@@ -252,22 +252,22 @@ namespace Netherlands3D.Interface
 
 		private void SetGridSize()
 		{
-			gridSelectionBlock.transform.localScale = new Vector3(VisualGrid.Instance.CellSize, VisualGrid.Instance.CellSize, VisualGrid.Instance.CellSize);
+			gridSelectionBlock.transform.localScale = new Vector3(ServiceLocator.GetService<VisualGrid>().CellSize, ServiceLocator.GetService<VisualGrid>().CellSize, ServiceLocator.GetService<VisualGrid>().CellSize);
 		}
 
 		private void MoveSelectionBlock()
 		{
 			gridBlockPosition = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
 			//Offset to make up for grid object origin (centered)
-			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
-			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);
+			gridBlockPosition.x += (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
+			gridBlockPosition.z += (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
 
 			//Snap block to grid
-			gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
-			gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
+			gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / ServiceLocator.GetService<VisualGrid>().CellSize) * ServiceLocator.GetService<VisualGrid>().CellSize) - (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
+			gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / ServiceLocator.GetService<VisualGrid>().CellSize) * ServiceLocator.GetService<VisualGrid>().CellSize) - (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f);
 
 			gridSelectionBlock.transform.position = gridBlockPosition;
-			gridSelectionBlock.transform.Translate(Vector3.up * (VisualGrid.Instance.CellSize * 0.5f));
+			gridSelectionBlock.transform.Translate(Vector3.up * (ServiceLocator.GetService<VisualGrid>().CellSize * 0.5f));
 		}
 
 		private void FinishSelection()

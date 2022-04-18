@@ -57,49 +57,49 @@ public class CsvFilePanel : MonoBehaviour
             Reset();
         }
 
-        PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
+        ServiceLocator.GetService<PropertiesPanel>().SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
 
-        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+        ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields(UIClearIgnoreObject);
 
         csvGeoLocation = new CsvGeoLocation(csv);
 
         if (csvGeoLocation.Status != CsvGeoLocation.CsvGeoLocationStatus.Success)
         {
-            PropertiesPanel.Instance.AddSpacer(20);
+            ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
 
             foreach (var line in csvGeoLocation.StatusMessageLines)
             {
-                PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+                ServiceLocator.GetService<PropertiesPanel>().AddTextfieldColor(line, Color.red, FontStyle.Normal);
             }
 
             return;
         }
         
                
-        PropertiesPanel.Instance.AddLabel("Label");
-        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel("Label");
+        ServiceLocator.GetService<PropertiesPanel>().AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
         {            
             csvGeoLocation.LabelColumnName = action;
             csvGeoLocation.SetlabelIndex(action);
 
         }, "");
 
-        PropertiesPanel.Instance.AddSpacer(10);
-        PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
-        PropertiesPanel.Instance.AddSpacer(10);
+        ServiceLocator.GetService<PropertiesPanel>().AddSpacer(10);
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
+        ServiceLocator.GetService<PropertiesPanel>().AddSpacer(10);
 
         foreach (var column in csvGeoLocation.Columns)
         {
             if (csvGeoLocation.CoordinateColumns.Contains(column)) continue;
 
             selectedColumnsToDisplay.Add(column, true);
-            PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
+            ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox(column, true, (action) =>
             {
                 selectedColumnsToDisplay[column] = action;
             });
         }
 
-        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+        ServiceLocator.GetService<PropertiesPanel>().AddActionButtonBig("Toon data", (action) =>
         {
             MapAndShow();               
         });
@@ -110,10 +110,10 @@ public class CsvFilePanel : MonoBehaviour
     {
         ShowAll();
 
-        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+        ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields(UIClearIgnoreObject);
         
-        PropertiesPanel.Instance.AddLabel($"CSV file geladen met {csvGeoLocation.Rows.Count} rijen");
-        PropertiesPanel.Instance.AddLabel("Klik op een icoon voor details");
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel($"CSV file geladen met {csvGeoLocation.Rows.Count} rijen");
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel("Klik op een icoon voor details");
 
     }
 
@@ -187,11 +187,11 @@ public class CsvFilePanel : MonoBehaviour
 
     void Show(int index)
     {
-        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+        ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields(UIClearIgnoreObject);
 
         //dropdown to select the label of the pointer
-        PropertiesPanel.Instance.AddLabel("Label");
-        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel("Label");
+        ServiceLocator.GetService<PropertiesPanel>().AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
         {
             Debug.Log($"label: {action}");
             csvGeoLocation.LabelColumnName = action;
@@ -202,12 +202,12 @@ public class CsvFilePanel : MonoBehaviour
 
         }, csvGeoLocation.LabelColumnName);
 
-        PropertiesPanel.Instance.AddLabel("Filters");
+        ServiceLocator.GetService<PropertiesPanel>().AddLabel("Filters");
 
         string[] filters = csvGeoLocation.GetFiltersByColumn();        
 
         //filter dropdown
-        currentFilterDropdown = PropertiesPanel.Instance.AddActionDropdown(filters, (action) =>
+        currentFilterDropdown = ServiceLocator.GetService<PropertiesPanel>().AddActionDropdown(filters, (action) =>
         {
             Debug.Log($"label: {action}");
             foreach (Transform marker in LocationMarkersParent.transform)
@@ -220,7 +220,7 @@ public class CsvFilePanel : MonoBehaviour
 
         }, "");
 
-        PropertiesPanel.Instance.AddSpacer(20);
+        ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
 
         var row = csvGeoLocation.Rows[index];
 
@@ -231,17 +231,17 @@ public class CsvFilePanel : MonoBehaviour
 
             if (selectedColumnsToDisplay.ContainsKey(column) &&  selectedColumnsToDisplay[column])
             {
-                PropertiesPanel.Instance.AddLabelColor(column, new Color(0,0.2705f,0.6f,1), FontStyle.Bold);
+                ServiceLocator.GetService<PropertiesPanel>().AddLabelColor(column, new Color(0,0.2705f,0.6f,1), FontStyle.Bold);
 
                 if (text.StartsWith("http"))
                 {
-                    PropertiesPanel.Instance.AddLink(text, text);
+                    ServiceLocator.GetService<PropertiesPanel>().AddLink(text, text);
                 }
                 else
                 {                    
-                    PropertiesPanel.Instance.AddTextfieldColor(text,Color.black, FontStyle.Italic);
+                    ServiceLocator.GetService<PropertiesPanel>().AddTextfieldColor(text,Color.black, FontStyle.Italic);
                 }
-                PropertiesPanel.Instance.AddSeperatorLine();
+                ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
             }
         }
     }

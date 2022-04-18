@@ -69,38 +69,38 @@ namespace Netherlands3D.Settings {
 		public void OpenSettingsPanel()
         {
 			//Interface options
-			PropertiesPanel.Instance.OpenSettings();
-			PropertiesPanel.Instance.AddTitle("Interface");
-			PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().OpenSettings();
+			ServiceLocator.GetService<PropertiesPanel>().AddTitle("Interface");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
 				settings.drawMap = toggle;
 				ApplySettings();
             });
-			PropertiesPanel.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
 				settings.drawFPS = toggle;
 				ApplySettings();
             });
 
-			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
 				settings.showExperimentelFeatures = toggle;
 				ApplySettings();
 			});
 
 
-			PropertiesPanel.Instance.AddLabel("Interface schaal");
-			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddLabel("Interface schaal");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
 				ApplySettings();
             },false,"Interface schaal");
 
 			//Graphic options
-			PropertiesPanel.Instance.AddTitle("Grafisch");
-            PropertiesPanel.Instance.AddLabel("Algemene instelling:");
+			ServiceLocator.GetService<PropertiesPanel>().AddTitle("Grafisch");
+            ServiceLocator.GetService<PropertiesPanel>().AddLabel("Algemene instelling:");
 			//Fill our dropdown using the templates and their titles
 			List<string> profileNames = new List<string>();
 			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
 				profileNames.Add(profile.profileName);
 
-			PropertiesPanel.Instance.AddActionDropdown(profileNames.ToArray(), (action)=>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionDropdown(profileNames.ToArray(), (action)=>
             {
 				print("Selected template " + action);
 				selectedTemplate = profileNames.IndexOf(action);
@@ -110,60 +110,60 @@ namespace Netherlands3D.Settings {
 				OpenSettingsPanel(); //Simply force a reload of the settings panel to apply all new overrides
             }, profileNames[selectedTemplate]);
 
-			PropertiesPanel.Instance.AddSpacer(20);
-			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
 			});
-			PropertiesPanel.Instance.AddLabel("Render resolutie:");
-			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddLabel("Render resolutie:");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
 			},false, "Render resolutie");
-			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
-			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddLabel("Schaduw detail:");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
 			}, true, "Schaduw detail");
 
-			PropertiesPanel.Instance.AddSpacer(20);
-			PropertiesPanel.Instance.AddTitle("Extra");
-			PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
+			ServiceLocator.GetService<PropertiesPanel>().AddTitle("Extra");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
 				settings.postProcessingEffects = toggle;
 				ApplySettings();
             });
-			PropertiesPanel.Instance.AddActionCheckbox("Ambient Occlusion", settings.ambientOcclusion, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Ambient Occlusion", settings.ambientOcclusion, (toggle) => {
 				settings.ambientOcclusion = toggle;
 				ApplySettings();
 			});
 
-			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
             });
 
-			PropertiesPanel.Instance.AddTitle("Invoer");
-			PropertiesPanel.Instance.AddLabel("Gevoeligheid camera draaien:");
-			PropertiesPanel.Instance.AddActionSlider("Langzaam", "Snel", 0.1f, 2.0f, settings.rotateSensitivity, (value) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddTitle("Invoer");
+			ServiceLocator.GetService<PropertiesPanel>().AddLabel("Gevoeligheid camera draaien:");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionSlider("Langzaam", "Snel", 0.1f, 2.0f, settings.rotateSensitivity, (value) => {
 				settings.rotateSensitivity = value;
 				ApplySettings();
 			}, false, "Gevoeligheid camera draaien");
 
-			PropertiesPanel.Instance.AddSeperatorLine();
-			PropertiesPanel.Instance.AddSpacer(20);
+			ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
+			ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
 
-			PropertiesPanel.Instance.AddActionButtonText("Herstel alle kleuren", (action) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionButtonText("Herstel alle kleuren", (action) => {
 				interfaceLayers.ResetAllLayerMaterialColors();
 			});
-			PropertiesPanel.Instance.AddActionButtonText("Herstel alle instellingen", (action) => {
+			ServiceLocator.GetService<PropertiesPanel>().AddActionButtonText("Herstel alle instellingen", (action) => {
 				selectedTemplate = 0;
 				settings = Instantiate(settingsProfilesTemplates[selectedTemplate]);
 				ApplySettings();
 				OpenSettingsPanel(); //Just regenerate this panel with new values.
             });
 
-			PropertiesPanel.Instance.AddSeperatorLine();
-			PropertiesPanel.Instance.AddCustomPrefab(stats);
+			ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
+			ServiceLocator.GetService<PropertiesPanel>().AddCustomPrefab(stats);
         }
 
         public void ApplySettings()

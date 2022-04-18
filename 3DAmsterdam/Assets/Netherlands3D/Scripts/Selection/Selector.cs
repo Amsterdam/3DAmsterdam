@@ -18,12 +18,10 @@ namespace Netherlands3D.Interface
 	/// Here we also maintain the lists of multiselected objects, and set the right context menu.
 	/// This is also the place from where we determine what camera movement actions are allowed. They may be overruled by other interactions.
 	/// </summary>
-	public class Selector : MonoBehaviour
+	public class Selector : MonoBehaviour, IUniqueService
 	{
 		[SerializeField]
 		private OutlineObject outline;
-
-		public static Selector Instance = null;
 
 		public List<OutlineObject> selectedObjects;
 
@@ -67,14 +65,6 @@ namespace Netherlands3D.Interface
 
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
-
-		private void Awake()
-		{
-			if (Instance == null)
-			{
-				Instance = this;
-			}
-		}
 
 		void Start()
 		{

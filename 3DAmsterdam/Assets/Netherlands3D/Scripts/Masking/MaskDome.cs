@@ -41,7 +41,7 @@ namespace Netherlands3D.Masking
 
         private void MoveWithPointer()
         {
-            if (Selector.Instance.HoveringInterface())
+            if (ServiceLocator.GetService<Selector>().HoveringInterface())
             {
                 transform.transform.localScale = Vector3.zero;
                 return;

@@ -40,25 +40,25 @@ namespace Netherlands3D.ModelParsing
 
         private void RequestConfirmationInSidePanel(MeshRenderer renderer, string[] matchedMaterialNames)
         {
-            PropertiesPanel.Instance.OpenObjectInformation("", true,10);
-            PropertiesPanel.Instance.AddTitle("Materialen gevonden");
-            PropertiesPanel.Instance.AddTextfield("Er zijn <b>" + matchedMaterialNames.Length + " materialen*</b> gevonden die overeenkomen met die uit de bibliotheek. Wil je deze overnemen?");
-            PropertiesPanel.Instance.AddActionButtonBig("Ja, neem over", (action) =>
+            ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true,10);
+            ServiceLocator.GetService<PropertiesPanel>().AddTitle("Materialen gevonden");
+            ServiceLocator.GetService<PropertiesPanel>().AddTextfield("Er zijn <b>" + matchedMaterialNames.Length + " materialen*</b> gevonden die overeenkomen met die uit de bibliotheek. Wil je deze overnemen?");
+            ServiceLocator.GetService<PropertiesPanel>().AddActionButtonBig("Ja, neem over", (action) =>
             {
                 ApplyMaterialOverrides(renderer);
-                PropertiesPanel.Instance.ClearGeneratedFields();
-                PropertiesPanel.Instance.OpenCustomObjects();
+                ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
+                ServiceLocator.GetService<PropertiesPanel>().OpenCustomObjects();
             });
-            PropertiesPanel.Instance.AddActionButtonBig("Nee", (action) =>
+            ServiceLocator.GetService<PropertiesPanel>().AddActionButtonBig("Nee", (action) =>
             {
-                PropertiesPanel.Instance.ClearGeneratedFields();
-                PropertiesPanel.Instance.OpenCustomObjects(renderer.GetComponent<Transformable>());
+                ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
+                ServiceLocator.GetService<PropertiesPanel>().OpenCustomObjects(renderer.GetComponent<Transformable>());
             });
 
-            PropertiesPanel.Instance.AddLabel("<i>*Het gaat om de volgende materialen:</i>");
+            ServiceLocator.GetService<PropertiesPanel>().AddLabel("<i>*Het gaat om de volgende materialen:</i>");
             foreach(var materialName in matchedMaterialNames)
             {
-                PropertiesPanel.Instance.AddTextfield($"<i>- {materialName}</i>");
+                ServiceLocator.GetService<PropertiesPanel>().AddTextfield($"<i>- {materialName}</i>");
             }
             
         }

@@ -35,7 +35,7 @@ public class SelectStartLocationState : State
     {
         CalculateAndApplyPlaceLocation();
 
-        if (!Selector.Instance.HoveringInterface() && Input.GetMouseButtonDown(0))
+        if (!ServiceLocator.GetService<Selector>().HoveringInterface() && Input.GetMouseButtonDown(0))
         {
             StepEndedByUser();
         }

@@ -28,14 +28,14 @@ namespace Netherlands3D.Traffic.VISSIM
         public void OpenInterface(List<int> missingVehiclesTypes)
         {
             // Opens the side panel
-            PropertiesPanel.Instance.OpenPanel("Vissim instellingen");
-            PropertiesPanel.Instance.AddTitle("Onbekende voertuigklasse koppelen");
-            PropertiesPanel.Instance.AddLink("Meer info", "https://3d.amsterdam.nl/web/wat%20is%20nieuw/documentatie/VISSIM_3DAmsterdam.pdf");
-            PropertiesPanel.Instance.AddDataField("Aantal voertuigen", fileConverter.vehicleTypes.Count.ToString());
-            PropertiesPanel.Instance.AddDataField("Aantal onbekend", fileConverter.missingVissimTypes.Count.ToString());
-            PropertiesPanel.Instance.AddCustomPrefab(vissimTypesPrefab);
-            PropertiesPanel.Instance.AddCustomPrefab(vissimChooseTypesButton);
-            PropertiesPanel.Instance.AddCustomPrefab(vissimStartVissim);
+            ServiceLocator.GetService<PropertiesPanel>().OpenPanel("Vissim instellingen");
+            ServiceLocator.GetService<PropertiesPanel>().AddTitle("Onbekende voertuigklasse koppelen");
+            ServiceLocator.GetService<PropertiesPanel>().AddLink("Meer info", "https://3d.amsterdam.nl/web/wat%20is%20nieuw/documentatie/VISSIM_3DAmsterdam.pdf");
+            ServiceLocator.GetService<PropertiesPanel>().AddDataField("Aantal voertuigen", fileConverter.vehicleTypes.Count.ToString());
+            ServiceLocator.GetService<PropertiesPanel>().AddDataField("Aantal onbekend", fileConverter.missingVissimTypes.Count.ToString());
+            ServiceLocator.GetService<PropertiesPanel>().AddCustomPrefab(vissimTypesPrefab);
+            ServiceLocator.GetService<PropertiesPanel>().AddCustomPrefab(vissimChooseTypesButton);
+            ServiceLocator.GetService<PropertiesPanel>().AddCustomPrefab(vissimStartVissim);
 
             Transform tempInterface = FindObjectOfType<ToggleGroup>().transform;
 
@@ -69,8 +69,8 @@ namespace Netherlands3D.Traffic.VISSIM
             }
             fileConverter.missingVissimTypes.Clear();
             // close panel
-            PropertiesPanel.Instance.ClearGeneratedFields();
-            PropertiesPanel.Instance.ClosePanel();
+            ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
+            ServiceLocator.GetService<PropertiesPanel>().ClosePanel();
             fileConverter.StartVissim();
         }
     }

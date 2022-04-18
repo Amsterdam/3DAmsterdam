@@ -29,7 +29,7 @@ namespace Netherlands3D.BAG
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(requestFailureMessage);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace Netherlands3D.BAG
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(requestFailureMessage);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Netherlands3D.BAG
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(requestFailureMessage);
             }
             else
             {
@@ -103,7 +103,7 @@ namespace Netherlands3D.BAG
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(requestFailureMessage);
             }
             else
             {

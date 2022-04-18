@@ -119,7 +119,7 @@ namespace Netherlands3D.Sharing
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.result == UnityWebRequest.Result.ConnectionError || getSceneRequest.result == UnityWebRequest.Result.ProtocolError|| !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
-                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
@@ -288,7 +288,7 @@ namespace Netherlands3D.Sharing
             }
             else
             {
-                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
             }
 
             yield return null;

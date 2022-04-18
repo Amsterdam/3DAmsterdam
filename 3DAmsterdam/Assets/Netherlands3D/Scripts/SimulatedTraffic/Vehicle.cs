@@ -46,7 +46,7 @@ namespace Netherlands3D.Traffic
             {
                 ApplyCarSettings(gameObject);
             }
-            speed = TrafficSimulator.Instance.vehicleSpeed;
+            speed = ServiceLocator.GetService<TrafficSimulator>().vehicleSpeed;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Netherlands3D.Traffic
         /// <param name="car"></param>
         private void ApplyCarSettings(GameObject car)
         {
-            int colorPercentage = UnityEngine.Random.Range(0, TrafficSimulator.Instance.totalColorWeight);
+            int colorPercentage = UnityEngine.Random.Range(0, ServiceLocator.GetService<TrafficSimulator>().totalColorWeight);
             car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
         }
 
@@ -67,7 +67,7 @@ namespace Netherlands3D.Traffic
         private Color32 GenerateColor(float colorPercentage)
         {
             Color32 defaultColor = Color.gray;
-            foreach (KeyValuePair<Color32,int> carColor in TrafficSimulator.Instance.carColors)
+            foreach (KeyValuePair<Color32,int> carColor in ServiceLocator.GetService<TrafficSimulator>().carColors)
             {
                 if(colorPercentage < carColor.Value)
                 {
@@ -84,28 +84,28 @@ namespace Netherlands3D.Traffic
         // Update is called once per frame
         void Update()
         {
-            if (TrafficSimulator.Instance.enableVehicleSimulation && speed != TrafficSimulator.Instance.vehicleSpeed)
+            if (ServiceLocator.GetService<TrafficSimulator>().enableVehicleSimulation && speed != ServiceLocator.GetService<TrafficSimulator>().vehicleSpeed)
             {
-                speed = TrafficSimulator.Instance.vehicleSpeed;
+                speed = ServiceLocator.GetService<TrafficSimulator>().vehicleSpeed;
             }
             updateCarFrames++;
             float distanceToCar = Vector3.Distance(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position, transform.position);
-            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance)
+            if (distanceToCar < ServiceLocator.GetService<TrafficSimulator>().minimumVehicleRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
-            else if (distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0)
+            else if (distanceToCar < ServiceLocator.GetService<TrafficSimulator>().mediumVehicleRenderDistance && distanceToCar > ServiceLocator.GetService<TrafficSimulator>().minimumVehicleRenderDistance && updateCarFrames % 5 == 0)
                 vehicleFrameSpeedCompensator = 5f;
-            else if (distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
+            else if (distanceToCar > ServiceLocator.GetService<TrafficSimulator>().mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
                 vehicleFrameSpeedCompensator = 10f;
 
-            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance ||
-                 distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0 ||
-                distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
+            if (distanceToCar < ServiceLocator.GetService<TrafficSimulator>().minimumVehicleRenderDistance ||
+                 distanceToCar < ServiceLocator.GetService<TrafficSimulator>().mediumVehicleRenderDistance && distanceToCar > ServiceLocator.GetService<TrafficSimulator>().minimumVehicleRenderDistance && updateCarFrames % 5 == 0 ||
+                distanceToCar > ServiceLocator.GetService<TrafficSimulator>().mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
             {
-                if (!gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
+                if (!gameObject.activeSelf && ServiceLocator.GetService<TrafficSimulator>().enableBoundsSimulation == false)
                 {
                     gameObject.SetActive(true);
                 }
-                if (TrafficSimulator.Instance.enableVehicleSimulation)
+                if (ServiceLocator.GetService<TrafficSimulator>().enableVehicleSimulation)
                 {
                     if (currentRoad != null)
                     {

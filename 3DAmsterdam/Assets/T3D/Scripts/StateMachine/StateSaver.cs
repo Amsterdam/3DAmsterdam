@@ -10,20 +10,17 @@ public class StateSaverSaveDataContainer : SaveDataContainer
     public int ActiveStateIndex;
 }
 
-public class StateSaver : MonoBehaviour
+public class StateSaver : MonoBehaviour, IUniqueService
 {
     public State[] states;
     public int ActiveStateIndex => saveData.ActiveStateIndex;
     private StateSaverSaveDataContainer saveData;
 
-    public static StateSaver Instance;
 
     private void Awake()
     {
         saveData = new StateSaverSaveDataContainer();
         states = GetComponentsInChildren<State>(true);
-
-        Instance = this;
     }
 
     private void OnEnable()

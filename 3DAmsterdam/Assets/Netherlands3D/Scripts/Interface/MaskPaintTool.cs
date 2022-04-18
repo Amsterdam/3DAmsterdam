@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface
         {
             previousBounds = bounds;
             runtimeRectangularMask.MoveToBounds(bounds);
-            PropertiesPanel.Instance.OpenLayers();
+            ServiceLocator.GetService<PropertiesPanel>().OpenLayers();
 
             maskLayer.ToggleLinkedObject(true);
             maskLayer.ExpandLayerOptions(true);

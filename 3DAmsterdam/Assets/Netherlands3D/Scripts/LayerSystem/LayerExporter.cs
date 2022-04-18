@@ -36,27 +36,27 @@ namespace Netherlands3D.Interface
 		private void DisplayUI()
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true, 10);
+			ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("Download selectiegebied", true, 10);
 
 			RenderToThumbnail();
 
-			PropertiesPanel.Instance.AddTitle("Lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddTitle("Lagen");
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[0] = action;
 				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[1] = action;
 				PlayerPrefs.SetInt("exportLayer1Toggle", Convert.ToInt32(exportLayerToggles[1]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[2] = action;
 				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Rioolnetwerk", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Rioolnetwerk", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[3] = action;
 				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
@@ -64,16 +64,16 @@ namespace Netherlands3D.Interface
 
 			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
 			selectedExportFormat = PlayerPrefs.GetString("exportFormat", exportFormats[0]);
-			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionDropdown(exportFormats, (action) =>
 			{
 				selectedExportFormat = action;
 				PlayerPrefs.SetString("exportFormat", action);
 
 			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
 
-			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
+			ServiceLocator.GetService<PropertiesPanel>().AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
 
-			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
+			ServiceLocator.GetService<PropertiesPanel>().AddActionButtonBig("Downloaden", (action) =>
 			{
 				List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
 				for (int i = 0; i < selectableLayers.Count; i++)
@@ -85,7 +85,7 @@ namespace Netherlands3D.Interface
 				}
 				print(selectedExportFormat);
 
-				var amountOfCellsInBounds = (exportBounds.size.x / VisualGrid.Instance.CellSize) * (exportBounds.size.z / VisualGrid.Instance.CellSize);
+				var amountOfCellsInBounds = (exportBounds.size.x / ServiceLocator.GetService<VisualGrid>().CellSize) * (exportBounds.size.z / ServiceLocator.GetService<VisualGrid>().CellSize);
 				Analytics.SendEvent("LayersExport",
 					new Dictionary<string, object>
 					{
@@ -107,7 +107,7 @@ namespace Netherlands3D.Interface
 						GetComponent<ColladaCreation>().CreateCollada(exportBounds, selectedLayers);
 						break;
 					default:
-						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
+						ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
 						break;
 				}
 			});
@@ -116,7 +116,7 @@ namespace Netherlands3D.Interface
 		private void RenderToThumbnail()
 		{
 			//Lets render a ortographic thumbnail for a proper grid topdown view
-				PropertiesPanel.Instance.RenderThumbnailContaining(
+				ServiceLocator.GetService<PropertiesPanel>().RenderThumbnailContaining(
 				exportBounds,
 				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC,
 				exportBounds.center + Vector3.up * 150.0f

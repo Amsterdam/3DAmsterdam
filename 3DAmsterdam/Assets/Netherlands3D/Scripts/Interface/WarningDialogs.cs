@@ -5,17 +5,10 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
-    public class WarningDialogs : MonoBehaviour
+    public class WarningDialogs : MonoBehaviour, IUniqueService
     {
-        public static WarningDialogs Instance;
-
         [SerializeField]
         private Warning warningPrefab;
-
-        private void Awake()
-        {
-            Instance = this;
-        }
 
         /// <summary>
         /// Spawns a new warning prefab with a message. Leave blank for default server warning.

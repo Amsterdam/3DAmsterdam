@@ -38,7 +38,7 @@ namespace Netherlands3D.Interface
 			if (waitingForClick)
 			{
 				ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
-				PropertiesPanel.Instance.OpenCustomObjects();
+				ServiceLocator.GetService<PropertiesPanel>().OpenCustomObjects();
 			}
 		}
 

@@ -62,14 +62,14 @@ public class MeasuringLine : Interactable
 		ResetLine(); //Start hidden, wait for clicks
 		TakeInteractionPriority();
 
-		Selector.Instance.registeredClickInput.AddListener(PlacePoint);
+		ServiceLocator.GetService<Selector>().registeredClickInput.AddListener(PlacePoint);
 	}
 
 	protected override void OnDisable()
 	{
 		base.OnDisable();
 		ResetLine();
-		Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
+		ServiceLocator.GetService<Selector>().registeredClickInput.RemoveListener(PlacePoint);
 	}
 
 	public override void Escape()

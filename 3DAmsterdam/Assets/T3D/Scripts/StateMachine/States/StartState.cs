@@ -39,7 +39,8 @@ public class StartState : State
 
     private void GoToNextState()
     {
-        if (StateSaver.Instance.ActiveStateIndex != StateSaver.Instance.GetStateIndex(this))
+        var stateSaver = ServiceLocator.GetService<StateSaver>();
+        if (stateSaver.ActiveStateIndex != stateSaver.GetStateIndex(this))
             base.LoadSavedState(); //continue loading states the data once the data is loaded
         else
             StepEndedByUser(); //use By User function to ensure state Index in incremented;

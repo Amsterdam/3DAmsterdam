@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Netherlands3D.Interface
 {
-    public class TooltipDialog : MonoBehaviour
+    public class TooltipDialog : MonoBehaviour, IUniqueService
     {
         private Animator animator;
         private Text tooltiptext;
@@ -17,26 +17,8 @@ namespace Netherlands3D.Interface
 
         private bool pivotRight = false;
 
-        #region Singleton
-        private static TooltipDialog instance;
-        public static TooltipDialog Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    throw new System.Exception("No tooltip object instance found. Make it is active in your scene.");
-                }
-
-                return instance;
-            }
-        }
-        #endregion
-
         private void Awake()
         {
-            instance = this;
-
             contentSizeFitter = GetComponent<ContentSizeFitter>();
             tooltiptext = GetComponentInChildren<Text>();
             rectTransform = GetComponent<RectTransform>();

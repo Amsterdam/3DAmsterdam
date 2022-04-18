@@ -37,7 +37,7 @@ namespace Netherlands3D.ObjectInteraction
         public virtual void TakeInteractionPriority()
         {
             if (ActionMap != null) ActionMap.Enable();
-            Selector.Instance.SetActiveInteractable(this);
+            ServiceLocator.GetService<Selector>().SetActiveInteractable(this);
         }
         /// <summary>
         /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
@@ -47,7 +47,7 @@ namespace Netherlands3D.ObjectInteraction
             if (ActionMap != null) ActionMap.Disable();
 
             if(HasInteractionPriority())
-                Selector.Instance.SetActiveInteractable(null);
+                ServiceLocator.GetService<Selector>().SetActiveInteractable(null);
         }
 
         /// <summary>
@@ -73,15 +73,15 @@ namespace Netherlands3D.ObjectInteraction
 		/// <returns></returns>
 		public virtual bool IsHovered()
         {
-            return Selector.Instance.GetHoveringInteractable() == this;
+            return ServiceLocator.GetService<Selector>().GetHoveringInteractable() == this;
         }
 
         public virtual bool HasInteractionPriority()
         {
             //Always have priority if none is set
-            if (!Selector.Instance.GetActiveInteractable()) return true;
+            if (!ServiceLocator.GetService<Selector>().GetActiveInteractable()) return true;
 
-            return Selector.Instance.GetActiveInteractable() == this;
+            return ServiceLocator.GetService<Selector>().GetActiveInteractable() == this;
         }
     }
 }
