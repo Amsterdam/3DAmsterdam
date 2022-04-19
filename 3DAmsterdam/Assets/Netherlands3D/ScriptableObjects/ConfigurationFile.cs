@@ -62,11 +62,11 @@ namespace Netherlands3D
                 if( string.IsNullOrEmpty(_T3DSandboxEnvironment))
                 {
                     var url = Application.absoluteURL;
-                    var defaultURL = "https://t3d-o-cdn.azureedge.net/"; //testurl
+                    _T3DSandboxEnvironment = "https://t3dstorage.z6.web.core.windows.net/"; //default
 
-                    if (string.IsNullOrEmpty(url)) return defaultURL;
-                    if (url.StartsWith("http://localhost")) return defaultURL;
-                    if (url.StartsWith("https://t3dstorage.")) return defaultURL;
+                    if (string.IsNullOrEmpty(url)) return _T3DSandboxEnvironment;
+                    if (url.StartsWith("http://localhost")) return _T3DSandboxEnvironment;
+                    if (url.StartsWith("https://t3dstorage.")) return _T3DSandboxEnvironment;
 
                     MatchCollection matches = regex_url.Matches(url);
                     if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
@@ -87,11 +87,11 @@ namespace Netherlands3D
                 if (string.IsNullOrEmpty(_T3DAzureFunctionURL))
                 {
                     var url = Application.absoluteURL;
-                    var defaultURL = "https://t3d-o-functions.azurewebsites.net/"; //testurl
+                    _T3DAzureFunctionURL = "https://t3dbackend.azurewebsites.net/"; //default
 
-                    if (string.IsNullOrEmpty(url)) return defaultURL;
-                    if (url.StartsWith("http://localhost")) return defaultURL;
-                    if (url.StartsWith("https://t3dstorage.")) return defaultURL;
+                    if (string.IsNullOrEmpty(url)) return _T3DAzureFunctionURL;
+                    if (url.StartsWith("http://localhost")) return _T3DAzureFunctionURL;
+                    if (url.StartsWith("https://t3dstorage.")) return _T3DAzureFunctionURL;
 
                     MatchCollection matches = regex_url.Matches(url);
                     if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
