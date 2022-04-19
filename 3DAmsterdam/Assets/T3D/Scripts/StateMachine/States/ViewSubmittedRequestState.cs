@@ -15,9 +15,6 @@ public class ViewSubmittedRequestState : State
     private RectTransform labelPanel;
 
     [SerializeField]
-    private Text titleText;
-
-    [SerializeField]
     private ScrollRect scrollRect;
     private float defaultScrollElasticity;
 
@@ -34,7 +31,6 @@ public class ViewSubmittedRequestState : State
 
     public override void StateEnteredAction()
     {
-        titleText.text = "Gemeenteblad";
         DisplayMetadata();
         DisplayBoundaryFeatures();
 
