@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -6,22 +6,15 @@ using UnityEngine.Networking;
 using System;
 using Netherlands3D;
 
-public class JSONSessionLoader : MonoBehaviour//, IDataLoader
+public class JSONSessionLoader : MonoBehaviour, IUniqueService//, IDataLoader
 {
     private JSONNode rootObject;// = new JSONObject();
     const string downloadURL = "api/download/";
     const string feedbackURL = "api/getuserfeedback/";
     private bool hasLoaded = false;
 
-    public static JSONSessionLoader Instance;
-
     public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
     public bool HasLoaded => hasLoaded;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public void ReadSaveData(string sessionId)
     {
@@ -55,7 +48,7 @@ public class JSONSessionLoader : MonoBehaviour//, IDataLoader
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
         string url = Config.activeConfiguration.T3DAzureFunctionURL;
-        url += T3DInit.HTMLData.IsUserFeedback ? feedbackURL : downloadURL;
+        url += ServiceLocator.GetService<T3DInit>().HTMLData.IsUserFeedback ? feedbackURL : downloadURL;
         var uwr = UnityWebRequest.Get(url + name);
         print(url + name);
 
@@ -93,7 +86,7 @@ public class JSONSessionLoader : MonoBehaviour//, IDataLoader
 
         if (hasLoaded)
         {
-            JsonSessionSaver.Instance.EnableAutoSave(true); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
+            ServiceLocator.GetService<JsonSessionSaver>().EnableAutoSave(true); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
         }
     }
 }

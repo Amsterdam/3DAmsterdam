@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,13 +38,13 @@ public class ViewSubmittedRequestState : State
         DisplayMetadata();
         DisplayBoundaryFeatures();
 
-        JsonSessionSaver.Instance.EnableAutoSave(false);
+        ServiceLocator.GetService<JsonSessionSaver>().EnableAutoSave(false);
     }
 
     private void DisplayMetadata()
     {
-        dateText.text = string.Format(defaultDateText, T3DInit.HTMLData.Date);
-        projectIDText.text = string.Format(defaultProjectIDText, T3DInit.HTMLData.SessionId.Substring(0, 8));
+        dateText.text = string.Format(defaultDateText, ServiceLocator.GetService<T3DInit>().HTMLData.Date);
+        projectIDText.text = string.Format(defaultProjectIDText, ServiceLocator.GetService<T3DInit>().HTMLData.SessionId.Substring(0, 8));
     }
 
     protected override void LoadSavedState()
@@ -77,7 +77,7 @@ public class ViewSubmittedRequestState : State
         if (Input.GetKeyDown(KeyCode.Q))
         {
             print("setting submitted to false");
-            T3DInit.HTMLData.HasSubmitted = false;
+            ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted = false;
         }
 #endif
     }

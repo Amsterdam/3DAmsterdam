@@ -11,6 +11,6 @@ public class PlaneLensFlare : MonoBehaviour
     void LateUpdate()
     {
         this.transform.rotation = sun.rotation;
-        this.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        this.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
     }
 }

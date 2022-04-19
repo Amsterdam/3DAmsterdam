@@ -1,4 +1,4 @@
-using ConvertCoordinates;
+﻿using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.Cameras;
 using Netherlands3D.Settings;
@@ -30,21 +30,18 @@ public class HTMLInitSaveData : SaveDataContainer
     public bool SnapToWall;
 }
 
-public class T3DInit : MonoBehaviour
+public class T3DInit : MonoBehaviour, IUniqueService
 {
     public bool IsEditMode { get; private set; } = true;
 
-    public static T3DInit Instance;
-
     public TileVisualizer TileVisualizer;
 
-    public static HTMLInitSaveData HTMLData = null;
+    public HTMLInitSaveData HTMLData = null;
 
     public Netherlands3D.Rendering.RenderSettings RenderSettings;
 
     private void Awake()
     {
-        Instance = this;
         HTMLData = new HTMLInitSaveData();
     }
 
@@ -56,8 +53,8 @@ public class T3DInit : MonoBehaviour
     void GotoPosition(Vector3RD position)
     {
         Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
-        CameraModeChanger.Instance.ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
-        CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);
+        ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
+        ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);
     }
 
     public void LoadBuilding()
@@ -76,7 +73,7 @@ public class T3DInit : MonoBehaviour
         GotoPosition(HTMLData.RDPosition);
         StartCoroutine(TileVisualizer.LoadTile(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));
 
-        MetadataLoader.Instance.RequestBuildingData(HTMLData.RDPosition, HTMLData.BagId);
+        ServiceLocator.GetService<MetadataLoader>().RequestBuildingData(HTMLData.RDPosition, HTMLData.BagId);
     }
 
     private void ToggleQuality(bool ishigh)

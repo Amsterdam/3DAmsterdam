@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
-	public class ContextPointerMenu : MonoBehaviour
+	public class ContextPointerMenu : MonoBehaviour, IUniqueService
 	{
 		[SerializeField]
 		private RectTransform contextItemsPanel = default;
@@ -21,8 +21,6 @@ namespace Netherlands3D.Interface
 		private Button transformSubmenuItem;
 		[SerializeField]
 		private RectTransform transformSubMenu = default;
-
-		public static ContextPointerMenu Instance = null;
 
 		public ContextState state = ContextState.DEFAULT;
 
@@ -53,11 +51,6 @@ namespace Netherlands3D.Interface
 
 		private void Start()
 		{
-			if (Instance == null)
-			{
-				Instance = this;
-			}
-
 			//Add a listener to every containing button that closes our context menu on click
 			allButtons = GetComponentsInChildren<Button>();
 			foreach (Button button in allButtons)

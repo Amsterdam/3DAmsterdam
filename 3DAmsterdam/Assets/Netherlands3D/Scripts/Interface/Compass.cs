@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
         
         void Update()
         {
-            direction.z = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles.y;
+            direction.z = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.eulerAngles.y;
             if (counterRotate)
                 direction.z *= -1.0f;
 
@@ -24,9 +24,9 @@ namespace Netherlands3D.Interface
         public void ResetCameraToNorth()
         {
             print("Reset camera to north");
-            var resetEuler = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles;
+            var resetEuler = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.eulerAngles;
             resetEuler.y = 0;
-            CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles = resetEuler;
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.eulerAngles = resetEuler;
         }
     }
 }

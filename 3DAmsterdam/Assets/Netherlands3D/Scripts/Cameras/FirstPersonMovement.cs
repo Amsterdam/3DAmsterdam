@@ -37,7 +37,7 @@ namespace Netherlands3D.Cameras
         void Start()
         {
             referenceCollider = GetComponent<BoxCollider>();
-            moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move);
+            moveAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.StreetView.Move);
             ActionHandler.actions.StreetView.Enable();
         }
 

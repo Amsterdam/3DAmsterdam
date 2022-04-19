@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Help
 {
-    public class HelpMessage : MonoBehaviour
+    public class HelpMessage : MonoBehaviour, IUniqueService
     {
-        public static HelpMessage Instance;
         [SerializeField]
         private Text textMessageField;
 
@@ -24,7 +23,6 @@ namespace Netherlands3D.Help
 
         void Awake()
         {
-            Instance = this;
             gameObject.SetActive(false);
         }
 
@@ -32,7 +30,7 @@ namespace Netherlands3D.Help
         {
             allowHideViaInteraction = false;
 
-            Instance.textMessageField.text = textMessage;
+            textMessageField.text = textMessage;
 
             gameObject.SetActive(true);
 

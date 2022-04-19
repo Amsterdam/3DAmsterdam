@@ -153,7 +153,7 @@ namespace Netherlands3D.Interface.Sharing
 			switch (newState)
 			{
 				case SharingState.SERVER_PROBLEM:
-					WarningDialogs.Instance.ShowNewDialog();
+					ServiceLocator.GetService<WarningDialogs>().ShowNewDialog();
 					gameObject.SetActive(false);
 					break;
 				case SharingState.SHARING_OPTIONS:

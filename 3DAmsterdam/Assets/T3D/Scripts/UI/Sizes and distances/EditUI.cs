@@ -1,4 +1,4 @@
-using Netherlands3D.Interface;
+﻿using Netherlands3D.Interface;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +46,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         void LateUpdate()
         {
-            var labels = CoordinateNumbers.Instance.GetComponentsInChildren<NumberInputField>();
+            var labels = ServiceLocator.GetService<CoordinateNumbers>().GetComponentsInChildren<NumberInputField>();
             foreach (var label in labels)
             {
                 var otherRect = label.GetComponent<RectTransform>();

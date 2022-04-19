@@ -1,4 +1,4 @@
-using ConvertCoordinates;
+﻿using ConvertCoordinates;
 using Netherlands3D.Interface.SidePanel;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelMeshGameObject = CreatePerceelGameObject();
             perceelOutlineGameObject = CreatePerceelGameObject();
 
-            MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
+            ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
         }
 

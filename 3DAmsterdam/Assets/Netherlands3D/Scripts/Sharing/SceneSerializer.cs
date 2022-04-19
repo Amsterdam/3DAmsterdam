@@ -119,7 +119,7 @@ namespace Netherlands3D.Sharing
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.result == UnityWebRequest.Result.ConnectionError || getSceneRequest.result == UnityWebRequest.Result.ProtocolError|| !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
-                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
@@ -139,8 +139,8 @@ namespace Netherlands3D.Sharing
         {
             HideObjectsInViewMode(scene.allowSceneEdit);
 
-            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
-            CameraModeChanger.Instance.ActiveCamera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
             //Apply sunlight settings
             sunSettings.SetDateTimeFromString(scene.sunTimeStamp);
@@ -288,7 +288,7 @@ namespace Netherlands3D.Sharing
             }
             else
             {
-                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
             }
 
             yield return null;
@@ -380,8 +380,8 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         public SerializableScene SerializeScene(bool allowSceneEditAfterSharing = false)
         {
-            var cameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            var cameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+            var cameraPosition = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
+            var cameraRotation = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation;
 
             var dataStructure = new SerializableScene
             {

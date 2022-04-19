@@ -22,7 +22,7 @@ namespace Netherlands3D.Interface
 
         public void WaitForMaskBounds()
         {
-            HelpMessage.Instance.Show(helpMessage);
+            ServiceLocator.GetService<HelpMessage>().Show(helpMessage);
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
             runtimeRectangularMask.gameObject.SetActive(true);
             runtimeRectangularMask.Clear();
@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface
         {
             previousBounds = bounds;
             runtimeRectangularMask.MoveToBounds(bounds);
-            PropertiesPanel.Instance.OpenLayers();
+            ServiceLocator.GetService<PropertiesPanel>().OpenLayers();
 
             maskLayer.ToggleLinkedObject(true);
             maskLayer.ExpandLayerOptions(true);

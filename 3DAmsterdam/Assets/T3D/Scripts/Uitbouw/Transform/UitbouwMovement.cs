@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            AllowDrag = AllowDrag && T3DInit.Instance.IsEditMode;
+            AllowDrag = AllowDrag && ServiceLocator.GetService<T3DInit>().IsEditMode;
 
             SetAllowMovement(AllowDrag);
             //SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
@@ -50,7 +50,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessMovementLimits()
         {
-            if (T3DInit.HTMLData.SnapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
+            if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
             {
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
                 LimitPositionOnWall();
@@ -67,7 +67,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             foreach (var axis in uitbouw.UserMovementAxes) //drag input
             {
-                if (T3DInit.HTMLData.SnapToWall)
+                if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
                     transform.position += axis.LateralDeltaPosition;
                 else
                     transform.position += axis.PlanarDeltaPosition;
@@ -147,9 +147,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public virtual void SetAllowMovement(bool allowed)
         {
-            AllowDrag = allowed && T3DInit.Instance.IsEditMode;
+            AllowDrag = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
             var measuring = GetComponent<UitbouwMeasurement>();
-            measuring.DrawDistanceActive = allowed && T3DInit.HTMLData.SnapToWall;
+            measuring.DrawDistanceActive = allowed && ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
             //userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
             //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);

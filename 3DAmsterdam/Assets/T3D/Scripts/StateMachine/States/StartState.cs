@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
@@ -8,10 +8,10 @@ public class StartState : State
 {
     public override int GetDesiredStateIndex()
     {
-        if (T3DInit.HTMLData == null)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
             return 0;
 
-        return T3DInit.HTMLData.SnapToWall ? 0 : 1;
+        return ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall ? 0 : 1;
     }
 
     public override void StateEnteredAction()
@@ -39,7 +39,8 @@ public class StartState : State
 
     private void GoToNextState()
     {
-        if (StateSaver.Instance.ActiveStateIndex != StateSaver.Instance.GetStateIndex(this))
+        var stateSaver = ServiceLocator.GetService<StateSaver>();
+        if (stateSaver.ActiveStateIndex != stateSaver.GetStateIndex(this))
             base.LoadSavedState(); //continue loading states the data once the data is loaded
         else
             StepEndedByUser(); //use By User function to ensure state Index in incremented;

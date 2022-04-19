@@ -7,8 +7,6 @@ using UnityEngine.UI;
 namespace Netherlands3D.Interface.Menu {
 	public class SwitchTool : MonoBehaviour
 	{
-		public static SwitchTool Instance;
-
 		private Button[] containingButtons;
 
 		private bool expanded = false;
@@ -18,11 +16,6 @@ namespace Netherlands3D.Interface.Menu {
 
 		[SerializeField]
 		private GameObject defaultToolSelection;
-
-		private void Awake()
-		{
-			Instance = this;
-		}
 
 		void Start()
 		{

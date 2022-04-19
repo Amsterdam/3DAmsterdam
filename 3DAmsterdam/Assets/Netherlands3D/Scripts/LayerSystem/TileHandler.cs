@@ -89,15 +89,15 @@ namespace Netherlands3D.LayerSystem
 		void Start()
 		{
 			pauseLoading = false;
-			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
-            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
+			cameraExtents = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraExtends;
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent += Instance_CameraModeChangedEvent;
 
 			CacheCameraFrustum();
 		}
 
         private void Instance_CameraModeChangedEvent(object source, CameraMode newMode)
         {
-			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
+			cameraExtents = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraExtends;
 		}
 
         private void CacheCameraFrustum()
@@ -274,9 +274,9 @@ namespace Netherlands3D.LayerSystem
 		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			//Godview only frustum check
-			if (filterByCameraFrustum && CameraModeChanger.Instance.CurrentMode == CameraMode.GodView)
+			if (filterByCameraFrustum && ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.GodView)
 			{
-				GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera, cameraFrustumPlanes);
+				GeometryUtility.CalculateFrustumPlanes(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera, cameraFrustumPlanes);
 			}
 			tileDistances.Clear();
 
@@ -293,7 +293,7 @@ namespace Netherlands3D.LayerSystem
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
-						if (filterByCameraFrustum && CameraModeChanger.Instance.CurrentMode == CameraMode.GodView)
+						if (filterByCameraFrustum && ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.GodView)
 						{
 							tileBounds.SetMinMax(CoordConvert.RDtoUnity(new Vector2(x, y)), CoordConvert.RDtoUnity(new Vector2(x + tileSize, y + tileSize)));
 							if (GeometryUtility.TestPlanesAABB(cameraFrustumPlanes, tileBounds))

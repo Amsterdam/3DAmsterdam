@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
@@ -56,7 +56,7 @@ public class PermitNeededState : State
     public override int GetDesiredStateIndex()
     {
         //nullcheck is needed for OnValidate() in the base class for in the editor
-        if (T3DInit.HTMLData != null && T3DInit.HTMLData.HasSubmitted) //if this is a submitted request, go to the view state after all steps that reconstruct the request.
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted) //if this is a submitted request, go to the view state after all steps that reconstruct the request.
         {
             return 2;
         }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
@@ -24,7 +24,7 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
         if (RestrictionChecker.ActivePerceel.IsLoaded)
             SetCameraStartPosition(RestrictionChecker.ActivePerceel.Center, RestrictionChecker.ActivePerceel.Radius);
         else
-            MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+            ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded += OnPerceelDataLoaded;
     }
 
     public void SetCameraStartPosition(Vector3 perceelCenter, float perceelRadius)
@@ -94,6 +94,6 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
+        return ServiceLocator.GetService<CameraModeChanger>().AvailableActionMaps.Contains(actionMap);
     }
 }

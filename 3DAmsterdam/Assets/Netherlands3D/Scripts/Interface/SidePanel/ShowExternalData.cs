@@ -12,8 +12,8 @@ namespace Netherlands3D.Interface.SidePanel
 
         public void Load(string metaDataPath = "metadata.xml")
         {
-            PropertiesPanel.Instance.OpenObjectInformation("Laag informatie");
-            PropertiesPanel.Instance.AddLoadingSpinner();
+            ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("Laag informatie");
+            ServiceLocator.GetService<PropertiesPanel>().AddLoadingSpinner();
             StartCoroutine(GetText(metaDataPath));
         }
 
@@ -25,12 +25,12 @@ namespace Netherlands3D.Interface.SidePanel
 
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
-                PropertiesPanel.Instance.ClearGeneratedFields();
-                PropertiesPanel.Instance.AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");
+                ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
+                ServiceLocator.GetService<PropertiesPanel>().AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");
             }
             else
 			{
-				PropertiesPanel.Instance.ClearGeneratedFields();
+				ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
 				parsedJson = JsonUtility.FromJson<ExternalData>(www.downloadHandler.text);
 				DrawFields();
 			}
@@ -43,25 +43,25 @@ namespace Netherlands3D.Interface.SidePanel
 				switch (field.type)
 				{
 					case "title": 
-                        PropertiesPanel.Instance.AddTitle(field.content);
+                        ServiceLocator.GetService<PropertiesPanel>().AddTitle(field.content);
                         break;
 					case "text":
-                        PropertiesPanel.Instance.AddTextfield(field.content);
+                        ServiceLocator.GetService<PropertiesPanel>().AddTextfield(field.content);
                         break;
                     case "seperator_line":
-                        PropertiesPanel.Instance.AddSeperatorLine();
+                        ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
                         break;
                     case "label":
-                        PropertiesPanel.Instance.AddLabel(field.content);
+                        ServiceLocator.GetService<PropertiesPanel>().AddLabel(field.content);
                         break;
                     case "data_field":
-                        PropertiesPanel.Instance.AddDataField(field.key,field.content);
+                        ServiceLocator.GetService<PropertiesPanel>().AddDataField(field.key,field.content);
                         break;
                     case "link":
-                        PropertiesPanel.Instance.AddLink(field.key, field.content);
+                        ServiceLocator.GetService<PropertiesPanel>().AddLink(field.key, field.content);
                         break;
                     case "spacer":
-                        PropertiesPanel.Instance.AddSpacer(field.space);
+                        ServiceLocator.GetService<PropertiesPanel>().AddSpacer(field.space);
                         break;
 				}
 			}

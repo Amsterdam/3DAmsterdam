@@ -60,7 +60,7 @@ namespace Amsterdam3D.Sewerage
 
 		private void GetBoundingBoxCameraIsIn()
 		{
-            var cameraRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            var cameraRD = CoordConvert.UnitytoRD(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
             cameraRD.x = Mathf.Round((float)cameraRD.x);
             cameraRD.y = Mathf.Round((float)cameraRD.y);
 

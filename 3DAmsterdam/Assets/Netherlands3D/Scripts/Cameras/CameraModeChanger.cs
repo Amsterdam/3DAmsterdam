@@ -15,10 +15,8 @@ using UnityEngine.InputSystem;
 
 namespace Netherlands3D.Cameras
 {
-    public class CameraModeChanger : MonoBehaviour
+    public class CameraModeChanger : MonoBehaviour, IUniqueService
     {
-        public static CameraModeChanger Instance;
-
         public CameraMode CurrentMode { get; private set; }
         public Camera ActiveCamera { get; private set; }
         public ICameraControls CurrentCameraControls { get; private set; }
@@ -37,7 +35,6 @@ namespace Netherlands3D.Cameras
 
         private void Awake()
         {
-            Instance = this;
             AvailableActionMaps = new List<InputActionMap>()
             {
                 ActionHandler.actions.GodViewMouse,

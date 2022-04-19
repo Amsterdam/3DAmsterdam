@@ -56,7 +56,7 @@ namespace Netherlands3D.ObjectInteraction
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
 			ActionMap = ActionHandler.actions.Transformable;
-			placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
+			placeAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Transformable.Place);
 
 			meshCollider = GetComponent<Collider>();
 
@@ -72,7 +72,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void StartPlacementByClick()
 		{
-			HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
+			ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 			PlacementSettings();
 			placeActionEvent = placeAction.SubscribePerformed(Place);
@@ -88,15 +88,15 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				PlaceOnGrid(true);
 
-				PropertiesPanel.Instance.OpenObjectInformation("", true, 10);
-				PropertiesPanel.Instance.AddTitle("Plaatsingsopties");
-				PropertiesPanel.Instance.AddTextfield("De afmetingen van dit object passen binnen ons grid.\nGebruik de volgende opties om direct uit te lijnen en/of het bestaande gebied weg te maskeren.");
-				PropertiesPanel.Instance.AddSpacer(20);
-				PropertiesPanel.Instance.AddActionCheckbox("Uitlijnen op grid", true, (action) =>
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true, 10);
+				ServiceLocator.GetService<PropertiesPanel>().AddTitle("Plaatsingsopties");
+				ServiceLocator.GetService<PropertiesPanel>().AddTextfield("De afmetingen van dit object passen binnen ons grid.\nGebruik de volgende opties om direct uit te lijnen en/of het bestaande gebied weg te maskeren.");
+				ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
+				ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Uitlijnen op grid", true, (action) =>
 				{
 					PlaceOnGrid(action);
 				});
-				PropertiesPanel.Instance.AddActionCheckbox("Gebied maskeren", maskArea, (action) =>
+				ServiceLocator.GetService<PropertiesPanel>().AddActionCheckbox("Gebied maskeren", maskArea, (action) =>
 				{
 					maskArea = action;
 					if (mask && maskArea == false)
@@ -112,19 +112,19 @@ namespace Netherlands3D.ObjectInteraction
 			snapToGrid = enable;
 			if (snapToGrid)
 			{
-				VisualGrid.Instance.Show();
+				ServiceLocator.GetService<VisualGrid>().Show();
 			}
 			else
 			{
-				VisualGrid.Instance.Hide();
+				ServiceLocator.GetService<VisualGrid>().Hide();
 			}
 		}
 
 		private bool IsGridShaped(Bounds bounds)
 		{
-			if (((bounds.max.x - bounds.min.x) % VisualGrid.Instance.CellSize) + 1 < 2)
+			if (((bounds.max.x - bounds.min.x) % ServiceLocator.GetService<VisualGrid>().CellSize) + 1 < 2)
 			{
-				if (((bounds.max.z - bounds.min.z) % VisualGrid.Instance.CellSize) + 1 < 2)
+				if (((bounds.max.z - bounds.min.z) % ServiceLocator.GetService<VisualGrid>().CellSize) + 1 < 2)
 				{
 					return true;
 				}
@@ -150,7 +150,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		public void Place(IAction action)
 		{
-			if (!Selector.Instance.HoveringInterface() && stickToMouse && action.Performed)
+			if (!ServiceLocator.GetService<Selector>().HoveringInterface() && stickToMouse && action.Performed)
 			{
 				Debug.Log("Placed Transformable");
 
@@ -177,10 +177,10 @@ namespace Netherlands3D.ObjectInteraction
 				}
 
 				//If this is a custom made transformable, check for a material remap
-				PropertiesPanel.Instance.ClearGeneratedFields();
-				if (madeWithExternalTool && !MaterialLibrary.Instance.AutoRemap(gameObject))
+				ServiceLocator.GetService<PropertiesPanel>().ClearGeneratedFields();
+				if (madeWithExternalTool && !ServiceLocator.GetService<MaterialLibrary>().AutoRemap(gameObject))
 				{
-					PropertiesPanel.Instance.OpenCustomObjects();
+					ServiceLocator.GetService<PropertiesPanel>().OpenCustomObjects();
 				}
 			}
 			else
@@ -202,7 +202,7 @@ namespace Netherlands3D.ObjectInteraction
 			}
 
 			//Place a highlight on our object
-			Selector.Instance.HighlightObject(this.gameObject);
+			ServiceLocator.GetService<Selector>().HighlightObject(this.gameObject);
 		}
 		public override void SecondarySelect()
 		{
@@ -214,7 +214,7 @@ namespace Netherlands3D.ObjectInteraction
 		public override void Deselect()
 		{
 			base.Deselect();
-			PropertiesPanel.Instance.DeselectTransformable(this, true);
+			ServiceLocator.GetService<PropertiesPanel>().DeselectTransformable(this, true);
 		}
 
 		public override void Escape()
@@ -235,7 +235,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void ShowTransformProperties(int gizmoTransformType = -1)
 		{
 			lastSelectedTransformable = this;
-			PropertiesPanel.Instance.OpenCustomObjects(this, gizmoTransformType);
+			ServiceLocator.GetService<PropertiesPanel>().OpenCustomObjects(this, gizmoTransformType);
 
 		}
 
@@ -245,7 +245,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void RenderTransformableThumbnail()
 		{
 			int objectOriginalLayer = this.gameObject.layer;
-			this.gameObject.layer = PropertiesPanel.Instance.ThumbnailExclusiveLayer;
+			this.gameObject.layer = ServiceLocator.GetService<PropertiesPanel>().ThumbnailExclusiveLayer;
 
 			//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
 			Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
@@ -253,13 +253,13 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				bounds.Encapsulate(renderer.bounds);
 			}
-			PropertiesPanel.Instance.RenderThumbnailContaining(bounds);
+			ServiceLocator.GetService<PropertiesPanel>().RenderThumbnailContaining(bounds);
 			this.gameObject.layer = objectOriginalLayer;
 		}
 
 		private void FollowMousePointer()
 		{
-			if (Selector.Instance.HoveringInterface()) return;
+			if (ServiceLocator.GetService<Selector>().HoveringInterface()) return;
 			Vector3 aimedPosition = GetMousePointOnLayerMask();
 			Vector3 newPosition;
 			if (aimedPosition == Vector3.zero)
@@ -270,8 +270,8 @@ namespace Netherlands3D.ObjectInteraction
 
 			if (snapToGrid)
 			{
-				newPosition.x -= ((newPosition.x + bounds.min.x) % VisualGrid.Instance.CellSize);
-				newPosition.z -= ((newPosition.z + bounds.min.z) % VisualGrid.Instance.CellSize);
+				newPosition.x -= ((newPosition.x + bounds.min.x) % ServiceLocator.GetService<VisualGrid>().CellSize);
+				newPosition.z -= ((newPosition.z + bounds.min.z) % ServiceLocator.GetService<VisualGrid>().CellSize);
 
 			}
 			if (mask && maskArea)
@@ -285,7 +285,7 @@ namespace Netherlands3D.ObjectInteraction
 		private void OnDestroy()
 		{
 			//Hide transformpanel if we were destroyed
-			PropertiesPanel.Instance.DeselectTransformable(this);
+			ServiceLocator.GetService<PropertiesPanel>().DeselectTransformable(this);
 
 			//Remove our placement event
 			placeAction.UnSubscribe(placeActionEvent);
@@ -300,7 +300,7 @@ namespace Netherlands3D.ObjectInteraction
 		{
 
 			RaycastHit hit;
-			if (Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+			if (Physics.Raycast(Selector.mainSelectorRay, out hit, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 			{
 				if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
 				{
@@ -316,7 +316,7 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			else
 			{
-				return CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+				return ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
 			}
 		}
 

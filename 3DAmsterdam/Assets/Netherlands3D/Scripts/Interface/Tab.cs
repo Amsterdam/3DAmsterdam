@@ -45,7 +45,7 @@ namespace Netherlands3D.Interface
             TabPanel.Open(open);
             if (open)
             {
-                PropertiesPanel.Instance.OpenPanel(tabPaneTitle);
+                ServiceLocator.GetService<PropertiesPanel>().OpenPanel(tabPaneTitle);
             }
         }
     }

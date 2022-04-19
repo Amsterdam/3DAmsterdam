@@ -154,23 +154,23 @@ namespace Netherlands3D.LayerSystem
             if (selectedIDs.Count == 1)
             {
                 ShowBAGDataForSelectedID(lastSelectedID);
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
             }
             else if (selectedIDs.Count > 1)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
-				PropertiesPanel.Instance.OpenObjectInformation("Selectie", true);
-				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
-				PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("Selectie", true);
+				ServiceLocator.GetService<PropertiesPanel>().RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
+				ServiceLocator.GetService<PropertiesPanel>().AddTitle("Geselecteerde panden");
                 foreach (var id in selectedIDs)
                 {
-					PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+					ServiceLocator.GetService<PropertiesPanel>().AddSelectionOutliner(this.gameObject, "Pand " + id, id);
                 }
             }
-            else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+            else if (ServiceLocator.GetService<ContextPointerMenu>().state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
             }
         }
 
@@ -185,9 +185,9 @@ namespace Netherlands3D.LayerSystem
                 selectedIDs.Clear();
             }
 
-            if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+            if (ServiceLocator.GetService<ContextPointerMenu>().state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+                ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
             }
 
             //Remove highlights by highlighting our empty list
@@ -207,7 +207,7 @@ namespace Netherlands3D.LayerSystem
             }
 
             //If we hide something, make sure our context menu is reset to default again.
-            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            //ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
 
         /// <summary>
@@ -230,18 +230,18 @@ namespace Netherlands3D.LayerSystem
 
             if (id != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectInformation("", true);
-                if (selectedIDs.Count > 1) Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true);
+                if (selectedIDs.Count > 1) ServiceLocator.GetService<PropertiesPanel>().AddActionButtonText("< Geselecteerde panden", (action) =>
                 {
 					HighlightObjectsWithIDs();
                 }
                 );
-				PropertiesPanel.Instance.displayBagData.ShowBuildingData(id);
+				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(id);
             }
             else if (lastSelectedID != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectInformation("", true);
-				PropertiesPanel.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true);
+				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(lastSelectedID);
             }
         }
 
@@ -253,7 +253,7 @@ namespace Netherlands3D.LayerSystem
         IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
         {
             //Check area that we clicked, and add the (heavy) mesh collider there
-            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+            Vector3 planeHit = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
             containerLayer.AddMeshColliders(planeHit);
 
             //No fire a raycast towards our meshcolliders to see what face we hit 
@@ -320,7 +320,7 @@ namespace Netherlands3D.LayerSystem
             yield return hideRequest.SendWebRequest();
             if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
             else
             {
@@ -371,7 +371,7 @@ namespace Netherlands3D.LayerSystem
 
             if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
             else
             {

@@ -1,4 +1,4 @@
-using ConvertCoordinates;
+﻿using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
 using System;
@@ -11,32 +11,29 @@ using T3D.LoadData;
 using UnityEngine;
 
 
-public class CityJsonVisualiser : MonoBehaviour
+public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 {
     public Material MeshMaterial;
     private Vector3RD? perceelCenter;
     private string cityJson = string.Empty;
     private UploadedUitbouw uitbouw;
 
-    public static CityJsonVisualiser Instance;
-
     private void Awake()
     {
-        Instance = this;
         uitbouw = GetComponentInChildren<UploadedUitbouw>(true);
         uitbouw.gameObject.SetActive(false);
     }
 
     void OnEnable()
     {
-        MetadataLoader.Instance.BimCityJsonReceived += OnBimCityJsonReceived;
-        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+        ServiceLocator.GetService<MetadataLoader>().BimCityJsonReceived += OnBimCityJsonReceived;
+        ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded += OnPerceelDataLoaded;
     }
 
     void OnDisable()
     {
-        MetadataLoader.Instance.BimCityJsonReceived -= OnBimCityJsonReceived;
-        MetadataLoader.Instance.PerceelDataLoaded -= OnPerceelDataLoaded;
+        ServiceLocator.GetService<MetadataLoader>().BimCityJsonReceived -= OnBimCityJsonReceived;
+        ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded -= OnPerceelDataLoaded;
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)

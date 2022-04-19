@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +32,7 @@ public class SubmitPermitRequestState : State
 
     public override int GetDesiredStateIndex()
     {
-        if (T3DInit.HTMLData != null && T3DInit.HTMLData.HasSubmitted)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData != null && ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted)
             return 1;
         return 0;
     }

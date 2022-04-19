@@ -29,7 +29,7 @@ namespace Netherlands3D.Interface
 
         void Start()
         {
-            CameraModeChanger.Instance.CameraModeChangedEvent += DisableMainCanvasItems;
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent += DisableMainCanvasItems;
         }
 
         private void DisableMainCanvasItems(object source, CameraMode newMode)

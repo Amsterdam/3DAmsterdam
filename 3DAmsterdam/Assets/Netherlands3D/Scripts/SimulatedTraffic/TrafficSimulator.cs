@@ -6,11 +6,10 @@ using UnityEngine;
 
 namespace Netherlands3D.Traffic
 {
-    public class TrafficSimulator : MonoBehaviour
+    public class TrafficSimulator : MonoBehaviour, IUniqueService
     {
         public List<Vehicle> allVehicles = new List<Vehicle>();
         public Dictionary<Color32, int> carColors;
-        public static TrafficSimulator Instance = null;
         private int frames;
 
         public int vehicleSpeed = 20;
@@ -39,11 +38,6 @@ namespace Netherlands3D.Traffic
         public int totalVehicleTypeWeight;
         private void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-
             foreach (VehicleType vehicle in vehicles)
             {
                 totalVehicleTypeWeight += vehicle.vehicleFrequency;

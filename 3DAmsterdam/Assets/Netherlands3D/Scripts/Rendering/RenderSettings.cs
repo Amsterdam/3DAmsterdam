@@ -34,7 +34,7 @@ namespace Netherlands3D.Rendering
         {
             antiAliasing = antiAliasingOn;
 
-            UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
+            UniversalAdditionalCameraData universalCameraData = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
             
             //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
             if (universalCameraData)
@@ -77,7 +77,7 @@ namespace Netherlands3D.Rendering
 		private void SetPostProcessing()
         {
             //Post processing can be disabled entirely if there are no AA or effects enabled
-            UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
+            UniversalAdditionalCameraData universalCameraData = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
             universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
         }
 

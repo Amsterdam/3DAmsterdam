@@ -42,10 +42,11 @@ public class State : MonoBehaviour
         }
     }
 
-    private void OnValidate()
-    {
-        desiredNextStateIndex = GetDesiredStateIndex();
-    }
+    //this breaks the ServiceLocator
+    //private void OnValidate()
+    //{
+    //    desiredNextStateIndex = GetDesiredStateIndex();
+    //}
 
     //define which state to chose from the defined possible states
     public virtual int GetDesiredStateIndex()

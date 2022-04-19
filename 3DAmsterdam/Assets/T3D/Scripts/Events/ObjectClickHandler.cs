@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class ObjectClickHandler : MonoBehaviour
 
     private void Update()
     {
-        Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
         if (Input.GetMouseButtonDown(0))
         {
             clickColliders.Clear();
@@ -64,7 +64,7 @@ public class ObjectClickHandler : MonoBehaviour
             }
 
             //if mouse did not move too much, wait for mouse up and raycast to see if the collider is the same as the one clicked on
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
             {
                 if (clickColliders.Contains(hit.collider))
@@ -117,7 +117,7 @@ public class ObjectClickHandler : MonoBehaviour
 
     private static Collider GetColliderUnderMouse(int layerMask)
     {
-        Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
         {
             return hit.collider;

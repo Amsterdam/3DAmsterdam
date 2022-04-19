@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.ObjectInteraction;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -140,7 +140,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var pointerPosition = Mouse.current.position.ReadValue();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
-            var cameraComponent = CameraModeChanger.Instance.ActiveCamera;
+            var cameraComponent = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera;
             var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
             uitbouw.GroundPlane.Raycast(screenRay, out float distance);
             var samplePoint = screenRay.GetPoint(Mathf.Min(maxClickDragDistance, distance));

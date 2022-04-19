@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
@@ -115,7 +115,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
                 //complete step after loading wall
                 //AllowSelection = false;
-                //MetadataLoader.Instance.PlaatsUitbouw();
+                //ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw();
             }
         }
 
@@ -128,7 +128,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
                     return;
 
-                var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+                var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
                 if (TryGetValidWall(ray, out var wall))
                 {
                     WallMesh = wall;

@@ -18,12 +18,10 @@ namespace Netherlands3D.Interface
 	/// Here we also maintain the lists of multiselected objects, and set the right context menu.
 	/// This is also the place from where we determine what camera movement actions are allowed. They may be overruled by other interactions.
 	/// </summary>
-	public class Selector : MonoBehaviour
+	public class Selector : MonoBehaviour, IUniqueService
 	{
 		[SerializeField]
 		private OutlineObject outline;
-
-		public static Selector Instance = null;
 
 		public List<OutlineObject> selectedObjects;
 
@@ -68,14 +66,6 @@ namespace Netherlands3D.Interface
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
 
-		private void Awake()
-		{
-			if (Instance == null)
-			{
-				Instance = this;
-			}
-		}
-
 		void Start()
 		{
 			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
@@ -88,10 +78,10 @@ namespace Netherlands3D.Interface
 			selectorActionMap = ActionHandler.actions.Selector;
 			selectorActionMap.Enable();
 
-			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
-			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
-			multiSelectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
-			escapeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Escape);
+			clickedAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Selector.Click);
+			clickedSecondaryAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Selector.ClickSecondary);
+			multiSelectAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Selector.Multiselect);
+			escapeAction = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.Selector.Escape);
 
 			//Listeners
 			clickedAction.SubscribePerformed(Click);
@@ -119,7 +109,7 @@ namespace Netherlands3D.Interface
 		private void Update()
 		{
 			//Always update our main selector ray, and raycast for Interactables that we are hovering
-			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+			mainSelectorRay = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
 			{
@@ -178,8 +168,8 @@ namespace Netherlands3D.Interface
 		/// <param name="enableMouseActions">Enable the camera action map containing mouse inputs</param>
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
-			CameraModeChanger.Instance.CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
-			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && !doingMultiselect && enableMouseActions);
+			ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
+			ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && !doingMultiselect && enableMouseActions);
 		}
 
 		/// <summary>
@@ -189,7 +179,7 @@ namespace Netherlands3D.Interface
 		{
 			foreach(var actionMap in ActionHandler.actions.asset.actionMaps)
 			{
-				if((!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && (!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && actionMap != selectorActionMap && !CameraModeChanger.Instance.CurrentCameraControls.UsesActionMap(actionMap))
+				if((!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && (!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && actionMap != selectorActionMap && !ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.UsesActionMap(actionMap))
 					actionMap.Disable();
 			}
 		}
@@ -210,7 +200,7 @@ namespace Netherlands3D.Interface
 
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 			{
-				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+				ServiceLocator.GetService<ContextPointerMenu>().SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 				SecondarySelect();
 			}
 		}
@@ -270,9 +260,9 @@ namespace Netherlands3D.Interface
 			if (hoveringInteractable)
 			{
 				//Open context menu based on the interactable we are hovering
-				ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
-				ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
-				ContextPointerMenu.Instance.Appear();
+				ServiceLocator.GetService<ContextPointerMenu>().SwitchState(hoveringInteractable.contextMenuState);
+				ServiceLocator.GetService<ContextPointerMenu>().SetTargetInteractable(hoveringInteractable);
+				ServiceLocator.GetService<ContextPointerMenu>().Appear();
 				hoveringInteractable.SecondarySelect();
 
 				foreach (var interactable in delayedInteractables)
@@ -283,8 +273,8 @@ namespace Netherlands3D.Interface
 			}
 			else
 			{
-				ContextPointerMenu.Instance.SetTargetInteractable(null);
-				ContextPointerMenu.Instance.Appear();
+				ServiceLocator.GetService<ContextPointerMenu>().SetTargetInteractable(null);
+				ServiceLocator.GetService<ContextPointerMenu>().Appear();
 				foreach (var interactable in delayedInteractables)
 				{
 					interactable.SecondarySelect();

@@ -39,7 +39,7 @@ namespace Netherlands3D.Cameras
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
-			HelpMessage.Instance.Show(helpMessage);
+			ServiceLocator.GetService<HelpMessage>().Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();
@@ -64,7 +64,7 @@ namespace Netherlands3D.Cameras
 		public void EnableMenus()
 		{
 			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
-			PropertiesPanel.Instance.gameObject.SetActive(true);
+			ServiceLocator.GetService<PropertiesPanel>().gameObject.SetActive(true);
 			mainMenu.SetActive(true);
 			hideMenuButton.gameObject.SetActive(true);
 		}
@@ -72,7 +72,7 @@ namespace Netherlands3D.Cameras
 		public void DisableMenus()
 		{
 			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-			PropertiesPanel.Instance.gameObject.SetActive(false);
+			ServiceLocator.GetService<PropertiesPanel>().gameObject.SetActive(false);
 			mainMenu.SetActive(false);
 			hideMenuButton.gameObject.SetActive(false);
 		}

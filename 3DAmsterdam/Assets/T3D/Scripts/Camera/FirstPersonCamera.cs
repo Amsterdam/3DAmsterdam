@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
@@ -78,7 +78,7 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
     private void AddActionListeners()
     {
         //Mouse actions
-        dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
+        dragActionMouse = ServiceLocator.GetService<ActionHandler>().GetAction(ActionHandler.actions.GodViewMouse.Drag);
 
         //Listeners
         dragActionMouse.SubscribePerformed(Drag);
@@ -150,6 +150,6 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
+        return ServiceLocator.GetService<CameraModeChanger>().AvailableActionMaps.Contains(actionMap);
     }
 }

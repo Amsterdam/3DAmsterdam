@@ -39,7 +39,7 @@ namespace Netherlands3D.Traffic
             // Checks if there x amount of coördinates in road to deem the road segment big enough to generate a car (it's basically a small performance tweak)
             if (tempRoad["geometry"].Count > 2)
             {
-                TrafficSimulator.Instance.PlaceCar(this);
+                ServiceLocator.GetService<TrafficSimulator>().PlaceCar(this);
             }
         }
 

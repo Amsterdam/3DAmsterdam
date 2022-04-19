@@ -6,16 +6,13 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.Search
 {
-    public class SearchResultMarker : WorldPointFollower
+    public class SearchResultMarker : WorldPointFollower, IUniqueService
     {
-        public static SearchResultMarker Instance;
-
         [SerializeField]
         private Text text;
 
         private void Start()
         {
-            Instance = this;
             gameObject.SetActive(false);
         }
 

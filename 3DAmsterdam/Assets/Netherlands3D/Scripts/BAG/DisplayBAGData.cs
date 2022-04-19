@@ -26,7 +26,7 @@ namespace Netherlands3D.BAG
                 StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
                 {
                     EstimateBuildingThumbnailFrame(buildingData.bbox);
-                    PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    ServiceLocator.GetService<PropertiesPanel>().AddTitle("Pand " + bagId);
                     CheckAddDataField("BAG ID", buildingData._display);
                     CheckAddDataField("Stadsdeel", buildingData._stadsdeel.naam);
                     CheckAddDataField("Wijk", buildingData._buurtcombinatie.naam);
@@ -34,22 +34,22 @@ namespace Netherlands3D.BAG
                     CheckAddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
                     CheckAddDataField("Bouwlagen", buildingData.bouwlagen);
                     CheckAddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count);
-                    PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+                    ServiceLocator.GetService<PropertiesPanel>().AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
-                    PropertiesPanel.Instance.AddSeperatorLine();
+                    ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
 
                     //Load up the list of addresses tied to this building (in a Seperate API call)
-                    PropertiesPanel.Instance.AddTitle("Adressen");
+                    ServiceLocator.GetService<PropertiesPanel>().AddTitle("Adressen");
                     StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
                     {
                         foreach (var address in addressList.results)
                         {
                             //We create a field and make it clickable, so addresses cant contain more data
-                            var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address._display, "");
+                            var dataKeyAndValue = ServiceLocator.GetService<PropertiesPanel>().AddDataField(address._display, "");
                             var button = dataKeyAndValue.GetComponent<Button>();
                             button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
                         }
-                        PropertiesPanel.Instance.AddSpacer(20);
+                        ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
                     }));
                 }));
             }
@@ -80,7 +80,7 @@ namespace Netherlands3D.BAG
                         EstimateBuildingThumbnailFrame(bbox);
                     }
 
-                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    ServiceLocator.GetService<PropertiesPanel>().AddTitle("Pand " + bagId);
 
                     CheckAddDataField("Naam", buildingData.openbareruimte.naam);
                     CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);
@@ -95,18 +95,18 @@ namespace Netherlands3D.BAG
                         CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
                     }
 
-                    PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
+                    ServiceLocator.GetService<PropertiesPanel>().AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
                     {
                         x = geometry.coordinates[0],
                         y = geometry.coordinates[1],
                         id = bagId
                     }));
-                    PropertiesPanel.Instance.AddSpacer(20);
+                    ServiceLocator.GetService<PropertiesPanel>().AddSpacer(20);
                 }));
             }
             else
             {
-                PropertiesPanel.Instance.AddLabel($"ApiType {Config.activeConfiguration.BagApiType} is niet geimplementeerd..");
+                ServiceLocator.GetService<PropertiesPanel>().AddLabel($"ApiType {Config.activeConfiguration.BagApiType} is niet geimplementeerd..");
             }
         }
 
@@ -114,7 +114,7 @@ namespace Netherlands3D.BAG
         {
             var result = $"{data}";
             if (result.Trim() == "") return;
-            PropertiesPanel.Instance.AddDataField(label, $"{data}");           
+            ServiceLocator.GetService<PropertiesPanel>().AddDataField(label, $"{data}");           
         }
 
 		private static void EstimateBuildingThumbnailFrame(float[] bbox)
@@ -142,7 +142,7 @@ namespace Netherlands3D.BAG
 			points.Add(rdB);
 			points.Add(rdC);
 			points.Add(rdD);
-			PropertiesPanel.Instance.RenderThumbnailContaining(points.ToArray(), PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
+			ServiceLocator.GetService<PropertiesPanel>().RenderThumbnailContaining(points.ToArray(), PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
 		}
 
 		private void ShowAddressData(string addressId, Button button)
@@ -153,7 +153,7 @@ namespace Netherlands3D.BAG
             StartCoroutine(ImportBAG.GetAddressData(addressId, (addressData) =>
             {
 				//Create group under button
-				GameObject group = Interface.SidePanel.PropertiesPanel.Instance.CreateGroup();
+				GameObject group = ServiceLocator.GetService<PropertiesPanel>().CreateGroup();
                 group.transform.SetSiblingIndex(button.transform.GetSiblingIndex() + 1);
 
                 //Next click closes (and removes) group again
@@ -164,13 +164,13 @@ namespace Netherlands3D.BAG
                     button.onClick.AddListener((() => ShowAddressData(addressId, button)));
                 }));
 
-				PropertiesPanel.Instance.AddSeperatorLine();
-				PropertiesPanel.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
-				PropertiesPanel.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter);
-				PropertiesPanel.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
-				PropertiesPanel.Instance.AddLink("Meer adres informatie", Config.activeConfiguration.moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
-				PropertiesPanel.Instance.AddSeperatorLine();
-				PropertiesPanel.Instance.CloseGroup();
+				ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
+				ServiceLocator.GetService<PropertiesPanel>().AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
+				ServiceLocator.GetService<PropertiesPanel>().AddDataField("Adres", addressData.adres + addressData.huisletter);
+				ServiceLocator.GetService<PropertiesPanel>().AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
+				ServiceLocator.GetService<PropertiesPanel>().AddLink("Meer adres informatie", Config.activeConfiguration.moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
+				ServiceLocator.GetService<PropertiesPanel>().AddSeperatorLine();
+				ServiceLocator.GetService<PropertiesPanel>().CloseGroup();
             }));
         }
     }

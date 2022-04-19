@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.Help;
 using Netherlands3D.Interface;
 using Netherlands3D.LayerSystem;
@@ -57,19 +57,19 @@ public class MeasuringLine : Interactable
 
 	private void OnEnable()
 	{
-		HelpMessage.Instance.Show("<b>Klik</b> om een beginpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
+		ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> om een beginpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 
 		ResetLine(); //Start hidden, wait for clicks
 		TakeInteractionPriority();
 
-		Selector.Instance.registeredClickInput.AddListener(PlacePoint);
+		ServiceLocator.GetService<Selector>().registeredClickInput.AddListener(PlacePoint);
 	}
 
 	protected override void OnDisable()
 	{
 		base.OnDisable();
 		ResetLine();
-		Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
+		ServiceLocator.GetService<Selector>().registeredClickInput.RemoveListener(PlacePoint);
 	}
 
 	public override void Escape()
@@ -101,7 +101,7 @@ public class MeasuringLine : Interactable
 
 	private void PreviewNextPoint()
 	{
-		Vector3 previewPoint = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+		Vector3 previewPoint = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
 		PrepareColliders(previewPoint);
 
 		//Shoot ray to get precise point on collider
@@ -244,7 +244,7 @@ public class MeasuringLine : Interactable
 
 	private float AutoScalePointByDistance(Transform point)
 	{
-		var cameraDistanceToPoint = Vector3.Distance(point.position, CameraModeChanger.Instance.ActiveCamera.transform.position);
+		var cameraDistanceToPoint = Vector3.Distance(point.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
 		point.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
 
 		return cameraDistanceToPoint;
@@ -263,14 +263,14 @@ public class MeasuringLine : Interactable
 		if (positions[0] != positions[1] || Selector.doingMultiselect)
 		{
 			var lineCenter = Vector3.Lerp(positions[0], positions[1], 0.5f);
-			if (!distanceText) distanceText = CoordinateNumbers.Instance.CreateDistanceNumber();
+			if (!distanceText) distanceText = ServiceLocator.GetService<CoordinateNumbers>().CreateDistanceNumber();
 
 			distanceText.AlignWithWorldPosition(lineCenter);
 			var distanceMeasured = Vector3.Distance(positions[0], positions[1]);
 			distanceText.DrawDistance(distanceMeasured, "m");
 			distanceText.ResetInput();
 
-			HelpMessage.Instance.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
+			ServiceLocator.GetService<HelpMessage>().Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
 		}
 		else if (distanceText)
 		{

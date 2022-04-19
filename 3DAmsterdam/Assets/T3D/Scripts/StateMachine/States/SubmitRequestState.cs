@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,7 +23,7 @@ public class SubmitRequestState : State
     public override void StateEnteredAction()
     {
         ShowSuccessMessage(false);
-        if (!T3DInit.HTMLData.HasSubmitted)
+        if (!ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted)
             StartCoroutine(SaveDataWhenCurrentSaveCompletes());
     }
 
@@ -31,11 +31,11 @@ public class SubmitRequestState : State
     {
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
 
-        T3DInit.HTMLData.HasSubmitted = true;
+        ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted = true;
 
         CultureInfo culture = new CultureInfo("nl-NL", false);
         var formattedDate = DateTime.Now.ToString("dd MMMM yyyy", culture);
-        T3DInit.HTMLData.Date = formattedDate;
+        ServiceLocator.GetService<T3DInit>().HTMLData.Date = formattedDate;
 
         SessionSaver.ExportSavedData(); // export new save data
         SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;

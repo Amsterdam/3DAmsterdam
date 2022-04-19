@@ -104,8 +104,8 @@ namespace Netherlands3D
             snapshotSettings.SetActive(false);
 
             snapshotCamera = transform.GetComponent<Camera>();
-            snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+            snapshotCamera.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position;
+            snapshotCamera.transform.rotation = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.rotation;
 
 
             screenshotCoroutine = Screenshotting();

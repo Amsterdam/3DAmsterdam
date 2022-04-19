@@ -312,7 +312,7 @@ namespace Netherlands3D.LayerSystem
 				if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
 				{
 					//Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
-					//WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
+					//ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
 				}
 				else if (obj != null)
 				{

@@ -1,4 +1,4 @@
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using System;
@@ -57,7 +57,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             RaycastHit hit;
             var screenpoint = Input.mousePosition;
 
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
+            Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(screenpoint);
 
             var mask = LayerMask.GetMask("Uitbouw");
             bool casted = Physics.Raycast(ray, out hit, Mathf.Infinity, mask);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
@@ -66,7 +66,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             base.Awake();
 
             distanceMeasurements = GetComponents<DistanceMeasurement>();
-            editUI = CoordinateNumbers.Instance.CreateEditUI(this);
+            editUI = ServiceLocator.GetService<CoordinateNumbers>().CreateEditUI(this);
         }
 
         protected override void Start()

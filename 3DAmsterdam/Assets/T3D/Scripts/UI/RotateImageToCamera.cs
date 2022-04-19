@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
@@ -54,7 +54,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private Axis GetClosestAxis()
         {
-            var cameraComponent = CameraModeChanger.Instance.ActiveCamera;
+            var cameraComponent = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera;
             var dir = (cameraComponent.transform.position - transform.position).normalized;
 
             //Vector3 pos = cameraComponent.transform.position;

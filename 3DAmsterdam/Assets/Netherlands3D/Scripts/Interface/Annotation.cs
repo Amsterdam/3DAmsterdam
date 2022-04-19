@@ -53,7 +53,7 @@ namespace Netherlands3D.Interface
             if (waitingForClick)
             {
 			    MoveOnTopOfUI();
-                HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
+                ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
             }
         }
 
@@ -84,7 +84,7 @@ namespace Netherlands3D.Interface
 			base.Placed();
             //After we placed the annotation, start editing it, so the user can immediatly change its content
             StartEditingText();
-            PropertiesPanel.Instance.OpenAnnotations();
+            ServiceLocator.GetService<PropertiesPanel>().OpenAnnotations();
 
             //Move back into orignal ordered parent
             transform.SetParent(originalParent);

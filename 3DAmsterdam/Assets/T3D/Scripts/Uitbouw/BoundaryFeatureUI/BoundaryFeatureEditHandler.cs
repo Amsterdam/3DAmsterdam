@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
@@ -61,7 +61,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void ProcessUserInput()
         {
-            //Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            //Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
             //LayerMask boundaryFeaturesMask = LayerMask.GetMask("StencilMask");
             LayerMask boundaryFeaturesMask = LayerMask.GetMask("BoundaryFeatures");
 
@@ -83,7 +83,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void ProcessDrag(BoundaryFeature feature)
         {
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
             var mask = LayerMask.GetMask("Uitbouw");
             bool casted = Physics.Raycast(ray, out var hit, Mathf.Infinity, mask);
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +15,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var perceelBoundsRestriction = RestrictionChecker.GetRestriction(UitbouwRestrictionType.PerceelBounds);
             var inPerceelBounds = perceelBoundsRestriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
 
-            //Volgende.interactable = inPerceelBounds && T3DInit.Instance.IsEditMode;
+            //Volgende.interactable = inPerceelBounds && ServiceLocator.GetService<T3DInit>().IsEditMode;
 
             SetUitbouwText(inPerceelBounds);
         }

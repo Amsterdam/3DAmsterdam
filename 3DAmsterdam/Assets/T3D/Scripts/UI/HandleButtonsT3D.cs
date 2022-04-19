@@ -1,4 +1,4 @@
-using ConvertCoordinates;
+﻿using ConvertCoordinates;
 using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using Netherlands3D.LayerSystem;
@@ -108,24 +108,24 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void ZoomIn()
     {
-        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
-            CameraModeChanger.Instance.ActiveCamera.orthographicSize -= 5;
+        if (ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.TopDown)
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize -= 5;
         else
-            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position + (Time.deltaTime * ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void ZoomOut()
     {
-        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
-            CameraModeChanger.Instance.ActiveCamera.orthographicSize += 5;
+        if (ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.TopDown)
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize += 5;
         else
-            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position - (Time.deltaTime * ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void ToggleRotateFirstperson()
     {
-        var newMode = CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
-        CameraModeChanger.Instance.SetCameraMode(newMode);
+        var newMode = ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
+        ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(newMode);
         var tooltiptrigger = ButtonToggleRotateFirstperson.GetComponent<TooltipTrigger>();
 
         tooltiptrigger.TooltipText = newMode == CameraMode.StreetView ? "Roteren" : "Lopen";

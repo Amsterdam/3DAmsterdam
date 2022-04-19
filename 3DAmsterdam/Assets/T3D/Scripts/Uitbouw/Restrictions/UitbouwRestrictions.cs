@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +113,7 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
-            if (T3DInit.HTMLData.SnapToWall)
+            if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
                 return building.SelectedWall.WallIsSelected;
             else
                 return uitbouw != null;
@@ -124,7 +124,7 @@ namespace Netherlands3D.T3D.Uitbouw
     //{
     //    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
     //    {
-    //        return building.SelectedWall.WallIsSelected || !T3DInit.HTMLData.SnapToWall;
+    //        return building.SelectedWall.WallIsSelected || !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
     //    }
     //}
 

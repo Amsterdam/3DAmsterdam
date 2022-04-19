@@ -89,7 +89,7 @@ namespace RuntimeHandle
         public override void SecondarySelect()
         {
             base.Select();
-            ContextPointerMenu.Instance.SetTargetInteractable(target.GetComponent<Interactable>());
+            ServiceLocator.GetService<ContextPointerMenu>().SetTargetInteractable(target.GetComponent<Interactable>());
         }
 
         void Update()
@@ -152,7 +152,7 @@ namespace RuntimeHandle
 		{
             if (autoScale)
                 transform.localScale =
-                    Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
+                    Vector3.one * (Vector3.Distance(ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
         }
 
 		void HandleOverEffect(HandleBase p_axis)

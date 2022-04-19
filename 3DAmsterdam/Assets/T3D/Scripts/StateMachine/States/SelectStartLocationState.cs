@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
@@ -35,24 +35,24 @@ public class SelectStartLocationState : State
     {
         CalculateAndApplyPlaceLocation();
 
-        if (!Selector.Instance.HoveringInterface() && Input.GetMouseButtonDown(0))
+        if (!ServiceLocator.GetService<Selector>().HoveringInterface() && Input.GetMouseButtonDown(0))
         {
             StepEndedByUser();
         }
 
         if (orthographicCameraDefaultSize == 0)
         {
-            orthographicCameraDefaultSize = CameraModeChanger.Instance.ActiveCamera.orthographicSize;
+            orthographicCameraDefaultSize = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize;
         }
 
-        var tagScaleFactor = orthographicCameraDefaultSize / CameraModeChanger.Instance.ActiveCamera.orthographicSize;
+        var tagScaleFactor = orthographicCameraDefaultSize / ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize;
         instructionsTag.transform.localScale = Vector3.one * tagScaleFactor;
     }
 
     private void CalculateAndApplyPlaceLocation()
     {
         var groundPlane = new Plane(transform.up, -building.GroundLevel);
-        var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
         var cast = groundPlane.Raycast(ray, out float enter);
         if (cast)
         {
@@ -65,10 +65,7 @@ public class SelectStartLocationState : State
 
     public override int GetDesiredStateIndex()
     {
-        if (T3DInit.Instance == null)
-            desiredNextStateIndex = 0;
-        else
-            desiredNextStateIndex = T3DInit.HTMLData.HasFile ? 0 : 1;
+        desiredNextStateIndex = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile ? 0 : 1;
         return desiredNextStateIndex;
     }
 
@@ -76,10 +73,10 @@ public class SelectStartLocationState : State
     {
         if (!RestrictionChecker.ActiveUitbouw)
         {
-            MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
+            ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(placeLocation);
         }
 
-        CameraModeChanger.Instance.SetCameraMode(CameraMode.TopDown);
+        ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
@@ -88,12 +85,12 @@ public class SelectStartLocationState : State
         RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = true;
 
         //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
-        instructionsTag = CoordinateNumbers.Instance.CreateGenericWorldPointFollower(instructionsTagPrefab);
+        instructionsTag = ServiceLocator.GetService<CoordinateNumbers>().CreateGenericWorldPointFollower(instructionsTagPrefab);
     }
 
     public override void StateCompletedAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
+        ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.GodView);
         building.transform.position -= Vector3.up * 0.001f; //reset position 
         building.SelectedWall.AllowSelection = false;
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true);

@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,20 +10,17 @@ public class StateSaverSaveDataContainer : SaveDataContainer
     public int ActiveStateIndex;
 }
 
-public class StateSaver : MonoBehaviour
+public class StateSaver : MonoBehaviour, IUniqueService
 {
     public State[] states;
     public int ActiveStateIndex => saveData.ActiveStateIndex;
     private StateSaverSaveDataContainer saveData;
 
-    public static StateSaver Instance;
 
     private void Awake()
     {
         saveData = new StateSaverSaveDataContainer();
         states = GetComponentsInChildren<State>(true);
-
-        Instance = this;
     }
 
     private void OnEnable()
@@ -34,7 +31,7 @@ public class StateSaver : MonoBehaviour
     private void OnDisable()
     {
         State.ActiveStateChangedByUser -= State_ActiveStateChanged;
-        //MetadataLoader.Instance.BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
+        //ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
     }
 
     private void Start() // in start to avoid timing issues
