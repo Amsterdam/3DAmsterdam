@@ -4,22 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Linq;
-using Netherlands3D.Cameras;
 
 public static class ServiceLocator
 {
-    private static Dictionary<Type, IUniqueService> services = new Dictionary<Type, IUniqueService>();
-    public static Dictionary<Type, IUniqueService> Test => services;
+    private static readonly Dictionary<Type, IUniqueService> services = new Dictionary<Type, IUniqueService>();
 
     static ServiceLocator()
     {
-        //services = new Dictionary<Type, IUniqueService>();
         InstallServices();
     }
 
     public static void InstallServices()
     {
-        services = new Dictionary<Type, IUniqueService>();
         var servicesInScene = UnityEngine.Object.FindObjectsOfType<MonoBehaviour>().OfType<IUniqueService>();
         foreach (var service in servicesInScene)
         {
@@ -47,9 +43,6 @@ public static class ServiceLocator
 
     public static T GetService<T>() where T : IUniqueService
     {
-        if (services == null)
-            InstallServices();
-
         var type = typeof(T);
         if (!services.TryGetValue(type, out var service))
         {
