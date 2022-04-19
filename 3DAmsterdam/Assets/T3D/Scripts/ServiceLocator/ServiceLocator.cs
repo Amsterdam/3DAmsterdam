@@ -34,7 +34,7 @@ public static class ServiceLocator
 
     private static void UnregisterService<T>(T service) where T : IUniqueService
     {
-        var type = typeof(T);
+        var type = service.GetType();
         Assert.IsTrue(services.ContainsKey(type), $"Service {type} not registered");
 
         services.Remove(service.GetType());
