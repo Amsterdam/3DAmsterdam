@@ -81,11 +81,6 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private GameObject uploadedUitbouwPrefab;
 
-        [SerializeField]
-        private GameObject buildingsLayer;
-        [SerializeField]
-        private GameObject terrainLayer;
-
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
@@ -249,13 +244,6 @@ namespace Netherlands3D.T3D.Uitbouw
                     }
                 }
                 list.Add(polygonList.ToArray());
-            }
-
-
-            foreach (Transform gam in terrainLayer.transform)
-            {
-                // Debug.Log(gam.name);
-                gam.gameObject.AddComponent<MeshCollider>();
             }
 
             //PerceelData = list;

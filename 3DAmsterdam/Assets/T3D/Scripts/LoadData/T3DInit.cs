@@ -78,9 +78,6 @@ public class T3DInit : MonoBehaviour, IUniqueService
 
     private void ToggleQuality(bool ishigh)
     {
-        //realtimeReflections
-        RenderSettings.ToggleReflections(ishigh);
-
         //postProcessingEffects
         RenderSettings.TogglePostEffects(ishigh);
 
