@@ -1,7 +1,7 @@
 ﻿using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
-using Netherlands3D.Interface.Minimap;
+//using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +23,6 @@ namespace Netherlands3D.Settings {
 
         [SerializeField]
         private InterfaceLayers interfaceLayers;
-
-        [SerializeField]
-        private Map minimap;
 
         private Rendering.RenderSettings renderSettings;
 
@@ -160,11 +157,6 @@ namespace Netherlands3D.Settings {
             //Currently we only use the quality settings files for shadow quality differences
             //3 = 2045, 2 = 1024, 1=514, 0=Off
             QualitySettings.SetQualityLevel(settings.shadowQuality, true);
-			
-			if (Config.activeConfiguration.EnableMinimap)
-			{
-				minimap.gameObject.SetActive(settings.drawMap);
-			}
 
 			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
 			
