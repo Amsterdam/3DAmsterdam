@@ -53,7 +53,7 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 
     public void SetNormalizedCameraHeight(float height)
     {
-        cameraHeight = height + RestrictionChecker.ActiveBuilding.GroundLevel;
+        cameraHeight = RestrictionChecker.ActiveBuilding.HeightLevel + 1;
         transform.position = new Vector3(transform.position.x, cameraHeight, transform.position.z);
     }
 
