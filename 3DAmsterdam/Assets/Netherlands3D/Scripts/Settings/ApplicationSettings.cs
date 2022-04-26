@@ -1,7 +1,7 @@
 ﻿using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
-using Netherlands3D.Interface.Minimap;
+//using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,10 +24,6 @@ namespace Netherlands3D.Settings {
         [SerializeField]
         private InterfaceLayers interfaceLayers;
 
-        [SerializeField]
-        private Map minimap;
-
-        private CanvasSettings canvasSettings;
         private Rendering.RenderSettings renderSettings;
 
         [SerializeField]
@@ -37,7 +33,6 @@ namespace Netherlands3D.Settings {
 
 		void Start()
 		{
-			canvasSettings = GetComponent<CanvasSettings>();
 			renderSettings = GetComponent<Rendering.RenderSettings>();
 
 			LoadTemplate(settingsProfilesTemplates[selectedTemplate]);
@@ -46,11 +41,7 @@ namespace Netherlands3D.Settings {
 			if (PlayerPrefs.HasKey(playerPrefKey))
 			{
 				LoadSettings();
-			}
-			else if (automaticOptimalSettings && !PlayerPrefs.HasKey(playerPrefKey))
-			{
-				DetermineOptimalSettings();
-			}
+			}		
 		}
 
 		private void LoadTemplate(ApplicationSettingsProfile templateProfile)
@@ -59,11 +50,6 @@ namespace Netherlands3D.Settings {
 			settings = Instantiate(templateProfile);
 			settings.name = "UserProfile";
 			settings.applicationVersion = Application.version;
-		}
-
-		private void DetermineOptimalSettings()
-		{
-			settings.canvasDPI = canvasSettings.DetectPreferedCanvasScale();
 		}
 
 		public void OpenSettingsPanel()
@@ -171,27 +157,20 @@ namespace Netherlands3D.Settings {
             //Currently we only use the quality settings files for shadow quality differences
             //3 = 2045, 2 = 1024, 1=514, 0=Off
             QualitySettings.SetQualityLevel(settings.shadowQuality, true);
-			
-			if (Config.activeConfiguration.EnableMinimap)
-			{
-				minimap.gameObject.SetActive(settings.drawMap);
-			}
 
 			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
-
-			canvasSettings.ChangeCanvasScale(settings.canvasDPI);
-            renderSettings.SetRenderScale(settings.renderResolution);
-            renderSettings.ToggleReflections(settings.realtimeReflections);
+			
+            renderSettings.SetRenderScale(settings.renderResolution);            
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
 			renderSettings.ToggleAO(settings.ambientOcclusion);
-
 
 			SaveSettings();
         }
 
         [ContextMenu("Save application settings")]
-        public void SaveSettings()
+   
+     public void SaveSettings()
         {
             PlayerPrefs.SetString(playerPrefKey, JsonUtility.ToJson(settings));
         }

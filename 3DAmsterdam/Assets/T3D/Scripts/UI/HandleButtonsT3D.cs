@@ -20,8 +20,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomOut;
     public Button ButtonToggleRotateFirstperson;
 
-    public GameObject BuildingsLayer;
-    public Layer TerrainLayer;
+    public GameObject BuildingsLayer;    
     public GameObject Zonnepaneel;
 
     public DropUp MaandenDropup;
@@ -77,8 +76,8 @@ public class HandleButtonsT3D : MonoBehaviour
     {
         //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
         BuildingsLayer.SetActive(!BuildingsLayer.activeSelf);
-        TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
-        RestrictionChecker.ActivePerceel.SetPerceelActive(!TerrainLayer.isEnabled);
+        
+        RestrictionChecker.ActivePerceel.SetPerceelActive(!BuildingsLayer.activeSelf);
     }
 
     #region Sun related

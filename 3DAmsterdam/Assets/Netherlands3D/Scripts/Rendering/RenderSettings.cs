@@ -20,8 +20,7 @@ namespace Netherlands3D.Rendering
         [SerializeField]
         private GameObject[] postEffectGameObjects;
 
-        [SerializeField]
-        private GameObject realtimeReflectionProbe;
+       
 
         [SerializeField]
         private ScriptableRendererFeature aoRenderFeature;
@@ -48,13 +47,6 @@ namespace Netherlands3D.Rendering
 
             SetPostProcessing();
         }
-
-        public void ToggleReflections(bool reflectionsOn)
-        {
-            realtimeReflectionProbe.SetActive(reflectionsOn);
-            EnviromentSettings.SetReflections(reflectionsOn);
-        }
-
 
         public void TogglePostEffects(bool effectsOn)
         {

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Config3DUtrecht
   m_EditorClassIdentifier: 
   RelativeCenterRD:
-    x: 136776
-    y: 455879
+    x: 138350.607
+    y: 455582.274
   BottomLeftRD:
     x: 123000
     y: 443000
@@ -22,32 +22,6 @@ MonoBehaviour:
     x: 146000
     y: 464000
   zeroGroundLevelY: 0
-  EnableMinimap: 0
-  minimapServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
-  MinimapTileNumberingType: 0
-  minimapBottomLeftRD_X: -285401.9
-  minimapBottomLeftRD_Y: 22598.08
-  MinimapZoom0RDSize: 880803.8
-  webserverRootPath: https://t3dstorage.z6.web.core.windows.net/
-  buildingsMetaDataPath: https://t3dstorage.z6.web.core.windows.net/buildings_rd
-  sharingBaseURL: https://3d.amsterdam.nl/
-  sharingSceneSubdirectory: customScene.php?id=
-  sharingViewUrl: https://3d.utrecht.nl/?view=
-  LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Utrecht%20&rows=5
-  LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
-  sewerageApiType: 1
-  sewerPipesWfsUrl: https://3dutrechtapi.azurewebsites.net/api/getrionedpipes/
-  sewerManholesWfsUrl: https://3dutrechtapi.azurewebsites.net/api/getrionedmanholes/
-  BagApiType: 1
-  buildingUrl: https://3dutrechtapi.azurewebsites.net/api/getbag/
-  numberIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=
-  numberIndicatorInstanceURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/
-  monumentURL: https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=
-  moreBuildingInfoUrl: https://bagviewer.kadaster.nl/lvbag/bag-viewer/index.html#?geometry.x={x}&geometry.y={y}&zoomlevel=5&objectId={id}
-  moreAddressInfoUrl: https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/
-  bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
-  bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=
-  previewBackdropImage: https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992
-  logo: {fileID: 21300000, guid: ad4b5d80111b320488941f0a93d97352, type: 3}
-  primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
-  secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
+  webserverRootPath: 
+  buildingsMetaDataPath: 
+  _T3DAzureFunctionURL: https://t3dbackend.azurewebsites.net/

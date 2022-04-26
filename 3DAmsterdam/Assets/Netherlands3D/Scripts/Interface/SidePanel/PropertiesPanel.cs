@@ -45,8 +45,6 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private RenderTexture thumbnailRenderTexture;
 
-        public DisplayBAGData displayBagData;
-
         [SerializeField]
         private Text titleText;
 
