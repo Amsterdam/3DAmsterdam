@@ -42,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 boundaryFeature.BottomBoundPosition
             };
 
-            for (int i = 0; i < lines.Length; i++) //make a loop to easily disable lines by reducing numberOfLines
+            for (int i = 0; i < lines.Count; i++) //make a loop to easily disable lines by reducing numberOfLines
             {
                 DrawLine(i, featurePoints[i], wallPoints[i]);//direction matters for resize
             }

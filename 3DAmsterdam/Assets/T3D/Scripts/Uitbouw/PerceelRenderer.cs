@@ -29,6 +29,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 Center { get; private set; }
         public float Radius { get; private set; }
         public bool IsLoaded { get; private set; } = false;
+        public Plane PerceelPlane { get; private set; }
 
         private void Start()
         {
@@ -46,6 +47,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
             Center = new Vector3(Center.x, building.GroundLevel, Center.z);
+            PerceelPlane = new Plane(Vector3.up, building.GroundLevel);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -115,6 +117,7 @@ namespace Netherlands3D.T3D.Uitbouw
             obj.AddComponent<MeshFilter>();
             var renderer = obj.AddComponent<MeshRenderer>();
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
+            obj.AddComponent<SelectableMesh>();
 
             return obj;
         }

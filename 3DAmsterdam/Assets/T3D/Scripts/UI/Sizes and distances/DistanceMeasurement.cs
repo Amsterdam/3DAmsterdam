@@ -23,7 +23,7 @@ namespace Netherlands3D.T3D
         [SerializeField]
         protected int numberOfLines = 2;
 
-        protected BuildingMeasuring[] lines;
+        protected List<BuildingMeasuring> lines;
 
         private bool drawDistanceActive;
         public bool DrawDistanceActive
@@ -41,32 +41,32 @@ namespace Netherlands3D.T3D
 
         protected virtual void Awake()
         {
-            lines = new BuildingMeasuring[numberOfLines];
+            lines = new List<BuildingMeasuring>();
 
             for (int i = 0; i < numberOfLines; i++)
             {
-                DrawNewMeasurement(i);
+                lines.Add(CreateNewMeasurement());
             }
         }
 
-        protected void DrawNewMeasurement(int index)
+        protected BuildingMeasuring CreateNewMeasurement()
         {
             var lineObject = Instantiate(measurementLine);
             var measuring = lineObject.GetComponent<BuildingMeasuring>();
             measuring.DistanceInputOverride += Measuring_DistanceInputOverride;
-            lines[index] = measuring;
+            return measuring;
         }
 
         protected abstract void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta);
 
-        protected void Update()
+        protected virtual void Update()
         {
             UpdateMeasurementLines();
         }
 
         protected void UpdateMeasurementLines()
         {
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 lines[i].gameObject.SetActive(DrawDistanceActive);
             }
