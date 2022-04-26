@@ -896,8 +896,7 @@ namespace Netherlands3D.ModelParsing
         }
 
 		public IEnumerator Build(Material defaultMaterial)
-		{
-			
+		{		
 			// remove de indices en vertices-lists because wo no longer need them
 			vertices.EndWriting();
 			vertices.SetupReading();

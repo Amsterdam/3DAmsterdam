@@ -196,6 +196,8 @@ namespace Netherlands3D.Interface.Layers
 					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial) && !sharedMaterial.name.Contains("Outline"))
 					{
 						uniqueLinkedObjectMaterials.Add(sharedMaterial);
+
+						Debug.Log($"Adding {sharedMaterial.name}", sharedMaterial);
 					}
 				}
 			}

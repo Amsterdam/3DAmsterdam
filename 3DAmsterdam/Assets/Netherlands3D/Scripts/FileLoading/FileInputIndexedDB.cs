@@ -47,7 +47,7 @@ public class FileInputIndexedDB : MonoBehaviour
 
     [SerializeField]
     private BoolEvent clearDataBaseEvent;
-
+    
 	private void Awake()
 	{
         clearDataBaseEvent.started.AddListener(ClearDatabase);
