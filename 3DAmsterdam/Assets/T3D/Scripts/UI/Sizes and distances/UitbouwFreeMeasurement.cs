@@ -19,6 +19,7 @@ public struct MeasureLine
 
 public class UitbouwFreeMeasurement : DistanceMeasurement
 {
+    [SerializeField]
     private SelectableMesh mySelectableMesh;
     private SelectableMesh[] otherSelectableMeshes;
 
@@ -33,10 +34,10 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         lines = new List<BuildingMeasuring>();
     }
 
-    private void Start()
-    {
-        mySelectableMesh = GetComponent<SelectableMesh>();
-    }
+    //private void Start()
+    //{
+    //    mySelectableMesh = GetComponent<SelectableMesh>();
+    //}
 
     protected override void DrawLines()
     {
@@ -160,6 +161,8 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             otherSelectableMeshes = new SelectableMesh[2];
             otherSelectableMeshes[0] = RestrictionChecker.ActivePerceel.GetComponentInChildren<SelectableMesh>();
             otherSelectableMeshes[0].SelectVertices();
+
+            mySelectableMesh.SelectVertices();
         }
     }
 }

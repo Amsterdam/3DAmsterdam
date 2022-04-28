@@ -18,7 +18,9 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private BuildingMeshGenerator building;
 
+        [SerializeField]
         private GameObject perceelMeshGameObject;
+        [SerializeField]
         private GameObject perceelOutlineGameObject;
 
         [SerializeField]
@@ -33,8 +35,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            perceelMeshGameObject = CreatePerceelGameObject();
-            perceelOutlineGameObject = CreatePerceelGameObject();
+            //perceelMeshGameObject = CreatePerceelGameObject();
+            //perceelOutlineGameObject = CreatePerceelGameObject();
 
             ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
@@ -109,18 +111,18 @@ namespace Netherlands3D.T3D.Uitbouw
             filter.mesh = mesh;
         }
 
-        private GameObject CreatePerceelGameObject()
-        {
-            var obj = new GameObject();
-            obj.name = "Perceelmesh";
-            obj.transform.SetParent(transform);
-            obj.AddComponent<MeshFilter>();
-            var renderer = obj.AddComponent<MeshRenderer>();
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
-            obj.AddComponent<SelectableMesh>();
+        //private GameObject CreatePerceelGameObject()
+        //{
+        //    var obj = new GameObject();
+        //    obj.name = "Perceelmesh";
+        //    obj.transform.SetParent(transform);
+        //    obj.AddComponent<MeshFilter>();
+        //    var renderer = obj.AddComponent<MeshRenderer>();
+        //    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
+        //    obj.AddComponent<SelectableMesh>();
 
-            return obj;
-        }
+        //    return obj;
+        //}
 
         void RenderPerceelOutline(List<Vector2[]> perceel)
         {
