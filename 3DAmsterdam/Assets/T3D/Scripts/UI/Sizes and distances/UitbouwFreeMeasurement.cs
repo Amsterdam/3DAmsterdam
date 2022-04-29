@@ -28,10 +28,13 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     //private MeasurePoint secondPoint;
     private Vector3 mousePositionInWorld;
 
+    private UitbouwBase uitbouw;
+
     protected override void Awake()
     {
         numberOfLines = 0;
         lines = new List<BuildingMeasuring>();
+        uitbouw = GetComponent<UitbouwBase>();
     }
 
     //private void Start()
@@ -52,7 +55,11 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
     protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
     {
-        //todo: update position after user input 
+        //flip direction if points selected in wrong order
+        var index = lines.IndexOf(source);
+        if (measureLines[index].End.GetComponentInParent<SelectableMesh>() == mySelectableMesh)
+            delta *= -1; 
+        uitbouw.GetComponent<UitbouwMovement>().SetPosition(uitbouw.transform.position + direction * delta);
     }
 
     protected override void Update()
