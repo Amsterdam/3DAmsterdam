@@ -23,7 +23,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     private SelectableMesh mySelectableMesh;
     private SelectableMesh[] otherSelectableMeshes;
 
-    private List<MeasureLine> measureLines;
+    private List<MeasureLine> measureLines = new List<MeasureLine>();
     private MeasurePoint firstPoint;
     //private MeasurePoint secondPoint;
     private Vector3 mousePositionInWorld;
@@ -44,7 +44,8 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         for (int i = 0; i < lines.Count; i++)
         {
             var start = measureLines[i].Start.transform.position;
-            var end = measureLines[i].End ? measureLines[i].End.transform.position : mousePositionInWorld;
+            //print("end exists: " + (measureLines[i].End != null));
+            var end = measureLines[i].End != null ? measureLines[i].End.transform.position : mousePositionInWorld;
             lines[i].SetLinePosition(start, end);
         }
     }
@@ -62,6 +63,16 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
         if (Input.GetKeyDown(KeyCode.L))
             SetAllowMeasurement(!DrawDistanceActive);
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            foreach (var line in lines)
+            {
+                Destroy(line.gameObject);
+            }
+            lines = new List<BuildingMeasuring>();
+            measureLines = new List<MeasureLine>();
+        }
     }
 
     private void HandleUserInput()
@@ -80,7 +91,8 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             else if (IsHoveringOverValidPoint(out var point))
             {
                 firstPoint = point;
-                measureLines.Add(new MeasureLine(firstPoint, null)); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
+                var line = new MeasureLine(firstPoint, null);
+                measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
                 lines.Add(CreateNewMeasurement());
                 numberOfLines++;
             }
@@ -91,6 +103,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             {
                 if (IsHoveringOverValidSecondPoint(out var point))
                 {
+                    print("hovering over valid second opint");
                     mousePositionInWorld = point.transform.position;
                 }
                 else
@@ -132,21 +145,26 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     {
         point = null;
         // if first point is part of uitbouwMesh: only check other meshes.
+        Debug.Log("first point", firstPoint);
         if (firstPoint.GetComponentInParent<SelectableMesh>() == mySelectableMesh)
         {
-            foreach (var mesh in otherSelectableMeshes)
+            print("first point is my mesh");
+            foreach (var otherMesh in otherSelectableMeshes)
             {
-                if (mesh.ActivePoint)
+                Debug.Log("checking: ", otherMesh);
+                if (otherMesh.ActivePoint)
                 {
-                    point = mesh.ActivePoint;
+                    Debug.Log("second point is other mesh: " + otherMesh, otherMesh.ActivePoint);
+                    point = otherMesh.ActivePoint;
                     return true;
                 }
             }
         }
         // else check only uitbouwMesh
-        else if (mySelectableMesh.ActivePoint)
+        else if(mySelectableMesh.ActivePoint)
         {
             point = mySelectableMesh.ActivePoint;
+            print("second point is my mesh");
             return true;
         }
         return false;
@@ -158,7 +176,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
         if (allowed)
         {
-            otherSelectableMeshes = new SelectableMesh[2];
+            otherSelectableMeshes = new SelectableMesh[1];
             otherSelectableMeshes[0] = RestrictionChecker.ActivePerceel.GetComponentInChildren<SelectableMesh>();
             otherSelectableMeshes[0].SelectVertices();
 

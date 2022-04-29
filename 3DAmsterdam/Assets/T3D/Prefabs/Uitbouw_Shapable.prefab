@@ -555,6 +555,7 @@ GameObject:
   - component: {fileID: 8290729776069747320}
   - component: {fileID: 5407043954321932671}
   - component: {fileID: 6749726174160187187}
+  - component: {fileID: 6759356009430603571}
   m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -687,7 +688,22 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 0
-  mySelectableMesh: {fileID: 6898963873929438835}
+  mySelectableMesh: {fileID: 6759356009430603571}
+--- !u!114 &6759356009430603571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502690ba42a1c45e7ba9abf6475ac756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5969573748713340153, guid: a68368933e31644838fa22e3836c955e, type: 3}
+  meshFilterOverride: {fileID: 812392941010986557}
+  pointScale: 0.015
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,7 +835,6 @@ GameObject:
   - component: {fileID: 4014164419267688027}
   - component: {fileID: 4796910769141876172}
   - component: {fileID: 8301051321633224353}
-  - component: {fileID: 6898963873929438835}
   m_Layer: 20
   m_Name: Bottom
   m_TagString: Untagged
@@ -925,17 +940,3 @@ MonoBehaviour:
   side: 3
   normalMaterial: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   highlightMaterial: {fileID: 2100000, guid: 6e08c4b2d64bd4a8caccb0c002987702, type: 2}
---- !u!114 &6898963873929438835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9026957183761294651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 502690ba42a1c45e7ba9abf6475ac756, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 5969573748713340153, guid: 120a0abbd67a947478f328f9cd0ba310, type: 3}
-  pointScale: 0.015

@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Netherlands3D.Cameras;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
+//[RequireComponent(typeof(MeshFilter))]
 public class SelectableMesh : MonoBehaviour
 {
     [SerializeField]
     private MeasurePoint prefab;
+    [SerializeField]
+    private MeshFilter meshFilterOverride;
+
+    private MeshFilter activeMeshFilter;
     private Mesh mesh;
 
     [SerializeField]
@@ -17,12 +22,18 @@ public class SelectableMesh : MonoBehaviour
 
     public void SelectVertices()
     {
-        mesh = GetComponent<MeshFilter>().mesh;
+        if (meshFilterOverride)
+            activeMeshFilter = meshFilterOverride;
+        else
+            activeMeshFilter = GetComponent<MeshFilter>();
+
+        mesh = activeMeshFilter.mesh;
+
         points = new MeasurePoint[mesh.vertices.Length];
         var verts = mesh.vertices; //cache a copy
         for (int i = 0; i < verts.Length; i++)
         {
-            var transformedPosition = transform.rotation * verts[i] + transform.position;
+            var transformedPosition = (activeMeshFilter.transform.rotation * verts[i].Multiply(activeMeshFilter.transform.lossyScale)) + activeMeshFilter.transform.position;
             var point = Instantiate(prefab, transformedPosition, Quaternion.identity, transform);
             point.ChangeShape(MeasurePoint.Shape.NONE);
             point.SetSelectable(true);
@@ -40,11 +51,6 @@ public class SelectableMesh : MonoBehaviour
         points = new MeasurePoint[0];
     }
 
-    private void Start()
-    {
-        SelectVertices();//todo: move this from start to somewhere else
-    }
-
     private void Update()
     {
         foreach (var point in points)
@@ -58,14 +64,21 @@ public class SelectableMesh : MonoBehaviour
     private void ProcessUserInput()
     {
         var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        var cast = Physics.Raycast(ray, out var hitinfo, LayerMask.NameToLayer("BoundaryFeatures"));
+        var cast = Physics.Raycast(ray, out var hitinfo, Mathf.Infinity, LayerMask.GetMask("BoundaryFeatures"));
         if (cast)
         {
             var point = hitinfo.collider.GetComponent<MeasurePoint>();
-            if (point)
+            if (point && point != ActivePoint)
+            {
+                if (points.Contains(point))
+                {
+                    DeselectActivePoint();
+                    SelectPoint(point);
+                }
+            }
+            else if (!point || !points.Contains(point))
             {
                 DeselectActivePoint();
-                SelectPoint(point);
             }
         }
         else
@@ -77,7 +90,10 @@ public class SelectableMesh : MonoBehaviour
     private void DeselectActivePoint()
     {
         if (ActivePoint)
+        {
             ActivePoint.ChangeShape(MeasurePoint.Shape.NONE);
+            ActivePoint = null;
+        }
     }
 
     private void SelectPoint(MeasurePoint newPoint)
