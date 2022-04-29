@@ -98,10 +98,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             else if (IsHoveringOverValidPoint(out var point))
             {
                 firstPoint = point;
-                var line = new MeasureLine(firstPoint, null);
-                measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
-                lines.Add(CreateNewMeasurement());
-                numberOfLines++;
+                CreateLine();
             }
         }
         else //if not clicking: if there is no first point do nothing, otherwise the second point should be at mouse position, unless hovering over a MeasurePoint.
@@ -152,16 +149,12 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     {
         point = null;
         // if first point is part of uitbouwMesh: only check other meshes.
-        Debug.Log("first point", firstPoint);
         if (firstPoint.GetComponentInParent<SelectableMesh>() == mySelectableMesh)
         {
-            print("first point is my mesh");
             foreach (var otherMesh in otherSelectableMeshes)
             {
-                Debug.Log("checking: ", otherMesh);
                 if (otherMesh.ActivePoint)
                 {
-                    Debug.Log("second point is other mesh: " + otherMesh, otherMesh.ActivePoint);
                     point = otherMesh.ActivePoint;
                     return true;
                 }
@@ -171,10 +164,24 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         else if(mySelectableMesh.ActivePoint)
         {
             point = mySelectableMesh.ActivePoint;
-            print("second point is my mesh");
             return true;
         }
         return false;
+    }
+
+    private void CreateLine()
+    {
+        var line = new MeasureLine(firstPoint, null);
+        measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
+        var newLine = CreateNewMeasurement();
+        newLine.DeleteButtonPressed += NewLine_DeleteButtonPressed1; ;
+        lines.Add(newLine);
+        numberOfLines++;
+    }
+
+    private void NewLine_DeleteButtonPressed1(BuildingMeasuring source)
+    {
+        DeleteLine(source);
     }
 
     public void SetAllowMeasurement(bool allowed)
@@ -189,5 +196,25 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
             mySelectableMesh.SelectVertices();
         }
+    }
+
+    void DeleteLine(int index)
+    {
+        Destroy(lines[index]);
+        lines.RemoveAt(index);
+        measureLines.RemoveAt(index);
+        numberOfLines--;
+    }
+
+    void DeleteLine(MeasureLine line)
+    {
+        var index = measureLines.IndexOf(line);
+        DeleteLine(index);
+    }
+
+    void DeleteLine(BuildingMeasuring line)
+    {
+        var index = lines.IndexOf(line);
+        DeleteLine(index);
     }
 }

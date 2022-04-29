@@ -41,16 +41,14 @@ public class BuildingMeasuring : Interactable
     [SerializeField]
     private Material lineSelectedMaterial;
 
-    private Mesh targetMesh;
     private MeshCollider targetCollider;
-
-    //[SerializeField]
-    //private int maxVertexSnapPerFrame = 10000;
 
     public float Distance { get { return Vector3.Distance(positions[0], positions[1]); } }
 
     public delegate void DistanceInputOverrideEventHandler(BuildingMeasuring source, Vector3 direction, float delta);
     public event DistanceInputOverrideEventHandler DistanceInputOverride;
+    public delegate void DeleteButtonPressedEventHandler(BuildingMeasuring source);
+    public event DeleteButtonPressedEventHandler DeleteButtonPressed;
 
     private void Awake()
     {
@@ -96,7 +94,12 @@ public class BuildingMeasuring : Interactable
         lineRenderer.material = lineMaterial;
         foreach (var linePoint in linePoints) linePoint.gameObject.SetActive(false);
 
-        if (distanceLabel) Destroy(distanceLabel.gameObject);
+        if (distanceLabel)
+        {
+            distanceLabel.DistanceInputOverride -= DistanceLabel_DistanceInputOverride;
+            distanceLabel.DeleteButtonPressed -= DistanceLabel_DeleteButtonPressed;
+            Destroy(distanceLabel.gameObject);
+        }
     }
 
     public void PlacePoint(Vector3 placementPoint)
@@ -126,7 +129,7 @@ public class BuildingMeasuring : Interactable
             if (hitCollider && hitCollider != targetCollider)
             {
                 targetCollider = hitCollider;
-                targetMesh = targetCollider.sharedMesh;
+                //targetMesh = targetCollider.sharedMesh;
             }
             previewPoint = hit.point;
         }
@@ -262,6 +265,9 @@ public class BuildingMeasuring : Interactable
             {
                 distanceLabel = ServiceLocator.GetService<CoordinateNumbers>().CreateNumberInputField();
                 distanceLabel.DistanceInputOverride += DistanceLabel_DistanceInputOverride;
+                distanceLabel.DeleteButtonPressed += DistanceLabel_DeleteButtonPressed;
+
+                distanceLabel.EnableDeleteButton(!ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall);
             }
 
 
@@ -278,9 +284,12 @@ public class BuildingMeasuring : Interactable
         }
         else if (distanceLabel)
         {
+            distanceLabel.DistanceInputOverride -= DistanceLabel_DistanceInputOverride;
+            distanceLabel.DeleteButtonPressed -= DistanceLabel_DeleteButtonPressed;
             Destroy(distanceLabel.gameObject);
         }
     }
+
 
     private void DistanceLabel_DistanceInputOverride(NumberInputField source, float distance)
     {
@@ -288,5 +297,10 @@ public class BuildingMeasuring : Interactable
         var distanceMeasured = direction.magnitude;
         var difference = distance - distanceMeasured;
         DistanceInputOverride.Invoke(this, direction.normalized, difference);
+    }
+
+    private void DistanceLabel_DeleteButtonPressed(NumberInputField source)
+    {
+        DeleteButtonPressed?.Invoke(this);
     }
 }

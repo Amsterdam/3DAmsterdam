@@ -16,6 +16,11 @@ namespace Netherlands3D.Interface
 
         public delegate void DistanceInputOverrideEventHandler(NumberInputField source, float distance);
         public event DistanceInputOverrideEventHandler DistanceInputOverride;
+        public delegate void DeleteButtonPressedEventHandler(NumberInputField source);
+        public event DeleteButtonPressedEventHandler DeleteButtonPressed;
+
+        [SerializeField]
+        private Button deleteButton;
 
         public bool IsSelected
         {
@@ -62,6 +67,17 @@ namespace Netherlands3D.Interface
         {
             units = "cm";
             return float.TryParse(inputString, out distance);
+        }
+
+        //called by the inspector
+        public void DeleteLabel()
+        {
+            DeleteButtonPressed?.Invoke(this);
+        }
+
+        public void EnableDeleteButton(bool enable)
+        {
+            deleteButton.gameObject.SetActive(enable);
         }
 
         //private bool TryParseUserString(string inputString, out float distance, out string units)
