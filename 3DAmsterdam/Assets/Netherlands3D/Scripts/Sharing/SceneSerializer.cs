@@ -104,6 +104,8 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         IEnumerator GetSharedScene(string sceneId)
         {
+            yield return new WaitUntil(() => Config.isLoadingOverrides == false);
+
             var getSceneURL = Config.activeConfiguration.sharingDownloadScenePath.Replace("{sceneId}",sceneId);
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(getSceneURL);
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
