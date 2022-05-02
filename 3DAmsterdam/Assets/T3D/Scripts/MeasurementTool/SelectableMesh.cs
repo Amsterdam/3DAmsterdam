@@ -21,7 +21,9 @@ public class SelectableMesh : MonoBehaviour
     public MeasurePoint ActivePoint { get; private set; }
     public bool VisualizeActivePoint { get; set; } = true;
 
-    public void SelectVertices()
+    private bool arePointsGenerated = false;
+
+    public void GenerateVertPoints()
     {
         if (meshFilterOverride)
             activeMeshFilter = meshFilterOverride;
@@ -43,13 +45,28 @@ public class SelectableMesh : MonoBehaviour
         }
     }
 
-    public void DeselectVertices() //todo: call this somewehre
+    public void SelectVertices()
+    {
+        if (arePointsGenerated)
+        {
+            foreach (var point in points)
+            {
+                point.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            GenerateVertPoints();
+        }
+    }
+
+    public void DeselectVertices()
     {
         foreach (var point in points)
         {
-            Destroy(point.gameObject);
+            point.gameObject.SetActive(false);
         }
-        points = new MeasurePoint[0];
+        //points = new MeasurePoint[0];
     }
 
     private void Update()

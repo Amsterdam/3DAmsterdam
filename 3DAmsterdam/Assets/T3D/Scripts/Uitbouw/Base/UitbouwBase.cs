@@ -160,7 +160,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void EnableGizmo(bool enable)
         {
-            Gizmo.SetActive(enable, true, !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall);
+            Gizmo.SetActive(enable, true, !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall, !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall);
         }
 
         private void UpdateGizmo()

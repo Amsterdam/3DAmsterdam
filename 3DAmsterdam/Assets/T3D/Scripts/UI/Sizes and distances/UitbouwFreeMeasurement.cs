@@ -28,6 +28,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     //private MeasurePoint secondPoint;
     private Vector3 mousePositionInWorld;
 
+    private bool measureToolActive;
     private UitbouwBase uitbouw;
 
     protected override void Awake()
@@ -36,11 +37,6 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         lines = new List<BuildingMeasuring>();
         uitbouw = GetComponent<UitbouwBase>();
     }
-
-    //private void Start()
-    //{
-    //    mySelectableMesh = GetComponent<SelectableMesh>();
-    //}
 
     protected override void DrawLines()
     {
@@ -65,11 +61,15 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     protected override void Update()
     {
         base.Update();
-        if (DrawDistanceActive)
+
+        if (!measureToolActive && uitbouw.Gizmo.Mode == GizmoMode.Measure)
+            SetAllowMeasurement(true);
+        else if (measureToolActive && uitbouw.Gizmo.Mode != GizmoMode.Measure)
+            SetAllowMeasurement(false);
+
+        if (measureToolActive)
             HandleUserInput();
 
-        if (Input.GetKeyDown(KeyCode.L))
-            SetAllowMeasurement(!DrawDistanceActive);
 
         if (Input.GetKeyDown(KeyCode.M))
         {
@@ -188,15 +188,26 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
     public void SetAllowMeasurement(bool allowed)
     {
-        DrawDistanceActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
+        //DrawDistanceActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
+        measureToolActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
-        if (allowed)
+        if (measureToolActive)//todo: add building, dont reset array every time
         {
             otherSelectableMeshes = new SelectableMesh[1];
             otherSelectableMeshes[0] = RestrictionChecker.ActivePerceel.GetComponentInChildren<SelectableMesh>();
             otherSelectableMeshes[0].SelectVertices();
 
             mySelectableMesh.SelectVertices();
+        }
+        else
+        {
+
+            foreach(var mesh in otherSelectableMeshes)
+            {
+                mesh.DeselectVertices();
+            }
+
+            mySelectableMesh.DeselectVertices();
         }
     }
 
