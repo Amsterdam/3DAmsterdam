@@ -16,6 +16,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         //public bool MoveModeSelected => moveToggle.isOn;
         //public bool RotateModeSelected => rotateToggle.isOn;
+        private void Start()
+        {
+            // needed to update the graphics of the toggles so they don't all apear as isOn = true for some reason
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
+        }
 
         public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true)
         {
