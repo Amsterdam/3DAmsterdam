@@ -18,6 +18,7 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
     private float fadeEndDistance = 30f;
     private float textTargetAlpha = 1f;
     private float imageTargetAlpha = 1f;
+    private NumberInputField numberInputField;
 
     private bool isHovering;
 
@@ -25,6 +26,7 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         texts = GetComponentsInChildren<Text>();
         images = GetComponentsInChildren<Image>();
+        numberInputField = GetComponent<NumberInputField>();
         SetTargetTransparency(notHoveringTextAlpha, notHoveringImageAlpha);
     }
 
@@ -64,9 +66,10 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         zoomMultiplier = Mathf.InverseLerp(fadeEndDistance, fadeStartDistance, dist);
 
-        if (isHovering || GetComponent<NumberInputField>().IsSelected)
+        if (isHovering || numberInputField.IsSelected)
         {
             SetTargetTransparency(1f, 1f);
+            transform.SetAsLastSibling();
         }
         else
         {
