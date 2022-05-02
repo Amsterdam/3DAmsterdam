@@ -22,10 +22,10 @@ MonoBehaviour:
     x: 141000
     y: 501000
   zeroGroundLevelY: 0
-  sharingUploadScenePath: https://3da-functions-weu-o.azurewebsites.net/api/UploadScene
-  sharingDownloadScenePath: https://3da-functions-weu-o.azurewebsites.net/api/DownloadScene/{sceneId}
-  sharingUploadModelPath: https://3da-functions-weu-o.azurewebsites.net/api/UploadModel/{sceneId}/{modelToken}
-  sharingDownloadModelPath: https://3da-functions-weu-o.azurewebsites.net/api/DownloadModel/{sceneId}/{modelToken}
+  sharingUploadScenePath: https://3da-o-functions.azurewebsites.net/api/UploadScene
+  sharingDownloadScenePath: https://3da-o-functions.azurewebsites.net/api/DownloadScene/{sceneId}
+  sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/UploadModel/{sceneId}/{modelToken}
+  sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/DownloadModel/{sceneId}/{modelToken}
   sharingViewScenePath: ?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
