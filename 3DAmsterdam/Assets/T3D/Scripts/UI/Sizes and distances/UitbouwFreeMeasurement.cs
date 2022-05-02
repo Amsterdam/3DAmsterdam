@@ -98,6 +98,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             else if (IsHoveringOverValidPoint(out var point))
             {
                 firstPoint = point;
+                firstPoint.GetComponentInParent<SelectableMesh>().VisualizeActivePoint = false;
                 CreateLine();
             }
         }
@@ -107,7 +108,6 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             {
                 if (IsHoveringOverValidSecondPoint(out var point))
                 {
-                    print("hovering over valid second opint");
                     mousePositionInWorld = point.transform.position;
                 }
                 else
@@ -128,6 +128,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         point = null;
         if (mySelectableMesh.ActivePoint)
         {
+            mySelectableMesh.VisualizeActivePoint = true;
             point = mySelectableMesh.ActivePoint;
             return true;
         }
@@ -135,6 +136,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         {
             foreach (var mesh in otherSelectableMeshes)
             {
+                mySelectableMesh.VisualizeActivePoint = true;
                 if (mesh.ActivePoint)
                 {
                     point = mesh.ActivePoint;

@@ -19,6 +19,7 @@ public class SelectableMesh : MonoBehaviour
     private float pointScale = 1.0f;
     private MeasurePoint[] points = new MeasurePoint[0];
     public MeasurePoint ActivePoint { get; private set; }
+    public bool VisualizeActivePoint { get; set; } = true;
 
     public void SelectVertices()
     {
@@ -73,7 +74,7 @@ public class SelectableMesh : MonoBehaviour
                 if (points.Contains(point))
                 {
                     DeselectActivePoint();
-                    SelectPoint(point);
+                    SelectPoint(point, VisualizeActivePoint);
                 }
             }
             else if (!point || !points.Contains(point))
@@ -96,10 +97,11 @@ public class SelectableMesh : MonoBehaviour
         }
     }
 
-    private void SelectPoint(MeasurePoint newPoint)
+    private void SelectPoint(MeasurePoint newPoint, bool visualize)
     {
         ActivePoint = newPoint;
-        ActivePoint.ChangeShape(MeasurePoint.Shape.POINT);
+        if (visualize)
+            ActivePoint.ChangeShape(MeasurePoint.Shape.POINT);
     }
 
     private float AutoScalePointByDistance(Transform point)
