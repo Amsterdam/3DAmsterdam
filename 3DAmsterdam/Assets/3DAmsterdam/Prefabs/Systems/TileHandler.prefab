@@ -599,8 +599,6 @@ MonoBehaviour:
   - {fileID: 2225582094044424291}
   - {fileID: 261412772941551813}
   - {fileID: 7981405137232490983}
-  pendingTileChanges: []
-  activeTileChangesView: []
 --- !u!114 &616229442462763187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,7 +608,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6735491049249484867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a117f028c64a145a9b41d7a2b6e71d, type: 3}
+  m_Script: {fileID: 11500000, guid: 65c549ef37fc1fe4390b61b0b654fd38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serverRootWebAddress: https://acc.3d.amsterdam.nl
@@ -745,14 +743,11 @@ MonoBehaviour:
     type: 2}
   onReceiveIdsAndFloats: {fileID: 11400000, guid: fb2cf9652db7b5543805d7d32c265542,
     type: 2}
+  onReceiveIdsAndFloatsForAlpha: {fileID: 0}
   onSetGradient: {fileID: 11400000, guid: 304e0e4c1f30bc846ad069df7a892b3c, type: 2}
   onReceiveMinRange: {fileID: 11400000, guid: 84ac3174f13dc9e44960250748b72a2e, type: 2}
   onReceiveMaxRange: {fileID: 11400000, guid: 102194ef148d69c40af1842e74c88a3f, type: 2}
   onClearData: {fileID: 11400000, guid: 84e22a875f085554fa32d2ef0bbef43d, type: 2}
-  dataSource: file:///somecsv.csv
-  idColumn: 0
-  colorColumn: 2
-  colorInterpretation: 0
   minimumValue: 0
   maximumValue: 0
   gradientContainer: {fileID: 11400000, guid: a8677e00698bac441a4d2bce5c3869cb, type: 2}
