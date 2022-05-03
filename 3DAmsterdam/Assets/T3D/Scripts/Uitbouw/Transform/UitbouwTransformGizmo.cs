@@ -11,17 +11,18 @@ namespace Netherlands3D.T3D.Uitbouw
         None,
         Move,
         Rotate,
+        Measure,
     }
 
     public class UitbouwTransformGizmo : DragableAxis
     {
-        public GizmoMode Mode { get; private set; }
+        public GizmoMode Mode { get; private set; } = GizmoMode.None;
         public Vector3 GizmoPoint => transform.position + RestrictionChecker.ActiveUitbouw.transform.rotation * RestrictionChecker.ActiveUitbouw.Extents;
         public float Radius => transform.localScale.x / 2;
 
         private SpriteRenderer spriteRenderer;
         [SerializeField]
-        private Sprite moveSprite, rotateSprite;
+        private Sprite moveSprite, rotateSprite, measureSprite;
 
         public UitbouwTransformGizmoButtons GizmoButtons { get; private set; }
 
@@ -42,8 +43,10 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.localScale = new Vector3(d, d, d);
         }
 
-        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true)
+        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true)
         {
+            print("set active: " + active);
+
             if (!active)
                 SetMode(GizmoMode.None);
             else
@@ -55,7 +58,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 GizmoButtons.SubscribeListeners(this);
             }
 
-            GizmoButtons.SetActive(active, allowMove, allowRotate);
+            GizmoButtons.SetActive(active, allowMove, allowRotate, allowMeasure);
             gameObject.SetActive(active);
         }
 
@@ -69,8 +72,10 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (mode == GizmoMode.Move)
                 spriteRenderer.sprite = moveSprite;
-            else
+            else if (mode == GizmoMode.Rotate)
                 spriteRenderer.sprite = rotateSprite;
+            else
+                spriteRenderer.sprite = measureSprite;
         }
     }
 }

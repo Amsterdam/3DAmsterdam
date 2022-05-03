@@ -18,7 +18,9 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private BuildingMeshGenerator building;
 
+        [SerializeField]
         private GameObject perceelMeshGameObject;
+        [SerializeField]
         private GameObject perceelOutlineGameObject;
 
         [SerializeField]
@@ -29,11 +31,12 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 Center { get; private set; }
         public float Radius { get; private set; }
         public bool IsLoaded { get; private set; } = false;
+        public Plane PerceelPlane { get; private set; }
 
         private void Start()
         {
-            perceelMeshGameObject = CreatePerceelGameObject();
-            perceelOutlineGameObject = CreatePerceelGameObject();
+            //perceelMeshGameObject = CreatePerceelGameObject();
+            //perceelOutlineGameObject = CreatePerceelGameObject();
 
             ServiceLocator.GetService<MetadataLoader>().PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
@@ -46,6 +49,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
             Center = new Vector3(Center.x, building.GroundLevel, Center.z);
+            PerceelPlane = new Plane(Vector3.up, building.GroundLevel);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -107,17 +111,18 @@ namespace Netherlands3D.T3D.Uitbouw
             filter.mesh = mesh;
         }
 
-        private GameObject CreatePerceelGameObject()
-        {
-            var obj = new GameObject();
-            obj.name = "Perceelmesh";
-            obj.transform.SetParent(transform);
-            obj.AddComponent<MeshFilter>();
-            var renderer = obj.AddComponent<MeshRenderer>();
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
+        //private GameObject CreatePerceelGameObject()
+        //{
+        //    var obj = new GameObject();
+        //    obj.name = "Perceelmesh";
+        //    obj.transform.SetParent(transform);
+        //    obj.AddComponent<MeshFilter>();
+        //    var renderer = obj.AddComponent<MeshRenderer>();
+        //    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
+        //    obj.AddComponent<SelectableMesh>();
 
-            return obj;
-        }
+        //    return obj;
+        //}
 
         void RenderPerceelOutline(List<Vector2[]> perceel)
         {

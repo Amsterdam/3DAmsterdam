@@ -151,6 +151,9 @@ namespace Netherlands3D.T3D.Uitbouw
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed && ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
+            var freeMeasuring = GetComponent<UitbouwFreeMeasurement>();
+            freeMeasuring.DrawDistanceActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
+
             //userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
             //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
         }

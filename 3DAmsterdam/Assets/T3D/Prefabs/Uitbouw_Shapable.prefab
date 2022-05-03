@@ -554,6 +554,8 @@ GameObject:
   - component: {fileID: 6641196300282613232}
   - component: {fileID: 8290729776069747320}
   - component: {fileID: 5407043954321932671}
+  - component: {fileID: 6749726174160187187}
+  - component: {fileID: 6759356009430603571}
   m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -670,6 +672,39 @@ MonoBehaviour:
   bakeKeys: []
   bakeValues: []
   isPlane: 1
+--- !u!114 &6749726174160187187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a01dd266370f47488e4e98d3ebfa174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  numberOfLines: 0
+  mySelectableMesh: {fileID: 6759356009430603571}
+--- !u!114 &6759356009430603571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502690ba42a1c45e7ba9abf6475ac756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vertexVisualizationPrefab: {fileID: 5969573748713340153, guid: a68368933e31644838fa22e3836c955e,
+    type: 3}
+  meshFilterOverride: {fileID: 812392941010986557}
+  pointScale: 0.015
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0

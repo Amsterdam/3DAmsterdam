@@ -12,7 +12,8 @@ public class MeasurePoint : MonoBehaviour
 
 	public enum Shape{
 		POINT,
-		HEIGHT
+		HEIGHT,
+		NONE
 	}
 
 	private Shape shape = Shape.POINT;
@@ -32,7 +33,16 @@ public class MeasurePoint : MonoBehaviour
 				pointIndicator.gameObject.SetActive(false);
 				break;
 			default:
+				heightIndicator.SetActive(false);
+				pointIndicator.SetActive(false);
 				break;
 		}
+	}
+
+	public void SetSelectable(bool selectable)
+    {
+		var layer = selectable ? LayerMask.NameToLayer("BoundaryFeatures") : LayerMask.NameToLayer("Default");
+		heightIndicator.layer = layer;
+		pointIndicator.layer = layer;
 	}
 }

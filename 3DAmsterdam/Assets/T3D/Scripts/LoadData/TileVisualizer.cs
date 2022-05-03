@@ -46,7 +46,7 @@ public class TileVisualizer : MonoBehaviour
 
 	private IEnumerator DownloadBinaryMesh(Vector2 position)
 	{
-		string url = (Config.activeConfiguration.T3DSandboxEnvironment + DataPath).ReplaceXY(position.x, position.y);
+		string url = (Config.activeConfiguration.T3DAzureWebroot + DataPath).ReplaceXY(position.x, position.y);
 
 		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
 //#if !UNITY_EDITOR && UNITY_WEBGL
@@ -74,7 +74,7 @@ public class TileVisualizer : MonoBehaviour
 
 	private IEnumerator DownloadBinaryMeshData(Vector2 position, string bagId )
 	{
-		string url = (Config.activeConfiguration.T3DSandboxEnvironment + MetaDataPath).ReplaceXY(position.x, position.y);
+		string url = (Config.activeConfiguration.T3DAzureWebroot + MetaDataPath).ReplaceXY(position.x, position.y);
 		var webRequest = UnityWebRequest.Get(url);
 
 		yield return webRequest.SendWebRequest();

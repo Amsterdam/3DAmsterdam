@@ -76,20 +76,7 @@ namespace Netherlands3D.LayerSystem
             //Try to find a selected mesh ID and highlight it
             StartCoroutine(GetSelectedMeshIDData(Selector.mainSelectorRay, (value) => { HighlightSelectedID(value); }));
         }
-
-        /// <summary>
-        /// Find selected ID's based on a area selection done by our selectiontools.
-        /// We find BAG id's within an area using a WebRequest and an API.
-        /// </summary>
-        public void FindSelectedIDsInArea()
-        {
-            SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
-            var vertices = selectionTools.GetVertices();
-            var bounds = selectionTools.GetBounds();
-
-            //Polygon selection
-            StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightObjectsWithIDs));
-        }
+        
 
         /// <summary>
         /// Add a single object to highlight selection. If we clicked an empty ID, clear the selection if we are not in multiselect
@@ -236,12 +223,10 @@ namespace Netherlands3D.LayerSystem
 					HighlightObjectsWithIDs();
                 }
                 );
-				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(id);
             }
             else if (lastSelectedID != emptyID)
             {
 				ServiceLocator.GetService<PropertiesPanel>().OpenObjectInformation("", true);
-				ServiceLocator.GetService<PropertiesPanel>().displayBagData.ShowBuildingData(lastSelectedID);
             }
         }
 
@@ -306,102 +291,8 @@ namespace Netherlands3D.LayerSystem
             containerLayer.GetIDData(gameObjectToHighlight, vertexIndex, HighlightSelectedID);
         }
 
-        IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
-        {
-            var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(min);
-            var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
-
-            List<string> ids = new List<string>();
-            string url = Config.activeConfiguration.bagIdRequestServiceBoundingBoxUrl;
-            // construct url string
-            url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
-            var hideRequest = UnityWebRequest.Get(url);
-            print(url);
-            yield return hideRequest.SendWebRequest();
-            if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
-            {
-                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
-            }
-            else
-            {
-                //Filter out the list of ID's from our returned CSV           
-                string dataString = hideRequest.downloadHandler.text;
-                var csv = SplitCSV(dataString);
-                int returnCounter = 0;
-
-                for (int i = 3; i < csv.Count; i += 2)
-                {
-                    var numberOnlyString = GetNumbers(csv[i]);
-                    ids.Add(numberOnlyString);
-                    returnCounter++;
-                    if (returnCounter > 100)
-                    {
-                        yield return null;
-                        returnCounter = 0;
-                    }
-                }
-            }
-
-            callback?.Invoke(ids);
-            yield return null;
-        }
-
         public BagDataSelection bagDataSelection;
-        IEnumerator GetAllIDsInPolygonRange(Vector3[] points, System.Action<List<string>> callback = null)
-        {
-            List<string> ids = new List<string>();
-
-            //Create a string array of coordinates for our filter XML
-            string coordinates = "";
-            for (int i = 0; i < points.Length; i++)
-            {
-                //convert Unity to WGS84
-                var coordinate = ConvertCoordinates.CoordConvert.UnitytoRD(points[i]);
-                if (i != 0) coordinates += ",";
-                coordinates += coordinate.x.ToString(CultureInfo.InvariantCulture) + " " + coordinate.y.ToString(CultureInfo.InvariantCulture);
-            }
-
-            //Our filter according to https://www.mapserver.org/ogc/filter_encoding.html , the type of WFS server used by the API.
-            var filter = $"<Filter><Intersects><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Intersects></Filter>";
-
-            var requestUrl = Config.activeConfiguration.bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
-            var hideRequest = UnityWebRequest.Get(requestUrl);
-
-            yield return hideRequest.SendWebRequest();
-
-            if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
-            {
-                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
-            }
-            else
-            {
-                //Filter out the list of ID's from our returned CSV
-                string dataString = hideRequest.downloadHandler.text;
-                var csv = SplitCSV(dataString);
-                int returnCounter = 0;
-
-                for (int i = 3; i < csv.Count; i += 2)
-                {
-                    var numberOnlyString = GetNumbers(csv[i]);
-                    ids.Add(numberOnlyString);
-                    returnCounter++;
-                    if (returnCounter > 100)
-                    {
-                        yield return null;
-                        returnCounter = 0;
-                    }
-                }
-            }
-
-            //Make sure all the metadata requests are done before we continue
-            while (TileHandler.runningTileDataRequests > 0)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
-            callback?.Invoke(ids);
-            yield return null;
-        }
+        
 
         //Api bag data selection return format (selective)
         [System.Serializable]
