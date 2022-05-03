@@ -8,7 +8,7 @@ using UnityEngine;
 public class SelectableMesh : MonoBehaviour
 {
     [SerializeField]
-    private MeasurePoint prefab;
+    private MeasurePoint vertexVisualizationPrefab;
     [SerializeField]
     private MeshFilter meshFilterOverride;
 
@@ -37,7 +37,7 @@ public class SelectableMesh : MonoBehaviour
         for (int i = 0; i < verts.Length; i++)
         {
             var transformedPosition = (activeMeshFilter.transform.rotation * verts[i].Multiply(activeMeshFilter.transform.lossyScale)) + activeMeshFilter.transform.position;
-            var point = Instantiate(prefab, transformedPosition, Quaternion.identity, transform);
+            var point = Instantiate(vertexVisualizationPrefab, transformedPosition, Quaternion.identity, transform);
             point.ChangeShape(MeasurePoint.Shape.NONE);
             point.SetSelectable(true);
 

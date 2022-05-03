@@ -38,6 +38,13 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         uitbouw = GetComponent<UitbouwBase>();
     }
 
+    private void Start()
+    {
+        otherSelectableMeshes = new SelectableMesh[2];
+        otherSelectableMeshes[0] = RestrictionChecker.ActivePerceel.GetComponentInChildren<SelectableMesh>();
+        otherSelectableMeshes[1] = RestrictionChecker.ActiveBuilding.GetComponentInChildren<SelectableMesh>();
+    }
+
     protected override void DrawLines()
     {
         for (int i = 0; i < lines.Count; i++)
@@ -69,17 +76,6 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
         if (measureToolActive)
             HandleUserInput();
-
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            foreach (var line in lines)
-            {
-                Destroy(line.gameObject);
-            }
-            lines = new List<BuildingMeasuring>();
-            measureLines = new List<MeasureLine>();
-        }
     }
 
     private void HandleUserInput()
@@ -191,17 +187,17 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         //DrawDistanceActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
         measureToolActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
-        if (measureToolActive)//todo: add building, dont reset array every time
+        if (measureToolActive)
         {
-            otherSelectableMeshes = new SelectableMesh[1];
-            otherSelectableMeshes[0] = RestrictionChecker.ActivePerceel.GetComponentInChildren<SelectableMesh>();
-            otherSelectableMeshes[0].SelectVertices();
+            foreach (var mesh in otherSelectableMeshes)
+            {
+                mesh.SelectVertices();
+            }
 
             mySelectableMesh.SelectVertices();
         }
         else
         {
-
             foreach(var mesh in otherSelectableMeshes)
             {
                 mesh.DeselectVertices();
