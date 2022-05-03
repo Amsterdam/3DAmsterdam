@@ -23,6 +23,12 @@ public class SelectableMesh : MonoBehaviour
 
     private bool arePointsGenerated = false;
 
+    [SerializeField]
+    private bool limitVerticesToGroundPlane;
+    private Plane vertexLimitPlane;
+    [SerializeField]
+    private float vertexLimitTolerance = 0.1f;
+
     public void GenerateVertPoints()
     {
         if (meshFilterOverride)
@@ -32,17 +38,31 @@ public class SelectableMesh : MonoBehaviour
 
         mesh = activeMeshFilter.mesh;
 
-        points = new MeasurePoint[mesh.vertices.Length];
+        var pos = activeMeshFilter.transform.position + activeMeshFilter.transform.rotation * activeMeshFilter.mesh.bounds.min;
+        //vertexLimitPlane = new Plane(Vector3.up, activeMeshFilter.mesh.bounds.center - activeMeshFilter.mesh.bounds.min);
+        vertexLimitPlane = new Plane(Vector3.up, pos);
+
+        var pointList = new List<MeasurePoint>();
         var verts = mesh.vertices; //cache a copy
         for (int i = 0; i < verts.Length; i++)
         {
             var transformedPosition = (activeMeshFilter.transform.rotation * verts[i].Multiply(activeMeshFilter.transform.lossyScale)) + activeMeshFilter.transform.position;
-            var point = Instantiate(vertexVisualizationPrefab, transformedPosition, Quaternion.identity, transform);
-            point.ChangeShape(MeasurePoint.Shape.NONE);
-            point.SetSelectable(true);
+            var conformsToLimit = !limitVerticesToGroundPlane || IsWithinGroundPlaneLimit(transformedPosition);
 
-            points[i] = point;
+            if (conformsToLimit)
+            {
+                var point = Instantiate(vertexVisualizationPrefab, transformedPosition, Quaternion.identity, transform);
+                point.ChangeShape(MeasurePoint.Shape.NONE);
+                point.SetSelectable(true);
+                pointList.Add(point);
+            }
         }
+        points = pointList.ToArray();
+    }
+
+    private bool IsWithinGroundPlaneLimit(Vector3 transformedPosition)
+    {
+        return vertexLimitPlane.GetDistanceToPoint(transformedPosition) <= vertexLimitTolerance;
     }
 
     public void SelectVertices()
