@@ -23,17 +23,26 @@ public class StartState : State
     {
         //do not call base function, even when loading a session we need to wait for the data to load correctly.
         //base.LoadSavedState();
-    }  
+    }
 
     private IEnumerator WaitForDataLoadingToComplete()
     {
         //wait until all data is loaded to avoid timing issues in later steps
+
         yield return new WaitUntil(() =>
             SessionSaver.HasLoaded &&
             RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed &&
             RestrictionChecker.ActivePerceel.IsLoaded
         );
 
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
+        {
+            var visualizer = ServiceLocator.GetService<CityJsonVisualiser>();
+            visualizer.VisualizeCityJson();
+            yield return new WaitUntil(() =>
+                visualizer.HasLoaded
+            );
+        }
         GoToNextState();
     }
 

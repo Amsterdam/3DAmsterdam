@@ -132,9 +132,11 @@ namespace Netherlands3D.T3D.Uitbouw
             if (!Gizmo)
             {
                 var gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this);
-                userMovementAxes[userMovementAxes.Length - 1] = gizmo;
+                //userMovementAxes[userMovementAxes.Length - 1] = gizmo;
                 Gizmo = gizmo as UitbouwTransformGizmo;
             }
+
+            userMovementAxes[userMovementAxes.Length - 1] = Gizmo;
 
             //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 

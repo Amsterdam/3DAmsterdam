@@ -39,7 +39,8 @@ public static class SessionSaver
         //SessionId = "831201c0-ba78-11ec-a2c7-f3c0d57d2cd6"; //Testgebouw2
         //SessionId = "711b7b20-bb10-11ec-9ed4-fd18befc5836"; //no snap
         //SessionId = "47f81880-bbe1-11ec-bb7e-b7bbd72d450c"; //snap
-        SessionId = "961bc940-bfd7-11ec-8a43-ddfbd3cd7e77";
+        //SessionId = "961bc940-bfd7-11ec-8a43-ddfbd3cd7e77"; //shapeable
+        SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
