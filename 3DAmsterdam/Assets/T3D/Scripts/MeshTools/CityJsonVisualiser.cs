@@ -66,14 +66,13 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         if (useTestJSON)
             cityJson = testJSON.text;
 
-        print(cityJson);
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
-            var key = co.Key;
+            //var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
 
             AddMesh(mesh);
@@ -128,16 +127,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     public void EnableUploadedModel(bool enable)
     {
         uitbouw.gameObject.SetActive(enable);
-
-        //if (perceelCenter != null)
-        //    uitbouw.GetComponent<UitbouwMovement>().SetPosition(CoordConvert.RDtoUnity(perceelCenter.Value)); //set position to ensure snapping to wall is somewhat accurate
-
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
     }
-
-    //public void SetUitbouwPosition(Vector3 pos)
-    //{
-    //    uitbouw.
-    //}
 }
