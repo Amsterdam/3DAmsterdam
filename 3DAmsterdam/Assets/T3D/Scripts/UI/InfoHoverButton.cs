@@ -36,7 +36,7 @@ public class InfoHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     protected virtual void CreatePopup()
     {
-        popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
+        popup = Instantiate(popupPrefab, transform.position, transform.rotation, GetComponentInParent<State>().transform);
         popup.GetComponentInChildren<PopupInfo>().SetText(defaultPopupText);
     }
 }

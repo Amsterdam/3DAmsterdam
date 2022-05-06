@@ -6,6 +6,7 @@ public class BagIDHoverButton : InfoHoverButton
 {
     private void Awake()
     {
-        defaultPopupText = "Bag ID: " + ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
+        if (defaultPopupText == string.Empty)
+            defaultPopupText = "Bag ID: " + ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
     }
 }

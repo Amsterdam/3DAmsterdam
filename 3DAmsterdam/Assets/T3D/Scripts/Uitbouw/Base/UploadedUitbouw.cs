@@ -34,30 +34,8 @@ namespace Netherlands3D.T3D.Uitbouw
             SetDimensions(Multiply(meshFilter.transform.lossyScale, mesh.bounds.size));
         }
 
-        protected override void Awake()
-        {
-            //if we receive the BIM CityJSON later than the state is loaded and this object is enabled, we need to provide a temporary meshfilter to avoid NullReferences.
-            //if (!meshFilter)
-            //{
-            //    var temp = new GameObject();
-            //    tempMeshFilter = temp.AddComponent<MeshFilter>();
-            //    tempMeshFilter.mesh = new Mesh();
-            //    SetMeshFilter(tempMeshFilter);
-            //    print("setting temp mf");
-            //}
-            print("mf:" + meshFilter);
-            print("mesh:" + mesh);
-            base.Awake();
-        }
-
         public void SetMeshFilter(MeshFilter mf)
         {
-            //if (mf != tempMeshFilter)
-            //{
-            //    print("setting " + mf + " as mesh filter");
-            //    Destroy(tempMeshFilter.gameObject);
-            //}
-
             meshFilter = mf;
             mesh = meshFilter.mesh;
             transformedExtents = Multiply(meshFilter.transform.lossyScale, mesh.bounds.extents);
