@@ -10,9 +10,10 @@ namespace Netherlands3D.T3D.Uitbouw
         public JSONNode CityObject { get; private set; }
         [SerializeField]
         private MeshFilter meshFilter;
+        public MeshFilter MeshFilter => meshFilter;
         private Mesh mesh;
 
-        private MeshFilter tempMeshFilter;
+        //private MeshFilter tempMeshFilter;
 
         Vector3 transformedExtents;
 
@@ -35,23 +36,27 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected override void Awake()
         {
-            base.Awake();
-
             //if we receive the BIM CityJSON later than the state is loaded and this object is enabled, we need to provide a temporary meshfilter to avoid NullReferences.
-            if (!meshFilter)
-            {
-                var temp = new GameObject();
-                tempMeshFilter = temp.AddComponent<MeshFilter>();
-                SetMeshFilter(tempMeshFilter);
-            }
+            //if (!meshFilter)
+            //{
+            //    var temp = new GameObject();
+            //    tempMeshFilter = temp.AddComponent<MeshFilter>();
+            //    tempMeshFilter.mesh = new Mesh();
+            //    SetMeshFilter(tempMeshFilter);
+            //    print("setting temp mf");
+            //}
+            print("mf:" + meshFilter);
+            print("mesh:" + mesh);
+            base.Awake();
         }
 
         public void SetMeshFilter(MeshFilter mf)
         {
-            if(mf != tempMeshFilter)
-            {
-                Destroy(tempMeshFilter.gameObject);
-            }
+            //if (mf != tempMeshFilter)
+            //{
+            //    print("setting " + mf + " as mesh filter");
+            //    Destroy(tempMeshFilter.gameObject);
+            //}
 
             meshFilter = mf;
             mesh = meshFilter.mesh;

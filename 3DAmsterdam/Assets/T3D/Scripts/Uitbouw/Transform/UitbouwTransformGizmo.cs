@@ -45,8 +45,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true)
         {
-            print("set active: " + active);
-
             if (!active)
                 SetMode(GizmoMode.None);
             else

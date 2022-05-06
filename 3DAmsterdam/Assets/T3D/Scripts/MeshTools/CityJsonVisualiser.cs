@@ -18,6 +18,13 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     private string cityJson = string.Empty;
     private UploadedUitbouw uitbouw;
 
+    public bool HasLoaded { get; private set; }
+
+    [SerializeField]
+    private TextAsset testJSON;
+    [SerializeField]
+    private bool useTestJSON;
+
     private void Awake()
     {
         uitbouw = GetComponentInChildren<UploadedUitbouw>(true);
@@ -48,25 +55,56 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 
     public void VisualizeCityJson()
     {
-        EnableUploadedModel(true);
-        StartCoroutine(ParseCityJson());
+        StartCoroutine(ParseCityJson(useTestJSON));
+        //EnableUploadedModel(true);
     }
 
-    private IEnumerator ParseCityJson()
+    private IEnumerator ParseCityJson(bool useTestJson)
     {
         yield return new WaitUntil(() => cityJson != string.Empty);
+
+        if (useTestJSON)
+            cityJson = testJSON.text;
+
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
+
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
-            var key = co.Key;
+            //var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
-            AddMeshGameObject(key, mesh);
+
+            AddMesh(mesh);
+            //AddMeshGameObject(key, mesh);
         }
 
         //re-initialize the usermovementaxes to ensure the new meshes are dragable
+        //EnableUploadedModel(true);
+        uitbouw.SetMeshFilter(uitbouw.MeshFilter);
+
+        var depthOffset = -transform.forward * uitbouw.Depth / 2;
+        var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
+        uitbouw.MeshFilter.transform.localPosition = depthOffset + heightOffset;
+
         uitbouw.InitializeUserMovementAxes();
+
+        HasLoaded = true;
+    }
+
+    void AddMesh(Mesh newMesh)
+    {
+        var meshFilter = uitbouw.MeshFilter;
+        CombineInstance[] combine = new CombineInstance[2];
+        combine[0].mesh = meshFilter.sharedMesh;
+        combine[0].transform = meshFilter.transform.localToWorldMatrix;
+        combine[1].mesh = newMesh;
+        combine[1].transform = meshFilter.transform.localToWorldMatrix;
+
+        meshFilter.mesh = new Mesh();
+        meshFilter.mesh.CombineMeshes(combine);
+
+        uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
     }
 
     void AddMeshGameObject(string name, Mesh mesh)
@@ -89,16 +127,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     public void EnableUploadedModel(bool enable)
     {
         uitbouw.gameObject.SetActive(enable);
-
-        if (perceelCenter != null)
-            uitbouw.GetComponent<UitbouwMovement>().SetPosition(CoordConvert.RDtoUnity(perceelCenter.Value)); //set position to ensure snapping to wall is somewhat accurate
-
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
-    }
-
-    public void SetUitbouwPosition(Vector3 pos)
-    {
-        uitbouw.GetComponent<UitbouwMovement>().SetPosition(pos);
     }
 }

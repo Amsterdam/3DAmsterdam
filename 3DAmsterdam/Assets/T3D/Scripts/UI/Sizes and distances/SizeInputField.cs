@@ -66,7 +66,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void LoadData()
         {
-            float delta = 0;
+            float delta;
             switch (size)
             {
                 case SizeType.Width:
@@ -94,7 +94,8 @@ namespace Netherlands3D.T3D.Uitbouw
                     SetText();
                 }
             }
-            SetWallColors(size, IsSelected);
+            if (shapeableUitbouw)
+                SetWallColors(size, IsSelected);
         }
 
         private void SetWallColors(SizeType size, bool highlight)

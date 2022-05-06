@@ -29,13 +29,6 @@ namespace Netherlands3D.T3D.Uitbouw
             //SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
         }
 
-        //private void SetArrowPositions()
-        //{
-        //    var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
-        //    userMovementAxes[userMovementAxes.Length - 2].transform.position = uitbouw.LeftCenter - arrowOffsetY;
-        //    userMovementAxes[userMovementAxes.Length - 1].transform.position = uitbouw.RightCenter - arrowOffsetY;
-        //}
-
         private void Update()
         {
             if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
@@ -44,8 +37,6 @@ namespace Netherlands3D.T3D.Uitbouw
             }
 
             ProcessMovementLimits();
-
-            //SetArrowPositions();
         }
 
         private void ProcessMovementLimits()
@@ -55,7 +46,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
                 LimitPositionOnWall();
             }
-            else 
+            else
             {
                 LimitPositionWithinPerceelRadius(RestrictionChecker.ActivePerceel);
             }

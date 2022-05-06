@@ -125,16 +125,22 @@ namespace Netherlands3D.T3D.Uitbouw
             userMovementAxes = new DragableAxis[colliders.Length + 1];
             for (int i = 0; i < colliders.Length; i++)
             {
-                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
+                var axis = colliders[i].GetComponent<DragableAxis>();
+                if (axis)
+                    userMovementAxes[i] = axis;
+                else
+                    userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
                 userMovementAxes[i].SetUitbouw(this);
             }
 
             if (!Gizmo)
             {
                 var gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this);
-                userMovementAxes[userMovementAxes.Length - 1] = gizmo;
+                //userMovementAxes[userMovementAxes.Length - 1] = gizmo;
                 Gizmo = gizmo as UitbouwTransformGizmo;
             }
+
+            userMovementAxes[userMovementAxes.Length - 1] = Gizmo;
 
             //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 

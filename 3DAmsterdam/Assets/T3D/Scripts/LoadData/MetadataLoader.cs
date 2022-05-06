@@ -261,9 +261,10 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
                 {
                     var obj = ServiceLocator.GetService<CityJsonVisualiser>();
-                    obj.VisualizeCityJson();
-                    obj.SetUitbouwPosition(spawnPosition);
-                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                    //obj.VisualizeCityJson();
+                    obj.EnableUploadedModel(true);
+                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>(true);
+                    Uitbouw.transform.position = spawnPosition;
                 }
                 else
                 {
