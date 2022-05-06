@@ -125,7 +125,11 @@ namespace Netherlands3D.T3D.Uitbouw
             userMovementAxes = new DragableAxis[colliders.Length + 1];
             for (int i = 0; i < colliders.Length; i++)
             {
-                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
+                var axis = colliders[i].GetComponent<DragableAxis>();
+                if (axis)
+                    userMovementAxes[i] = axis;
+                else
+                    userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
                 userMovementAxes[i].SetUitbouw(this);
             }
 
