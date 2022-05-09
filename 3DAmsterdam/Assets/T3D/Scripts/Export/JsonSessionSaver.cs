@@ -112,13 +112,13 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
         }
     }
 
-    private IEnumerator UploadDataToEndpoint(string data)
+    private IEnumerator UploadDataToEndpoint(string jsonData)
     {
         //var url = Config.activeConfiguration.T3DAzureFunctionURL + uploadURL + name;
-        var url = @"https://voorportaal.azurewebsites.net/api/uploadcityjson";
-        var uwr = UnityWebRequest.Put(url, data);
+        var url = Config.activeConfiguration.CityJSONUploadEndoint;
+        var uwr = UnityWebRequest.Put(url, jsonData);
         uwr.SetRequestHeader("Content-Type", "application/json");
-        uwr.SetRequestHeader("Authorization", "Bearer " + "qCUevbaM8BFtkT32TyLjjNsm6Mr7Rfty6KL8kPSQ");
+        uwr.SetRequestHeader("Authorization", "Bearer " + Config.activeConfiguration.CityJSONUploadEndpointToken);
 
         using (uwr)
         {

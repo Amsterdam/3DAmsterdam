@@ -23,6 +23,7 @@ public class SubmitRequestState : State
     public override void StateEnteredAction()
     {
         ShowSuccessMessage(false);
+        print("submitted: " + ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted);
         if (!ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted)
             StartCoroutine(SaveDataWhenCurrentSaveCompletes());
     }
@@ -30,6 +31,8 @@ public class SubmitRequestState : State
     private IEnumerator SaveDataWhenCurrentSaveCompletes()
     {
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
+
+        print("entering state, uploading to endpoint");
 
         ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted = true;
 
@@ -46,8 +49,13 @@ public class SubmitRequestState : State
         SessionSaver.Saver.SavingCompleted -= Saver_UploadToEndpointCompleted;
         if (saveSucceeded)
         {
+            print("upload success");
             ShowSuccessMessage(true);
             EndState();
+        }
+        else
+        {
+            print("upload failed");
         }
     }
 
