@@ -40,7 +40,8 @@ public static class SessionSaver
         //SessionId = "711b7b20-bb10-11ec-9ed4-fd18befc5836"; //no snap
         //SessionId = "47f81880-bbe1-11ec-bb7e-b7bbd72d450c"; //snap
         //SessionId = "961bc940-bfd7-11ec-8a43-ddfbd3cd7e77"; //shapeable
-        SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
+        //SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
+        SessionId = "a1fd6ee0-cf8a-11ec-8235-9b9afe916f92"; //JSON upload test
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
@@ -63,6 +64,11 @@ public static class SessionSaver
     public static void ExportSavedData()
     {
         Saver.ExportSaveData(SessionId);
+    }
+
+    public static void UploadFileToEndpoint()
+    {
+        Saver.UploadCityJSONFileToEndpoint();
     }
 
     public static void LoadSaveData()

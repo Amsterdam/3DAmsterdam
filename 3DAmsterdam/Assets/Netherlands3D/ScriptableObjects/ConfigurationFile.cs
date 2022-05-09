@@ -40,7 +40,7 @@ namespace Netherlands3D
         {
             get
             {
-                if( string.IsNullOrEmpty(_T3DSandboxEnvironment))
+                if (string.IsNullOrEmpty(_T3DSandboxEnvironment))
                 {
                     var url = Application.absoluteURL;
                     _T3DSandboxEnvironment = "https://t3dstorage.z6.web.core.windows.net/"; //default
@@ -81,9 +81,24 @@ namespace Netherlands3D
                     _T3DAzureFunctionURL = $"{urlstart}-functions.azurewebsites.net/";
                 }
 
-                return _T3DAzureFunctionURL;                
+                return _T3DAzureFunctionURL;
             }
         }
 
+        public string CityJSONUploadEndoint
+        {
+            get
+            {
+                return @"https://voorportaal.azurewebsites.net/api/uploadcityjson";
+            }
+        }
+
+        public string CityJSONUploadEndpointToken
+        {
+            get
+            {
+                return "qCUevbaM8BFtkT32TyLjjNsm6Mr7Rfty6KL8kPSQ";
+            }
+        }
     }
 }
