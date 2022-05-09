@@ -33,7 +33,7 @@ namespace Netherlands3D
         private Regex regex_url = new Regex(@"https:\/\/t3d-.", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private string _T3DSandboxEnvironment = null;
-        public string _T3DAzureFunctionURL = null;
+        private string _T3DAzureFunctionURL = null;
 
         [HideInInspector]
         public string T3DAzureWebroot
