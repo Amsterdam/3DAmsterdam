@@ -37,13 +37,13 @@ public class SubmitRequestState : State
         var formattedDate = DateTime.Now.ToString("dd MMMM yyyy", culture);
         ServiceLocator.GetService<T3DInit>().HTMLData.Date = formattedDate;
 
-        SessionSaver.ExportSavedData(); // export new save data
-        SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;
+        SessionSaver.UploadFileToEndpoint(); // export new save data
+        SessionSaver.Saver.UploadToEndpointCompleted += Saver_UploadToEndpointCompleted;
     }
 
-    private void Saver_SavingCompleted(bool saveSucceeded)
+    private void Saver_UploadToEndpointCompleted(bool saveSucceeded)
     {
-        SessionSaver.Saver.SavingCompleted -= Saver_SavingCompleted;
+        SessionSaver.Saver.SavingCompleted -= Saver_UploadToEndpointCompleted;
         if (saveSucceeded)
         {
             ShowSuccessMessage(true);

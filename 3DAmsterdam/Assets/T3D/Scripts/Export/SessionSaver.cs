@@ -65,6 +65,11 @@ public static class SessionSaver
         Saver.ExportSaveData(SessionId);
     }
 
+    public static void UploadFileToEndpoint()
+    {
+        Saver.UploadFileToEndpoint();
+    }
+
     public static void LoadSaveData()
     {
         Debug.Log("Loading save data for session: " + SessionId);

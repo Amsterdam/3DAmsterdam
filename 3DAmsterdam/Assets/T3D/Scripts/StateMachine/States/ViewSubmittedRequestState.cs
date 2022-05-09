@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,6 +76,20 @@ public class ViewSubmittedRequestState : State
             print("setting submitted to false");
             ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted = false;
         }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            print("uploading to endpoint");
+            SessionSaver.UploadFileToEndpoint();
+            SessionSaver.Saver.UploadToEndpointCompleted += Saver_UploadToEndpointCompleted;
+        }
 #endif
+    }
+
+    private void Saver_UploadToEndpointCompleted(bool saveSucceeded)
+    {
+        if (saveSucceeded)
+            print("upload success");
+        else
+            print("upload failed");
     }
 }

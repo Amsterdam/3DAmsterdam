@@ -13,13 +13,15 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
     private JSONNode rootObject = new JSONObject();
     const string uploadURL = "api/upload/";
 
+    public Coroutine saveCoroutine;
     public Coroutine uploadCoroutine;
     private bool autoSaveEnabled = true;
     [SerializeField]
     private SaveFeedback saveFeedback;
 
     public event IDataSaver.DataSavedEventHandler SavingCompleted;
-    public bool SaveInProgress => uploadCoroutine != null;
+    public event IDataSaver.DataSavedEventHandler UploadToEndpointCompleted;
+    public bool SaveInProgress => saveCoroutine != null;
 
     private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>();
 
@@ -37,14 +39,32 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
 
         PlayerPrefs.SetString(sessionId, saveData);
 
-        if (uploadCoroutine == null)
+        if (saveCoroutine == null)
         {
-            uploadCoroutine = StartCoroutine(UploadData(sessionId, saveData));
+            saveCoroutine = StartCoroutine(UploadData(sessionId, saveData));
         }
         else
         {
             print("Still waiting for coroutine to return, not saving data");
             SavingCompleted?.Invoke(false);
+        }
+    }
+
+    public void UploadFileToEndpoint()
+    {
+        string saveData = SerializeSaveableContainers();
+        print("uploading file to endpoint");
+
+        //PlayerPrefs.SetString(sessionId, saveData);
+
+        if (uploadCoroutine == null)
+        {
+            uploadCoroutine = StartCoroutine(UploadDataToEndpoint(saveData));
+        }
+        else
+        {
+            print("Still waiting for coroutine to return, not sending data");
+            UploadToEndpointCompleted?.Invoke(false);
         }
     }
 
@@ -89,6 +109,32 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
             {
                 saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
                 SavingCompleted?.Invoke(true);
+            }
+            saveCoroutine = null;
+        }
+    }
+
+    private IEnumerator UploadDataToEndpoint(string data)
+    {
+        //var url = Config.activeConfiguration.T3DAzureFunctionURL + uploadURL + name;
+        var url = @"https://voorportaal.azurewebsites.net/api/uploadcityjson";
+        var uwr = UnityWebRequest.Put(url, data);
+        //uwr.SetRequestHeader("Content-Type", "application/json");
+        uwr.SetRequestHeader("Authorization", "Bearer " + "qCUevbaM8BFtkT32TyLjjNsm6Mr7Rfty6KL8kPSQ");
+        
+        using (uwr)
+        {
+            //saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.Saving);
+            yield return uwr.SendWebRequest();
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(uwr.error);
+                UploadToEndpointCompleted?.Invoke(false);
+            }
+            else
+            {
+                //saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
+                UploadToEndpointCompleted?.Invoke(true);
             }
             uploadCoroutine = null;
         }
