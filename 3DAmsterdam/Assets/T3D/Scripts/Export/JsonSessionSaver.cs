@@ -50,12 +50,10 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
         }
     }
 
-    public void UploadFileToEndpoint()
+    public void UploadCityJSONFileToEndpoint()
     {
-        string saveData = SerializeSaveableContainers();
-        print("uploading file to endpoint");
-
-        //PlayerPrefs.SetString(sessionId, saveData);
+        string saveData = CityJSONFormatter.GetJSON();
+        print(saveData);
 
         if (uploadCoroutine == null)
         {
@@ -119,9 +117,9 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
         //var url = Config.activeConfiguration.T3DAzureFunctionURL + uploadURL + name;
         var url = @"https://voorportaal.azurewebsites.net/api/uploadcityjson";
         var uwr = UnityWebRequest.Put(url, data);
-        //uwr.SetRequestHeader("Content-Type", "application/json");
+        uwr.SetRequestHeader("Content-Type", "application/json");
         uwr.SetRequestHeader("Authorization", "Bearer " + "qCUevbaM8BFtkT32TyLjjNsm6Mr7Rfty6KL8kPSQ");
-        
+
         using (uwr)
         {
             //saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.Saving);

@@ -67,7 +67,7 @@ public static class SessionSaver
 
     public static void UploadFileToEndpoint()
     {
-        Saver.UploadFileToEndpoint();
+        Saver.UploadCityJSONFileToEndpoint();
     }
 
     public static void LoadSaveData()
