@@ -195,7 +195,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{ServiceLocator.GetService<T3DInit>().HTMLData.ModelId}";
             var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{ServiceLocator.GetService<T3DInit>().HTMLData.BlobId}.json";
 
-            var requestUrl = string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) != false ? urlIfc : urlSketchup;
+            var requestUrl = !string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) ? urlIfc : urlSketchup;
 
             UnityWebRequest req = UnityWebRequest.Get(requestUrl);
 
