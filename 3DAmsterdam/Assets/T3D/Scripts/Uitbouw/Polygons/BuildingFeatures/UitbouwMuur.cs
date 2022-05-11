@@ -39,39 +39,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public Plane WallPlane => new Plane(-transform.forward, transform.position);
 
+        private Material normalMaterial;
         [SerializeField]
-        private Material normalMaterial, highlightMaterial;
+        private Material highlightMaterial;
 
-        //private void OnValidate()
-        //{
-        //    leftBound = left.transform;
-        //    rightBound = right.transform;
-        //    topBound = top.transform;
-        //    bottomBound = bottom.transform;
-        //}
-
-        //private Vector3 GetCorner(UitbouwMuur h, UitbouwMuur v)
-        //{
-        //    var plane = new Plane(-transform.forward, transform.position);
-
-        //    var projectedHPoint = plane.ClosestPointOnPlane(h.transform.position);
-        //    var projectedVPoint = plane.ClosestPointOnPlane(v.transform.position);
-
-        //    float hDist = Vector3.Distance(transform.position, projectedHPoint);
-        //    float vDist = Vector3.Distance(transform.position, projectedVPoint);
-
-        //    return transform.position - h.transform.forward * hDist - v.transform.forward * vDist;
-        //}
-
-        //private void Start()
-        //{
-        //    var poly = Polygon;
-        //    for (int i = 0; i < poly.Length; i++)
-        //    {
-        //        var a = new GameObject();
-        //        a.transform.position = poly[i];
-        //    }
-        //}
+        private static float textureScale = 0.3f;
 
         protected override void Awake()
         {
@@ -84,6 +56,8 @@ namespace Netherlands3D.T3D.Uitbouw
             right = rightBound.GetComponent<UitbouwMuur>();
             top = topBound.GetComponent<UitbouwMuur>();
             bottom = bottomBound.GetComponent<UitbouwMuur>();
+
+            normalMaterial = GetComponent<MeshRenderer>().material;
         }
 
         public void RecalculateSides(Vector3 newPosition)
@@ -91,9 +65,6 @@ namespace Netherlands3D.T3D.Uitbouw
             deltaPosition = newPosition - oldPosition;
             oldPosition = transform.position;
             transform.position = newPosition;
-
-            //back.RecalculatePosition(deltaPosition/2);
-            //RecalculatePosition(deltaPosition/2);
 
             left.RecalculatePosition(deltaPosition / 2);
             right.RecalculatePosition(deltaPosition / 2);
@@ -104,6 +75,16 @@ namespace Netherlands3D.T3D.Uitbouw
             right.RecalculateScale();
             top.RecalculateScale();
             bottom.RecalculateScale();
+
+            left.RecalculateMaterialTiling();
+            right.RecalculateMaterialTiling();
+            top.RecalculateMaterialTiling();
+            bottom.RecalculateMaterialTiling();
+        }
+
+        public void RecalculateMaterialTiling()
+        {
+            normalMaterial.mainTextureScale = Size * textureScale;
         }
 
         public void SetHighlightActive(bool enable)
@@ -115,11 +96,6 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             transform.position += delta;
         }
-
-        //public void RecalculateScale()
-        //{
-        //    transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
-        //}
 
         public void SetActive(bool active)
         {
