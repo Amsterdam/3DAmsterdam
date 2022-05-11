@@ -8,13 +8,9 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwMovement : MonoBehaviour
     {
         private UitbouwBase uitbouw;
-        public bool AllowDrag { get; private set; } = true;
 
-        //[SerializeField]
-        //private bool snapToWall;
-
-        //[SerializeField]
-        //private GameObject dragableAxisPrefab;
+        private bool allowDragOnMouseUp = false; //needed to avoid inadvertently dragging when placing the uitbouw in the first state.
+        public bool AllowDrag { get; private set; } = false;
 
         private void Awake()
         {
@@ -23,14 +19,17 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            AllowDrag = AllowDrag && ServiceLocator.GetService<T3DInit>().IsEditMode;
-
             SetAllowMovement(AllowDrag);
-            //SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
         }
 
         private void Update()
         {
+            if (allowDragOnMouseUp && Input.GetMouseButtonUp(0)) //set allowdrag if the button is released and the flag is set in SetAllowMovement()
+            {
+                AllowDrag = true;
+                allowDragOnMouseUp = false;
+            }
+
             if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
             {
                 ProcessUserInput();
@@ -138,7 +137,18 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public virtual void SetAllowMovement(bool allowed)
         {
-            AllowDrag = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
+            //if a mouse button is down when setting AllowDrag, it should not automatically enter drag mode, because this can cause the uitbouw to jump position.
+            //instead, wait until the mouse button is released to set the AllowDrag (in Update())
+            if (!Input.GetMouseButton(0))
+            {
+                AllowDrag = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode; 
+            }
+            else
+            {
+                AllowDrag = false;
+                allowDragOnMouseUp = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
+            }
+
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed && ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
