@@ -87,7 +87,7 @@ public class ColladaCreation : ModelFormatCreation
         yield return new WaitForEndOfFrame();
 
         //Create the collada file XML contents, and add our geo info (supported from collada 1.5)
-        colladaFile.CreateCollada(true,CoordConvert.UnitytoWGS84(UnityBounds.min));
+        colladaFile.CreateCollada(false,CoordConvert.UnitytoWGS84(UnityBounds.min));
 
         //Save the collada file, with the coordinates embedded in the name.
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
