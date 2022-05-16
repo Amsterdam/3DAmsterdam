@@ -359,7 +359,7 @@ public class ColladaFile
 		writer.WriteStartDocument(false);
 		writer.WriteStartElement("COLLADA");
 		writer.WriteAttributeString("xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-		writer.WriteAttributeString("version", "1.5.1");
+		writer.WriteAttributeString("version", "1.4.1");
 	}
 
 	private void WriteAssetHeader()
