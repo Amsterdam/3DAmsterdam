@@ -74,7 +74,7 @@ public class ColladaFile
 		}
 		writer.WriteEndElement();
 
-		//Library for materials
+		//Library for materials 
 		writer.WriteStartElement("library_materials");
 		foreach (Material material in materials)
 		{
@@ -307,9 +307,9 @@ public class ColladaFile
 	private void WriteMaterial(Material material)
 	{
 		writer.WriteStartElement("material");
-		writer.WriteAttributeString("id", material.name);
+		writer.WriteAttributeString("id", material.name.Split(' ')[0]);
 		writer.WriteStartElement("instance_effect");
-		writer.WriteAttributeString("url", "#" + material.name + "-effect");
+		writer.WriteAttributeString("url", "#" + material.name.Split(' ')[0] + "-effect");
 		writer.WriteEndElement();
 		writer.WriteEndElement();
 	}
