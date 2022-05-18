@@ -29,7 +29,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4268685763077478048}
-  - {fileID: 4842424509935874408}
   m_Father: {fileID: 8278632715658735414}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sun: {fileID: 7638675637081772599}
+  sunHalo: {fileID: 4268685763077478048}
+  haloScale: 0.76
+  offset: -0.16
 --- !u!1 &7688594362449951607
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +76,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: -1.22}
   m_LocalScale: {x: 7, y: 7, z: 7}
-  m_Children: []
+  m_Children:
+  - {fileID: 4842424509935874408}
   m_Father: {fileID: 1450764495032809545}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -101,6 +104,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -125,6 +129,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7834459387001506459
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,6 +220,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8272286487596686235
@@ -242,12 +248,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8272286487596686235}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.03142857}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
-  m_Father: {fileID: 1450764495032809545}
-  m_RootOrder: 1
+  m_Father: {fileID: 4268685763077478048}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &7209698750874541001
 MeshFilter:
@@ -272,6 +278,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -296,6 +303,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8278632715658735416
 GameObject:
   m_ObjectHideFlags: 0
