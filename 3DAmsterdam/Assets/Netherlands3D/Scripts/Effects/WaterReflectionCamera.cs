@@ -64,6 +64,8 @@ public class WaterReflectionCamera : MonoBehaviour
 
     void Update()
     {
+        followCamera = Camera.main;
+
         if(Screen.width != followCamera.pixelHeight || screenHeightOnInit != followCamera.pixelHeight)
         {
             camera.targetTexture = null;
