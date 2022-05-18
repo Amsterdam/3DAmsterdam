@@ -9,7 +9,7 @@ public class WaterReflectionCamera : MonoBehaviour
 
     private Shader defaultShader;
     [SerializeField]
-    private Shader advancedShader;
+    private Material advancedWaterMaterial;
 
     private RenderTexture renderTexture;
 
@@ -50,7 +50,7 @@ public class WaterReflectionCamera : MonoBehaviour
         camera.targetTexture = renderTexture;
 
         defaultShader = waterMaterial.shader;
-        waterMaterial.shader = advancedShader;
+        waterMaterial.shader = advancedWaterMaterial.shader;
         waterMaterial.SetTexture("_ReflectionCameraTexture", renderTexture);
     }
 
