@@ -6,7 +6,7 @@ mergeInto(LibraryManager.library, {
         if (!window.copySharedURLButton) {
             window.copySharedURLButton = document.createElement("input");
             window.copySharedURLButton.type = 'text';
-            window.copySharedURLButton.style.cssText = 'opacity:0; pointer:cursor; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
+            window.copySharedURLButton.style.cssText = 'opacity:0; pointer:cursor !important; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
             window.copySharedURLButton.id = 'copy-input';
             window.copySharedURLButton.onclick = function () {
                 window.copySharedURLButton.focus();
