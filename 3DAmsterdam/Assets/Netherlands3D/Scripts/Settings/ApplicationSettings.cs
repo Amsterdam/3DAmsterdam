@@ -57,6 +57,9 @@ namespace Netherlands3D.Settings {
 		[SerializeField]
 		private Slider lodSlider;
 
+		[SerializeField]
+		private WaterReflectionCamera waterReflectionCamera;
+
 		public bool IsMobileDevice { get => isMobileDevice; set => isMobileDevice = value; }
 
 		private void Awake()
@@ -206,8 +209,18 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
-            });
+				OpenSettingsPanel();
+			});
 
+			if (settings.realtimeReflections)
+			{
+				PropertiesPanel.Instance.AddLabel("Live reflectie resolutie:");
+				PropertiesPanel.Instance.AddActionSlider("5%", "100%", 0.05f, 1f, settings.reflectionsRenderResolution, (value) =>
+				{
+					settings.reflectionsRenderResolution = value;
+					ApplySettings();
+				}, false, "Render resolutie van reflecties");
+			}
 			PropertiesPanel.Instance.AddTitle("Invoer");
 			PropertiesPanel.Instance.AddLabel("Gevoeligheid camera draaien:");
 			PropertiesPanel.Instance.AddActionSlider("Langzaam", "Snel", 0.1f, 2.0f, settings.rotateSensitivity, (value) => {
@@ -251,8 +264,9 @@ namespace Netherlands3D.Settings {
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
 			renderSettings.ToggleAO(settings.ambientOcclusion);
+			waterReflectionCamera.Downscale = settings.reflectionsRenderResolution;
 
-			if(save) SaveSettings();
+			if (save) SaveSettings();
         }
 
         [ContextMenu("Save application settings")]

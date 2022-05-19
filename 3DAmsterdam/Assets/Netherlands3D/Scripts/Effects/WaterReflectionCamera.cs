@@ -26,6 +26,15 @@ public class WaterReflectionCamera : MonoBehaviour
     private int screenWidthOnInit = 512;
     private int screenHeightOnInit = 512;
 
+    private bool requireRedraw = false;
+    public float Downscale { 
+        get => downscale;
+        set {
+            downscale = value;
+            ScaleOrViewChanged();
+        }
+    }
+
     private void OnEnable()
     {
         if (!camera)
@@ -43,7 +52,7 @@ public class WaterReflectionCamera : MonoBehaviour
 
     private void CreateNewRenderTexture()
     {
-        renderTexture = new RenderTexture(Mathf.RoundToInt(followCamera.pixelWidth * downscale), Mathf.RoundToInt(followCamera.pixelHeight * downscale), 0);
+        renderTexture = new RenderTexture(Mathf.RoundToInt(followCamera.pixelWidth * Downscale), Mathf.RoundToInt(followCamera.pixelHeight * Downscale), 0);
 
         screenWidthOnInit = followCamera.pixelWidth;
         screenHeightOnInit = followCamera.pixelHeight;
@@ -68,9 +77,7 @@ public class WaterReflectionCamera : MonoBehaviour
 
         if(Screen.width != followCamera.pixelHeight || screenHeightOnInit != followCamera.pixelHeight)
         {
-            camera.targetTexture = null;
-            Destroy(renderTexture);
-            CreateNewRenderTexture();
+            ScaleOrViewChanged();
         }
 
         camera.farClipPlane = followCamera.farClipPlane;
@@ -78,5 +85,15 @@ public class WaterReflectionCamera : MonoBehaviour
 
         this.transform.transform.SetPositionAndRotation(new Vector3(followCamera.transform.position.x,-followCamera.transform.position.y, followCamera.transform.position.z), followCamera.transform.rotation);
         this.transform.transform.localEulerAngles = new Vector3(-followCamera.transform.localEulerAngles.x, followCamera.transform.localEulerAngles.y, followCamera.transform.localEulerAngles.z);
+    }
+
+    private void ScaleOrViewChanged()
+    {
+        if (!this.gameObject.activeInHierarchy) return;
+
+        camera.targetTexture = null;
+
+        Destroy(renderTexture);
+        CreateNewRenderTexture();
     }
 }
