@@ -115,9 +115,9 @@ namespace Netherlands3D.Interface.Sharing
 					modelUploadsRemaining = currentSceneServerReturn.modelUploadTokens.Length;
 					progressBar.SetMessage("Objecten opslaan..");
 					progressBar.Percentage(0.3f);
-					while (modelUploadsRemaining >= currentSceneServerReturn.modelUploadTokens.Length)
+					while (modelUploadsRemaining > 0)
 					{
-						int currentModelIndex = modelUploadsRemaining - currentSceneServerReturn.modelUploadTokens.Length;
+						int currentModelIndex = currentSceneServerReturn.modelUploadTokens.Length - modelUploadsRemaining;
 						progressBar.SetMessage("Objecten opslaan.. " + (currentModelIndex + 1) + "/" + currentSceneServerReturn.modelUploadTokens.Length);
 						var pathToLocalBinaryFile = sceneSerializer.SerializeCustomObject(currentModelIndex, currentSceneServerReturn.sceneId, currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
 						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", currentSceneServerReturn.sceneId).Replace("{modelToken}", currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
@@ -159,7 +159,7 @@ namespace Netherlands3D.Interface.Sharing
 		public void NextModelUpload()
 		{
 			modelUploadsRemaining--;
-			var currentModelLoadPercentage = 1-(currentSceneServerReturn.modelUploadTokens.Length / (float)modelUploadsRemaining);
+			var currentModelLoadPercentage = 1-((float)modelUploadsRemaining / (float)currentSceneServerReturn.modelUploadTokens.Length);
 			progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 		}
 
