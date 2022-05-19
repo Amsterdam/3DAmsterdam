@@ -159,7 +159,7 @@ namespace Netherlands3D.Interface.Sharing
 		public void NextModelUpload()
 		{
 			modelUploadsRemaining--;
-			var currentModelLoadPercentage = 1-(currentSceneServerReturn.modelUploadTokens.Length / (float)modelUploadsRemaining);
+			var currentModelLoadPercentage = 1-((float)modelUploadsRemaining / (float)currentSceneServerReturn.modelUploadTokens.Length);
 			progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 		}
 
