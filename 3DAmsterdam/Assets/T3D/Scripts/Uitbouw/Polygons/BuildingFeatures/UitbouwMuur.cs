@@ -36,10 +36,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
+        private MeshRenderer meshRenderer;
 
         public Plane WallPlane => new Plane(-transform.forward, transform.position);
 
         private Material normalMaterial;
+        public Material Material => normalMaterial;
         [SerializeField]
         private Material highlightMaterial;
 
@@ -50,6 +52,7 @@ namespace Netherlands3D.T3D.Uitbouw
             base.Awake();
 
             meshFilter = GetComponent<MeshFilter>();
+            meshRenderer = meshFilter.GetComponent<MeshRenderer>();
             oldPosition = transform.position;
 
             left = leftBound.GetComponent<UitbouwMuur>();
@@ -57,7 +60,7 @@ namespace Netherlands3D.T3D.Uitbouw
             top = topBound.GetComponent<UitbouwMuur>();
             bottom = bottomBound.GetComponent<UitbouwMuur>();
 
-            normalMaterial = GetComponent<MeshRenderer>().material;
+            normalMaterial = meshRenderer.material;
         }
 
         public void RecalculateSides(Vector3 newPosition)
@@ -89,7 +92,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void SetHighlightActive(bool enable)
         {
-            GetComponent<MeshRenderer>().material = enable ? highlightMaterial : normalMaterial;
+            meshRenderer.material = enable ? highlightMaterial : normalMaterial;
         }
 
         public void RecalculatePosition(Vector3 delta)
@@ -111,6 +114,13 @@ namespace Netherlands3D.T3D.Uitbouw
             //transform.position += transform.forward * -delta;
             RecalculateSides(newPosition);
             SetActive(false);
+        }
+
+        public void SetMaterial(Material newMaterial)
+        {
+            normalMaterial = newMaterial;
+            if (meshRenderer.material != highlightMaterial)
+                meshRenderer.material = newMaterial;
         }
     }
 }
