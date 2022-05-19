@@ -21,6 +21,7 @@ public class ApplicationSettingsProfile : ScriptableObject
 
     //Quality
     public float renderResolution = 1.0f;
+    public float reflectionsRenderResolution = 0.2f;
     public int shadowQuality = 3;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
