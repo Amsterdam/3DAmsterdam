@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8458199798070057579}
   - component: {fileID: 5475957816396079074}
   - component: {fileID: 8838444952248633255}
+  - component: {fileID: 8966641796760376672}
   m_Layer: 5
   m_Name: SettingsHeaderText
   m_TagString: Untagged
@@ -93,6 +94,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowOutsideOfScreen: 0
+  rememberPosition: 1
+--- !u!114 &8966641796760376672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342409050902567715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &1651312520324535225
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,8 +751,14 @@ MonoBehaviour:
 
     Selecteer OBJ File (*.obj)
 
-    Onder ''Opties'' ''Triangulate
-    all faces'' aan'
+
+    - Zorg dat ''Triangulate
+    all faces'' is aangevinkt onder Options
+
+    - Zorg dat ''Swap YZ coordinates''
+    is aangevinkt onder Options
+
+'
 --- !u!1 &6041019819988453302
 GameObject:
   m_ObjectHideFlags: 0
