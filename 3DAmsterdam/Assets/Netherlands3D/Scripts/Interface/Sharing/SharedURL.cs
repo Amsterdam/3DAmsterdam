@@ -11,11 +11,13 @@ public class SharedURL : MonoBehaviour
     [SerializeField]
     private RectTransform copiedText;
 
-    [SerializeField]
     private WebGLCopyAndPaste copyPasteWrapper;
 
     public void CopiedText()
     {
+        copyPasteWrapper = FindObjectOfType<WebGLCopyAndPaste>();
+        if(!copyPasteWrapper) return;
+
         //Highlight our text for visual feedback the text was selected
         inputField.Select();
 
