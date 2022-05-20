@@ -41,6 +41,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             DragType = args.Type;
             var e = (LibraryComponentSelectedEvent.LibraryMaterialSelectedEventargs)args;
             ComponentImage.sprite = e.Sprite;
+            ComponentImage.SetNativeSize();
             selectableLibraryItem = e.SelectableLibraryItem;
             selectMaterial = e.ComponentMaterial;
             //throw new NotImplementedException();
@@ -59,6 +60,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             DragType = args.Type;
             var e = (LibraryComponentSelectedEvent.LibraryComponentSelectedEventargs)args;
             ComponentImage.sprite = e.Sprite;
+            ComponentImage.SetNativeSize();
             isTopComponent = e.IsTopComponent;
             ComponentObject = e.ComponentObject;
             selectableLibraryItem = e.SelectableLibraryItem;
