@@ -4,6 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Netherlands3D.T3D.Uitbouw
 {
+    public class UitbouwMuurSaveData : SaveDataContainer
+    {
+        public UitbouwMuurSaveData(string instanceId) : base(instanceId)
+        {
+        }
+
+        public int MaterialIndex = -1;
+    }
+
     public enum WallSide
     {
         Left,
@@ -46,6 +55,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private Material highlightMaterial;
 
         private static float textureScale = 0.3f;
+        private UitbouwMuurSaveData saveData;
 
         protected override void Awake()
         {
@@ -61,6 +71,27 @@ namespace Netherlands3D.T3D.Uitbouw
             bottom = bottomBound.GetComponent<UitbouwMuur>();
 
             normalMaterial = meshRenderer.material;
+
+            saveData = new UitbouwMuurSaveData(Side.ToString());
+        }
+
+        private void OnEnable()
+        {
+            MaterialLibrary.MaterialLibraryLoaded += MaterialLibrary_MaterialLibraryLoaded;
+        }
+
+        private void MaterialLibrary_MaterialLibraryLoaded(Material[] materials)
+        {
+            if (saveData.MaterialIndex >= 0 && saveData.MaterialIndex < materials.Length)
+            {
+                var savedMaterial = materials[saveData.MaterialIndex];
+                SetMaterial(savedMaterial);
+            }
+        }
+
+        private void OnDisable()
+        {
+            MaterialLibrary.MaterialLibraryLoaded -= MaterialLibrary_MaterialLibraryLoaded;
         }
 
         public void RecalculateSides(Vector3 newPosition)
@@ -121,6 +152,8 @@ namespace Netherlands3D.T3D.Uitbouw
             normalMaterial = newMaterial;
             if (meshRenderer.material != highlightMaterial)
                 meshRenderer.material = newMaterial;
+
+            saveData.MaterialIndex = MaterialLibrary.GetMaterialIndex(newMaterial);
         }
     }
 }
