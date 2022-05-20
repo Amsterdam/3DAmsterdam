@@ -9,11 +9,11 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwRotation : MonoBehaviour
     {
         private UitbouwBase uitbouw;
-        private Vector3 previousIntersectionPoint;
-        private Vector3 previousOrigin;
 
         public bool AllowRotation { get; private set; } = true; //global lock
-        private bool isRotating;
+
+        private float lastx;
+        private float lastAngle;
 
         private void Awake()
         {
@@ -22,60 +22,20 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (AllowRotation && uitbouw.Gizmo.Mode == GizmoMode.Rotate && uitbouw.IsDraggingMovementAxis)
-                ProcessUserInput();
+            if (AllowRotation && uitbouw.Gizmo.Mode == GizmoMode.Rotate && uitbouw.IsDraggingMovementAxis)                
+                HandleMouse();
             else
-                isRotating = false;
+            {                
+                lastAngle = transform.rotation.eulerAngles.y;
+                lastx = Input.mousePosition.x;
+            }
         }
 
-        private void ProcessUserInput()
+        void HandleMouse()
         {
-            if (!isRotating)
-            {
-                CalculateDeltaAngle(); // used to set the previousOrigin and Intersection so that a jump does not occur due to old garbage values 
-                isRotating = true;
-            }
-            Rotate();
-        }
-
-        private void Rotate()
-        {
-            var deltaAngle = CalculateDeltaAngle();
-            transform.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
-            //foreach (Transform t in transform)
-            //{
-            //    t.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
-            //}
-        }
-
-        private float CalculateDeltaAngle()
-        {
-            var newOrigin = transform.position;
-            var groundPlane = new Plane(transform.up, newOrigin);
-            var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-
-            Vector3 newIntersectionPoint;
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                newIntersectionPoint = ray.origin + (ray.direction * enter);
-            }
-            else
-            {
-                var horizonPlane = new Plane(-ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward, previousIntersectionPoint);
-                horizonPlane.Raycast(ray, out enter);
-                var planeIntersection = ray.origin + (ray.direction * enter);
-                newIntersectionPoint = groundPlane.ClosestPointOnPlane(planeIntersection);
-            }
-
-            var previousDir = (previousIntersectionPoint - previousOrigin).normalized;
-            var newDir = (newIntersectionPoint - newOrigin).normalized;
-
-            var angle = Vector3.SignedAngle(previousDir, newDir, transform.up);
-
-            previousOrigin = newOrigin;
-            previousIntersectionPoint = newIntersectionPoint;
-
-            return angle;
+            var xdiff = Input.mousePosition.x - lastx;
+            var angleDiff = lastAngle - transform.rotation.eulerAngles.y;
+            transform.RotateAround(uitbouw.CenterPoint, transform.up, angleDiff - (xdiff / 5));
         }
 
         public virtual void SetAllowRotation(bool allowed)
