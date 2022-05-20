@@ -11,10 +11,6 @@ public abstract class SelectableLibraryItem : MonoBehaviour, IDragHandler
     public Sprite DragContainerImage;
     public Color SelectedColor;
     public bool IsTopComponent;
-    //public float ComponentWidth;
-    //public float ComponentHeight;
-
-    //public BoundaryFeature ComponentObject;
 
     private Toggle toggle;
     private Image image;

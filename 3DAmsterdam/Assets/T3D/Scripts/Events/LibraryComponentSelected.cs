@@ -21,20 +21,6 @@ namespace Netherlands3D.T3D.Uitbouw
             public LibraryEventArgsType Type;
             public SelectableLibraryItem SelectableLibraryItem;
             public Sprite Sprite;
-
-            //private static Dictionary<LibraryEventArgsType, Type> typeLibrary = new Dictionary<LibraryEventArgsType, Type> {
-            //    {LibraryEventArgsType.BoundaryFeature, typeof(LibraryComponentSelectedEventargs) },
-            //    {LibraryEventArgsType.Material, typeof(LibraryMaterialSelectedEventargs) }
-            //};
-
-            //public static dynamic ConvertToType(LibraryEventArgs args, LibraryEventArgsType type)
-            //{
-
-            //    var classType = typeLibrary[type];
-            //    if (args.GetType().IsAssignableFrom(classType))
-            //        return Convert.ChangeType(args, classType);
-            //    return null;
-            //}
         }
 
         public class LibraryComponentSelectedEventargs : LibraryEventArgs

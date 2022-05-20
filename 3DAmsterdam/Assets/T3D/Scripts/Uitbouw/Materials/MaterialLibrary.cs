@@ -16,13 +16,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Start()
         {
             var selectMaterials = GetComponentsInChildren<SelectMaterial>();
-            print("select mat: " + selectMaterials.Length);
             materials = new Material[selectMaterials.Length];
 
             for (int i = 0; i < selectMaterials.Length; i++)
             {
                 materials[i] = selectMaterials[i].dragMaterial;
-                print("mat " + materials[i]);
             }
 
             MaterialLibraryLoaded?.Invoke(materials);

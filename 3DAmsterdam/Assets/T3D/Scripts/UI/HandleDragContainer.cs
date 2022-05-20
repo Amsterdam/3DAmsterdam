@@ -123,7 +123,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
                     if (wall != previousSelectedWall && previousSelectedWall != null)
                     {
-                        print("new wall: " + wall + "\told wall: " + previousSelectedWall + "\toriginalMaterial: " + wallOriginalMaterial);
                         previousSelectedWall.SetMaterial(wallOriginalMaterial);
                         wallOriginalMaterial = wall.Material;
                     }
