@@ -116,8 +116,14 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     break;
                 case LibraryComponentSelectedEvent.LibraryEventArgsType.Material:
 
+                    if (wallOriginalMaterial == null)
+                    {
+                        wallOriginalMaterial = wall.Material;
+                    }
+
                     if (wall != previousSelectedWall && previousSelectedWall != null)
                     {
+                        print("new wall: " + wall + "\told wall: " + previousSelectedWall + "\toriginalMaterial: " + wallOriginalMaterial);
                         previousSelectedWall.SetMaterial(wallOriginalMaterial);
                         wallOriginalMaterial = wall.Material;
                     }
@@ -139,7 +145,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
             }
-            if(previousSelectedWall)
+            if (previousSelectedWall)
                 previousSelectedWall.SetMaterial(wallOriginalMaterial);
 
             ComponentImage.enabled = true;
