@@ -18,17 +18,17 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void OnEnable()
         {
-            LibraryComponentSelectedEvent.Subscribe(LibraryComponentSelected);
+            LibraryComponentSelectedEvent.OnComponentSelectedEvent += LibraryComponentSelected;
         }
 
         private void OnDisable()
         {
-            LibraryComponentSelectedEvent.Unsubscribe(LibraryComponentSelected);
+            LibraryComponentSelectedEvent.OnComponentSelectedEvent -= LibraryComponentSelected;
         }
 
-        private void LibraryComponentSelected(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
+        private void LibraryComponentSelected(object source, LibraryComponentSelectedEvent.LibraryEventArgs args)
         {
-            if (ActiveFeature)
+            if (args.Type == LibraryComponentSelectedEvent.LibraryEventArgsType.BoundaryFeature && ActiveFeature)
             {
                 DeselectFeature();
             }
