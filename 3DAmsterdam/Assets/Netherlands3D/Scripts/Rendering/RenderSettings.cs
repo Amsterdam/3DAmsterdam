@@ -30,7 +30,7 @@ namespace Netherlands3D.Rendering
 
         [Header("SSAO forward rendering settings")]
         [SerializeField]
-        private ForwardRendererData forwardRendererData;
+        private UniversalRendererData forwardRendererData;
 
         [SerializeField]
         private LayerMask aoEnabledLayerMask;
