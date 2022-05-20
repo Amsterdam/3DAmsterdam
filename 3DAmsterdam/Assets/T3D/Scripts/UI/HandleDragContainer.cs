@@ -117,6 +117,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     if (wall != previousSelectedWall && previousSelectedWall != null)
                     {
                         previousSelectedWall.SetMaterial(wallOriginalMaterial);
+                        wallOriginalMaterial = wall.Material;
                     }
 
                     if (wall.Material != selectMaterial)
