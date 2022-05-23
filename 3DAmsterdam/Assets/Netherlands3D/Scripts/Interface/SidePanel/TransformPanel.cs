@@ -210,12 +210,12 @@ namespace Netherlands3D.Interface.SidePanel
             }
 
             rotateX.text = (transformableTarget.transform.eulerAngles.x - baseRotation.eulerAngles.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
-            rotateY.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
-            rotateZ.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rotateY.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rotateZ.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
 
             scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
-            scaleY.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
-            scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleY.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleZ.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
         }
 
         /// <summary>
@@ -254,8 +254,8 @@ namespace Netherlands3D.Interface.SidePanel
                 transformableTarget.transform.position = basePositionUnity;
                 transformableTarget.transform.Translate(
                     float.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture),
-                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture),
-                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture)
+                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture)
                 );
 
                 Vector3RD previewTranslation = CoordConvert.UnitytoRD(transformableTarget.transform.position);
