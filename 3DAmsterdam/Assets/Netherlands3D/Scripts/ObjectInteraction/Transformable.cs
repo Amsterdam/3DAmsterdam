@@ -44,8 +44,14 @@ namespace Netherlands3D.ObjectInteraction
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
 		public ObjectPlacedEvent placedTransformable;
 
-		private void Awake()
+		private Vector3 startScale;
+        public Vector3 StartScale { get => startScale; set => startScale = value; }
+
+        private void Awake()
 		{
+			//Store starting scale for resets
+			StartScale = this.transform.localScale;
+
 			//Make sure this object has a collider
 			if (!gameObject.GetComponent<MeshCollider>())
 				gameObject.AddComponent<MeshCollider>();

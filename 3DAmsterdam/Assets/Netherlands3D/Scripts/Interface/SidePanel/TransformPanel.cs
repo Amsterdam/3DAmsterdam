@@ -66,6 +66,7 @@ namespace Netherlands3D.Interface.SidePanel
 
 		void Start()
         {
+
             //Store starting position so any transform changes can be added to that untill we lose focus
             translateX.onValueChanged.AddListener(TranslationInputChanged);
             translateY.onValueChanged.AddListener(TranslationInputChanged);
@@ -297,6 +298,33 @@ namespace Netherlands3D.Interface.SidePanel
             {
                 ApplyTranslation();
             }
+        }
+
+        /// <summary>
+        /// Reset rotation to 0,0,0
+        /// </summary>
+        public void ResetRotation()
+        {
+            transformableTarget.transform.rotation = Quaternion.identity;
+            ApplyRotation();
+        }
+
+        /// <summary>
+        /// Reset scale to starting scale
+        /// </summary>
+        public void ResetScale()
+        {
+            transformableTarget.transform.localScale = transformableTarget.StartScale;
+            ApplyScale();
+        }
+
+        /// <summary>
+        /// Reset to base position
+        /// </summary>
+        public void ResetPosition()
+        {
+            transformableTarget.transform.position = basePositionUnity;
+            ApplyTranslation();
         }
 
         /// <summary>
