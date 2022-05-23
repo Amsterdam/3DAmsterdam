@@ -71,7 +71,7 @@ public class WaterReflectionCamera : MonoBehaviour
         Destroy(renderTexture);
     }
 
-    void Update()
+    void LateUpdate()
     {
         followCamera = Camera.main;
 
@@ -83,7 +83,7 @@ public class WaterReflectionCamera : MonoBehaviour
         camera.farClipPlane = followCamera.farClipPlane;
         camera.nearClipPlane = followCamera.nearClipPlane;
 
-        this.transform.transform.SetPositionAndRotation(new Vector3(followCamera.transform.position.x,-followCamera.transform.position.y, followCamera.transform.position.z), followCamera.transform.rotation);
+        this.transform.transform.SetPositionAndRotation(new Vector3(followCamera.transform.position.x,(followCamera.orthographic) ? followCamera.transform.position.y : -followCamera.transform.position.y, followCamera.transform.position.z), followCamera.transform.rotation);
         this.transform.transform.localEulerAngles = new Vector3(-followCamera.transform.localEulerAngles.x, followCamera.transform.localEulerAngles.y, followCamera.transform.localEulerAngles.z);
     }
 
