@@ -120,7 +120,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     PlaceBoundaryFeature(hit.point, hit.transform.rotation, wall);
                     break;
                 case LibraryComponentSelectedEvent.LibraryEventArgsType.Material:
-
+                    
                     if (wallOriginalMaterial == null)
                     {
                         wallOriginalMaterial = wall.Material;

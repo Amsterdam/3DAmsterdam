@@ -51,7 +51,18 @@ namespace Netherlands3D.T3D.Uitbouw
         public Plane WallPlane => new Plane(-transform.forward, transform.position);
 
         private Material normalMaterial;
-        public Material Material => normalMaterial;
+        //public Material Material => normalMaterial;
+        public Material Material
+        {
+            get
+            {
+                if (saveData.MaterialIndex < 0)
+                    return normalMaterial;
+
+                return MaterialLibrary.GetMaterial(saveData.MaterialIndex);
+            }
+        }
+        public int MaterialIndex => saveData.MaterialIndex;
         [SerializeField]
         private Material highlightMaterial;
 
