@@ -14,7 +14,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected override void OnLibraryItemSelected()
         {
-            LibraryComponentSelectedEvent.RaiseMaterialSelected(this, DragContainerImage, IsTopComponent, dragMaterial, textureScale, this);
+            LibraryComponentSelectedEvent.RaiseMaterialSelected(this, GetComponent<Image>().sprite, IsTopComponent, dragMaterial, textureScale, this);
         }
     }
 }

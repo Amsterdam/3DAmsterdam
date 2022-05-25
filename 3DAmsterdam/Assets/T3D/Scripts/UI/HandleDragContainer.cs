@@ -43,7 +43,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             DragType = args.Type;
             var e = (LibraryComponentSelectedEvent.LibraryMaterialSelectedEventargs)args;
             ComponentImage.sprite = e.Sprite;
-            ComponentImage.SetNativeSize();
+            //ComponentImage.SetNativeSize();
+            ComponentImage.rectTransform.sizeDelta = new Vector2(50f, 50f);
+            ComponentImage.pixelsPerUnitMultiplier = 2f;
             selectableLibraryItem = e.SelectableLibraryItem;
             selectMaterial = e.ComponentMaterial;
             selectMaterialTextureScale = e.TextureScale;
@@ -64,6 +66,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             var e = (LibraryComponentSelectedEvent.LibraryComponentSelectedEventargs)args;
             ComponentImage.sprite = e.Sprite;
             ComponentImage.SetNativeSize();
+            ComponentImage.pixelsPerUnitMultiplier = 1f;
             isTopComponent = e.IsTopComponent;
             ComponentObject = e.ComponentObject;
             selectableLibraryItem = e.SelectableLibraryItem;
@@ -152,7 +155,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
             }
-            if (previousSelectedWall)
+            if (previousSelectedWall && wallOriginalMaterial)
                 previousSelectedWall.SetMaterial(wallOriginalMaterial, wallOriginalMaterialTextureScale);
 
             ComponentImage.enabled = true;

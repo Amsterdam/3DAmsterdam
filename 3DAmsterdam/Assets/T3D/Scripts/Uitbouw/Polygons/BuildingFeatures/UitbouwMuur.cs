@@ -131,7 +131,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RecalculateMaterialTiling()
         {
-            print(Side + "\t" + saveData.TextureScale);
             normalMaterial.mainTextureScale = Size * saveData.TextureScale;
         }
 
