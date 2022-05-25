@@ -11,6 +11,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         public int MaterialIndex = -1;
+        public Vector2 TextureScale = Vector2.one;
     }
 
     public enum WallSide
@@ -50,12 +51,24 @@ namespace Netherlands3D.T3D.Uitbouw
         public Plane WallPlane => new Plane(-transform.forward, transform.position);
 
         private Material normalMaterial;
-        public Material Material => normalMaterial;
+        //public Material Material => normalMaterial;
+        public Material Material
+        {
+            get
+            {
+                if (saveData.MaterialIndex < 0)
+                    return normalMaterial;
+
+                return MaterialLibrary.GetMaterial(saveData.MaterialIndex);
+            }
+        }
+        public int MaterialIndex => saveData.MaterialIndex;
         [SerializeField]
         private Material highlightMaterial;
 
-        private static float textureScale = 0.3f;
+        //private Vector2 textureScale = new Vector2(0.3f, 0.3f);
         private UitbouwMuurSaveData saveData;
+        public Vector2 TextureScale => saveData.TextureScale;
 
         protected override void Awake()
         {
@@ -85,7 +98,7 @@ namespace Netherlands3D.T3D.Uitbouw
             if (saveData.MaterialIndex >= 0 && saveData.MaterialIndex < materials.Length)
             {
                 var savedMaterial = materials[saveData.MaterialIndex];
-                SetMaterial(savedMaterial);
+                SetMaterial(savedMaterial, saveData.TextureScale);
             }
         }
 
@@ -118,7 +131,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RecalculateMaterialTiling()
         {
-            normalMaterial.mainTextureScale = Size * textureScale;
+            normalMaterial.mainTextureScale = Size * saveData.TextureScale;
         }
 
         public void SetHighlightActive(bool enable)
@@ -147,13 +160,17 @@ namespace Netherlands3D.T3D.Uitbouw
             SetActive(false);
         }
 
-        public void SetMaterial(Material newMaterial)
+        public void SetMaterial(Material newMaterial, Vector2 scale)
         {
-            normalMaterial = newMaterial;
+            var newMaterialInstance = new Material(newMaterial);
+            //Instantiate(newMaterial);
+            normalMaterial = newMaterialInstance;
             if (meshRenderer.material != highlightMaterial)
-                meshRenderer.material = newMaterial;
+                meshRenderer.material = newMaterialInstance;
 
             saveData.MaterialIndex = MaterialLibrary.GetMaterialIndex(newMaterial);
+            saveData.TextureScale = scale;
+            RecalculateMaterialTiling();
         }
     }
 }
