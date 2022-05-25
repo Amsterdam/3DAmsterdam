@@ -38,6 +38,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //public float ComponentWidth;
             //public float ComponentHeight;
             public Material ComponentMaterial;
+            public Vector2 TextureScale;
             //public SelectComponent SelectComponent;
         }
 
@@ -59,7 +60,7 @@ namespace Netherlands3D.T3D.Uitbouw
             });
         }
 
-        public static void RaiseMaterialSelected(object sender, Sprite sprite, bool isTopComponent, Material material, SelectMaterial selectMaterial)
+        public static void RaiseMaterialSelected(object sender, Sprite sprite, bool isTopComponent, Material material, Vector2 textureScale,SelectMaterial selectMaterial)
         {
             OnMaterialSelectedEvent?.Invoke(sender, new LibraryMaterialSelectedEventargs()
             {
@@ -67,6 +68,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 Sprite = sprite,
                 IsTopComponent = isTopComponent,
                 ComponentMaterial = material,
+                TextureScale = textureScale,
                 SelectableLibraryItem = selectMaterial
             });
         }

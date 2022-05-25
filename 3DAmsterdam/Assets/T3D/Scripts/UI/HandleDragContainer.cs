@@ -27,8 +27,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private SelectableLibraryItem selectableLibraryItem;
         private Material selectMaterial;
+        private Vector2 selectMaterialTextureScale;
         private UitbouwMuur previousSelectedWall;
         private Material wallOriginalMaterial;
+        private Vector2 wallOriginalMaterialTextureScale;
 
         private void OnEnable()
         {
@@ -44,6 +46,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             ComponentImage.SetNativeSize();
             selectableLibraryItem = e.SelectableLibraryItem;
             selectMaterial = e.ComponentMaterial;
+            selectMaterialTextureScale = e.TextureScale;
             //throw new NotImplementedException();
         }
 
@@ -78,8 +81,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 selectableLibraryItem.Deslect();
 
                 if (previousSelectedWall)
+                {
                     wallOriginalMaterial = previousSelectedWall.Material;
-
+                    wallOriginalMaterialTextureScale = previousSelectedWall.TextureScale;
+                }
                 return;
             }
 
@@ -119,18 +124,21 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     if (wallOriginalMaterial == null)
                     {
                         wallOriginalMaterial = wall.Material;
+                        wallOriginalMaterialTextureScale = wall.TextureScale;
                     }
 
                     if (wall != previousSelectedWall && previousSelectedWall != null)
                     {
-                        previousSelectedWall.SetMaterial(wallOriginalMaterial);
+                        previousSelectedWall.SetMaterial(wallOriginalMaterial, wallOriginalMaterialTextureScale);
                         wallOriginalMaterial = wall.Material;
+                        wallOriginalMaterialTextureScale = wall.TextureScale;
                     }
 
                     if (wall.Material != selectMaterial)
                     {
                         wallOriginalMaterial = wall.Material;
-                        wall.SetMaterial(selectMaterial);
+                        wallOriginalMaterialTextureScale = wall.TextureScale;
+                        wall.SetMaterial(selectMaterial, selectMaterialTextureScale);
                     }
                     break;
             }
@@ -145,7 +153,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
             }
             if (previousSelectedWall)
-                previousSelectedWall.SetMaterial(wallOriginalMaterial);
+                previousSelectedWall.SetMaterial(wallOriginalMaterial, wallOriginalMaterialTextureScale);
 
             ComponentImage.enabled = true;
         }
