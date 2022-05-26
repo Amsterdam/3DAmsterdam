@@ -54,7 +54,8 @@ public static class SessionSaver
 
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        LoadSaveData(); //This data also includes essential information like bagId, so always load the data
+        if (scene != ErrorService.ErrorScene)
+            LoadSaveData(); //This data also includes essential information like bagId, so always load the data
     }
 
     public static void ClearAllSaveData()

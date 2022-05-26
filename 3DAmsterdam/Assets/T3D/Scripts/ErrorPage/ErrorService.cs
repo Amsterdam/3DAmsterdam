@@ -7,6 +7,7 @@ public static class ErrorService
 {
     private const string errorSceneName = "ErrorScene";
     public static string ErrorMessage { get; private set; }
+    public static Scene ErrorScene => SceneManager.GetSceneByName(errorSceneName);
 
     public static void GoToErrorPage(string errorMessage)
     {
@@ -19,6 +20,5 @@ public static class ErrorService
 
         SceneManager.LoadScene(errorSceneName);
         ErrorMessage = errorMessage;
-
     }
 }
