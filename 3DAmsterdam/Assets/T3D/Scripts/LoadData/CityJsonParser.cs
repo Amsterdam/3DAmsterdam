@@ -90,8 +90,10 @@ namespace T3D.LoadData
                 maxz = vertarray.Max(o => o.Value[2].AsDouble);
             }
 
-            if ((maxx - minx > 500) || (maxy - miny > 500)) throw new Exception("Distance between vertices too large.. ");
-
+            if ((maxx - minx > 500) || (maxy - miny > 500))
+            {
+                ErrorService.GoToErrorPage("Cannot parse CityJSON: Distance between vertices too large.. ");
+            }
             var centerx = minx + ((maxx - minx) / 2);
             var centery = miny + ((maxy - miny) / 2);
 

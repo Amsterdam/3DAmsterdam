@@ -204,7 +204,7 @@ namespace Netherlands3D.T3D.Uitbouw
             yield return req.SendWebRequest();
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                ServiceLocator.GetService<WarningDialogs>().ShowNewDialog(req.error);
+                ErrorService.GoToErrorPage(req.error);
             }
             else
             {

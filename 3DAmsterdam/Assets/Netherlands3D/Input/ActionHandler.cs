@@ -54,6 +54,25 @@ namespace Netherlands3D.InputHandler
 
         }
 
+        private void OnDestroy()
+        {
+            foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps)
+            {
+                UnityActionMap unityMap = new UnityActionMap(map);
+                foreach (var inputAction in map)
+                {
+                    UnityInputSystemAction tmp = new UnityInputSystemAction(inputAction.name);
+
+                    inputAction.performed -= Inputaction_performed;
+                    inputAction.canceled -= InputAction_canceled;
+                    inputAction.started -= Inputaction_started;
+                }
+                unityMap.boundActions.Clear();
+            }
+            unityActionMaps.Clear();
+            ActionDictionary.Clear();
+        }
+
         private void InputAction_canceled(InputAction.CallbackContext obj)
         {
             // could be faster if it didn't have to search a dictionary?

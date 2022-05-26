@@ -41,7 +41,8 @@ public static class SessionSaver
         //SessionId = "47f81880-bbe1-11ec-bb7e-b7bbd72d450c"; //snap
         //SessionId = "961bc940-bfd7-11ec-8a43-ddfbd3cd7e77"; //shapeable
         //SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
-        SessionId = "a1fd6ee0-cf8a-11ec-8235-9b9afe916f92"; //JSON upload test
+        //SessionId = "a1fd6ee0-cf8a-11ec-8235-9b9afe916f92"; //JSON upload test
+        SessionId = "b9c68c40-d201-11ec-bab9-853726a718cd"; //ifc converter bug (nosnap, upload flow)
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
@@ -53,7 +54,8 @@ public static class SessionSaver
 
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        LoadSaveData(); //This data also includes essential information like bagId, so always load the data
+        if (scene != ErrorService.ErrorScene)
+            LoadSaveData(); //This data also includes essential information like bagId, so always load the data
     }
 
     public static void ClearAllSaveData()
