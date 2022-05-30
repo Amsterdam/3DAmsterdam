@@ -69,26 +69,26 @@ namespace T3D.LoadData
 
             double minx, miny, minz, maxx, maxy, maxz;
 
-            var extents = cityjsonNode["metadata"]["geographicalExtent"];
-            if (extents != null)
-            {
-                minx = extents.AsArray[0].AsDouble;
-                miny = extents.AsArray[1].AsDouble;
-                minz = extents.AsArray[2].AsDouble;
-                maxx = extents.AsArray[3].AsDouble;
-                maxy = extents.AsArray[4].AsDouble;
-                maxz = extents.AsArray[5].AsDouble;
-            }
-            else
-            {
-                minx = vertarray.Min(o => o.Value[0].AsDouble);
-                miny = vertarray.Min(o => o.Value[1].AsDouble);
-                minz = vertarray.Min(o => o.Value[2].AsDouble);
+            //var extents = cityjsonNode["metadata"]["geographicalExtent"];
+            //if (extents != null)
+            //{
+            //    minx = extents.AsArray[0].AsDouble;
+            //    miny = extents.AsArray[1].AsDouble;
+            //    minz = extents.AsArray[2].AsDouble;
+            //    maxx = extents.AsArray[3].AsDouble;
+            //    maxy = extents.AsArray[4].AsDouble;
+            //    maxz = extents.AsArray[5].AsDouble;
+            //}
+            //else
+            //{
+                minx = vertarray.Min(o => o.Value[0].AsDouble * transformScale.x);
+                miny = vertarray.Min(o => o.Value[1].AsDouble * transformScale.y);
+                minz = vertarray.Min(o => o.Value[2].AsDouble * transformScale.z);
 
-                maxx = vertarray.Max(o => o.Value[0].AsDouble);
-                maxy = vertarray.Max(o => o.Value[1].AsDouble);
-                maxz = vertarray.Max(o => o.Value[2].AsDouble);
-            }
+                maxx = vertarray.Max(o => o.Value[0].AsDouble * transformScale.x);
+                maxy = vertarray.Max(o => o.Value[1].AsDouble * transformScale.y);
+                maxz = vertarray.Max(o => o.Value[2].AsDouble * transformScale.z);
+            //}
 
             if ((maxx - minx > 500) || (maxy - miny > 500))
             {
