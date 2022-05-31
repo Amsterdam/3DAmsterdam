@@ -31,14 +31,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField]
     private string colorIntValueProperty = "Fase_ID";
     [SerializeField]
-    private ColorByIntValue[] colorByIntValues;
+    private Color[] colorByIntIndex;
 
-    [System.Serializable]
-    public struct ColorByIntValue
-    {
-        public int propertyIntValue;
-        public Color color;
-    }
     private int colorIndex = 0;
 
     private void Awake()
@@ -83,12 +77,10 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     {
         //add event to gameobject listening to date from timeline
         //newPolygon.AddComponent<ActiveFromTime>();
-        newPolygon.name = startBuildYear.ToString();
+        newPolygon.name = $"{startBuildYear} phase:{colorIndex}";
         var changeOpacityByDate = newPolygon.AddComponent<ChangeOpacityByDate>();
 
-        if(colorIndex < colorByIntValues.Length-1)
-            changeOpacityByDate.BaseColor = colorByIntValues[colorIndex].color;
-
+        changeOpacityByDate.ApplyBaseColor(colorByIntIndex[colorIndex]);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
 
         //TODO: Remove dependency to timeline by adding DateTime scriptable object events to timeline

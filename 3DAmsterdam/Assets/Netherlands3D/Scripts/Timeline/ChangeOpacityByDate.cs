@@ -16,15 +16,16 @@ public class ChangeOpacityByDate : MonoBehaviour
 
     private Color baseColor;
 
-    private void Awake()
+    public void ApplyBaseColor(Color color)
     {
         material = this.GetComponent<MeshRenderer>().material;
-        if(BaseColor==null) BaseColor = material.color;
+        color.a = opacityBefore;
+        material.color = color;
     }
 
     public void TimeChanged(DateTime newTime)
     {
-        Color color = BaseColor;
+        Color color = material.color;
         color.a = (newTime > ObjectDateTime) ? opacityAfter : opacityBefore;
         material.color = color;
     }
