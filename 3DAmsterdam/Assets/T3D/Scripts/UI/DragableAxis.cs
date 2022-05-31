@@ -29,6 +29,8 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private ColorPalette interactionColors;
 
+        private CameraMode cameraMode;
+
         public static DragableAxis CreateDragableAxis(GameObject prefab, Vector3 position, Quaternion rotation, UitbouwBase linkedUitbouw)
         {
             var axisObject = Instantiate(prefab, position, rotation, linkedUitbouw.transform);
@@ -42,6 +44,11 @@ namespace Netherlands3D.T3D.Uitbouw
             uitbouw = linkedUitbouw;
         }
 
+        protected virtual void Start()
+        {
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent += DragableAxis_CameraModeChangedEvent;
+        }
+
         protected virtual void Update()
         {
             ProcessInteractionState();
@@ -53,9 +60,16 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        private void OnDestroy()
+        {
+            ServiceLocator.GetService<CameraModeChanger>().CameraModeChangedEvent -= DragableAxis_CameraModeChangedEvent;
+        }
+
         private void ProcessInteractionState()
         {
-            if (IsHovered())
+            
+
+            if (cameraMode != CameraMode.StreetView && IsHovered())
             {
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -88,6 +102,11 @@ namespace Netherlands3D.T3D.Uitbouw
                 planeProjectedOffset = Vector3.zero;
                 PlanarDeltaPosition = Vector3.zero;
             }
+        }
+
+        private void DragableAxis_CameraModeChangedEvent(object source, CameraMode newMode)
+        {
+            cameraMode = newMode;
         }
 
         public void RecalculateOffset()
