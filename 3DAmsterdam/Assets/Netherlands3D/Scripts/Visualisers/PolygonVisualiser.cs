@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace Netherlands3D.Events
 {
+    /// <summary>
+    /// Use countour lists as input to draw solidified 2D shapes in the 3D world
+    /// </summary>
     public class PolygonVisualiser : MonoBehaviour
     {
         [Header("Listen to events:")]
@@ -45,6 +48,9 @@ namespace Netherlands3D.Events
         [SerializeField]
         private Vector2 uvCoordinate = Vector2.zero;
 
+        [SerializeField]
+        private bool reverseWindingOrder = true;
+
         void Awake()
         {
             if (drawPolygonEvent) drawPolygonEvent.started.AddListener(CreatePolygon);
@@ -63,7 +69,10 @@ namespace Netherlands3D.Events
             polygonCount++;
 
             var polygon = new Poly2Mesh.Polygon();
-            polygon.outside = (List<Vector3>)contours[0];
+            var outerContour = (List<Vector3>)contours[0];
+            if (reverseWindingOrder) outerContour.Reverse();
+
+            polygon.outside = outerContour;
 
             for (int i=0; i< polygon.outside.Count; i++)
             {
@@ -74,7 +83,9 @@ namespace Netherlands3D.Events
             {
                 for (int i = 1; i < contours.Count; i++)
                 {
-                    polygon.holes.Add((List<Vector3>)contours[i]);
+                    var holeContour = (List<Vector3>)contours[i];
+                    if (reverseWindingOrder) holeContour.Reverse();
+                    polygon.holes.Add(holeContour);
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
