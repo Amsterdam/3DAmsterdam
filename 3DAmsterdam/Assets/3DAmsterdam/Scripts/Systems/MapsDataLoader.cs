@@ -48,8 +48,10 @@ namespace Amsterdam3D.Maps
             public Vector3Event drawPointEvent;
             public Vector3ListEvent drawLineEvent;
             public Vector3ListsEvent drawGeometryEvent;
+            public StringEvent setObjectNameEvent;
             public string matchingPropertyName;
             public string matchingPropertyValue;
+            public string objectNameProperty;
         }
 
         void Awake()
@@ -158,7 +160,10 @@ namespace Amsterdam3D.Maps
 			}
 
             if (unityPolygon.Count > 0)
+            {
+                if(geoJsonURLData.setObjectNameEvent) geoJsonURLData.setObjectNameEvent.started?.Invoke(geoJsonURLData.objectNameProperty);
                 geoJsonURLData.drawGeometryEvent.started?.Invoke(unityPolygon);
+            }
 
             yield return null;
 		}

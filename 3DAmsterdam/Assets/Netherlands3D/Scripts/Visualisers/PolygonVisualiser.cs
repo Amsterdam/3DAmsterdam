@@ -32,6 +32,8 @@ namespace Netherlands3D.Events
         [SerializeField]
         private Vector3ListsEvent drawPolygonEvent;
         [SerializeField]
+        private StringEvent setDrawingObjectName;
+        [SerializeField]
         private FloatEvent setExtrusionHeightEvent;
 
         [SerializeField]
@@ -43,6 +45,8 @@ namespace Netherlands3D.Events
         private int maxPolygons = 10000;
         private int polygonCount = 0;
 
+        private string currentObjectName = "Polygon";
+
         [SerializeField]
         private bool setUVCoordinates = false;
         [SerializeField]
@@ -51,8 +55,14 @@ namespace Netherlands3D.Events
         [SerializeField]
         private bool reverseWindingOrder = true;
 
+
+        [Header("Invoke events")]
+        [SerializeField]
+        GameObjectEvent createdPolygonGameObject;
+
         void Awake()
         {
+            if (setDrawingObjectName) setDrawingObjectName.started.AddListener(SetName);
             if (drawPolygonEvent) drawPolygonEvent.started.AddListener(CreatePolygon);
             if (setExtrusionHeightEvent) setExtrusionHeightEvent.started.AddListener(SetExtrusionHeight);
         }
@@ -62,8 +72,13 @@ namespace Netherlands3D.Events
             this.extrusionHeight = extrusionHeight;
         }
 
-		//Treat first contour as outer contour, and extra contours as holes
-		public void CreatePolygon(List<IList<Vector3>> contours)
+        public void SetName(string drawingObjectName)
+        {
+            currentObjectName = drawingObjectName;
+        }
+
+        //Treat first contour as outer contour, and extra contours as holes
+        public void CreatePolygon(List<IList<Vector3>> contours)
         {
             if (polygonCount >= maxPolygons) return;
             polygonCount++;
@@ -85,6 +100,7 @@ namespace Netherlands3D.Events
                 {
                     var holeContour = (List<Vector3>)contours[i];
                     if (reverseWindingOrder) holeContour.Reverse();
+
                     polygon.holes.Add(holeContour);
                 }
             }
@@ -97,12 +113,14 @@ namespace Netherlands3D.Events
 			}
 
 			var newPolygonObject = new GameObject();
-            newPolygonObject.name = name;
+            newPolygonObject.name = currentObjectName;
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
             newPolygonObject.AddComponent<MeshCollider>();
             newPolygonObject.transform.SetParent(this.transform);
             newPolygonObject.transform.Translate(0, extrusionHeight, 0);
+
+            if (createdPolygonGameObject) createdPolygonGameObject.Invoke(newPolygonObject);
         }
 
 		private void SetUVCoordinates(Mesh newPolygonMesh)
