@@ -18,6 +18,8 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     private string cityJson = string.Empty;
     private UploadedUitbouw uitbouw;
 
+    public List<Vector3> boundaryVerts;
+    
     public bool HasLoaded { get; private set; }
 
     [SerializeField]
@@ -73,10 +75,22 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             //var key = co.Key;
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            //var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            var meshes = meshmaker.CreateMeshes(cityJsonModel, co.Value);
+            boundaryVerts = meshmaker.GetBoundaryVertices(cityJsonModel, co.Value);
 
-            AddMesh(mesh);
-            //AddMeshGameObject(key, mesh);
+            for (int i = 0; i < meshes.Length; i++)
+            {
+                AddMeshGameObject(i.ToString(), meshes[i]);
+            }
+
+            for (int i = 0; i < boundaryVerts.Count; i++)
+            {
+                addBoundaryPoint(boundaryVerts[i]);                
+            }
+
+            //AddMesh(mesh);
+
         }
 
         //re-initialize the usermovementaxes to ensure the new meshes are dragable
@@ -107,6 +121,16 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
     }
 
+    void addBoundaryPoint(Vector3 location)
+    {
+        GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        DestroyImmediate(point.GetComponent<SphereCollider>());
+        point.transform.position = location;
+        point.transform.localScale = Vector3.one * 0.1f;
+        point.transform.SetParent(uitbouw.transform);
+
+    }
+
     void AddMeshGameObject(string name, Mesh mesh)
     {
         GameObject gam = new GameObject(name);
@@ -115,13 +139,13 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var meshrenderer = gam.AddComponent<MeshRenderer>();
         meshrenderer.material = MeshMaterial;
         gam.transform.SetParent(uitbouw.transform);
-        gam.AddComponent<BoxCollider>();
+       // gam.AddComponent<BoxCollider>();
 
         uitbouw.SetMeshFilter(meshfilter);
 
         var depthOffset = -transform.forward * uitbouw.Depth / 2;
         var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
-        gam.transform.localPosition = depthOffset + heightOffset;
+        //gam.transform.localPosition = depthOffset + heightOffset;
     }
 
     public void EnableUploadedModel(bool enable)

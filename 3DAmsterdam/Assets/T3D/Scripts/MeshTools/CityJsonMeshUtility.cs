@@ -62,6 +62,38 @@ public class CityJsonMeshUtility
         return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
     }
 
+
+    public List<Vector3> GetBoundaryVertices(CityJsonModel cityModel, JSONNode cityObject)
+    {
+        var vertices =cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
+
+        var geometries = cityObject["geometry"].AsArray;
+        int highestLodIndex = 0;
+        for (int i = 0; i < geometries.Count; i++)
+        {
+            var lod = geometries[i]["lod"].AsInt;
+            if (lod > highestLodIndex) highestLodIndex = i;
+        }
+        string geometrytype = cityObject["geometry"][highestLodIndex]["type"].Value;
+        JSONNode boundariesNode = cityObject["geometry"][highestLodIndex]["boundaries"];
+        if (geometrytype == "Solid")
+        {
+            boundariesNode = cityObject["geometry"][highestLodIndex]["boundaries"][0];
+        }
+
+        var counter = 0;
+        foreach (JSONNode boundary in boundariesNode)
+        {
+            counter++;
+            if (counter != 31) continue;
+
+            JSONNode outerRing = boundary[0];
+            return GetBounderyVertices(vertices, outerRing);
+        }
+
+        return null;
+
+        }
     private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)
     {
         var geometries = cityObject["geometry"].AsArray;
@@ -85,10 +117,14 @@ public class CityJsonMeshUtility
         if (boundariesNode is null)
         {
             return null;
-        }
+        }      
 
+        var counter = 0;
         foreach (JSONNode boundary in boundariesNode)
         {
+            counter++;
+            if (counter  != 31) continue;
+
             JSONNode outerRing = boundary[0];
 
             List<List<Vector3>> holes = new List<List<Vector3>>();
