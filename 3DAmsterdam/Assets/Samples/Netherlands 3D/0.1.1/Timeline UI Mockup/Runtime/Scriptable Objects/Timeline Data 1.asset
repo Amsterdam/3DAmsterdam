@@ -632,13 +632,13 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   allTimePeriods:
-  - name: Test
-    description: Hello this is a test time period
+  - name: 10 Years
+    description: Yo
     startDate:
-      dateTimeString: 2020/01/01
+      dateTimeString: 1800/01/01
     endDate:
-      dateTimeString: 2021/01/01
-    layer: Not Working
+      dateTimeString: 1850/01/01
+    layer: 10 Years
     eventPressed:
       m_PersistentCalls:
         m_Calls: []
@@ -695,6 +695,34 @@ MonoBehaviour:
     endDate:
       dateTimeString: 2001/01/01
     layer: CSV
+    eventPressed:
+      m_PersistentCalls:
+        m_Calls: []
+    eventScreenEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    eventScreenExit:
+      m_PersistentCalls:
+        m_Calls: []
+    eventCurrentTimeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    eventCurrentTimeExit:
+      m_PersistentCalls:
+        m_Calls: []
+    eventLayerShow:
+      m_PersistentCalls:
+        m_Calls: []
+    eventLayerHide:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: 10 Years
+    description: Yo
+    startDate:
+      dateTimeString: 2000/01/01
+    endDate:
+      dateTimeString: 2010/01/01
+    layer: 10 Years
     eventPressed:
       m_PersistentCalls:
         m_Calls: []
@@ -1220,41 +1248,13 @@ MonoBehaviour:
     eventLayerHide:
       m_PersistentCalls:
         m_Calls: []
-  - name: 10 Years
-    description: Yo
+  - name: Test
+    description: Hello this is a test time period
     startDate:
-      dateTimeString: 2000/01/01
+      dateTimeString: 2020/01/01
     endDate:
-      dateTimeString: 2010/01/01
-    layer: 10 Years
-    eventPressed:
-      m_PersistentCalls:
-        m_Calls: []
-    eventScreenEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    eventScreenExit:
-      m_PersistentCalls:
-        m_Calls: []
-    eventCurrentTimeEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    eventCurrentTimeExit:
-      m_PersistentCalls:
-        m_Calls: []
-    eventLayerShow:
-      m_PersistentCalls:
-        m_Calls: []
-    eventLayerHide:
-      m_PersistentCalls:
-        m_Calls: []
-  - name: 10 Years
-    description: Yo
-    startDate:
-      dateTimeString: 1800/01/01
-    endDate:
-      dateTimeString: 1850/01/01
-    layer: 10 Years
+      dateTimeString: 2021/01/01
+    layer: Not Working
     eventPressed:
       m_PersistentCalls:
         m_Calls: []
