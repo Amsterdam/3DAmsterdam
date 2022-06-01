@@ -21,7 +21,7 @@ namespace Netherlands3D.Interface {
 		private StringEvent openLegendFromImageURL;
 
 		[SerializeField]
-		private ObjectEvent openLegendFromColorPalette;
+		private ColorPaletteEvent openLegendFromColorPalette;
 
 		[Header("Template references")]
 		[SerializeField]

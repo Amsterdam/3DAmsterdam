@@ -1,4 +1,5 @@
 using Netherlands3D.Core;
+using Netherlands3D.Core.Colors;
 using Netherlands3D.Events;
 using Netherlands3D.Timeline;
 using Netherlands3D.Utilities;
@@ -30,10 +31,16 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 
     [SerializeField]
     private string colorIntValueProperty = "Fase_ID";
-    [SerializeField]
-    private Color[] colorByIntIndex;
 
     private int colorIndex = 0;
+    [SerializeField]
+    private int indexOffset = -2;
+
+    [Header("Invoke events")]
+    [SerializeField]
+    ColorPaletteEvent openLegendWithColorPalette;
+    [SerializeField]
+    private ColorPalette colorPalette;
 
     private void Awake()
     {
@@ -43,6 +50,11 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     private void Start()
     {
         LoadData();
+    }
+
+    private void OnEnable()
+    {
+        if (colorPalette && openLegendWithColorPalette) openLegendWithColorPalette.started.Invoke(colorPalette);
     }
 
     public void LoadData(string geoJsonURL = "")
@@ -65,7 +77,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             while (geoJSON.GotoNextFeature())
             {
                 startBuildYear = geoJSON.GetPropertyFloatValue(startYearProperty);
-                colorIndex = (int)geoJSON.GetPropertyFloatValue(colorIntValueProperty);
+                colorIndex = (int)geoJSON.GetPropertyFloatValue(colorIntValueProperty) + indexOffset;
 
                 List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
                 yield return DrawPolygon(polygon);
@@ -80,7 +92,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         newPolygon.name = $"{startBuildYear} phase:{colorIndex}";
         var changeOpacityByDate = newPolygon.AddComponent<ChangeOpacityByDate>();
 
-        changeOpacityByDate.ApplyBaseColor(colorByIntIndex[colorIndex]);
+        changeOpacityByDate.ApplyBaseColor(colorPalette.colors[colorIndex].color);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
 
         //TODO: Remove dependency to timeline by adding DateTime scriptable object events to timeline
