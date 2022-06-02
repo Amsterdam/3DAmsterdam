@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5253939595224302153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5253939595224302154}
+  - component: {fileID: 5253939595224302155}
+  - component: {fileID: 5253939595224302148}
+  - component: {fileID: 5253939595224302149}
+  - component: {fileID: 5253939595224302150}
+  m_Layer: 14
+  m_Name: BuildingPlans
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5253939595224302154
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0.0000000754979}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5253939595224302155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 0}
+  setDrawingObjectName: {fileID: 0}
+  setExtrusionHeightEvent: {fileID: 0}
+  defaultMaterial: {fileID: 2100000, guid: 2a0670960cdab8f4889c16c4d2d2a57a, type: 2}
+  extrusionHeight: 100
+  setUVCoordinates: 0
+  uvCoordinate: {x: 0, y: 0}
+  reverseWindingOrder: 1
+  addColliders: 0
+  createdPolygonGameObject: {fileID: 11400000, guid: eb123526ec7badb4fbd3d353533275e5,
+    type: 2}
+--- !u!114 &5253939595224302148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fe00ba1e03a4d498e46ea487459ad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  description: Load building plans  GeoJSON
+  urlWithGeoJsonData: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen
+  objectNameProperty: Projectnaam
+  startYearProperty: Start_bouw
+  timeline: {fileID: 0}
+  colorIntValueProperty: Fase_ID
+  indexOffset: -2
+  beforeTimeOpacity: 0.2
+  afterTimeOpacity: 0.9
+  openLegendWithColorPalette: {fileID: 11400000, guid: 6b4f9076546a0404d9a2706da04b76ae,
+    type: 2}
+  colorPalette: {fileID: 11400000, guid: 08ea5af7ee1f9ec4e823da6367a255fc, type: 2}
+--- !u!114 &5253939595224302149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 18f58b565d425da4399cdfcc4a44c088, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5253939595224302153}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5253939595224302150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
