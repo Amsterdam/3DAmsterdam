@@ -9,19 +9,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(PolygonVisualiser))] 
 public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 {
     [SerializeField]
+    private string description = "";
+    [SerializeField]
     private string urlWithGeoJsonData = "https://";
 
-    [Header("Invoke")]
     [SerializeField]
-    private Vector3ListsEvent drawPolygonEvent;
-
-    [Header("Listen to")]
-    [SerializeField]
-    GameObjectEvent createdPolygonGameObject;
-
+    private string objectNameProperty = "Projectnaam";
     [SerializeField]
     private string startYearProperty = "Start_bouw";
     private float startBuildYear = 0;
@@ -32,6 +29,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField]
     private string colorIntValueProperty = "Fase_ID";
 
+    private string objectName = "";
     private int colorIndex = 0;
     [SerializeField]
     private int indexOffset = -2;
@@ -41,33 +39,53 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     ColorPaletteEvent openLegendWithColorPalette;
     [SerializeField]
     private ColorPalette colorPalette;
+    private Coroutine runningDataload;
+
+    private PolygonVisualiser polyonVisualiser;
 
     private void Awake()
     {
-        if (createdPolygonGameObject) createdPolygonGameObject.started.AddListener(PolygonDrawn);
+        polyonVisualiser = GetComponent<PolygonVisualiser>();
     }
 
-    private void Start()
+    private void OnDisable()
     {
-        LoadData();
+        Clear();
+    }
+
+    private void Clear()
+    {
+        foreach (Transform child in transform)
+            Destroy(child.gameObject);
     }
 
     private void OnEnable()
     {
         if (colorPalette && openLegendWithColorPalette) openLegendWithColorPalette.started.Invoke(colorPalette);
+
+        LoadData();
     }
 
     public void LoadData(string geoJsonURL = "")
     {
+        Clear();
+
         var url = (geoJsonURL == "") ? urlWithGeoJsonData : geoJsonURL;
-        StartCoroutine(LoadGeoJSON(url));
+        print($"Starting visualising GeoJSON {description} from {url}");
+
+        if(runningDataload!=null)
+        {
+            StopCoroutine(runningDataload);
+        }
+
+        runningDataload = StartCoroutine(LoadGeoJSON(url));
     }
 
     private IEnumerator LoadGeoJSON(string url)
     {
         var geoJsonDataRequest = UnityWebRequest.Get(url);
         yield return geoJsonDataRequest.SendWebRequest();
-
+        int feature = 0;
         if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
         {
             GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
@@ -76,21 +94,47 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             //We already filtered the request, so we can draw all features
             while (geoJSON.GotoNextFeature())
             {
+                feature++;
+                print($"Feature {feature}");
+                var type = geoJSON.GetGeometryType();
                 startBuildYear = geoJSON.GetPropertyFloatValue(startYearProperty);
                 colorIndex = (int)geoJSON.GetPropertyFloatValue(colorIntValueProperty) + indexOffset;
+                objectName = geoJSON.GetPropertyStringValue(objectNameProperty);
 
-                List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
-                yield return DrawPolygon(polygon);
+                switch (type)
+                {
+                    case GeoJSON.GeoJSONGeometryType.Polygon:
+                        List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
+                        DrawPolygon(polygon, "Polygon");
+                        yield return new WaitForEndOfFrame();
+                        break;
+
+                    case GeoJSON.GeoJSONGeometryType.MultiPolygon:
+                        List<List<List<GeoJSONPoint>>> multiPolygons = geoJSON.GetMultiPolygon();
+                        for (int i = 0; i < multiPolygons.Count; i++)
+                        {
+                            var multiPolygon = multiPolygons[i];
+                            DrawPolygon(multiPolygon, "Multipolygon");
+                        }
+                        yield return new WaitForEndOfFrame();
+                        break;
+                }
             }
+        }
+        else
+        {
+            print($"Could not retrieve GeoJSON from {url}");
         }
     }
 
-    private void PolygonDrawn(GameObject newPolygon)
+    private void PolygonDrawn(GameObject newPolygon, string prefix)
     {
-        //add event to gameobject listening to date from timeline
-        //newPolygon.AddComponent<ActiveFromTime>();
-        newPolygon.name = $"{startBuildYear} phase:{colorIndex}";
+        //add event to gameobject listening to date changes from timeline
+        newPolygon.name = $"{prefix} | {objectName} | buildyear:{startBuildYear} | phase:{colorIndex}";
         var changeOpacityByDate = newPolygon.AddComponent<ChangeOpacityByDate>();
+
+        if (newPolygon.GetComponent<MeshRenderer>().bounds.size.magnitude > 2000)
+            Debug.Log("Drawn polygon seems a bit big", newPolygon);  
 
         changeOpacityByDate.ApplyBaseColor(colorPalette.colors[colorIndex].color);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
@@ -99,7 +143,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         timeline.onCurrentDateChange.AddListener(changeOpacityByDate.TimeChanged);
     }
 
-    private IEnumerator DrawPolygon(List<List<GeoJSONPoint>> polygon)
+    private void DrawPolygon(List<List<GeoJSONPoint>> polygon, string prefix)
     {
         List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
 
@@ -116,8 +160,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             unityPolygon.Add(polyList);
         }
 
-        drawPolygonEvent.started?.Invoke(unityPolygon);
-
-        yield return null;
+        GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygon(unityPolygon);
+        if(newPolygonGameObject)
+            PolygonDrawn(newPolygonGameObject, prefix);
     }
 }
