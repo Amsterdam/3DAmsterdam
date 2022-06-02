@@ -34,6 +34,11 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField]
     private int indexOffset = -2;
 
+    [SerializeField]
+    private float beforeTimeOpacity = 0.1f;
+    [SerializeField]
+    private float afterTimeOpacity = 0.1f;
+
     [Header("Invoke events")]
     [SerializeField]
     ColorPaletteEvent openLegendWithColorPalette;
@@ -42,6 +47,9 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     private Coroutine runningDataload;
 
     private PolygonVisualiser polyonVisualiser;
+
+    private float dataMinYear = float.MaxValue;
+    private float dataMaxYear = float.MinValue;
 
     private void Awake()
     {
@@ -95,9 +103,13 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             while (geoJSON.GotoNextFeature())
             {
                 feature++;
-                print($"Feature {feature}");
                 var type = geoJSON.GetGeometryType();
                 startBuildYear = geoJSON.GetPropertyFloatValue(startYearProperty);
+
+                //Track range of data in year
+                if (dataMinYear > startBuildYear) dataMinYear = startBuildYear;
+                if (dataMaxYear < startBuildYear) dataMaxYear = startBuildYear;
+
                 colorIndex = (int)geoJSON.GetPropertyFloatValue(colorIntValueProperty) + indexOffset;
                 objectName = geoJSON.GetPropertyStringValue(objectNameProperty);
 
@@ -105,7 +117,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 {
                     case GeoJSON.GeoJSONGeometryType.Polygon:
                         List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
-                        DrawPolygon(polygon, "Polygon");
+                        DrawPolygon(polygon);
                         yield return new WaitForEndOfFrame();
                         break;
 
@@ -114,7 +126,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                         for (int i = 0; i < multiPolygons.Count; i++)
                         {
                             var multiPolygon = multiPolygons[i];
-                            DrawPolygon(multiPolygon, "Multipolygon");
+                            DrawPolygon(multiPolygon);
                         }
                         yield return new WaitForEndOfFrame();
                         break;
@@ -127,23 +139,21 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         }
     }
 
-    private void PolygonDrawn(GameObject newPolygon, string prefix)
+    private void PolygonDrawn(GameObject newPolygon)
     {
-        //add event to gameobject listening to date changes from timeline
-        newPolygon.name = $"{prefix} | {objectName} | buildyear:{startBuildYear} | phase:{colorIndex}";
+        //Add event to gameobject listening to date changes from timeline
         var changeOpacityByDate = newPolygon.AddComponent<ChangeOpacityByDate>();
-
-        if (newPolygon.GetComponent<MeshRenderer>().bounds.size.magnitude > 2000)
-            Debug.Log("Drawn polygon seems a bit big", newPolygon);  
-
+        changeOpacityByDate.SetOpacityRange(beforeTimeOpacity, afterTimeOpacity);
         changeOpacityByDate.ApplyBaseColor(colorPalette.colors[colorIndex].color);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
-
+#if UNITY_EDITOR
+        changeOpacityByDate.gameObject.gameObject.name = objectName;
+#endif
         //TODO: Remove dependency to timeline by adding DateTime scriptable object events to timeline
         timeline.onCurrentDateChange.AddListener(changeOpacityByDate.TimeChanged);
     }
 
-    private void DrawPolygon(List<List<GeoJSONPoint>> polygon, string prefix)
+    private void DrawPolygon(List<List<GeoJSONPoint>> polygon)
     {
         List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
 
@@ -162,6 +172,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 
         GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygon(unityPolygon);
         if(newPolygonGameObject)
-            PolygonDrawn(newPolygonGameObject, prefix);
+            PolygonDrawn(newPolygonGameObject);
     }
 }

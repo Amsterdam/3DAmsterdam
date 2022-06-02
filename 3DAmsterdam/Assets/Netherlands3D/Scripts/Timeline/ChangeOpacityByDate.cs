@@ -9,8 +9,8 @@ public class ChangeOpacityByDate : MonoBehaviour
     public DateTime ObjectDateTime { get => objectDateTime; set => objectDateTime = value; }
     public Color BaseColor { get => baseColor; set => baseColor = value; }
 
-    public float opacityBefore = 0.3f;
-    public float opacityAfter = 0.8f;
+    private float opacityBefore = 0.3f;
+    private float opacityAfter = 0.8f;
 
     private Material material;
 
@@ -28,5 +28,11 @@ public class ChangeOpacityByDate : MonoBehaviour
         Color color = material.color;
         color.a = (newTime > ObjectDateTime) ? opacityAfter : opacityBefore;
         material.color = color;
+    }
+
+    internal void SetOpacityRange(float opacityBefore, float opacityAfter)
+    {
+        this.opacityBefore = opacityBefore;
+        this.opacityAfter = opacityAfter;
     }
 }
