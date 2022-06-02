@@ -77,10 +77,15 @@ namespace Netherlands3D.Events
             currentObjectName = drawingObjectName;
         }
 
-        //Treat first contour as outer contour, and extra contours as holes
-        public void CreatePolygon(List<IList<Vector3>> contours)
+        private void CreatePolygon(List<IList<Vector3>> contours)
         {
-            if (polygonCount >= maxPolygons) return;
+            CreateAndReturnPolygon(contours);
+        }
+
+        //Treat first contour as outer contour, and extra contours as holes
+        public GameObject CreateAndReturnPolygon(List<IList<Vector3>> contours)
+        {
+            if (polygonCount >= maxPolygons) return null;
             polygonCount++;
 
             var polygon = new Poly2Mesh.Polygon();
@@ -121,6 +126,7 @@ namespace Netherlands3D.Events
             newPolygonObject.transform.Translate(0, extrusionHeight, 0);
 
             if (createdPolygonGameObject) createdPolygonGameObject.Invoke(newPolygonObject);
+            return newPolygonObject;
         }
 
 		private void SetUVCoordinates(Mesh newPolygonMesh)
