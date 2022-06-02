@@ -92,11 +92,13 @@ namespace Netherlands3D.Events
 
             var polygon = new Poly2Mesh.Polygon();
             var outerContour = (List<Vector3>)contours[0];
+            FixSequentialDoubles(outerContour);
+
             if (reverseWindingOrder) outerContour.Reverse();
 
             polygon.outside = outerContour;
 
-            for (int i=0; i< polygon.outside.Count; i++)
+            for (int i = 0; i < polygon.outside.Count; i++)
             {
                 polygon.outside[i] = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
             }
@@ -106,27 +108,28 @@ namespace Netherlands3D.Events
                 for (int i = 1; i < contours.Count; i++)
                 {
                     var holeContour = (List<Vector3>)contours[i];
+                    FixSequentialDoubles(holeContour);
                     if (reverseWindingOrder) holeContour.Reverse();
 
                     polygon.holes.Add(holeContour);
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
-            if(newPolygonMesh) newPolygonMesh.RecalculateNormals();
+            if (newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
-            if(setUVCoordinates)
-			{
-				SetUVCoordinates(newPolygonMesh);
-			}
+            if (setUVCoordinates)
+            {
+                SetUVCoordinates(newPolygonMesh);
+            }
 
-			var newPolygonObject = new GameObject();
+            var newPolygonObject = new GameObject();
 #if UNITY_EDITOR
             //Do not bother setting object name outside of Editor untill we need it.
             newPolygonObject.name = currentObjectName;
 #endif
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
-            if(addColliders)
+            if (addColliders)
                 newPolygonObject.AddComponent<MeshCollider>().sharedMesh = newPolygonMesh;
 
             newPolygonObject.transform.SetParent(this.transform);
@@ -136,7 +139,27 @@ namespace Netherlands3D.Events
             return newPolygonObject;
         }
 
-		private void SetUVCoordinates(Mesh newPolygonMesh)
+        /// <summary>
+        /// Poly2Mesh has problems with polygons that have points in the same position.
+        /// Lets move them a bit.
+        /// </summary>
+        /// <param name="contour"></param>
+        private static void FixSequentialDoubles(List<Vector3> contour)
+        {
+            var movedSomeDoubles = false;
+            for (int i = contour.Count - 2; i >= 0; i--)
+            {
+                if (contour[i] == contour[i + 1])
+                {
+                    var randomNoise = Random.Range(-0.05f, 0.05f);
+                    contour[i] = new Vector3(contour[i].x+ randomNoise, contour[i].y+ randomNoise, contour[i].z+ randomNoise);
+                    movedSomeDoubles = true;
+                }
+            }
+            if (movedSomeDoubles) Debug.Log("Moved some doubles");
+        }
+
+        private void SetUVCoordinates(Mesh newPolygonMesh)
 		{
 			var uvs = new Vector2[newPolygonMesh.vertexCount];
 			for (int i = 0; i < uvs.Length; i++)

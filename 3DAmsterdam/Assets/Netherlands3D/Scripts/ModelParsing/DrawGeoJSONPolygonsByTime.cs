@@ -147,7 +147,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         changeOpacityByDate.ApplyBaseColor(colorPalette.colors[colorIndex].color);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
 #if UNITY_EDITOR
-        changeOpacityByDate.gameObject.gameObject.name = objectName;
+        newPolygon.name = objectName;
+        Debug.Log(newPolygon.name, newPolygon);
 #endif
         //TODO: Remove dependency to timeline by adding DateTime scriptable object events to timeline
         timeline.onCurrentDateChange.AddListener(changeOpacityByDate.TimeChanged);
