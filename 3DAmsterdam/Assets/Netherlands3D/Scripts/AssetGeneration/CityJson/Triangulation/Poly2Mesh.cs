@@ -196,9 +196,8 @@ public static class Poly2Mesh
 		}
 		catch (System.Exception e)
 		{
-            Debug.LogWarning($"Poly2Mesh.cs CreateMesh: exception: {e.Message}");
-			//			Profiler.Exit(profileID);
-			return null;
+            Debug.LogError($"Poly2Mesh.cs CreateMesh: exception: {e.Message}");
+            return null;
 		}
 		// Now, to get back to our original positions, use our code-to-position map.  We do
 		// this instead of un-rotating to be a little more robust about noncoplanar polygons.
