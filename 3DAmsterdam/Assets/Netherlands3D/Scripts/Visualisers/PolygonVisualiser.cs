@@ -45,7 +45,7 @@ namespace Netherlands3D.Events
         private int maxPolygons = 10000;
         private int polygonCount = 0;
 
-        private string currentObjectName = "Polygon";
+        private string currentObjectName = "";
 
         [SerializeField]
         private bool setUVCoordinates = false;
@@ -55,6 +55,8 @@ namespace Netherlands3D.Events
         [SerializeField]
         private bool reverseWindingOrder = true;
 
+        [SerializeField]
+        private bool addColliders = false;
 
         [Header("Invoke events")]
         [SerializeField]
@@ -118,10 +120,15 @@ namespace Netherlands3D.Events
 			}
 
 			var newPolygonObject = new GameObject();
+#if UNITY_EDITOR
+            //Do not bother setting object name outside of Editor untill we need it.
             newPolygonObject.name = currentObjectName;
+#endif
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
-            newPolygonObject.AddComponent<MeshCollider>();
+            if(addColliders)
+                newPolygonObject.AddComponent<MeshCollider>().sharedMesh = newPolygonMesh;
+
             newPolygonObject.transform.SetParent(this.transform);
             newPolygonObject.transform.Translate(0, extrusionHeight, 0);
 
