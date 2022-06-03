@@ -93,6 +93,7 @@ namespace Netherlands3D.Events
             var polygon = new Poly2Mesh.Polygon();
             var outerContour = (List<Vector3>)contours[0];
             FixSequentialDoubles(outerContour);
+            if (outerContour.Count < 3) return null;
 
             if (reverseWindingOrder) outerContour.Reverse();
 
@@ -109,9 +110,12 @@ namespace Netherlands3D.Events
                 {
                     var holeContour = (List<Vector3>)contours[i];
                     FixSequentialDoubles(holeContour);
-                    if (reverseWindingOrder) holeContour.Reverse();
-
-                    polygon.holes.Add(holeContour);
+                    
+                    if (holeContour.Count > 2)
+                    {
+                        if (reverseWindingOrder) holeContour.Reverse();
+                        polygon.holes.Add(holeContour);
+                    }
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
@@ -146,17 +150,16 @@ namespace Netherlands3D.Events
         /// <param name="contour"></param>
         private static void FixSequentialDoubles(List<Vector3> contour)
         {
-            var movedSomeDoubles = false;
+            var removedSomeDoubles = false;
             for (int i = contour.Count - 2; i >= 0; i--)
             {
                 if (contour[i] == contour[i + 1])
                 {
-                    var randomNoise = Random.Range(-0.05f, 0.05f);
-                    contour[i] = new Vector3(contour[i].x+ randomNoise, contour[i].y+ randomNoise, contour[i].z+ randomNoise);
-                    movedSomeDoubles = true;
+                    contour.RemoveAt(i+1);
+                    removedSomeDoubles = true;
                 }
             }
-            if (movedSomeDoubles) Debug.Log("Moved some doubles");
+            if (removedSomeDoubles) Debug.Log("Removed some doubles");
         }
 
         private void SetUVCoordinates(Mesh newPolygonMesh)
