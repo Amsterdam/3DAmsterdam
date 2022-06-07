@@ -31,6 +31,9 @@ public static class CityJSONFormatter
         RDVertices = new JSONArray();
         Metadata = new JSONObject();
 
+        if (convertToRD)
+            Metadata.Add("referenceSystem", "EPSG:28992");
+
         RootObject["type"] = "CityJSON";
         RootObject["version"] = "1.0";
         RootObject["metadata"] = Metadata;
