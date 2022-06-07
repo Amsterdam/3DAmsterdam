@@ -44,7 +44,7 @@ namespace T3D.Uitbouw
         public string Name;
         public CityObjectType Type;
 
-        public int Lod { get; protected set; } = 1;
+        public int Lod { get; protected set; } = 3;
         public CitySurface[] Surfaces { get; private set; }
         private List<CityObject> cityChildren = new List<CityObject>();
         public CityObject[] CityChildren => cityChildren.ToArray();
@@ -54,7 +54,7 @@ namespace T3D.Uitbouw
 
         protected virtual void Start()
         {
-            Name = gameObject.name;
+            Name = Guid.NewGuid().ToString();
             UpdateSurfaces();
             CityJSONFormatter.AddCityObejct(this);
         }
@@ -129,7 +129,7 @@ namespace T3D.Uitbouw
         {
             var node = new JSONObject();
             node["type"] = "MultiSurface"; //todo support other types?
-            node["lod"] = Lod;
+            node["lod"] = Lod.ToString();
             var boundaries = new JSONArray();
             for (int i = 0; i < Surfaces.Length; i++)
             {
@@ -178,6 +178,7 @@ namespace T3D.Uitbouw
             {
                 var obj = new JSONObject(); //each surface type is in its own object
                 obj.Add("type", usedTypes[i].ToString());
+                obj.Add("name", "Test");
                 surfaceTypes.Add(obj);
             }
 

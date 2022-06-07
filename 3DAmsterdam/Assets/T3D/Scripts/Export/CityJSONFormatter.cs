@@ -104,7 +104,7 @@ public static class CityJSONFormatter
                 }
                 polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
             }
-            polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
+            //polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
         }
     }
 

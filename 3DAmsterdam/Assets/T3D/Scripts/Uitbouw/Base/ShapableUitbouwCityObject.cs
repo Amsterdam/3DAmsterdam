@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using T3D.Uitbouw;
 using UnityEngine;
 namespace Netherlands3D.T3D.Uitbouw
@@ -24,6 +25,13 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 citySurfaces.Add(wall.Surface);
             }
+
+            var boundaryFeatures = GetComponentsInChildren<BoundaryFeature>();
+            foreach(var bf in boundaryFeatures)
+            {
+                citySurfaces.Add(bf.Surface);
+            }
+
             return citySurfaces.ToArray();
         }
     }
