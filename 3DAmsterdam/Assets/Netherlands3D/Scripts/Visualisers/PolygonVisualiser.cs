@@ -23,11 +23,16 @@ using UnityEngine;
 
 namespace Netherlands3D.Events
 {
+    /// <summary>
+    /// Use countour lists as input to draw solidified 2D shapes in the 3D world
+    /// </summary>
     public class PolygonVisualiser : MonoBehaviour
     {
         [Header("Listen to events:")]
         [SerializeField]
         private Vector3ListsEvent drawPolygonEvent;
+        [SerializeField]
+        private StringEvent setDrawingObjectName;
         [SerializeField]
         private FloatEvent setExtrusionHeightEvent;
 
@@ -40,13 +45,26 @@ namespace Netherlands3D.Events
         private int maxPolygons = 10000;
         private int polygonCount = 0;
 
+        private string currentObjectName = "";
+
         [SerializeField]
         private bool setUVCoordinates = false;
         [SerializeField]
         private Vector2 uvCoordinate = Vector2.zero;
 
+        [SerializeField]
+        private bool reverseWindingOrder = true;
+
+        [SerializeField]
+        private bool addColliders = false;
+
+        [Header("Invoke events")]
+        [SerializeField]
+        GameObjectEvent createdPolygonGameObject;
+
         void Awake()
         {
+            if (setDrawingObjectName) setDrawingObjectName.started.AddListener(SetName);
             if (drawPolygonEvent) drawPolygonEvent.started.AddListener(CreatePolygon);
             if (setExtrusionHeightEvent) setExtrusionHeightEvent.started.AddListener(SetExtrusionHeight);
         }
@@ -56,16 +74,32 @@ namespace Netherlands3D.Events
             this.extrusionHeight = extrusionHeight;
         }
 
-		//Treat first contour as outer contour, and extra contours as holes
-		public void CreatePolygon(List<IList<Vector3>> contours)
+        public void SetName(string drawingObjectName)
         {
-            if (polygonCount >= maxPolygons) return;
+            currentObjectName = drawingObjectName;
+        }
+
+        private void CreatePolygon(List<IList<Vector3>> contours)
+        {
+            CreateAndReturnPolygon(contours);
+        }
+
+        //Treat first contour as outer contour, and extra contours as holes
+        public GameObject CreateAndReturnPolygon(List<IList<Vector3>> contours)
+        {
+            if (polygonCount >= maxPolygons) return null;
             polygonCount++;
 
             var polygon = new Poly2Mesh.Polygon();
-            polygon.outside = (List<Vector3>)contours[0];
+            var outerContour = (List<Vector3>)contours[0];
+            FixSequentialDoubles(outerContour);
+            if (outerContour.Count < 3) return null;
 
-            for (int i=0; i< polygon.outside.Count; i++)
+            if (reverseWindingOrder) outerContour.Reverse();
+
+            polygon.outside = outerContour;
+
+            for (int i = 0; i < polygon.outside.Count; i++)
             {
                 polygon.outside[i] = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
             }
@@ -74,27 +108,61 @@ namespace Netherlands3D.Events
             {
                 for (int i = 1; i < contours.Count; i++)
                 {
-                    polygon.holes.Add((List<Vector3>)contours[i]);
+                    var holeContour = (List<Vector3>)contours[i];
+                    FixSequentialDoubles(holeContour);
+                    
+                    if (holeContour.Count > 2)
+                    {
+                        if (reverseWindingOrder) holeContour.Reverse();
+                        polygon.holes.Add(holeContour);
+                    }
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
-            if(newPolygonMesh) newPolygonMesh.RecalculateNormals();
+            if (newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
-            if(setUVCoordinates)
-			{
-				SetUVCoordinates(newPolygonMesh);
-			}
+            if (setUVCoordinates)
+            {
+                SetUVCoordinates(newPolygonMesh);
+            }
 
-			var newPolygonObject = new GameObject();
-            newPolygonObject.name = name;
+            var newPolygonObject = new GameObject();
+#if UNITY_EDITOR
+            //Do not bother setting object name outside of Editor untill we need it.
+            newPolygonObject.name = currentObjectName;
+#endif
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
-            newPolygonObject.AddComponent<MeshCollider>();
+            if (addColliders)
+                newPolygonObject.AddComponent<MeshCollider>().sharedMesh = newPolygonMesh;
+
             newPolygonObject.transform.SetParent(this.transform);
             newPolygonObject.transform.Translate(0, extrusionHeight, 0);
+
+            if (createdPolygonGameObject) createdPolygonGameObject.Invoke(newPolygonObject);
+            return newPolygonObject;
         }
 
-		private void SetUVCoordinates(Mesh newPolygonMesh)
+        /// <summary>
+        /// Poly2Mesh has problems with polygons that have points in the same position.
+        /// Lets move them a bit.
+        /// </summary>
+        /// <param name="contour"></param>
+        private static void FixSequentialDoubles(List<Vector3> contour)
+        {
+            var removedSomeDoubles = false;
+            for (int i = contour.Count - 2; i >= 0; i--)
+            {
+                if (contour[i] == contour[i + 1])
+                {
+                    contour.RemoveAt(i+1);
+                    removedSomeDoubles = true;
+                }
+            }
+            if (removedSomeDoubles) Debug.Log("Removed some doubles");
+        }
+
+        private void SetUVCoordinates(Mesh newPolygonMesh)
 		{
 			var uvs = new Vector2[newPolygonMesh.vertexCount];
 			for (int i = 0; i < uvs.Length; i++)
