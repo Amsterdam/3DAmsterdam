@@ -24,9 +24,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     private float startBuildYear = 0;
 
     [SerializeField]
-    private TimelineUI timeline;
-
-    [SerializeField]
     private string colorIntValueProperty = "Fase_ID";
 
     private string objectName = "";
@@ -39,6 +36,10 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField]
     private float afterTimeOpacity = 0.1f;
 
+    [Header("Listen to")]
+    [SerializeField]
+    private DateTimeEvent onCurrentDateChange;
+
     [Header("Invoke events")]
     [SerializeField]
     ColorPaletteEvent openLegendWithColorPalette;
@@ -50,6 +51,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 
     private float dataMinYear = float.MaxValue;
     private float dataMaxYear = float.MinValue;
+
+
 
     private void Awake()
     {
@@ -150,8 +153,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         newPolygon.name = objectName;
         Debug.Log(newPolygon.name, newPolygon);
 #endif
-        //TODO: Remove dependency to timeline by adding DateTime scriptable object events to timeline
-        timeline.onCurrentDateChange.AddListener(changeOpacityByDate.TimeChanged);
+        onCurrentDateChange.started.AddListener(changeOpacityByDate.TimeChanged);
     }
 
     private void DrawPolygon(List<List<GeoJSONPoint>> polygon)

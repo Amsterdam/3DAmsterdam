@@ -74,11 +74,12 @@ MonoBehaviour:
   urlWithGeoJsonData: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen
   objectNameProperty: Projectnaam
   startYearProperty: Start_bouw
-  timeline: {fileID: 0}
   colorIntValueProperty: Fase_ID
   indexOffset: -2
   beforeTimeOpacity: 0.2
   afterTimeOpacity: 0.9
+  onCurrentDateChange: {fileID: 11400000, guid: c282bb5754753d04b9f025ba694f5e44,
+    type: 2}
   openLegendWithColorPalette: {fileID: 11400000, guid: 6b4f9076546a0404d9a2706da04b76ae,
     type: 2}
   colorPalette: {fileID: 11400000, guid: 08ea5af7ee1f9ec4e823da6367a255fc, type: 2}
