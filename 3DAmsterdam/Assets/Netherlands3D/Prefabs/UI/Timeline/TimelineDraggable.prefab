@@ -5138,6 +5138,7 @@ GameObject:
   - component: {fileID: 8932172319846125007}
   - component: {fileID: 8932172319846124993}
   - component: {fileID: 8932172319846125006}
+  - component: {fileID: 1172001146144571138}
   m_Layer: 5
   m_Name: Show Button Toggle
   m_TagString: Untagged
@@ -5246,6 +5247,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!225 &1172001146144571138
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932172319846125002}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &8932172319913452392
 GameObject:
   m_ObjectHideFlags: 0

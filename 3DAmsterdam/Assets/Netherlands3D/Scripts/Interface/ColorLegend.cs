@@ -140,6 +140,7 @@ namespace Netherlands3D.Interface {
 				newNamedColor.name = namedColor.name;
 				newNamedColor.GetComponentInChildren<Image>(true).color = namedColor.color;
 				newNamedColor.GetComponentInChildren<Text>(true).text = namedColor.name;
+				newNamedColor.AddComponent<TooltipTrigger>().TooltipText = namedColor.name;
 			}
 		}
 
