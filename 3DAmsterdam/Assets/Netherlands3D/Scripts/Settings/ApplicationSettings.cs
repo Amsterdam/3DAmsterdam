@@ -57,6 +57,8 @@ namespace Netherlands3D.Settings {
 		[SerializeField]
 		private Slider lodSlider;
 
+		private TileHandler tileHandler;
+
 		[SerializeField]
 		private WaterReflectionCamera waterReflectionCamera;
 
@@ -66,6 +68,8 @@ namespace Netherlands3D.Settings {
 		{
 			Instance = this;
 			IsMobileDevice = forceMobileDevice;
+
+			tileHandler = FindObjectOfType<TileHandler>();
 
 #if !UNITY_EDITOR && UNITY_WEBGL
 			IsMobileDevice = IsMobile();
@@ -133,18 +137,18 @@ namespace Netherlands3D.Settings {
 		}
 
 		public void OpenSettingsPanel()
-        {
+		{
 			//Interface options
 			PropertiesPanel.Instance.OpenSettings();
 			PropertiesPanel.Instance.AddTitle("Interface");
 			PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
 				settings.drawMap = toggle;
 				ApplySettings();
-            });
+			});
 			PropertiesPanel.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
 				settings.drawFPS = toggle;
 				ApplySettings();
-            });
+			});
 
 			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
 				settings.showExperimentelFeatures = toggle;
@@ -156,11 +160,11 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 75, 200, settings.canvasScale, (value) => {
 				settings.canvasScale = value;
 				ApplySettings();
-            },true,"Interface schaal");
+			}, true, "Interface schaal");
 
 			//Graphic options
 			PropertiesPanel.Instance.AddTitle("Grafisch");
-            PropertiesPanel.Instance.AddLabel("Algemene instelling:");
+			PropertiesPanel.Instance.AddLabel("Algemene instelling:");
 			//Fill our dropdown using the templates and their titles
 			List<string> profileNames = new List<string>();
 			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
@@ -169,15 +173,15 @@ namespace Netherlands3D.Settings {
 				profileNames.Add(profile.profileName);
 			}
 
-			PropertiesPanel.Instance.AddActionDropdown(profileNames.ToArray(), (action)=>
-            {
+			PropertiesPanel.Instance.AddActionDropdown(profileNames.ToArray(), (action) =>
+			{
 				print("Selected template " + action);
 				selectedTemplate = profileNames.IndexOf(action);
 				settings = Instantiate(settingsProfilesTemplates[selectedTemplate]);
 
 				ApplySettings();
 				OpenSettingsPanel(); //Simply force a reload of the settings panel to apply all new overrides
-            }, profileNames[selectedTemplate]);
+			}, profileNames[selectedTemplate]);
 
 			PropertiesPanel.Instance.AddSpacer(20);
 			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
@@ -188,12 +192,33 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
-			},false, "Render resolutie");
+			}, false, "Render resolutie");
 			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
 			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
 			}, true, "Schaduw detail");
+			PropertiesPanel.Instance.AddLabel("Zichtbaarheid afstand:");
+			PropertiesPanel.Instance.AddActionSlider("Dichtbij", "Ver", 0.1f, 3f, settings.lodDistanceMultiplier, (value) => {
+				settings.lodDistanceMultiplier = value;
+				ApplySettings();
+			}, false, "Zichtbaarheid afstand");
+
+			PropertiesPanel.Instance.AddSpacer(20);
+			PropertiesPanel.Instance.AddTitle("Detail 3D objecten");
+			PropertiesPanel.Instance.AddActionCheckbox("Automatisch detail", settings.autoLOD, (toggle) => {
+				settings.autoLOD = toggle;
+				ApplySettings();
+				OpenSettingsPanel();
+			});
+			if (!settings.autoLOD) { 
+				PropertiesPanel.Instance.AddLabel("Maximaal detail niveau:");
+				PropertiesPanel.Instance.AddActionSlider("Laag", "Hoog", 1, 2, settings.maxLOD, (value) => {
+					settings.maxLOD = (int)value;
+					ApplySettings();
+				}, true, "Maximaal LOD (Level of detail) gebouwen");
+			}
+			
 
 			PropertiesPanel.Instance.AddSpacer(20);
 			PropertiesPanel.Instance.AddTitle("Extra");
@@ -264,6 +289,10 @@ namespace Netherlands3D.Settings {
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
 			renderSettings.ToggleAO(settings.ambientOcclusion);
+
+			tileHandler.SetMaxDistanceMultiplier(settings.lodDistanceMultiplier);
+			tileHandler.SetLODMode((settings.autoLOD) ? 0 : settings.maxLOD);
+
 			waterReflectionCamera.Downscale = settings.reflectionsRenderResolution;
 
 			if (save) SaveSettings();
