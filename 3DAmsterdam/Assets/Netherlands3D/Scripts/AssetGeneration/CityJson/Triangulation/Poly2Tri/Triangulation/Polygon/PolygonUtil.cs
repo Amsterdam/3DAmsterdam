@@ -272,18 +272,18 @@ namespace Poly2Tri
 
             int numVerts = polygon.Count;
             Point2D p0 = polygon[numVerts - 1];
-            bool bYFlag0 = (p0.Y >= p.Y) ? true : false;
+            bool bYFlag0 = (p0.Y >= p.Y) ? true : false;            
             Point2D p1 = null;
 
             bool bInside = false;
             for (int j = 0; j < numVerts; ++j)
             {
                 p1 = polygon[j];
-                bool bYFlag1 = (p1.Y >= p.Y) ? true : false;
-                if (bYFlag0 != bYFlag1)
-                {
-                    if (((p1.Y - p.Y) * (p0.X - p1.X) >= (p1.X - p.X) * (p0.Y - p1.Y)) == bYFlag1)
+                bool bYFlag1 = (p1.Y >= p.Y) ? true : false;                
+                if (bYFlag0 != bYFlag1)                
                     {
+                    if (((p1.Y - p.Y) * (p0.X - p1.X) >= (p1.X - p.X) * (p0.Y - p1.Y)) == bYFlag1)                    
+                        {
                         bInside = !bInside;
                     }
                 }

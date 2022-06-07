@@ -4,6 +4,7 @@ using UnityEngine;
 using Poly2Tri;
 using Netherlands3D.Utilities;
 using System.Linq;
+using System;
 
 public class TriangulateTest : MonoBehaviour
 {
@@ -15,8 +16,61 @@ public class TriangulateTest : MonoBehaviour
         TestPoy2Mesh();
         //TestGeometryCalculator(); 
         //TestGeometryCalculatorSquare();
+        //TestPolyTrangulator();
+        //TestEarClippingTrangulator();
     }
 
+    //geeft Erro triangulating mesh. Aborted
+    private void TestEarClippingTrangulator()
+    {
+        //var pointsVector2 = GetSquare();
+        //var pointsVector2 = GetL();
+        var pointsVector2 = GetNienkePattern();
+
+        //pointsVector2.Reverse();
+        //var pointsVector2 = GetO();
+
+        var polygon = new Sebastian.Geometry.Polygon(pointsVector2.ToArray());
+        
+        var triangulator = new Sebastian.Geometry.Triangulator(polygon);
+        var tris = triangulator.Triangulate();
+        
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = pointsVector2.Select(o => new Vector3(o.x, o.y)).ToArray();
+        mesh.triangles = tris;
+        mesh.RecalculateNormals();
+
+        AddMeshGameObject("TestEarClippingTrangulator", mesh);
+
+
+    }
+
+    //deze crasht bij intersected vertices
+    private void TestPolyTrangulator()
+    {
+        //var pointsVector2 = GetSquare();
+        //var pointsVector2 = GetL();
+        //var pointsVector2 = GetC();
+        //var pointsVector2 = GetO();
+        var pointsVector2 = GetNienkePattern();
+
+        addBoundaryPoints(pointsVector2);
+        
+        var points = pointsVector2.Select(o => new PointF() { X = o.x, Y = o.y }).ToList();
+        var tris = PolygonTriangulator.Triangulate(points, true);
+        var triangles = tris[0].Select(o => o.Index);
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = points.Select(o => new Vector3(o.X, o.Y)).ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+
+        AddMeshGameObject("TestPolyTrangulator", mesh);
+
+    }
+
+    //deze gaat al fout bij een L vorm
     void TestGeometryCalculator()
     {
         Mesh mesh = new Mesh();
@@ -29,11 +83,11 @@ public class TriangulateTest : MonoBehaviour
 
     void TestGeometryCalculatorSquare()
     {
-        List<Vector2> points = new List<Vector2>();
-        points.Add(new Vector2(1, 1));
-        points.Add(new Vector2(1, 0));
-        points.Add(new Vector2(0, 0));
-        points.Add(new Vector2(0, 1));
+        //List<Vector2> points = GetSquarePoints();
+        List<Vector2> points = GetL();
+        //List<Vector2> points = GetNienkePattern();
+
+        addBoundaryPoints(points);
 
         Mesh mesh = new Mesh();
         mesh.vertices = points.Select(o => new Vector3(o.x, o.y, 0)).ToArray();        
@@ -46,26 +100,33 @@ public class TriangulateTest : MonoBehaviour
     {
         Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 
-        //find holes, a hole is an inner list with head and same tail..
+        var outerAndInner = CityJsonMeshUtility.GetOuterAndInnerPolygons(GetVoorkant());
 
-        Vector3 start = boundaryVerts[1];
 
-        var inner = boundaryVerts.Select((s, i) => new { i, s }).Where( o => o.i > 1 && o.i < boundaryVerts.Count -1 ).ToArray();
-        var tail = inner.FirstOrDefault(o => o.s.Equals(start));
 
-        var subarr = boundaryVerts.Select((s, i) => new { i, s }).Where(o => o.i > 0 && o.i < tail.i).Select(s => new Point2D(s.s.x, s.s.y)).ToList();
+        //poly.outside = boundaryVerts;
+        //poly.outside = GetNienkePattern().Select(o => new Vector3(o.x, o.y, 0)).ToList();
+        //poly.outside = GetVoorkant().Select(o => new Vector3(o.x, o.y, 0)).ToList();
 
-        var windingorder = PolygonUtil.CalculateWindingOrder(subarr);
+        poly.outside = outerAndInner[0].Select(o => new Vector3(o.x, o.y, 0)).ToList();
 
-        poly.outside = boundaryVerts;
+        for(int i= 1; i < outerAndInner.Count; i++){
+            poly.holes.Add(outerAndInner[i].Select(o => new Vector3(o.x, o.y, 0)).ToList());
+        }
+
+        
 
         var mesh = Poly2Mesh.CreateMesh(poly);
         AddMeshGameObject("test", mesh);
+        
+        addBoundaryPoints(outerAndInner[0], Color.green);
 
-        for (int i = 0; i < boundaryVerts.Count; i++)
+        for (int i = 1; i < outerAndInner.Count; i++)
         {
-            addBoundaryPoint(boundaryVerts[i]);
+            addBoundaryPoints(outerAndInner[i], Color.red);
         }
+
+
     }
 
     void AddMeshGameObject(string name, Mesh mesh)
@@ -77,19 +138,151 @@ public class TriangulateTest : MonoBehaviour
         meshrenderer.material = MeshMaterial;
         gam.transform.SetParent(transform);
         
-
-        
     }
 
-    void addBoundaryPoint(Vector3 location)
+    void addBoundaryPoints(List<Vector2> points, Color color)
     {
-        GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        DestroyImmediate(point.GetComponent<SphereCollider>());
-        point.transform.position = location;
-        point.transform.localScale = Vector3.one * 0.1f;
-       // point.transform.SetParent(uitbouw.transform);
-
+        for(int i = 0;i<points.Count; i++)
+        {
+            GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            DestroyImmediate(point.GetComponent<SphereCollider>());
+            point.name = i.ToString();
+            point.transform.position = points[i] ;
+            point.transform.localScale = Vector3.one * 0.1f;
+            point.transform.SetParent(transform);
+            point.GetComponent<MeshRenderer>().material.color = color;
+        }
     }
+
+    void addBoundaryPoints(List<Vector2> points)
+    {
+        for (int i = 0; i < points.Count; i++)
+        {
+            GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            DestroyImmediate(point.GetComponent<SphereCollider>());
+            point.name = i.ToString();
+            point.transform.position = points[i];
+            point.transform.localScale = Vector3.one * 0.1f;
+            point.transform.SetParent(transform);
+            point.GetComponent<MeshRenderer>().material.color = Color.white;
+        }
+    }
+
+    List<Vector2> GetSquare()
+    {
+        List<Vector2> points = new List<Vector2>();
+        points.Add(new Vector2(1, 1));
+        points.Add(new Vector2(1, 0));
+        points.Add(new Vector2(0, 0));
+        points.Add(new Vector2(0, 1));
+        return points;
+    }
+
+    List<Vector2> GetL()
+    {
+        List<Vector2> points = new List<Vector2>();
+        points.Add(new Vector2(1, 0.25f));
+        points.Add(new Vector2(1, 0));
+        points.Add(new Vector2(0, 0));
+        points.Add(new Vector2(0, 1));
+        points.Add(new Vector2(0.25f, 1));
+        points.Add(new Vector2(0.25f, 0.25f));
+        points.Add(new Vector2(1, 0.25f));
+        return points;
+    }
+
+    List<Vector2> GetC()
+    {
+        List<Vector2> points = new List<Vector2>();
+        points.Add(new Vector2(1, 0.25f));
+        points.Add(new Vector2(1, 0));
+        points.Add(new Vector2(0, 0));
+        points.Add(new Vector2(0, 1));
+        points.Add(new Vector2(1, 1));
+        points.Add(new Vector2(1, 0.75f));
+        points.Add(new Vector2(0.25f, 0.75f));
+        points.Add(new Vector2(0.25f, 0.25f));
+        points.Add(new Vector2(1, 0.25f));
+        return points;
+    }
+
+    List<Vector2> GetO()
+    {
+        List<Vector2> points = new List<Vector2>();
+        points.Add(new Vector2(1, 0.25f));
+        points.Add(new Vector2(1, 0));
+        points.Add(new Vector2(0, 0));
+        points.Add(new Vector2(0, 1));
+        points.Add(new Vector2(1, 1));
+
+        points.Add(new Vector2(1, 0.3f));
+        points.Add(new Vector2(0.75f, 0.3f));
+
+        points.Add(new Vector2(0.75f, 0.75f));
+        points.Add(new Vector2(0.25f, 0.75f));
+        points.Add(new Vector2(0.25f, 0.25f));
+        points.Add(new Vector2(1, 0.25f));
+
+
+        return points;
+    }
+
+    List<Vector2> GetNienkePattern()
+    {
+        List<Vector2> points = new List<Vector2>();
+        points.Add(new Vector2(1, 0.25f));
+        points.Add(new Vector2(1, 0));
+        points.Add(new Vector2(0, 0));
+        points.Add(new Vector2(0, 0.25f));
+        points.Add(new Vector2(0.25f, 0.25f));
+        points.Add(new Vector2(0.75f, 0.25f));
+        points.Add(new Vector2(0.75f, 0.75f));
+        points.Add(new Vector2(0.25f, 0.75f));
+        points.Add(new Vector2(0.25f, 0.25f));
+        points.Add(new Vector2(0, 0.25f));
+        points.Add(new Vector2(0, 1));
+        points.Add(new Vector2(1, 1));
+        points.Add(new Vector2(1, 0.25f));
+        return points;
+    }
+
+    List<Vector2> GetVoorkant()
+    {
+        List<Vector2> testdata = new List<Vector2>()
+        {
+            new Vector2(2.6f, 0.2f),//0
+            new Vector2(2.7f, 0.2f),//1
+            new Vector2(2.7f, 0),//2
+            new Vector2(-2.7f, 0),//3
+            new Vector2(-2.7f, 0.2f),//4
+            new Vector2(-2.6f, 0.2f),//5
+            new Vector2(-2.2f, 0.2f),//6
+            new Vector2(-0.2f, 0.199f),//7
+            new Vector2(-0.2f, 2.3f),//8
+            new Vector2(-2.2f, 2.3f),//9
+            new Vector2(-2.2f, 0.2f),//10
+            new Vector2(-2.6f, 0.2f),//11
+            new Vector2(-2.7f, 0.2f),//12
+            new Vector2(-2.7f, 2.849f),//13
+            new Vector2(-2.6f, 2.849f),//14
+            new Vector2(-2.2f, 2.849f),//15
+            new Vector2(2.2f, 2.849f),//16
+            new Vector2(2.6f, 2.849f),//17
+            new Vector2(2.7f, 2.849f),//18
+            new Vector2(2.7f, 0.2f),//19
+            new Vector2(2.6f, 0.2f),//20
+            new Vector2(2.2f, 0.2f),//21
+            new Vector2(2.2f, 2.3f),//22
+            new Vector2(0.212f, 2.3f),//23
+            new Vector2(0.212f, 0.199f),//24
+            new Vector2(2.2f, 0.2f)//25
+        };
+
+        return testdata;
+    }
+
+    
+
 
 
 }

@@ -1,6 +1,7 @@
 using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Utilities;
+using Poly2Tri;
 using SimpleJSON;
 using System;
 using System.Collections;
@@ -11,10 +12,83 @@ using UnityEngine;
 
 public class CityJsonMeshUtility
 {
-    struct PolygonPoint
+    public class PolygonPoint
     {
         public int Index;
-        public Vector3 Point;
+        public Vector2 Point;
+        public PolygonPoint(int index, Vector2 point)
+        {
+            Index = index;
+            Point = point;
+        }
+    }
+
+   public static List<List<Vector2>> GetOuterAndInnerPolygons(List<Vector2> outer)
+    {
+        List<List<PolygonPoint>> result = new List<List<PolygonPoint>>();
+
+        var outerPoints = outer.Select((o, i) => new PolygonPoint(i,o)).ToList();
+        GetInner(result, outerPoints);
+        foreach (var point in result.SelectMany(points => points))
+        {
+            outerPoints[point.Index].Index = -1;
+        }
+        var outerRing = outerPoints.Where(o => o.Index != -1).ToList();
+
+        result.Insert(0, outerRing);
+
+        //var windingorder = PolygonUtil.CalculateWindingOrder(list.Select(o => new Point2D(o.x, o.y)).ToArray());
+        //if (windingorder == Point2DList.WindingOrderType.CCW)
+        //{
+        //    result.Add(list);
+        //    break;
+        //}
+
+        List<List<Vector2>> outerAndInner = new List<List<Vector2>>();
+
+        foreach(var points in result)
+        {
+            outerAndInner.Add(points.Select(o => o.Point).ToList());
+        }
+
+        return outerAndInner;
+    }
+
+    /// <summary>
+    /// Alleen toevoegen aan lijst als binnenkomende outer list geen zelfde begin en eindpunt hebben
+    /// </summary>
+    /// <param name="result"></param>
+    private static void GetInner(List<List<PolygonPoint>> result, List<PolygonPoint> outer)
+    {
+        bool found = false;
+
+        for (int i = 1; i < outer.Count; i++)
+        {
+            var startPoint = outer[i];
+            
+            List<PolygonPoint> list = new List<PolygonPoint>();
+            list.Add(startPoint);
+            
+            for (int j = i + 1; j < outer.Count; j++)
+            {
+                var testpoint = outer[j];
+                list.Add(testpoint);
+
+                if (startPoint.Point.Equals(testpoint.Point))
+                {
+                    found = true;
+                    i = j;
+                    GetInner(result, list);
+                    break;
+                }
+            }
+            
+        }
+
+        if (found == false)
+        {
+            result.Add(outer);
+        }
     }
 
     public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject)
