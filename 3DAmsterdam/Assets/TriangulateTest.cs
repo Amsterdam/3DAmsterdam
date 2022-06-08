@@ -13,7 +13,7 @@ public class TriangulateTest : MonoBehaviour
 
     void Start()
     {
-        TestPoy2Mesh();
+        TestPoly2Mesh();
         //TestGeometryCalculator(); 
         //TestGeometryCalculatorSquare();
         //TestPolyTrangulator();
@@ -96,31 +96,36 @@ public class TriangulateTest : MonoBehaviour
         AddMeshGameObject("GeometryCalculatorSquare", mesh);
     }
 
-    void TestPoy2Mesh()
+    void TestPoly2Mesh()
     {
         Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 
-        var outerAndInner = CityJsonMeshUtility.GetOuterAndInnerPolygons(GetVoorkant());
-
-
-
         //poly.outside = boundaryVerts;
         //poly.outside = GetNienkePattern().Select(o => new Vector3(o.x, o.y, 0)).ToList();
-        //poly.outside = GetVoorkant().Select(o => new Vector3(o.x, o.y, 0)).ToList();
 
-        poly.outside = outerAndInner[0].Select(o => new Vector3(o.x, o.y, 0)).ToList();
+        //var voorkant = GetVoorkant();
+        //poly.outside = voorkant.Select(o => new Vector3(o.x, o.y, 0)).ToList();
 
-        for(int i= 1; i < outerAndInner.Count; i++){
+        var outerAndInner = CityJsonMeshUtility.GetOuterAndInnerPolygons(GetVoorkant());
+
+        var outerWithInners = outerAndInner[0];
+        var stripped = CityJsonMeshUtility.RemoveInner(outerWithInners);
+        var clean = CityJsonMeshUtility.RemoveInner(stripped);
+
+        poly.outside = clean.Select(o => new Vector3(o.x, o.y, 0)).ToList();
+
+        for (int i = 1; i < outerAndInner.Count; i++)
+        {
             poly.holes.Add(outerAndInner[i].Select(o => new Vector3(o.x, o.y, 0)).ToList());
         }
 
-        
 
         var mesh = Poly2Mesh.CreateMesh(poly);
         AddMeshGameObject("test", mesh);
-        
-        addBoundaryPoints(outerAndInner[0], Color.green);
 
+        //addBoundaryPoints(voorkant, Color.green);
+
+        addBoundaryPoints(outerAndInner[0], Color.green);
         for (int i = 1; i < outerAndInner.Count; i++)
         {
             addBoundaryPoints(outerAndInner[i], Color.red);

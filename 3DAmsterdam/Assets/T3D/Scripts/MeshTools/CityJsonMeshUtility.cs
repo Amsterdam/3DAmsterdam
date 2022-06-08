@@ -23,7 +23,53 @@ public class CityJsonMeshUtility
         }
     }
 
-   public static List<List<Vector2>> GetOuterAndInnerPolygons(List<Vector2> outer)
+    public static List<Vector2> RemoveInner(List<Vector2> points)
+    {
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            for (int j = i + 1; j < points.Count - 1; j++)
+            {
+                if (points[i].Equals(points[j]))
+                {
+                    var volume = GetVolume(points, i, j + 1);
+                    var allvol = GetVolume(points, 0, points.Count);
+
+                    if (volume == 0)
+                    {
+                        points.RemoveRange(i, j - i + 1);
+                        break;
+                    }
+                    else if (volume == allvol)
+                    {
+                        return points.GetRange(i, j - i + 1);
+                    }
+
+
+                    break;
+                }
+            }
+
+        }
+
+        return points;
+    }
+
+    public static float GetVolume(List<Vector2> points, int startIndex, int endIndex)
+    {
+        var subselect = points.GetRange(startIndex, endIndex - startIndex);
+
+        var minx = subselect.Min(o => o.x);
+        var maxx = subselect.Max(o => o.x);
+        var miny = subselect.Min(o => o.y);
+        var maxy = subselect.Max(o => o.y);
+
+        return (maxx - minx) * (maxy - miny);
+    }
+
+
+
+
+    public static List<List<Vector2>> GetOuterAndInnerPolygons(List<Vector2> outer)
     {
         List<List<PolygonPoint>> result = new List<List<PolygonPoint>>();
 
