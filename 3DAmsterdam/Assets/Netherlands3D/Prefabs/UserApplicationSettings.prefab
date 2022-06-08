@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: -0.44225287, y: 0.11874839, z: -0.059205774, w: -0.8870208}
   m_LocalPosition: {x: 366.8702, y: 442.23788, z: 6.5355835}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5808193173905523447}
   m_RootOrder: 0
@@ -58,6 +59,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4844926604623465392}
   m_Father: {fileID: 0}
@@ -89,6 +91,7 @@ MonoBehaviour:
   terrainLayer: {fileID: 0}
   stats: {fileID: 1802846755166398200, guid: 68c29ab80d86caf4398981161cc8f686, type: 3}
   lodSlider: {fileID: 0}
+  waterReflectionCamera: {fileID: 0}
 --- !u!114 &1620163357301275705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +115,7 @@ MonoBehaviour:
     type: 2}
   forwardRendererData: {fileID: 11400000, guid: d190a601dc54b944ca6d4c59c10fdbca,
     type: 2}
+  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   aoEnabledLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295

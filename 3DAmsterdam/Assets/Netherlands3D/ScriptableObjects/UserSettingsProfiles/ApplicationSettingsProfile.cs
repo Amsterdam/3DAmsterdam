@@ -27,10 +27,10 @@ public class ApplicationSettingsProfile : ScriptableObject
     public bool autoLOD = true;
     public int shadowQuality = 3;
     public float textureQuality = 1.0f;
-    public bool antiAliasing = true;
+    public bool antiAliasing = false;
 
     //Extra
-    public bool postProcessingEffects = true;
+    public bool postProcessingEffects = false;
     public bool ambientOcclusion = false;
     public bool realtimeReflections = false;
 

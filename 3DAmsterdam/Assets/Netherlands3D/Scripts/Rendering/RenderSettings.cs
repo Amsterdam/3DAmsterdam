@@ -33,6 +33,9 @@ namespace Netherlands3D.Rendering
         private UniversalRendererData forwardRendererData;
 
         [SerializeField]
+        private PostProcessData postProcessData;
+
+        [SerializeField]
         private LayerMask aoEnabledLayerMask;
         [SerializeField]
         private LayerMask aoDisabledLayerMask;
@@ -95,6 +98,9 @@ namespace Netherlands3D.Rendering
             //Post processing can be disabled entirely if there are no AA or effects enabled
             UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
             universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
+
+            //Completely disable post processing in forward rendering if we do not use it
+            forwardRendererData.postProcessData = universalCameraData.renderPostProcessing ? postProcessData : null;
         }
 
         public void SetShadowQuality(float shadowQuality)

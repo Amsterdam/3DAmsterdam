@@ -54,9 +54,6 @@ namespace Netherlands3D.Settings {
 
 		public static ApplicationSettings Instance;
 
-		[SerializeField]
-		private Slider lodSlider;
-
 		private TileHandler tileHandler;
 
 		[SerializeField]
@@ -120,8 +117,6 @@ namespace Netherlands3D.Settings {
 
 			//Place camera at the mobile starting position ( closer to the ground )
 			CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
-			
-			lodSlider.value = lodSlider.minValue;
 
 			Selector.Instance.AllowDelayedSubObjectSelections = false;
 		}
