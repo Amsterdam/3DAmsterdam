@@ -111,6 +111,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //remove the hole from the current wall, if the current wall exists
             if (Wall != null)
             {
+                Surface.SetParent(null);
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             }
             //set the new wall
@@ -121,7 +122,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (Wall != null)
             {
                 ClipSizeToWallSize();
-                Wall.Surface.TryAddHole(Surface.SolidSurfacePolygon); //add the hole to the new wall
+                Wall.Surface.TryAddHole(Surface.SolidSurfacePolygon); //add the hole to the new walli
+                Surface.SetParent(wall.Surface);
             }
         }
 
@@ -179,7 +181,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             var maxOffsetX = Wall.Size.x / 2 - Size.x / 2;
             var projectedPositionX = Vector3.ProjectOnPlane(transform.position, Wall.transform.up);
             var projectedCenterX = Vector3.ProjectOnPlane(Wall.transform.position, Wall.transform.up);
-            if (Vector3.Distance(projectedPositionX, projectedCenterX) > maxOffsetX)
+            if (Vector3.Distance(projectedPositionX, projectedCenterX) > maxOffsetX) //distance too big, clipping needed
             {
                 var xComp = ClipDistance(transform.right, maxOffsetX);
                 var yComp = Vector3.ProjectOnPlane(transform.position - Wall.transform.position, transform.right);
@@ -199,8 +201,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private Vector3 ClipDistance(Vector3 direction, float maxOffset)
         {
-            var maxPos = direction * maxOffset - (direction * 0.0001f);
-            var minPos = -direction * maxOffset + (direction * 0.0001f);
+            var maxPos = direction * maxOffset - (direction * 0.03f); //hack 3cm margin to ensure the edge does not become to thin to cause problems for the CityJSON validation
+            var minPos = -direction * maxOffset + (direction * 0.03f);
 
             if (Vector3.Distance(transform.position, Wall.transform.position + minPos) > Vector3.Distance(transform.position, Wall.transform.position + maxPos))
                 return maxPos;
@@ -224,6 +226,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void DeleteFeature()
         {
             Destroy(editUI.gameObject);
+
+            Surface.SetParent(null);
+
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
 
@@ -241,6 +246,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (editUI)
                 Destroy(editUI.gameObject);
+
+            Surface.SetParent(null);
 
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);

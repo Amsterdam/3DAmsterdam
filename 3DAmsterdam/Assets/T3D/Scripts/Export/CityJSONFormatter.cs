@@ -31,6 +31,9 @@ public static class CityJSONFormatter
         RDVertices = new JSONArray();
         Metadata = new JSONObject();
 
+        if (convertToRD)
+            Metadata.Add("referenceSystem", "EPSG:28992");
+
         RootObject["type"] = "CityJSON";
         RootObject["version"] = "1.0";
         RootObject["metadata"] = Metadata;
@@ -104,7 +107,7 @@ public static class CityJSONFormatter
                 }
                 polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
             }
-            polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
+            //polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
         }
     }
 
