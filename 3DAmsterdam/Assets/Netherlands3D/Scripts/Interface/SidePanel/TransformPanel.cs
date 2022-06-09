@@ -201,8 +201,8 @@ namespace Netherlands3D.Interface.SidePanel
                 var translationZ = targetTransformPoint.z - localCurrentTransformPoint.z;
 
                 translateX.text = (translationX).ToString(stringDecimal, CultureInfo.InvariantCulture);
-                translateY.text = (translationZ).ToString(stringDecimal, CultureInfo.InvariantCulture);
-                translateZ.text = (translationY).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateY.text = (translationY).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateZ.text = (translationZ).ToString(stringDecimal, CultureInfo.InvariantCulture);
             }
             else{
                 translateX.text = (rdCoordinates.x - basePosition.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
