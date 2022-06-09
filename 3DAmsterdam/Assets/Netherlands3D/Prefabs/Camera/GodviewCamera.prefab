@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 4905035341649260907}
   - component: {fileID: 8354288608701459187}
   - component: {fileID: 4164029231790784657}
-  - component: {fileID: 7492456184333899909}
   m_Layer: 0
   m_Name: GodviewCamera
   m_TagString: MainCamera
@@ -213,19 +212,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookAtPosition: {fileID: 0}
   offset: {x: 0, y: -1, z: 0}
---- !u!114 &7492456184333899909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164494881010118419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_MaxRayIntersections: 0
