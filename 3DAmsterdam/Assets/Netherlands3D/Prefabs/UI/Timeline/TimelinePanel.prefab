@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8784118389046953277}
   - component: {fileID: 8820066701217643594}
   - component: {fileID: 1114674937364584811}
-  - component: {fileID: 5319996228665349454}
+  - component: {fileID: 3698617452613011039}
   m_Layer: 5
   m_Name: TimelinePanel
   m_TagString: Untagged
@@ -128,7 +128,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5319996228665349454
+--- !u!114 &3698617452613011039
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,17 +137,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2642371138538196583}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75b7e70441345c14ab89bfbaf4f57f18, type: 3}
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onEvent: {fileID: 11400000, guid: 62043823e6163ac42876dcb992ca01ac, type: 2}
-  trigger:
+  onEvent: {fileID: 11400000, guid: 1171355f6544d5c4785e826d54d40238, type: 2}
+  onTriggered:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2642371138538196583}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
-        m_Mode: 0
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -156,6 +156,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3983742851658514039
 GameObject:
   m_ObjectHideFlags: 0

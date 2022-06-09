@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7301535689448331819
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7301535689448331818}
+  - component: {fileID: 7301535689448331817}
+  - component: {fileID: 7301535689448331816}
+  - component: {fileID: 723095850969818235}
+  - component: {fileID: 908423210112240534}
+  m_Layer: 0
+  m_Name: BuildingBuildYear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7301535689448331818
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7301535689448331817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55a6f2cc3b414da4c959a3699db51f73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  geoJsonRequestURL: https://service.pdok.nl/lv/bag/wfs/v2_0?SERVICE=WFS&VERSION=2.0.0&outputFormat=geojson&REQUEST=GetFeature&typeName=bag:pand&count={count}&startIndex={startIndex}&outputFormat=xml&srsName=EPSG:28992&bbox={bbox}
+  idProperty: identificatie
+  floatDataProperty: bouwjaar
+  busyLoadingData: {fileID: 11400000, guid: 2c028b5df2b5fbb4085c3960b699fb79, type: 2}
+  filteredIdsAndFloats: {fileID: 11400000, guid: ffb95c5016faf4443844b46f1e6bfc13,
+    type: 2}
+--- !u!114 &7301535689448331816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 2c028b5df2b5fbb4085c3960b699fb79, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 4d52044112c1d7e40a36ddd50a39e337, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.GameObjectEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7301535689448331819}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: d3e952dec803e3f49b26137df7ac9268, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.GameObjectEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7301535689448331819}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &723095850969818235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9af4f0f37b445d4b97c5287bf00f4f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: c282bb5754753d04b9f025ba694f5e44, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &908423210112240534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc2d244fcd6cf7f4ba51263b6e9edece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
