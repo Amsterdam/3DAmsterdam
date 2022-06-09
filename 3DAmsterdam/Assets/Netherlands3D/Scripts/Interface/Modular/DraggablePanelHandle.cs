@@ -38,21 +38,18 @@ namespace Netherlands3D.Interface
             rectTransform = transform.parent.GetComponent<RectTransform>();
             if (!rectTransform) Destroy(this);
 
-            lastScreenWidth = Screen.width;
-            lastScreenHeight = Screen.height;
-
             preferedSize = rectTransform.sizeDelta;
+
+            if (rememberPosition) LoadPosition();
         }
 
 		private void Start()
 		{
-            if (rememberPosition) LoadPosition();
-            ClampInScreenBounds();
-
             panelHasContentSizeFitter = (rectTransform.GetComponent<ContentSizeFitter>());
+            ClampInScreenBounds();
         }
 
-		private void Update()
+		private void LateUpdate()
 		{
 			if(Screen.width != lastScreenWidth || Screen.height != lastScreenHeight)
             {
