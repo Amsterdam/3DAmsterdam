@@ -52,6 +52,9 @@ namespace T3D.Uitbouw
 
         public abstract CitySurface[] GetSurfaces();
 
+        [SerializeField]
+        private bool includeSemantics;
+
         protected virtual void Start()
         {
             Name = Guid.NewGuid().ToString();
@@ -138,56 +141,28 @@ namespace T3D.Uitbouw
             }
             node["boundaries"] = boundaries;
 
-            var semantics = GetSemantics(Surfaces, out var allAreNull);
-            if (!allAreNull)
+            if (includeSemantics)
+            {
+                var semantics = GetSemantics();
                 node["semantics"] = semantics;
-
+            }
             return node;
         }
 
-        private JSONNode GetSemantics(CitySurface[] surfaces, out bool allAreNull)
+        private JSONNode GetSemantics()
         {
             var node = new JSONObject();
-
-            List<SemanticType> usedTypes = new List<SemanticType>();
-
+            var surfaceSemantics = new JSONArray();
             var indices = new JSONArray();
-            for (int i = 0; i < surfaces.Length; i++)
+            for (int i = 0; i < Surfaces.Length; i++)
             {
-                //for each surface check if it is a new type, and add it to the temp list
-                var surfaceType = surfaces[i].SurfaceType;
-                Assert.IsTrue(CitySurface.IsValidSemanticType(Type, surfaceType));
-                if (surfaceType != SemanticType.Null && !usedTypes.Contains(surfaceType))
-                {
-                    usedTypes.Add(surfaceType);
-                }
-                int index = usedTypes.IndexOf(surfaceType);
-                if (index == -1)
-                {
-                    indices.Add(null);
-                }
-                else
-                {
-                    indices.Add(index);
-                }
+                surfaceSemantics.Add(Surfaces[i].GetSemanticObject(Surfaces));
+                indices.Add(i);
             }
 
-            // add array of surfaces to the node
-            var surfaceTypes = new JSONArray();
-            for (int i = 0; i < usedTypes.Count; i++)
-            {
-                var obj = new JSONObject(); //each surface type is in its own object
-                obj.Add("type", usedTypes[i].ToString());
-                obj.Add("name", "Test");
-                surfaceTypes.Add(obj);
-            }
-
-            node["surfaces"] = surfaceTypes;
-
-            //mark each surface with the index from the array, after the type array
+            node["surfaces"] = surfaceSemantics;
             node["values"] = indices;
 
-            allAreNull = usedTypes.Count == 0;
             return node;
         }
     }

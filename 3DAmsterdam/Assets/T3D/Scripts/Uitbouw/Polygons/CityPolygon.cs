@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -25,7 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Vertices = vertices;
         }
 
-        public JSONNode GetJSONPolygon()
+        public JSONNode GetJSONPolygon(bool isHole)
         {
             //Assert.IsTrue(BoundaryConverterIsSet);
 
@@ -34,6 +35,9 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 absoluteBoundaries[i] = LocalToAbsoluteBoundaryConverter[i]; //this relies on the CityJSONFormatter to set the absolute boundaries of this object before calling this function. This is not possible locally, since all vetices are stored in 1 big array in the CityJsonObject
             }
+
+            if (isHole)
+                absoluteBoundaries = absoluteBoundaries.Reverse().ToArray();
 
             var boundaryArray = new JSONArray(); // defines a polygon (1st is surface, 2+ is holes in first surface)
             for (int i = 0; i < absoluteBoundaries.Length; i++)

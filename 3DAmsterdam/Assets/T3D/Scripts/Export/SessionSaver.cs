@@ -43,7 +43,7 @@ public static class SessionSaver
         //SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
         //SessionId = "a1fd6ee0-cf8a-11ec-8235-9b9afe916f92"; //JSON upload test
         //SessionId = "b9c68c40-d201-11ec-bab9-853726a718cd"; //ifc converter bug (nosnap, upload flow)
-        SessionId = "8b2fae20-e651-11ec-8a52-a9558e4bb739";
+        SessionId = "2029d500-e738-11ec-b6ff-d190c2e036a3";
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
