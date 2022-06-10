@@ -31,6 +31,9 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     private bool measureToolActive;
     private UitbouwBase uitbouw;
 
+    [SerializeField]
+    private MeasurePoint cursorPointPrefab;
+
     protected override void Awake()
     {
         numberOfLines = 0;
@@ -61,7 +64,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         //flip direction if points selected in wrong order
         var index = lines.IndexOf(source);
         if (measureLines[index].End.GetComponentInParent<SelectableMesh>() == mySelectableMesh)
-            delta *= -1; 
+            delta *= -1;
         uitbouw.GetComponent<UitbouwMovement>().SetPosition(uitbouw.transform.position + direction * delta);
     }
 
@@ -80,41 +83,49 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
     private void HandleUserInput()
     {
+        var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        var planeIntersect = RestrictionChecker.ActivePerceel.PerceelPlane.Raycast(ray, out float enter);
+
+        bool isValidMeshPoint = IsHoveringOverValidPoint(out var hoverPoint);
+
+        if (isValidMeshPoint)
+            mousePositionInWorld = hoverPoint.transform.position;
+        else if (planeIntersect)
+            mousePositionInWorld = ray.origin + ray.direction * enter;
+
+
+        //if (firstPointExists)
+        //    cursorEndPoint.transform.position = mousePositionInWorld;
+        //else
+        //    cursorStartPoint.transform.position = mousePositionInWorld;
+
+        //print("first point exists: " + firstPointExists);
+
         // if clicking: if a valid first point is already present, and the click is on a valid second point: finalize the line. else: if clicking on a valid first point, start the line.
         if (Input.GetMouseButtonDown(0))
         {
+            if (!isValidMeshPoint)
+            {
+                hoverPoint = Instantiate(cursorPointPrefab);
+                hoverPoint.transform.position = mousePositionInWorld;
+            }
+
             if (firstPoint)
             {
-                if (IsHoveringOverValidSecondPoint(out var point))
-                {
-                    measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, point); //set the end point of the last line in the list
-                    firstPoint = null; //set that there is no longer an active first point
-                }
+                //if (IsHoveringOverValidSecondPoint(out var point))
+                //    measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, point); //set the end point of the last line in the list
+                //else
+                measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, hoverPoint); //set the end point of the last line in the list
+
+                firstPoint = null; //set that there is no longer an active first point
+                print("finishing line " + measureLines.Count);
             }
-            else if (IsHoveringOverValidPoint(out var point))
+            else
             {
-                firstPoint = point;
-                firstPoint.GetComponentInParent<SelectableMesh>().VisualizeActivePoint = false;
+                firstPoint = hoverPoint;
+                if (isValidMeshPoint)
+                    firstPoint.GetComponentInParent<SelectableMesh>().VisualizeActivePoint = false;
                 CreateLine();
-            }
-        }
-        else //if not clicking: if there is no first point do nothing, otherwise the second point should be at mouse position, unless hovering over a MeasurePoint.
-        {
-            if (firstPoint)
-            {
-                if (IsHoveringOverValidSecondPoint(out var point))
-                {
-                    mousePositionInWorld = point.transform.position;
-                }
-                else
-                {
-                    var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-                    var planeIntersect = RestrictionChecker.ActivePerceel.PerceelPlane.Raycast(ray, out float enter);
-                    if (planeIntersect)
-                    {
-                        mousePositionInWorld = ray.origin + ray.direction * enter;
-                    }
-                }
             }
         }
     }
@@ -159,7 +170,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             }
         }
         // else check only uitbouwMesh
-        else if(mySelectableMesh.ActivePoint)
+        else if (mySelectableMesh.ActivePoint)
         {
             point = mySelectableMesh.ActivePoint;
             return true;
@@ -172,12 +183,12 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         var line = new MeasureLine(firstPoint, null);
         measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
         var newLine = CreateNewMeasurement();
-        newLine.DeleteButtonPressed += NewLine_DeleteButtonPressed1; ;
+        newLine.DeleteButtonPressed += NewLine_DeleteButtonPressed;
         lines.Add(newLine);
         numberOfLines++;
     }
 
-    private void NewLine_DeleteButtonPressed1(BuildingMeasuring source)
+    private void NewLine_DeleteButtonPressed(BuildingMeasuring source)
     {
         DeleteLine(source);
     }
@@ -198,7 +209,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         }
         else
         {
-            foreach(var mesh in otherSelectableMeshes)
+            foreach (var mesh in otherSelectableMeshes)
             {
                 mesh.DeselectVertices();
             }
