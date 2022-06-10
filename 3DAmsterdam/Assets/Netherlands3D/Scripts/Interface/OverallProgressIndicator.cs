@@ -18,7 +18,7 @@ namespace Netherlands3D
         private GameObjectEvent doneWorking;
 
         [SerializeField]
-        private List<object> workingObjects = new List<object>();
+        private List<GameObject> workingObjects = new List<GameObject>();
 
         void Awake()
         {
@@ -35,10 +35,6 @@ namespace Netherlands3D
                 workingObjects.Add(workingObject);
 
             Show(true);
-
-#if UNITY_EDITOR
-            Debug.Log($"{workingObject.name} is working...", workingObject);
-#endif
         }
 
         private void Done(GameObject doneWorkingObject)
@@ -48,10 +44,6 @@ namespace Netherlands3D
 
             if (workingObjects.Count == 0)
                 Show(false);
-
-#if UNITY_EDITOR
-            Debug.Log($"{doneWorkingObject.name} is done working.", doneWorkingObject);
-#endif
         }
 
 

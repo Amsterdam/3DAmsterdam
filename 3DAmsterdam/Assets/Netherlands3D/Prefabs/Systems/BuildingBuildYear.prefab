@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 7301535689448331816}
   - component: {fileID: 723095850969818235}
   - component: {fileID: 908423210112240534}
+  - component: {fileID: 6371057130485580360}
+  - component: {fileID: 4273965269708175448}
   m_Layer: 0
   m_Name: BuildingBuildYear
   m_TagString: Untagged
@@ -50,7 +52,8 @@ MonoBehaviour:
   geoJsonRequestURL: https://service.pdok.nl/lv/bag/wfs/v2_0?SERVICE=WFS&VERSION=2.0.0&outputFormat=geojson&REQUEST=GetFeature&typeName=bag:pand&count={count}&startIndex={startIndex}&outputFormat=xml&srsName=EPSG:28992&bbox={bbox}
   idProperty: identificatie
   floatDataProperty: bouwjaar
-  busyLoadingData: {fileID: 11400000, guid: 2c028b5df2b5fbb4085c3960b699fb79, type: 2}
+  clearDataOnViewChange: 0
+  busyLoadingData: {fileID: 11400000, guid: 9485d91bc9849834f913fb891bf7b222, type: 2}
   filteredIdsAndFloats: {fileID: 11400000, guid: ffb95c5016faf4443844b46f1e6bfc13,
     type: 2}
 --- !u!114 &7301535689448331816
@@ -65,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onEvent: {fileID: 11400000, guid: 2c028b5df2b5fbb4085c3960b699fb79, type: 2}
+  onEvent: {fileID: 11400000, guid: 9485d91bc9849834f913fb891bf7b222, type: 2}
   onTriggered:
     m_PersistentCalls:
       m_Calls: []
@@ -115,13 +118,13 @@ MonoBehaviour:
   trigger:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 908423210112240534}
+        m_TargetAssemblyTypeName: ColorSubbjectsByYear, Assembly-CSharp
+        m_MethodName: ApplyYearFromDateTime
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -137,5 +140,56 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc2d244fcd6cf7f4ba51263b6e9edece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gotIdsAndYears: {fileID: 11400000, guid: ffb95c5016faf4443844b46f1e6bfc13, type: 2}
+  applyColorsToIds: {fileID: 11400000, guid: 4866859441f5efc41902fbeaee6a78ed, type: 2}
+  buildYearBeforeColor: {r: 0, g: 1, b: 0, a: 1}
+  buildYearAfterColor: {r: 1, g: 0, b: 0, a: 1}
+  workingOnColoring: {fileID: 11400000, guid: 9485d91bc9849834f913fb891bf7b222, type: 2}
+--- !u!114 &6371057130485580360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 3e74ae773b3a2e347aeea0193a28f053, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7301535689448331819}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4273965269708175448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301535689448331819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
