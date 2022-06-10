@@ -10,10 +10,16 @@ public struct MeasureLine
     public MeasurePoint Start;
     public MeasurePoint End;
 
-    public MeasureLine(MeasurePoint start, MeasurePoint end)
+    public bool ValidStartPoint;
+    public bool ValidEndPoint;
+
+    public MeasureLine(MeasurePoint start, MeasurePoint end, bool validStart, bool validEnd)
     {
         Start = start;
         End = end;
+
+        ValidStartPoint = validStart;
+        ValidEndPoint = validEnd;
     }
 }
 
@@ -93,14 +99,6 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         else if (planeIntersect)
             mousePositionInWorld = ray.origin + ray.direction * enter;
 
-
-        //if (firstPointExists)
-        //    cursorEndPoint.transform.position = mousePositionInWorld;
-        //else
-        //    cursorStartPoint.transform.position = mousePositionInWorld;
-
-        //print("first point exists: " + firstPointExists);
-
         // if clicking: if a valid first point is already present, and the click is on a valid second point: finalize the line. else: if clicking on a valid first point, start the line.
         if (Input.GetMouseButtonDown(0))
         {
@@ -112,20 +110,19 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
 
             if (firstPoint)
             {
-                //if (IsHoveringOverValidSecondPoint(out var point))
-                //    measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, point); //set the end point of the last line in the list
-                //else
-                measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, hoverPoint); //set the end point of the last line in the list
+                bool validStart = measureLines[measureLines.Count - 1].ValidStartPoint;
+                bool validEnd = IsHoveringOverValidSecondPoint(out _);
+                measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, hoverPoint, validStart, validEnd); //set the end point of the last line in the list
 
+                lines[measureLines.Count - 1].SetDistanceLabelInteractable(validStart && validEnd);
                 firstPoint = null; //set that there is no longer an active first point
-                print("finishing line " + measureLines.Count);
             }
             else
             {
                 firstPoint = hoverPoint;
                 if (isValidMeshPoint)
                     firstPoint.GetComponentInParent<SelectableMesh>().VisualizeActivePoint = false;
-                CreateLine();
+                CreateLine(isValidMeshPoint);
             }
         }
     }
@@ -178,9 +175,9 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         return false;
     }
 
-    private void CreateLine()
+    private void CreateLine(bool validStart)
     {
-        var line = new MeasureLine(firstPoint, null);
+        var line = new MeasureLine(firstPoint, null, validStart, false);
         measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
         var newLine = CreateNewMeasurement();
         newLine.DeleteButtonPressed += NewLine_DeleteButtonPressed;
