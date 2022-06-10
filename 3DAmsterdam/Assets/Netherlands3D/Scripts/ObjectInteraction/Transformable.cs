@@ -2,6 +2,7 @@
 using Netherlands3D.Help;
 using Netherlands3D.InputHandler;
 using Netherlands3D.Interface;
+using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Modular;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Rendering;
@@ -305,6 +306,11 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			//Hide transformpanel if we were destroyed
 			PropertiesPanel.Instance.DeselectTransformable(this);
+
+			//Hide color panel(s)
+			LayerVisuals[] layerVisualPanels = FindObjectsOfType<LayerVisuals>();
+			foreach (LayerVisuals layerVisuals in layerVisualPanels)
+				layerVisuals.gameObject.SetActive(false);
 
 			//Remove our placement event
 			placeAction.UnSubscribe(placeActionEvent);
