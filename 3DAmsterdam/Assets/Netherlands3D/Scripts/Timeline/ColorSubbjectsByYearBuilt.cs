@@ -50,12 +50,18 @@ public class ColorSubbjectsByYearBuilt : MonoBehaviour
         buildingsMaterial.SetColor(shaderStart, buildYearBeforeColor);
         buildingsMaterial.SetColor(shaderEnd, buildYearAfterColor);
         buildingsMaterial.SetFloat(shaderThreshold, threshold);
+        ReApplySharedMaterial();
+    }
 
+    private void ReApplySharedMaterial()
+    {
         var meshRenderers = FindObjectsOfType<MeshRenderer>();
         foreach (var meshRenderer in meshRenderers)
         {
-            if (meshRenderer.renderingLayerMask == buildingsLayerMask.value)
+            if (meshRenderer.gameObject.layer == buildingsLayerMask.value)
             {
+                Destroy(meshRenderer.material);
+                meshRenderer.material = null;
                 meshRenderer.sharedMaterial = buildingsMaterial;
             }
         }
@@ -64,14 +70,7 @@ public class ColorSubbjectsByYearBuilt : MonoBehaviour
     private void RevertDefaultBuildingsShader()
     {
         buildingsMaterial.shader = defaultBuildingShader;
-        var meshRenderers = FindObjectsOfType<MeshRenderer>();
-        foreach (var meshRenderer in meshRenderers)
-        {
-            if (meshRenderer.renderingLayerMask == buildingsLayerMask.value)
-            {
-                meshRenderer.sharedMaterial = buildingsMaterial;
-            }
-        }
+        ReApplySharedMaterial();
     }
 
     private void OnDisable()
