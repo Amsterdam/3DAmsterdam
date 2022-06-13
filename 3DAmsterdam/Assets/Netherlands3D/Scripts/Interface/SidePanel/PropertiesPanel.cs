@@ -106,7 +106,9 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Material buildingsExclusiveShader;
         [SerializeField]
-        private Material defaultBuildingsShader;
+        private Material defaultBuildingsMaterial;
+
+        private Shader defaultBuildingsShader;
 
         [SerializeField]
         private VerticalLayoutGroup verticalLayoutGroup;
@@ -118,11 +120,12 @@ namespace Netherlands3D.Interface.SidePanel
 		{
             //Find the transformpanel
             transformPanel = FindObjectOfType<TransformPanel>();
-
             if (Instance == null)
 			{
 				Instance = this;
 			}
+            //Get default buildings shader for rendering thumbnails
+            defaultBuildingsShader = defaultBuildingsMaterial.shader;
 
             //Open/closed at start
             if (startingActiveTab)
@@ -361,7 +364,7 @@ namespace Netherlands3D.Interface.SidePanel
                 thumbnailRenderer.Render();
 
                 foreach (var renderer in renderersOnBuildingsLayer)
-                    renderer.material.shader = defaultBuildingsShader.shader;
+                    renderer.material.shader = defaultBuildingsShader;
             }
             else
             {

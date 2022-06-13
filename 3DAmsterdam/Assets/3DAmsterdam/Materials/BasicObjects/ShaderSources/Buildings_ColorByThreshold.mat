@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Buildings
-  m_Shader: {fileID: -6465566751694194690, guid: f4ba087105f7c714693b2e350cb97d7a,
+  m_Name: Buildings_ColorByThreshold
+  m_Shader: {fileID: -6465566751694194690, guid: 2fdd3fbc1f451364b87d8569e674d23e,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -96,6 +96,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Shininess: 0
@@ -106,6 +107,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _Threshold: -0.1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -113,6 +115,8 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _ClippingMask: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorAfter: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorBefore: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighlightColor: {r: 0.04245281, g: 0.3570498, b: 1, a: 1}
     - _Size: {r: 0, g: 0, b: 0, a: 0}

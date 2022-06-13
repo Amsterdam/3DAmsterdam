@@ -5317,6 +5317,22 @@ PrefabInstance:
       propertyPath: tooltipText
       value: Activeer bouwjaren laag in tijdlijn
       objectReference: {fileID: 0}
+    - target: {fileID: 8402726320403448742, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8402726320403448742, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e74ae773b3a2e347aeea0193a28f053,
+        type: 2}
+    - target: {fileID: 8402726320403448742, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
     - target: {fileID: 8973159597294531645, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
       propertyPath: m_Pivot.x
@@ -6805,7 +6821,7 @@ PrefabInstance:
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
       propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
@@ -6814,8 +6830,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTriggered.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
@@ -6830,13 +6856,28 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4688404099311119513}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onFalse.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 11400000, guid: 56e79ae60aae01c47994ae46f3484519,
         type: 2}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTriggered.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
@@ -6851,8 +6892,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: set_isOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onFalse.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onTriggered.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
@@ -6861,12 +6912,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: UnityEngine.UI.Toggle, UnityEngine.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onFalse.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
       propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Woningbouwplannen
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
       value: Woningbouwplannen
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
@@ -6877,6 +6943,11 @@ PrefabInstance:
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
         type: 3}
       propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,
+        type: 3}
+      propertyPath: onTrue.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 786428024437339124, guid: 8b59774c75abc004d9d3c5146c5af73d,

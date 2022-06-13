@@ -9,6 +9,7 @@ namespace Netherlands3D
 {
     public class OverallProgressIndicator : MonoBehaviour
     {
+        [SerializeField]
         private Image fillImage;
  
         [Header("Listen to")]
@@ -22,8 +23,6 @@ namespace Netherlands3D
 
         void Awake()
         {
-            fillImage = GetComponent<Image>();
-
             working.started.AddListener(Working);
             doneWorking.started.AddListener(Done);
             Show(false);

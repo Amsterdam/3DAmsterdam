@@ -119,8 +119,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 908423210112240534}
-        m_TargetAssemblyTypeName: ColorSubbjectsByYear, Assembly-CSharp
-        m_MethodName: ApplyYearFromDateTime
+        m_TargetAssemblyTypeName: ColorSubbjectsByYearBuilt, Assembly-CSharp
+        m_MethodName: SetYearAsShaderThreshold
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -143,10 +143,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gotIdsAndYears: {fileID: 11400000, guid: ffb95c5016faf4443844b46f1e6bfc13, type: 2}
+  workingOnColoring: {fileID: 11400000, guid: 9485d91bc9849834f913fb891bf7b222, type: 2}
   applyColorsToIds: {fileID: 11400000, guid: 4866859441f5efc41902fbeaee6a78ed, type: 2}
+  buildingsLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   buildYearBeforeColor: {r: 0, g: 1, b: 0, a: 1}
   buildYearAfterColor: {r: 1, g: 0, b: 0, a: 1}
-  workingOnColoring: {fileID: 11400000, guid: 9485d91bc9849834f913fb891bf7b222, type: 2}
+  buildingsMaterial: {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
+  startRange: 1500
+  endRange: 2022
+  shaderThreshold: _Threshold
+  shaderStart: _ColorBefore
+  shaderEnd: _ColorAfter
+  buildingMaterialWithMultiplyRange: {fileID: 2100000, guid: 92386f00cfd0b26408412aec0b61a802,
+    type: 2}
 --- !u!114 &6371057130485580360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +191,19 @@ MonoBehaviour:
       m_Calls: []
   onFalse:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 84e22a875f085554fa32d2ef0bbef43d, type: 2}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4273965269708175448
 MonoBehaviour:
   m_ObjectHideFlags: 0

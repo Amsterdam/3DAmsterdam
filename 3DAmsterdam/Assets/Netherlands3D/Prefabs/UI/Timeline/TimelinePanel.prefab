@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8820066701217643594}
   - component: {fileID: 1114674937364584811}
   - component: {fileID: 3698617452613011039}
+  - component: {fileID: 958033909569275445}
   m_Layer: 5
   m_Name: TimelinePanel
   m_TagString: Untagged
@@ -141,6 +142,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onEvent: {fileID: 11400000, guid: 1171355f6544d5c4785e826d54d40238, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2642371138538196583}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &958033909569275445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2642371138538196583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 3e74ae773b3a2e347aeea0193a28f053, type: 2}
   onTriggered:
     m_PersistentCalls:
       m_Calls:
