@@ -303,4 +303,10 @@ public class BuildingMeasuring : Interactable
     {
         DeleteButtonPressed?.Invoke(this);
     }
+
+    public void SetDistanceLabelInteractable(bool interactable)
+    {
+        if (distanceLabel)
+            distanceLabel.SetInteractable(interactable);
+    }
 }

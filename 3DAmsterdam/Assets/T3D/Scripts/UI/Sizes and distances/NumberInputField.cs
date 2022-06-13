@@ -80,6 +80,11 @@ namespace Netherlands3D.Interface
             deleteButton.gameObject.SetActive(enable);
         }
 
+        public void SetInteractable(bool interactable)
+        {
+            Distance.SetInteractable(interactable);
+        }
+
         //private bool TryParseUserString(string inputString, out float distance, out string units)
         //{
         //    Regex distRex = new Regex("(?<dist>\\d+)\\s*(?<unit>|m|dm|cm|mm)", RegexOptions.IgnoreCase);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ObjectClickHandler : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class ObjectClickHandler : MonoBehaviour
 
     private static bool dragStarted = false;
     public static Collider DraggingCollider { get; private set; }
+    public static bool OverUI
+    {
+        get { return EventSystem.current.IsPointerOverGameObject(); }
+    }
 
     private void Update()
     {
@@ -54,6 +59,12 @@ public class ObjectClickHandler : MonoBehaviour
     public static bool GetClickOnObject(bool allowClickOnNothing, out Collider clickedCollider, int layerMask = Physics.DefaultRaycastLayers)
     {
         clickedCollider = null;
+
+        if (OverUI && layerMask == LayerMask.NameToLayer("UI")) //compensate for UI not having physics colliders
+        {
+            return false;
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
             var dist = Input.mousePosition - clickStartPosition;

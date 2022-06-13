@@ -1,4 +1,5 @@
 ﻿using ConvertCoordinates;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -36,6 +37,11 @@ namespace Netherlands3D.Interface
         {
             //var input = GetComponentInChildren<InputField>();
             //if (input) input.text = distanceText.text;
+        }
+
+        public void SetInteractable(bool interactable)
+        {
+            inputField.interactable = interactable;
         }
     }
 }
