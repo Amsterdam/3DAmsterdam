@@ -99,8 +99,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         else if (planeIntersect)
             mousePositionInWorld = ray.origin + ray.direction * enter;
 
-        // if clicking: if a valid first point is already present, and the click is on a valid second point: finalize the line. else: if clicking on a valid first point, start the line.
-        if (Input.GetMouseButtonDown(0))
+        if (ObjectClickHandler.GetClickOnObject(true, LayerMask.NameToLayer("UI")))
         {
             if (!isValidMeshPoint)
             {
@@ -108,6 +107,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
                 hoverPoint.transform.position = mousePositionInWorld;
             }
 
+            // if clicking: if a valid first point is already present, and the click is on a valid second point: finalize the line. else: if clicking on a valid first point, start the line.
             if (firstPoint)
             {
                 bool validStart = measureLines[measureLines.Count - 1].ValidStartPoint;
