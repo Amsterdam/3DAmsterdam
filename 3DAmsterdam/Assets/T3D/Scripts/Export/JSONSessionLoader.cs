@@ -57,7 +57,7 @@ public class JSONSessionLoader : MonoBehaviour, IUniqueService//, IDataLoader
             yield return uwr.SendWebRequest();
             if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError(uwr.error);
+                ErrorService.GoToErrorPage("Could not load session data. " + uwr.error);
             }
             else
             {
@@ -76,7 +76,7 @@ public class JSONSessionLoader : MonoBehaviour, IUniqueService//, IDataLoader
 
         if (rootObject == null)
         {
-            Debug.LogError("parsing session data unsuccesful. Data: " + data);
+            ErrorService.GoToErrorPage("parsing session data unsuccesful. Data: " + data);
             rootObject = new JSONObject();
         }
 
