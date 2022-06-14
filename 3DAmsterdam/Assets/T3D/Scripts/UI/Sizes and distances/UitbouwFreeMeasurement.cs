@@ -90,8 +90,11 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
     private void HandleUserInput()
     {
         var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        var planeIntersect = RestrictionChecker.ActivePerceel.PerceelPlane.Raycast(ray, out float enter);
-
+        //var planeIntersect = RestrictionChecker.ActivePerceel.PerceelPlane.Raycast(ray, out float enter);
+        var testPlane = RestrictionChecker.ActivePerceel.PerceelPlane;
+        testPlane.distance *= -1; //hack why is this needed???????
+        var planeIntersect = testPlane.Raycast(ray, out float enter);
+        
         bool isValidMeshPoint = IsHoveringOverValidPoint(out var hoverPoint);
 
         if (isValidMeshPoint)

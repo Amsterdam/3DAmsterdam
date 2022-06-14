@@ -157,7 +157,6 @@ public class BuildingMeasuring : Interactable
         }
 
         //previewTargetPoint.position = previewPoint;
-        //AutoScalePointByDistance(previewTargetPoint);
     }
 
     private void ChangeLineType(MeasurePoint.Shape shape)
@@ -231,21 +230,13 @@ public class BuildingMeasuring : Interactable
         var closestPointDistance = float.MaxValue;
         for (int i = 0; i < linePoints.Count; i++)
         {
-            var point = linePoints[i].transform;
-            var pointDistance = AutoScalePointByDistance(point);
+            var point = linePoints[i];
+            var pointDistance = point.AutoScalePointByDistance();
 
             if (pointDistance < closestPointDistance)
                 closestPointDistance = pointDistance;
         }
         lineRenderer.startWidth = lineRenderer.endWidth = lineWidth * closestPointDistance;
-    }
-
-    private float AutoScalePointByDistance(Transform point)
-    {
-        var cameraDistanceToPoint = Vector3.Distance(point.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
-        point.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
-
-        return cameraDistanceToPoint;
     }
 
     private void UpdateLinePositions()

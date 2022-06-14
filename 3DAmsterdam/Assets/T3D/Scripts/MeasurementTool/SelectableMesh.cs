@@ -91,11 +91,6 @@ public class SelectableMesh : MonoBehaviour
 
     private void Update()
     {
-        foreach (var point in points)
-        {
-            AutoScalePointByDistance(point.transform);
-        }
-
         ProcessUserInput();
     }
 
@@ -139,13 +134,5 @@ public class SelectableMesh : MonoBehaviour
         ActivePoint = newPoint;
         if (visualize)
             ActivePoint.ChangeShape(MeasurePoint.Shape.POINT);
-    }
-
-    private float AutoScalePointByDistance(Transform point)
-    {
-        var cameraDistanceToPoint = Vector3.Distance(point.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
-        point.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
-
-        return cameraDistanceToPoint;
     }
 }
