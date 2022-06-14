@@ -94,7 +94,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         var testPlane = RestrictionChecker.ActivePerceel.PerceelPlane;
         testPlane.distance *= -1; //hack why is this needed???????
         var planeIntersect = testPlane.Raycast(ray, out float enter);
-        
+
         bool isValidMeshPoint = IsHoveringOverValidPoint(out var hoverPoint);
 
         if (isValidMeshPoint)
@@ -107,6 +107,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             if (!isValidMeshPoint)
             {
                 hoverPoint = Instantiate(cursorPointPrefab);
+                hoverPoint.PointScale = 0;
                 hoverPoint.transform.position = mousePositionInWorld;
             }
 
@@ -115,9 +116,22 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             {
                 bool validStart = measureLines[measureLines.Count - 1].ValidStartPoint;
                 bool validEnd = IsHoveringOverValidSecondPoint(out _);
-                measureLines[measureLines.Count - 1] = new MeasureLine(firstPoint, hoverPoint, validStart, validEnd); //set the end point of the last line in the list
+                var line = lines[measureLines.Count - 1];
 
-                lines[measureLines.Count - 1].SetDistanceLabelInteractable(validStart && validEnd);
+                var startPoint = validStart ? firstPoint : line.LinePoints[0];
+                var endPoint = validEnd ? hoverPoint : line.LinePoints[1];
+
+                measureLines[measureLines.Count - 1] = new MeasureLine(startPoint, endPoint, validStart, validEnd); ; //set the end point of the last line in the list
+
+                line.SetDistanceLabelInteractable(validStart && validEnd);
+
+                if (!validStart)
+                    Destroy(firstPoint.gameObject);
+                if (!validEnd)
+                {
+                    line.LinePoints[1].PointScale = 0;
+                    Destroy(hoverPoint.gameObject);
+                }
                 firstPoint = null; //set that there is no longer an active first point
             }
             else
@@ -184,6 +198,8 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         measureLines.Add(line); //create the line, by setting the end point to null, the mouse position will be used as endpoint in DrawLines()
         var newLine = CreateNewMeasurement();
         newLine.DeleteButtonPressed += NewLine_DeleteButtonPressed;
+        if (!validStart)
+            newLine.LinePoints[0].PointScale = 0;
         lines.Add(newLine);
         numberOfLines++;
     }

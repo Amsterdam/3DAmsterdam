@@ -13,6 +13,17 @@ public class MeasurePoint : MonoBehaviour
 
 	[SerializeField]
 	private float pointScale = 1f;
+	public float PointScale
+    {
+        get
+        {
+			return pointScale;
+        }
+        set
+        {
+			pointScale = value;
+        }
+    }
 
 	public enum Shape{
 		POINT,
