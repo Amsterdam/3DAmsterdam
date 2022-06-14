@@ -63,4 +63,61 @@ public class CityJsonTests
 
     }
 
+
+    [Test]
+    public void PolygonVolumeTest()
+    {
+        List<Vector2> triangle = new List<Vector2>()
+        {
+            new Vector2(1,1),
+            new Vector2(1,0),
+            new Vector2(0,0),            
+            new Vector2(1,1)
+        };
+
+        List<Vector2> square = new List<Vector2>()
+        {
+            new Vector2(1,1),
+            new Vector2(1,0),
+            new Vector2(0,0),
+            new Vector2(0,1),
+            new Vector2(1,1)
+        };
+
+        List<Vector2> polygon = new List<Vector2>()
+        {
+            new Vector2(2,2),
+            new Vector2(2,0),
+            new Vector2(0,0),
+            new Vector2(0,1),
+            new Vector2(1,1),
+            new Vector2(1,2),
+            new Vector2(2,2)
+        };
+
+        List<Vector2> polygon2 = new List<Vector2>()
+        {
+            new Vector2(2,1),
+            new Vector2(2,0),
+            new Vector2(1,0),
+            new Vector2(0,1),
+            new Vector2(1,1),
+            new Vector2(1,2),
+            new Vector2(2,1)
+        };
+
+        var area_triangle = CityJsonMeshUtility.GetPolygonArea(triangle);
+        Assert.AreEqual(0.5f, area_triangle);
+
+        var area_square = CityJsonMeshUtility.GetPolygonArea(square);        
+        Assert.AreEqual(1f, area_square);
+
+        var area_polygon = CityJsonMeshUtility.GetPolygonArea(polygon);
+        Assert.AreEqual(3f, area_polygon);
+
+        var area_polygon2 = CityJsonMeshUtility.GetPolygonArea(polygon2);
+        Assert.AreEqual(2f, area_polygon2);
+
+    }
+
 }

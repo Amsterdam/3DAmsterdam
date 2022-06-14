@@ -23,51 +23,21 @@ public class CityJsonMeshUtility
         }
     }
 
-    public static List<Vector2> RemoveInner(List<Vector2> points)
+    /// <summary>
+    /// https://www.geeksforgeeks.org/program-find-mid-point-line/
+    /// https://stackoverflow.com/questions/2034540/calculating-area-of-irregular-polygon-in-c-sharp
+    /// https://web.archive.org/web/20120410040052/http://blog.csharphelper.com/2010/01/04/calculate-a-polygons-area-in-c.aspx
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public static float GetPolygonArea(List<Vector2> points)
     {
-        for (int i = 1; i < points.Count - 1; i++)
-        {
-            for (int j = i + 1; j < points.Count - 1; j++)
-            {
-                if (points[i].Equals(points[j]))
-                {
-                    var volume = GetVolume(points, i, j + 1);
-                    var allvol = GetVolume(points, 0, points.Count);
+        var area = points.Take(points.Count - 1)
+        .Select((p, i) => (points[i + 1].x - p.x) * (points[i + 1].y + p.y))
+        .Sum() / 2;
 
-                    if (volume == 0)
-                    {
-                        points.RemoveRange(i, j - i + 1);
-                        break;
-                    }
-                    else if (volume == allvol)
-                    {
-                        return points.GetRange(i, j - i + 1);
-                    }
-
-
-                    break;
-                }
-            }
-
-        }
-
-        return points;
+        return area;
     }
-
-    public static float GetVolume(List<Vector2> points, int startIndex, int endIndex)
-    {
-        var subselect = points.GetRange(startIndex, endIndex - startIndex);
-
-        var minx = subselect.Min(o => o.x);
-        var maxx = subselect.Max(o => o.x);
-        var miny = subselect.Min(o => o.y);
-        var maxy = subselect.Max(o => o.y);
-
-        return (maxx - minx) * (maxy - miny);
-    }
-
-
-
 
     public static List<List<Vector2>> GetOuterAndInnerPolygons(List<Vector2> outer)
     {
@@ -78,27 +48,72 @@ public class CityJsonMeshUtility
         foreach (var point in result.SelectMany(points => points))
         {
             outerPoints[point.Index].Index = -1;
-        }
+        }        
         var outerRing = outerPoints.Where(o => o.Index != -1).ToList();
 
         result.Insert(0, outerRing);
 
-        //var windingorder = PolygonUtil.CalculateWindingOrder(list.Select(o => new Point2D(o.x, o.y)).ToArray());
-        //if (windingorder == Point2DList.WindingOrderType.CCW)
-        //{
-        //    result.Add(list);
-        //    break;
-        //}
-
+       
         List<List<Vector2>> outerAndInner = new List<List<Vector2>>();
 
         foreach(var points in result)
         {
             outerAndInner.Add(points.Select(o => o.Point).ToList());
-        }
+        }       
+        
+        outerAndInner[0] = RemoveEmptyInners(outerAndInner[0]);
+        outerAndInner[0] = RemoveDoubleInner(outerAndInner[0]);
 
         return outerAndInner;
     }
+
+    private static List<Vector2> RemoveEmptyInners(List<Vector2> points)
+    {
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            for (int j = i + 1; j < points.Count - 1; j++)
+            {
+                if (points[i].Equals(points[j]))
+                {
+                    var volume = GetPolygonArea(points.GetRange(i, (j + 1) - i));
+
+                    if (volume == 0)
+                    {
+                        points.RemoveRange(i, j - i + 1);
+                        break;
+                    }
+                    break;
+                }
+            }
+
+        }
+        return points;
+    }
+
+    private static List<Vector2> RemoveDoubleInner(List<Vector2> points)
+    {
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            for (int j = i + 1; j < points.Count - 1; j++)
+            {
+                if (points[i].Equals(points[j]))
+                {
+                    var volume = GetPolygonArea(points.GetRange(i, (j + 1) - i));
+                    var allvol = GetPolygonArea(points);
+
+                    Debug.Log($"volume:{volume} allvol {allvol} ");
+
+                    if (volume == allvol)
+                    {
+                        return points.GetRange(i, j - i + 1);
+                    }
+                    break;
+                }
+            }
+        }
+        return points;
+    }
+
 
     /// <summary>
     /// Alleen toevoegen aan lijst als binnenkomende outer list geen zelfde begin en eindpunt hebben

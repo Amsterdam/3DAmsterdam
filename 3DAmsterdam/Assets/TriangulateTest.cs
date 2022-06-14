@@ -108,11 +108,8 @@ public class TriangulateTest : MonoBehaviour
 
         var outerAndInner = CityJsonMeshUtility.GetOuterAndInnerPolygons(GetVoorkant());
 
-        var outerWithInners = outerAndInner[0];
-        var stripped = CityJsonMeshUtility.RemoveInner(outerWithInners);
-        var clean = CityJsonMeshUtility.RemoveInner(stripped);
-
-        poly.outside = clean.Select(o => new Vector3(o.x, o.y, 0)).ToList();
+        
+        poly.outside = outerAndInner[0].Select(o => new Vector3(o.x, o.y, 0)).ToList();
 
         for (int i = 1; i < outerAndInner.Count; i++)
         {
