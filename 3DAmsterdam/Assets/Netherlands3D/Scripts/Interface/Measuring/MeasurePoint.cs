@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using UnityEngine;
 
 public class MeasurePoint : MonoBehaviour
@@ -9,6 +10,20 @@ public class MeasurePoint : MonoBehaviour
 
     [SerializeField]
     private GameObject pointIndicator;
+
+	[SerializeField]
+	private float pointScale = 1f;
+	public float PointScale
+    {
+        get
+        {
+			return pointScale;
+        }
+        set
+        {
+			pointScale = value;
+        }
+    }
 
 	public enum Shape{
 		POINT,
@@ -44,5 +59,18 @@ public class MeasurePoint : MonoBehaviour
 		var layer = selectable ? LayerMask.NameToLayer("BoundaryFeatures") : LayerMask.NameToLayer("Default");
 		heightIndicator.layer = layer;
 		pointIndicator.layer = layer;
+	}
+
+    private void Update()
+    {
+		AutoScalePointByDistance();
+    }
+
+    public float AutoScalePointByDistance()
+	{
+		var cameraDistanceToPoint = Vector3.Distance(transform.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
+		transform.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
+
+		return cameraDistanceToPoint;
 	}
 }

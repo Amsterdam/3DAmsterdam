@@ -32,7 +32,7 @@ public class MeasuringLine : Interactable
 	private List<MeasurePoint> linePoints;
 
 	[SerializeField]
-	private Transform previewTargetPoint;
+	private MeasurePoint previewTargetPoint;
 
 	[SerializeField]
 	private Material lineMaterial;
@@ -95,7 +95,7 @@ public class MeasuringLine : Interactable
 
 	private void PlacePoint()
 	{
-		Vector3 placementPoint = (Selector.doingMultiselect && placementStepIndex == 0) ? linePoints[1].transform.position : previewTargetPoint.position;
+		Vector3 placementPoint = (Selector.doingMultiselect && placementStepIndex == 0) ? linePoints[1].transform.position : previewTargetPoint.transform.position;
 		StepThroughPlacement(placementPoint);
 	}
 
@@ -137,8 +137,8 @@ public class MeasuringLine : Interactable
 			}
 		}
 
-		previewTargetPoint.position = previewPoint;
-		AutoScalePointByDistance(previewTargetPoint);
+		previewTargetPoint.transform.position = previewPoint;
+		previewTargetPoint.AutoScalePointByDistance();
 	}
 
 	private void ChangeLineType(MeasurePoint.Shape shape)
@@ -233,21 +233,13 @@ public class MeasuringLine : Interactable
 		var closestPointDistance = float.MaxValue;
 		for (int i = 0; i < linePoints.Count; i++)
 		{
-			var point = linePoints[i].transform;
-			var pointDistance = AutoScalePointByDistance(point);
+			var point = linePoints[i];
+			var pointDistance = point.AutoScalePointByDistance();
 
 			if (pointDistance < closestPointDistance)
 				closestPointDistance = pointDistance;
 		}
 		lineRenderer.startWidth = lineRenderer.endWidth = lineWidth * closestPointDistance;
-	}
-
-	private float AutoScalePointByDistance(Transform point)
-	{
-		var cameraDistanceToPoint = Vector3.Distance(point.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
-		point.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
-
-		return cameraDistanceToPoint;
 	}
 
 	private void UpdateLinePositions()
