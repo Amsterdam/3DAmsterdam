@@ -32,6 +32,9 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     private int indexOffset = -2;
 
     [SerializeField]
+    private float defaultOpacity = 1.0f;
+
+    [SerializeField]
     private float beforeTimeOpacity = 0.1f;
     [SerializeField]
     private float afterTimeOpacity = 0.1f;
