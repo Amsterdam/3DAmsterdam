@@ -9,17 +9,17 @@ public class ChangeOpacityByDate : MonoBehaviour
     public DateTime ObjectDateTime { get => objectDateTime; set => objectDateTime = value; }
     public Color BaseColor { get => baseColor; set => baseColor = value; }
 
-    private float opacityBefore = 0.3f;
-    private float opacityAfter = 0.8f;
+    private float opacityDefault = 1.0f;
+    private float opacityBefore = 0.5f;
+    private float opacityAfter = 1.0f;
 
     private Material material;
-
     private Color baseColor;
 
     public void ApplyBaseColor(Color color)
     {
         material = this.GetComponent<MeshRenderer>().material;
-        color.a = opacityBefore;
+        color.a = opacityDefault;
         material.color = color;
     }
 
@@ -30,8 +30,9 @@ public class ChangeOpacityByDate : MonoBehaviour
         material.color = color;
     }
 
-    internal void SetOpacityRange(float opacityBefore, float opacityAfter)
+    internal void SetOpacityRange(float opacityDefault, float opacityBefore, float opacityAfter)
     {
+        this.opacityDefault = opacityDefault;
         this.opacityBefore = opacityBefore;
         this.opacityAfter = opacityAfter;
     }

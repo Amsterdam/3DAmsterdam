@@ -149,7 +149,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     {
         //Add event to gameobject listening to date changes from timeline
         var changeOpacityByDate = newPolygon.AddComponent<ChangeOpacityByDate>();
-        changeOpacityByDate.SetOpacityRange(beforeTimeOpacity, afterTimeOpacity);
+        changeOpacityByDate.SetOpacityRange(defaultOpacity, beforeTimeOpacity, afterTimeOpacity);
         changeOpacityByDate.ApplyBaseColor(colorPalette.colors[colorIndex].color);
         changeOpacityByDate.ObjectDateTime = new DateTime(Mathf.RoundToInt(startBuildYear), 1, 1);
 #if UNITY_EDITOR
