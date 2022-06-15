@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: NewScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}
   m_Settings:
     Downsample: 1
-    AfterOpaque: 0
+    AfterOpaque: 1
     Source: 0
     NormalSamples: 1
-    Intensity: 0.5
+    Intensity: 0.24
     DirectLightingStrength: 0.25
-    Radius: 13.83
+    Radius: 7.36
     SampleCount: 4
 --- !u!114 &-1083103802268186242
 MonoBehaviour:
@@ -78,10 +78,10 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -8540687902898676516}
   - {fileID: -1083103802268186242}
   - {fileID: 5905213883972695138}
-  m_RendererFeatureMap: dc9c3f529a6179897e09ee92d40af8f062b4e584bd88f351
+  - {fileID: -8540687902898676516}
+  m_RendererFeatureMap: 7e09ee92d40af8f062b4e584bd88f351dc9c3f529a617989
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -104,13 +104,13 @@ MonoBehaviour:
   m_AssetVersion: 1
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_DefaultStencilState:
     overrideStencilState: 0
-    stencilReference: 0
+    stencilReference: 1
     stencilCompareFunction: 8
     passOperation: 2
     failOperation: 0
