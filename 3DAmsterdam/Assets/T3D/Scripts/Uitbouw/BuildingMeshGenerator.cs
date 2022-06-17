@@ -20,6 +20,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         //public Vector3[] RelativeBuildingCorners { get; private set; }
         public Vector3[] AbsoluteBuildingCorners { get; private set; }
+        public Plane[] RoofEdgePlanes { get; private set; }
+        private float roofEdgeYTolerance = 0.1f;
 
         public bool BuildingDataIsProcessed { get; private set; } = false;
 
@@ -47,7 +49,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-        {            
+        {
             var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
             transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
@@ -58,12 +60,39 @@ namespace Netherlands3D.T3D.Uitbouw
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
             HeightLevel = BuildingCenter.y + col.bounds.extents.y;
 
+            RoofEdgePlanes = ProcessRoofEdges(buildingMesh);
+
             BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
             BuildingDataIsProcessed = true;
         }
 
+        private Plane[] ProcessRoofEdges(Mesh buildingMesh)
+        {
+            var verts = buildingMesh.vertices;
+            List<Plane> planes = new List<Plane>();
+            List<float> yValues = new List<float>();
+
+            foreach (var vert in verts)
+            {
+                var y = vert.y;
+                if (!IsWithinAnyYToleranceRange(yValues, y, roofEdgeYTolerance))
+                {
+                    yValues.Add(y);
+                    planes.Add(new Plane(Vector3.up, y));
+                }
+            }
+
+            return planes.ToArray();
+        }
+
+        private static bool IsWithinAnyYToleranceRange(List<float> yValues, float y, float tolerance)
+        {
+            var index = yValues.FindIndex(num => Mathf.Abs(num - y) < tolerance);
+            return index != -1;
+        }
+
         private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
-        {            
+        {
             Area = args.TotalArea;
             StartCoroutine(ProcessCorners(args.Outline));
         }
@@ -119,7 +148,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         if (existingVertIndex == -1) //vert not found, add this vert
                         {
                             vertices.Add(sourceVerts[sourceTriangles[i + j]]);
-                           // uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
+                            // uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
                             newTriIndex = vertices.Count - 1;
                             usedVerts.Add(sourceTriangles[i + j]);
                         }
@@ -137,7 +166,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Mesh mesh = new Mesh();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
-          //  mesh.uv = uvs.ToArray();
+            //  mesh.uv = uvs.ToArray();
             mesh.RecalculateNormals();
             return mesh;
         }
