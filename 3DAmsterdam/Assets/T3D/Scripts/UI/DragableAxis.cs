@@ -21,9 +21,12 @@ namespace Netherlands3D.T3D.Uitbouw
         private UitbouwBase uitbouw;
         private Vector3 planeProjectedOffset;
         private Vector3 axisProjectedOffset;
+        private float heightOffset;
 
         public Vector3 PlanarDeltaPosition { get; private set; }
         public Vector3 LateralDeltaPosition { get; private set; }
+        public float HeightDeltaPosition { get; private set; }
+        private const float heigtSpeedMultiplier = 0.5f;
         public bool IsDragging { get; private set; }
 
         [SerializeField]
@@ -101,6 +104,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
                 planeProjectedOffset = Vector3.zero;
                 PlanarDeltaPosition = Vector3.zero;
+
+                heightOffset = 0;
+                HeightDeltaPosition = 0;
             }
         }
 
@@ -114,8 +120,11 @@ namespace Netherlands3D.T3D.Uitbouw
             Vector3 aimedPosition = GetPointerPositionInWorld();
             var axisPorjectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right);
             var planeProjectedPoint = uitbouw.GroundPlane.ClosestPointOnPlane(aimedPosition);
+
             axisProjectedOffset = axisPorjectedPoint;
             planeProjectedOffset = planeProjectedPoint - transform.position;
+
+            heightOffset = Input.mousePosition.y;
         }
 
         private void CalculateDeltaPosition()
@@ -125,6 +134,10 @@ namespace Netherlands3D.T3D.Uitbouw
             var planeProjectedPoint = uitbouw.GroundPlane.ClosestPointOnPlane(aimedPosition);
             PlanarDeltaPosition = planeProjectedPoint - planeProjectedOffset - transform.position;
             LateralDeltaPosition = axisProjectedPoint - axisProjectedOffset - transform.position;
+
+            var dist = Vector3.Distance(transform.position, ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position);
+            HeightDeltaPosition = (Input.mousePosition.y - heightOffset) * heigtSpeedMultiplier * (1/dist);
+            heightOffset = Input.mousePosition.y;
         }
 
         private void SetHighlight(InteractableState status) //0: normal, 1: hover, 2: selected

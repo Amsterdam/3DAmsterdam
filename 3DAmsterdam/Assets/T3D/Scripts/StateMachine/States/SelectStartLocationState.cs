@@ -79,7 +79,7 @@ public class SelectStartLocationState : State
         ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowPlanarMovement(false); //disable movement and measuring lines
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
         RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
         RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = true;
@@ -94,7 +94,7 @@ public class SelectStartLocationState : State
         building.transform.position -= Vector3.up * 0.001f; //reset position 
         building.SelectedWall.AllowSelection = false;
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true);
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowPlanarMovement(true);
         RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = false;
         Destroy(instructionsTag.gameObject);
     }

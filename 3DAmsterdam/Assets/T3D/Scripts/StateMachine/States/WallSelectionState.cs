@@ -71,7 +71,7 @@ public class WallSelectionState : State
 
         if (RestrictionChecker.ActiveUitbouw)
         {
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
+            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowPlanarMovement(false); //disable movement and measuring lines
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
             RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
         }
@@ -90,7 +90,7 @@ public class WallSelectionState : State
             //re-enable uitbouw that was previously placed
             RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); //disable rotation
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
+            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowPlanarMovement(true);
             if (building.SelectedWall.WallChanged)
             {
                 RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);

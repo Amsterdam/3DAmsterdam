@@ -11,7 +11,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwTransformGizmoButtons : WorldPointFollower
     {
         [SerializeField]
-        private GizmoDragButton moveToggle, rotateToggle, measureToggle;
+        private GizmoDragButton moveToggle, rotateToggle, measureToggle, moveHeightToggle;
         private UitbouwTransformGizmo gizmo;
 
         //public bool MoveModeSelected => moveToggle.isOn;
@@ -23,12 +23,13 @@ namespace Netherlands3D.T3D.Uitbouw
             gameObject.SetActive(true);
         }
 
-        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true)
+        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true, bool allowHeightMovement = true)
         {
             gameObject.SetActive(active);
             moveToggle.transform.parent.gameObject.SetActive(allowMove);
             rotateToggle.transform.parent.gameObject.SetActive(allowRotate);
             measureToggle.transform.parent.gameObject.SetActive(allowMeasure);
+            moveHeightToggle.transform.parent.gameObject.SetActive(allowHeightMovement);
         }
 
         public void SubscribeListeners(UitbouwTransformGizmo rotateGizmo)
@@ -37,6 +38,7 @@ namespace Netherlands3D.T3D.Uitbouw
             moveToggle.Toggle.onValueChanged.AddListener(OnMoveToggleValueChanged);
             rotateToggle.Toggle.onValueChanged.AddListener(OnRotateToggleValueChanged);
             measureToggle.Toggle.onValueChanged.AddListener(OnMeasureToggleValueChanged);
+            moveHeightToggle.Toggle.onValueChanged.AddListener(OnMoveHeightToggleValueChanged);
         }
 
         private void OnMoveToggleValueChanged(bool isOn)
@@ -55,6 +57,12 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (isOn)
                 gizmo.SetMode(GizmoMode.Measure);
+        }
+
+        private void OnMoveHeightToggleValueChanged(bool isOn)
+        {
+            if (isOn)
+                gizmo.SetMode(GizmoMode.MoveHeight);
         }
     }
 }

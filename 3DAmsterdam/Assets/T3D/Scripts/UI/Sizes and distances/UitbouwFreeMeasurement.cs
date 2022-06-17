@@ -121,7 +121,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
                 var startPoint = validStart ? firstPoint : line.LinePoints[0];
                 var endPoint = validEnd ? hoverPoint : line.LinePoints[1];
 
-                measureLines[measureLines.Count - 1] = new MeasureLine(startPoint, endPoint, validStart, validEnd); ; //set the end point of the last line in the list
+                measureLines[measureLines.Count - 1] = new MeasureLine(startPoint, endPoint, validStart, validEnd); //set the end point of the last line in the list
 
                 line.SetDistanceLabelInteractable(validStart && validEnd);
 

@@ -157,7 +157,7 @@ public class HandleButtonsT3D : MonoBehaviour
     //called by the UI button events in the inspector
     public void AllowUitbouwMovement(bool enable)
     {
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(enable);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowPlanarMovement(enable);
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(enable);
     }
 

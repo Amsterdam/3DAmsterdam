@@ -12,6 +12,9 @@ namespace Netherlands3D.T3D.Uitbouw
         private bool allowDragOnMouseUp = false; //needed to avoid inadvertently dragging when placing the uitbouw in the first state.
         public bool AllowDrag { get; private set; } = false;
 
+        //public bool AllowHeightDrag { get; private set; } = false;
+        public float HeightOffset { get; set; }
+
         private void Awake()
         {
             uitbouw = GetComponent<UitbouwBase>();
@@ -19,7 +22,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            SetAllowMovement(AllowDrag);
+            SetAllowPlanarMovement(AllowDrag);
         }
 
         private void Update()
@@ -32,7 +35,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
             {
-                ProcessUserInput();
+                ProcessPlanarMoveUserInput();
+            }
+            else if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.MoveHeight)
+            {
+                ProcessHeightMoveUserInput();
             }
 
             ProcessMovementLimits();
@@ -53,7 +60,7 @@ namespace Netherlands3D.T3D.Uitbouw
             SnapToGround(uitbouw.ActiveBuilding);
         }
 
-        private void ProcessUserInput()
+        private void ProcessPlanarMoveUserInput()
         {
             foreach (var axis in uitbouw.UserMovementAxes) //drag input
             {
@@ -61,6 +68,14 @@ namespace Netherlands3D.T3D.Uitbouw
                     transform.position += axis.LateralDeltaPosition;
                 else
                     transform.position += axis.PlanarDeltaPosition;
+            }
+        }
+
+        private void ProcessHeightMoveUserInput()
+        {
+            foreach (var axis in uitbouw.UserMovementAxes) //drag input
+            {
+                HeightOffset += axis.HeightDeltaPosition;
             }
         }
 
@@ -87,7 +102,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void SnapToGround(BuildingMeshGenerator building)
         {
-            transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
+            transform.position = new Vector3(transform.position.x, building.GroundLevel + HeightOffset /*+ Height / 2*/, transform.position.z);
         }
 
         private void LimitPositionOnWall()
@@ -135,13 +150,13 @@ namespace Netherlands3D.T3D.Uitbouw
             SnapToGround(uitbouw.ActiveBuilding);
         }
 
-        public virtual void SetAllowMovement(bool allowed)
+        public void SetAllowPlanarMovement(bool allowed)
         {
             //if a mouse button is down when setting AllowDrag, it should not automatically enter drag mode, because this can cause the uitbouw to jump position.
             //instead, wait until the mouse button is released to set the AllowDrag (in Update())
             if (!Input.GetMouseButton(0))
             {
-                AllowDrag = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode; 
+                AllowDrag = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
             }
             else
             {
@@ -155,8 +170,18 @@ namespace Netherlands3D.T3D.Uitbouw
             var freeMeasuring = GetComponent<UitbouwFreeMeasurement>();
             freeMeasuring.DrawDistanceActive = allowed && !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
 
+            //if (allowed && AllowHeightDrag)
+            //    SetAllowHeightMovement(false);
+
             //userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
             //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
         }
+
+        //public void SetAllowHeightMovement(bool allowed)
+        //{
+        //    AllowHeightDrag = allowed;
+        //    if (allowed && AllowDrag)
+        //        SetAllowPlanarMovement(false);
+        //}
     }
 }
