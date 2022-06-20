@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 5407043954321932671}
   - component: {fileID: 6749726174160187187}
   - component: {fileID: 6759356009430603571}
+  - component: {fileID: 478159985494366173}
   m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -706,6 +707,22 @@ MonoBehaviour:
   pointScale: 0.015
   limitVerticesToGroundPlane: 0
   vertexLimitTolerance: 0.1
+--- !u!114 &478159985494366173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772c5df69630544b1a5d1c750435b8ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  numberOfLines: 2
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0

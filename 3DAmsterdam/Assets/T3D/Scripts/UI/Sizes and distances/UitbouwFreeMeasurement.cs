@@ -92,7 +92,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //var planeIntersect = RestrictionChecker.ActivePerceel.PerceelPlane.Raycast(ray, out float enter);
         var testPlane = RestrictionChecker.ActivePerceel.PerceelPlane;
-        testPlane.distance *= -1; //hack why is this needed???????
+        testPlane.distance *= -1; // needed because distance is defined from plane to origin instead of from origin to plane
         var planeIntersect = testPlane.Raycast(ray, out float enter);
 
         bool isValidMeshPoint = IsHoveringOverValidPoint(out var hoverPoint);
@@ -121,7 +121,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
                 var startPoint = validStart ? firstPoint : line.LinePoints[0];
                 var endPoint = validEnd ? hoverPoint : line.LinePoints[1];
 
-                measureLines[measureLines.Count - 1] = new MeasureLine(startPoint, endPoint, validStart, validEnd); ; //set the end point of the last line in the list
+                measureLines[measureLines.Count - 1] = new MeasureLine(startPoint, endPoint, validStart, validEnd); //set the end point of the last line in the list
 
                 line.SetDistanceLabelInteractable(validStart && validEnd);
 

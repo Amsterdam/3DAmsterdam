@@ -12,6 +12,7 @@ namespace Netherlands3D.T3D.Uitbouw
         Move,
         Rotate,
         Measure,
+        MoveHeight
     }
 
     public class UitbouwTransformGizmo : DragableAxis
@@ -22,7 +23,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private SpriteRenderer spriteRenderer;
         [SerializeField]
-        private Sprite moveSprite, rotateSprite, measureSprite;
+        private Sprite moveSprite, rotateSprite, measureSprite, moveHeightSprite;
 
         public UitbouwTransformGizmoButtons GizmoButtons { get; private set; }
 
@@ -43,7 +44,7 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.localScale = new Vector3(d, d, d);
         }
 
-        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true)
+        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true, bool allowMeasure = true, bool allowHeightMovement = true)
         {
             if (!active)
                 SetMode(GizmoMode.None);
@@ -56,7 +57,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 GizmoButtons.SubscribeListeners(this);
             }
 
-            GizmoButtons.SetActive(active, allowMove, allowRotate, allowMeasure);
+            GizmoButtons.SetActive(active, allowMove, allowRotate, allowMeasure, allowHeightMovement);
             gameObject.SetActive(active);
         }
 
@@ -68,12 +69,21 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void SetImage(GizmoMode mode)
         {
-            if (mode == GizmoMode.Move)
-                spriteRenderer.sprite = moveSprite;
-            else if (mode == GizmoMode.Rotate)
-                spriteRenderer.sprite = rotateSprite;
-            else
-                spriteRenderer.sprite = measureSprite;
+            switch (mode)
+            {
+                case GizmoMode.Move:
+                    spriteRenderer.sprite = moveSprite;
+                    break;
+                case GizmoMode.Rotate:
+                    spriteRenderer.sprite = rotateSprite;
+                    break;
+                case GizmoMode.Measure:
+                    spriteRenderer.sprite = measureSprite;
+                    break;
+                case GizmoMode.MoveHeight:
+                    spriteRenderer.sprite = moveHeightSprite;
+                    break;
+            }
         }
     }
 }
