@@ -78,7 +78,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (!IsWithinAnyYToleranceRange(yValues, y, roofEdgeYTolerance))
                 {
                     yValues.Add(y);
-                    planes.Add(new Plane(Vector3.up, y));
+                    planes.Add(new Plane(-Vector3.up, y));
                 }
             }
 

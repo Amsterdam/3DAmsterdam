@@ -258,7 +258,7 @@ public class BuildingMeasuring : Interactable
                 distanceLabel.DistanceInputOverride += DistanceLabel_DistanceInputOverride;
                 distanceLabel.DeleteButtonPressed += DistanceLabel_DeleteButtonPressed;
 
-                distanceLabel.EnableDeleteButton(!ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall);
+                //distanceLabel.EnableDeleteButton(!ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall && RestrictionChecker.ActiveUitbouw.Gizmo.Mode != GizmoMode.MoveHeight); //todo: move this elsewhere
             }
 
 
@@ -299,5 +299,11 @@ public class BuildingMeasuring : Interactable
     {
         if (distanceLabel)
             distanceLabel.SetInteractable(interactable);
+    }
+
+    public void EnableDeleteButton(bool enabled)
+    {
+        if (distanceLabel)
+            distanceLabel.EnableDeleteButton(enabled);
     }
 }

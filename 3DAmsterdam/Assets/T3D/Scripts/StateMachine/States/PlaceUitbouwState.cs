@@ -21,7 +21,7 @@ public class PlaceUitbouwState : State
         RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
         if (!uitbouwMovement.AllowDrag)
         {
-            uitbouwMovement.SetAllowPlanarMovement(true);
+            uitbouwMovement.SetAllowMovement(true);
             uitbouwRotation.SetAllowRotation(true);
         }
     }
@@ -31,7 +31,7 @@ public class PlaceUitbouwState : State
         base.StateCompletedAction();
         RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
         RestrictionChecker.ActiveUitbouw.UpdateDimensions(); // force update the dimensions since these may not have been set yet when reloading and leaving this state
-        uitbouwMovement.SetAllowPlanarMovement(false);
+        uitbouwMovement.SetAllowMovement(false);
         uitbouwRotation.SetAllowRotation(false);
     }
 }

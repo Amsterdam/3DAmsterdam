@@ -14,6 +14,19 @@ public class UitbouwHeightMeasurement : DistanceMeasurement
     {
         base.Awake();
         uitbouw = GetComponent<UitbouwBase>();
+        foreach (var line in lines)
+        {
+            foreach (var point in line.LinePoints)
+            {
+                point.ChangeShape(MeasurePoint.Shape.HEIGHT);
+            }
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        DrawDistanceActive = uitbouw.Gizmo.Mode == GizmoMode.MoveHeight;
     }
 
     protected override void DrawLines()
@@ -29,14 +42,15 @@ public class UitbouwHeightMeasurement : DistanceMeasurement
 
     private bool TryDrawLine(int lineIndex, Vector3 point, Ray ray)
     {
-        bool cornerFound = GetNextRoofEdgePlane(ray, out _, out var intersectionPoint);
-        lines[lineIndex].gameObject.SetActive(cornerFound);
-        if (cornerFound)
+        bool planeFound = GetNextRoofEdgePlane(ray, out _, out var intersectionPoint);
+        lines[lineIndex].gameObject.SetActive(planeFound);
+        lines[lineIndex].EnableDeleteButton(false); //todo: move so this is only called once
+        if (planeFound)
         {
             lines[lineIndex].SetLinePosition(point, intersectionPoint);
         }
 
-        return cornerFound;
+        return planeFound;
     }
 
     private bool GetNextRoofEdgePlane(Ray ray, out Plane plane, out Vector3 intersectionPoint)
@@ -48,7 +62,7 @@ public class UitbouwHeightMeasurement : DistanceMeasurement
         intersectionPoint = new Vector3();
         float previousEnter = Mathf.Infinity;
 
-        foreach(var roofEdge in building.RoofEdgePlanes)
+        foreach (var roofEdge in building.RoofEdgePlanes)
         {
             var cast = roofEdge.Raycast(ray, out var enter);
             if (cast)
@@ -58,7 +72,7 @@ public class UitbouwHeightMeasurement : DistanceMeasurement
                 {
                     previousEnter = enter;
                     plane = roofEdge;
-                    intersectionPoint = ray.origin + ray.direction * enter;
+                    intersectionPoint = plane.ClosestPointOnPlane(ray.origin);
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            SetAllowPlanarMovement(AllowDrag);
+            SetAllowMovement(AllowDrag);
         }
 
         private void Update()
@@ -150,7 +150,7 @@ namespace Netherlands3D.T3D.Uitbouw
             SnapToGround(uitbouw.ActiveBuilding);
         }
 
-        public void SetAllowPlanarMovement(bool allowed)
+        public void SetAllowMovement(bool allowed)
         {
             //if a mouse button is down when setting AllowDrag, it should not automatically enter drag mode, because this can cause the uitbouw to jump position.
             //instead, wait until the mouse button is released to set the AllowDrag (in Update())
@@ -177,11 +177,10 @@ namespace Netherlands3D.T3D.Uitbouw
             //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
         }
 
-        //public void SetAllowHeightMovement(bool allowed)
-        //{
-        //    AllowHeightDrag = allowed;
-        //    if (allowed && AllowDrag)
-        //        SetAllowPlanarMovement(false);
-        //}
+        public void SetAllowHeightMovement(bool allowed)
+        {
+            var heightMeasuring = GetComponent<UitbouwHeightMeasurement>();
+            heightMeasuring.DrawDistanceActive = allowed;
+        }
     }
 }
