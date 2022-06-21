@@ -66,10 +66,12 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             LayerMask boundaryFeaturesMask = LayerMask.GetMask("BoundaryFeatures");
 
             //print(ObjectClickHandler.GetClickOnObject(boundaryFeaturesMask));
-            var click = ObjectClickHandler.GetClickOnObject(true, out var collider, boundaryFeaturesMask);
+            var click = ObjectClickHandler.GetClickOnObject(true, out var hit, boundaryFeaturesMask);
             if (click && !EventSystem.current.IsPointerOverGameObject())
             {
-                var clickedBoundaryFeature = collider?.GetComponentInParent<BoundaryFeature>();
+                BoundaryFeature clickedBoundaryFeature = null;
+                if (hit.collider != null)
+                    clickedBoundaryFeature = hit.collider.GetComponentInParent<BoundaryFeature>();
                 if (ActiveFeature)
                 {
                     DeselectFeature();

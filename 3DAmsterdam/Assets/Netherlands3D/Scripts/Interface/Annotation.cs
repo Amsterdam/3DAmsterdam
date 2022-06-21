@@ -1,6 +1,7 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Help;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.ObjectInteraction;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
-	public class Annotation : PlaceOnClick, IPointerClickHandler
+    public class Annotation : Interactable, IPointerClickHandler
     {
         [SerializeField]
         private Image balloon;
@@ -25,7 +26,8 @@ namespace Netherlands3D.Interface
         private Transform originalParent;
 
         private bool allowEdit = true;
-        public bool AllowEdit {
+        public bool AllowEdit
+        {
             set
             {
                 allowEdit = value;
@@ -37,39 +39,47 @@ namespace Netherlands3D.Interface
             }
         }
 
-        public string BodyText {
-            get{
+        public string BodyText
+        {
+            get
+            {
                 return balloonText.text;
             }
-            set{
+            set
+            {
                 balloonText.text = value;
             }
         }
 
-		public override void Start()
-		{
-			base.Start();
+        //public override void Start()
+        //{
+        //	//base.Start();
 
-            if (waitingForClick)
-            {
-			    MoveOnTopOfUI();
-                ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
-            }
+        //          if (waitingForClick)
+        //          {
+        //	    MoveOnTopOfUI();
+        //              //ServiceLocator.GetService<HelpMessage>().Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
+        //          }
+        //      }
+
+        private void Start()
+        {
+            StartEditingText();
         }
 
         /// <summary>
         /// We move this object on top of the UI so we can start dragging it from UI panels
         /// </summary>
 		private void MoveOnTopOfUI()
-		{
-			originalParent = transform.parent;
-			transform.SetParent(originalParent.parent);
-			transform.SetAsLastSibling();
-		}
-
-		public void OnPointerClick(PointerEventData eventData)
         {
-            if (waitingForClick) return;
+            originalParent = transform.parent;
+            transform.SetParent(originalParent.parent);
+            transform.SetAsLastSibling();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            //if (waitingForClick) return;
 
             if (Time.time - lastClickTime < doubleClickTime)
             {
@@ -79,23 +89,23 @@ namespace Netherlands3D.Interface
             lastClickTime = Time.time;
         }
 
-        protected override void Placed()
-		{
-			base.Placed();
-            //After we placed the annotation, start editing it, so the user can immediatly change its content
-            StartEditingText();
-            ServiceLocator.GetService<PropertiesPanel>().OpenAnnotations();
+        //      protected override void Placed()
+        //{
+        //	base.Placed();
+        //          //After we placed the annotation, start editing it, so the user can immediatly change its content
+        //          StartEditingText();
+        //          //ServiceLocator.GetService<PropertiesPanel>().OpenAnnotations();
 
-            //Move back into orignal ordered parent
-            transform.SetParent(originalParent);
-        }
+        //          //Move back into orignal ordered parent
+        //          transform.SetParent(originalParent);
+        //      }
 
-		/// <summary>
-		/// Start editing the annotation body text
-		/// </summary>
-		public void StartEditingText()
+        /// <summary>
+        /// Start editing the annotation body text
+        /// </summary>
+        public void StartEditingText()
         {
-            if (waitingForClick || !allowEdit) return;
+            //if (waitingForClick || !allowEdit) return;
 
             editInputField.gameObject.SetActive(true);
             editInputField.text = BodyText;
@@ -110,13 +120,13 @@ namespace Netherlands3D.Interface
         public void ApplyText()
         {
             BodyText = editInputField.text;
-            interfaceLayer.RenameLayer(BodyText);
+            //interfaceLayer.RenameLayer(BodyText);
         }
 
-		/// <summary>
-		/// Hides the editor, and applies the last text inputs to the balloon and layer name
-		/// </summary>
-		public void StopEditingText()
+        /// <summary>
+        /// Hides the editor, and applies the last text inputs to the balloon and layer name
+        /// </summary>
+        public void StopEditingText()
         {
             ApplyText();
             editInputField.gameObject.SetActive(false);

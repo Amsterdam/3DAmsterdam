@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface.Layers
             if (layerType == LayerType.ANNOTATION)
             {
                 Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
+                //ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
                 annotation.StartEditingText();
             }
 
