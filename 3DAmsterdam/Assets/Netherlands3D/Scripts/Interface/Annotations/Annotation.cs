@@ -2,6 +2,7 @@
 using Netherlands3D.Help;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.ObjectInteraction;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,10 +21,15 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private InputField editInputField;
 
+        [SerializeField]
+        private BuildingMeasuring linePrefab;
+        private BuildingMeasuring line;
+
         private float lastClickTime = 0;
         private const float doubleClickTime = 0.2f;
 
         private Transform originalParent;
+        private WorldPointFollower worldPointFollower;
 
         private bool allowEdit = true;
         public bool AllowEdit
@@ -62,15 +68,34 @@ namespace Netherlands3D.Interface
         //          }
         //      }
 
+        private void Awake()
+        {
+            worldPointFollower = GetComponent<WorldPointFollower>();
+        }
+
         private void Start()
         {
+            DrawLine();
             StartEditingText();
+        }
+
+        private void DrawLine()
+        {
+            line = Instantiate(linePrefab);
+            line.LinePoints[0].transform.position = worldPointFollower.WorldPosition;
+            var cam = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera;
+            var screenPosition = cam.WorldToScreenPoint(worldPointFollower.WorldPosition);
+            var distanceFromCamera = Vector3.Distance(cam.transform.position, worldPointFollower.WorldPosition);
+            var offsetScreenPosition = (Vector2)screenPosition + Vector2.right * 50 + Vector2.up * 50;
+            var offsetPosition = cam.ScreenToWorldPoint(new Vector3(offsetScreenPosition.x, offsetScreenPosition.y, distanceFromCamera));
+            worldPointFollower.AlignWithWorldPosition(offsetPosition);
+            line.LinePoints[1].transform.position = worldPointFollower.WorldPosition;
         }
 
         /// <summary>
         /// We move this object on top of the UI so we can start dragging it from UI panels
         /// </summary>
-		private void MoveOnTopOfUI()
+        private void MoveOnTopOfUI()
         {
             originalParent = transform.parent;
             transform.SetParent(originalParent.parent);

@@ -56,11 +56,12 @@ public class ObjectClickHandler : MonoBehaviour
     /// </summary>
     /// <param name="layerMask">The layermask to filter the click for</param>
     /// <returns></returns>
-    public static bool GetClickOnObject(bool allowClickOnNothing, out RaycastHit hit, int layerMask = Physics.DefaultRaycastLayers)
+    public static bool GetClickOnObject(bool allowClickOnNothing, out RaycastHit hit, int layerMask = Physics.DefaultRaycastLayers, bool uiBlocks = true)
     {
         hit = new RaycastHit();
 
-        if (OverUI && layerMask == LayerMask.NameToLayer("UI")) //compensate for UI not having physics colliders
+        //var containsUI = layerMask == (layerMask | (1 << LayerMask.NameToLayer("UI")));
+        if (uiBlocks && OverUI) //compensate for UI not having physics colliders
         {
             //print("over ui");
             return false;
@@ -106,9 +107,9 @@ public class ObjectClickHandler : MonoBehaviour
         return false;
     }
 
-    public static bool GetClickOnObject(bool allowClickOnNothing, int layerMask = Physics.DefaultRaycastLayers)
+    public static bool GetClickOnObject(bool allowClickOnNothing, int layerMask = Physics.DefaultRaycastLayers, bool uiBlocks = true)
     {
-        return GetClickOnObject(allowClickOnNothing, out _, layerMask);
+        return GetClickOnObject(allowClickOnNothing, out _, layerMask, uiBlocks);
     }
 
     public static bool GetDrag(out Collider draggedCollider, int layerMask = Physics.DefaultRaycastLayers)

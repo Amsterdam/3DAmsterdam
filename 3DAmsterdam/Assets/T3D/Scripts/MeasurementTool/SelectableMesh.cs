@@ -97,7 +97,7 @@ public class SelectableMesh : MonoBehaviour
     private void ProcessUserInput()
     {
         var ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        var cast = Physics.Raycast(ray, out var hitinfo, Mathf.Infinity, LayerMask.GetMask("BoundaryFeatures"));
+        var cast = Physics.Raycast(ray, out var hitinfo, Mathf.Infinity, LayerMask.GetMask("SelectionPoints"));
         if (cast)
         {
             var point = hitinfo.collider.GetComponent<MeasurePoint>();
