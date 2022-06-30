@@ -68,7 +68,7 @@ namespace Netherlands3D
                 if (string.IsNullOrEmpty(_T3DAzureFunctionURL))
                 {
                     var url = Application.absoluteURL;
-                    _T3DAzureFunctionURL = "https://t3dbackend.azurewebsites.net/"; //default
+                    _T3DAzureFunctionURL = "https://t3d-o-functions.azurewebsites.net/"; //default
 
                     if (string.IsNullOrEmpty(url)) return _T3DAzureFunctionURL;
                     if (url.StartsWith("http://localhost")) return _T3DAzureFunctionURL;

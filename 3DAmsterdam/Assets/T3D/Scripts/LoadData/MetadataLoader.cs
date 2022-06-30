@@ -98,6 +98,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BimCityJsonEventHandler(string cityJson);
         public event BimCityJsonEventHandler BimCityJsonReceived;
 
+        public delegate void CityJsonBagEventHandler(string cityJson);
+        public event CityJsonBagEventHandler CityJsonBagReceived;
+
         [SerializeField]
         private BuildingMeshGenerator building;
         [SerializeField]
@@ -225,6 +228,27 @@ namespace Netherlands3D.T3D.Uitbouw
             string cityjson = File.ReadAllText(filepath);
 
             BimCityJsonReceived?.Invoke(cityjson);
+        }
+
+        public IEnumerator GetCityJsonBag(string id)
+        {
+            var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&RESOURCEID=NL.IMBAG.Pand.{id}&OUTPUTFORMAT=application%2Fjson";
+            var uwr = UnityWebRequest.Get(url);
+
+            using (uwr)
+            {
+                yield return uwr.SendWebRequest();
+                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+                {
+                }
+                else
+                {
+                    var cityjson = uwr.downloadHandler.text;
+                    Debug.Log(cityjson);
+                    CityJsonBagReceived?.Invoke(cityjson);
+                }
+
+            }
         }
 
         void ProcessPerceelData(JSONNode jsonData)

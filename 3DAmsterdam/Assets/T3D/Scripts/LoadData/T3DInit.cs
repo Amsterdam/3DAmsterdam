@@ -35,6 +35,7 @@ public class T3DInit : MonoBehaviour, IUniqueService
     public bool IsEditMode { get; private set; } = true;
 
     public TileVisualizer TileVisualizer;
+    public CityJsonBagVisualizer CityJsonBagVisualizer;
 
     public HTMLInitSaveData HTMLData = null;
 
@@ -71,7 +72,9 @@ public class T3DInit : MonoBehaviour, IUniqueService
         Config.activeConfiguration.RelativeCenterRD = new Vector2RD(HTMLData.RDPosition.x, HTMLData.RDPosition.y);
 
         GotoPosition(HTMLData.RDPosition);
-        StartCoroutine(TileVisualizer.LoadTile(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));
+        //StartCoroutine(TileVisualizer.LoadTile(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));
+
+        StartCoroutine(ServiceLocator.GetService<MetadataLoader>().GetCityJsonBag(HTMLData.BagId));
 
         ServiceLocator.GetService<MetadataLoader>().RequestBuildingData(HTMLData.RDPosition, HTMLData.BagId);
     }
