@@ -12,13 +12,24 @@ public class AnnotationMarker : MeasurePoint
 
     public int Id { get; private set; }
 
-    public void Initialize(int id)
+    void Awake()
     {
-        Id = id;
+        //SetId(id);
 
         idLabel = ServiceLocator.GetService<CoordinateNumbers>().CreateGenericWorldPointFollower(idMarkerPrefab);
-        idLabel.GetComponentInChildren<Text>().text = id.ToString();
         idLabel.AlignWithWorldPosition(transform.position);
         SetSelectable(true);
+    }
+
+    public void SetId(int id)
+    {
+        Id = id;
+        idLabel.GetComponentInChildren<Text>().text = (id + 1).ToString();
+    }
+
+    private void OnDestroy()
+    {
+        if (idLabel)
+            Destroy(idLabel.gameObject);
     }
 }
