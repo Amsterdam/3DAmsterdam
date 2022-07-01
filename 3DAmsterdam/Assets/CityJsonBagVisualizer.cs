@@ -38,20 +38,21 @@ public class CityJsonBagVisualizer : MonoBehaviour
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
-            //var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            AddMesh(mesh);
 
-            var meshes = meshmaker.CreateMeshes(cityJsonModel, co.Value);
+            //var meshes = meshmaker.CreateMeshes(cityJsonModel, co.Value);
 
-            for(int i=0;i<meshes.Length; i++)
-            {
-                AddMeshGameObject(key + i.ToString(), meshes[0]);
-            }
+            //for(int i=0;i<meshes.Length; i++)
+            //{
+            //    AddMeshGameObject(key + i.ToString(), meshes[i]);
+            //}
 
-            //AddMesh(mesh);
+
             //AddMeshGameObject(key, mesh);
         }
 
-        
+
     }
 
     void AddMesh(Mesh newMesh)

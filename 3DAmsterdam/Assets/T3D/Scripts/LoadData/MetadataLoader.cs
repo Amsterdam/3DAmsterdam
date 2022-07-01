@@ -232,23 +232,27 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public IEnumerator GetCityJsonBag(string id)
         {
-            var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&RESOURCEID=NL.IMBAG.Pand.{id}&OUTPUTFORMAT=application%2Fjson";
-            var uwr = UnityWebRequest.Get(url);
+            var cityjson = File.ReadAllText(@"E:\cityjson\NL.IMBAG.Pand.0518100000226302.json");
+            CityJsonBagReceived?.Invoke(cityjson);
+            yield return null;
 
-            using (uwr)
-            {
-                yield return uwr.SendWebRequest();
-                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
-                {
-                }
-                else
-                {
-                    var cityjson = uwr.downloadHandler.text;
-                    Debug.Log(cityjson);
-                    CityJsonBagReceived?.Invoke(cityjson);
-                }
+            //var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&RESOURCEID=NL.IMBAG.Pand.{id}&OUTPUTFORMAT=application%2Fjson";
+            //var uwr = UnityWebRequest.Get(url);
 
-            }
+            //using (uwr)
+            //{
+            //    yield return uwr.SendWebRequest();
+            //    if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+            //    {
+            //    }
+            //    else
+            //    {
+            //        var cityjson = uwr.downloadHandler.text;
+            //        Debug.Log(cityjson);
+            //        CityJsonBagReceived?.Invoke(cityjson);
+            //    }
+
+            //}
         }
 
         void ProcessPerceelData(JSONNode jsonData)
