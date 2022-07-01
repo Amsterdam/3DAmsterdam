@@ -4,6 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class AnnotationUISaveData : SaveDataContainer
+{
+    //public int Id; //unique id for this boundary feature
+    public string AnnotationText;
+
+    public AnnotationUISaveData(string instanceId) : base(instanceId)
+    {
+
+    }
+
+    public void SetId(string id)
+    {
+        InstanceId = id;
+    }
+}
+
 public class AnnotationUI : MonoBehaviour
 {
     [SerializeField]
@@ -12,14 +28,29 @@ public class AnnotationUI : MonoBehaviour
     [SerializeField]
     private Text numberText;
     private Annotator annotator;
+    [SerializeField]
+    private InputField inputField;
 
     public int Id { get; private set; }
     public bool IsOpen => annotationBody.gameObject.activeInHierarchy;
+
+    private AnnotationUISaveData saveData;
 
     private void Awake()
     {
         myRectTransform = GetComponent<RectTransform>();
         annotator = GetComponentInParent<Annotator>();
+        saveData = new AnnotationUISaveData("undefined");
+    }
+
+    private void OnEnable()
+    {
+        inputField.onValueChanged.AddListener(OnInputFieldValueChanged);
+    }
+
+    public void OnInputFieldValueChanged(string newText)
+    {
+        saveData.AnnotationText = newText;
     }
 
     //called by button in inspector
@@ -41,5 +72,6 @@ public class AnnotationUI : MonoBehaviour
     {
         Id = id;
         numberText.text = (id + 1).ToString();
+        saveData.SetId(numberText.text);
     }
 }

@@ -233,7 +233,7 @@ MonoBehaviour:
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 0
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
@@ -434,13 +434,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7443604260876613834}
   m_TextComponent: {fileID: 7443604260418066195}
   m_Placeholder: {fileID: 7443604260412433579}
-  m_ContentType: 0
+  m_ContentType: 4
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
-  m_LineType: 2
+  m_KeyboardType: 1
+  m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 3
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -614,6 +614,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   annotationBody: {fileID: 7443604261759035750}
   numberText: {fileID: 7443604261107472004}
+  inputField: {fileID: 7443604260876613835}
 --- !u!1 &7443604261433051586
 GameObject:
   m_ObjectHideFlags: 0

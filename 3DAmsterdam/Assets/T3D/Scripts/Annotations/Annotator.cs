@@ -51,29 +51,7 @@ public class Annotator : MonoBehaviour
 
         RecalculeteContentHeight();
         scroll.SetSelectedChild(id);
-        //scrollRect.verticalNormalizedPosition = CalculateNormalizedPosition(id);
     }
-
-    //private float CalculateNormalizedPosition(int id)
-    //{
-    //    var ann = annotationUIs[id].GetComponent<RectTransform>();
-    //    float normalizePosition = scrollRect.GetComponent<RectTransform>().anchorMin.y - ann.anchoredPosition.y;
-    //    //normalizePosition += (float)ann.transform.GetSiblingIndex() / (float)scrollRect.content.transform.childCount;
-    //    normalizePosition /= 1000f;
-    //    normalizePosition = Mathf.Clamp01(1 - normalizePosition);
-    //    scrollRect.verticalNormalizedPosition = normalizePosition;
-    //    Debug.Log(normalizePosition);
-    //    return normalizePosition;
-    //    //var height = annotationParent.sizeDelta.y;
-    //    //var pos = 0f;
-    //    //for (int i = 0; i < id; i++)
-    //    //{
-    //    //    pos += annotationUIs[i].GetComponent<RectTransform>().sizeDelta.y;
-    //    //}
-    //    //var viewportHeight = scrollRect.GetComponent<RectTransform>().sizeDelta.y;
-    //    //print(pos / viewportHeight);
-    //    //return 1 - (pos / height);
-    //}
 
     private void CreateAnnotation(Vector3 connectionPoint)
     {
