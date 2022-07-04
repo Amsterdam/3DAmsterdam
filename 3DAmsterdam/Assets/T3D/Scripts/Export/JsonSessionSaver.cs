@@ -118,6 +118,8 @@ public class JsonSessionSaver : MonoBehaviour, IUniqueService//, IDataSaver
         var url = Config.activeConfiguration.CityJSONUploadEndoint;
         var uwr = UnityWebRequest.Put(url, jsonData);
         uwr.SetRequestHeader("Content-Type", "application/json");
+        uwr.SetRequestHeader("objectId", ServiceLocator.GetService<T3DInit>().HTMLData.BagId);
+        uwr.SetRequestHeader("initiatorPersoon", SubmitPermitRequestState.UserName);
         uwr.SetRequestHeader("Authorization", "Bearer " + Config.activeConfiguration.CityJSONUploadEndpointToken);
 
         using (uwr)
