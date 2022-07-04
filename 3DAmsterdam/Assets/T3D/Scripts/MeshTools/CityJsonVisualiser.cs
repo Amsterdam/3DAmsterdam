@@ -73,7 +73,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             //var key = co.Key;
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, false);
 
             AddMesh(mesh);
             //AddMeshGameObject(key, mesh);

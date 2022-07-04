@@ -17,16 +17,16 @@ public class CityJsonMeshUtility
         public Vector3 Point;
     }
 
-    public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject)
+    public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
     {
-        List<Vector3> verts = GetVerts(cityModel);
+        List<Vector3> verts = GetVerts(cityModel, flipYZ);
         return GetMeshes(verts, cityObject).ToArray();
 
     }
 
-    public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject)
+    public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
     {
-        var meshes = CreateMeshes(cityModel, cityObject);
+        var meshes = CreateMeshes(cityModel, cityObject, flipYZ);
 
         //combine the meshes
         CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];
@@ -57,9 +57,17 @@ public class CityJsonMeshUtility
         return vertices;
     }
 
-    private List<Vector3> GetVerts(CityJsonModel cityModel)
+    private List<Vector3> GetVerts(CityJsonModel cityModel, bool flipYZ)
     {
-        return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
+        if (flipYZ)
+        {
+            return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.z, (float)o.y)).ToList();
+        }
+        else
+        {
+            return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
+        }
+        
     }
 
     private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)

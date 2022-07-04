@@ -1,13 +1,9 @@
 using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
-using System.Collections;
 using System.Collections.Generic;
 using T3D.LoadData;
-using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 public class CityJsonBagVisualizer : MonoBehaviour
 {
@@ -33,13 +29,15 @@ public class CityJsonBagVisualizer : MonoBehaviour
     {
         var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
-
+        
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
+            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, true);
             AddMesh(mesh);
+
+            ServiceLocator.GetService<MetadataLoader>().RaiseCityJsonBagLoaded(mesh);
 
             //var meshes = meshmaker.CreateMeshes(cityJsonModel, co.Value);
 

@@ -39,7 +39,27 @@ namespace Netherlands3D.T3D.Uitbouw
             ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
             ServiceLocator.GetService<MetadataLoader>().BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
 
+            ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
+        }
+
+        private void OnCityJsonBagLoaded(object source, Mesh mesh)
+        {
+            
+            //transform.position = args.TileOffset;
+            var mf = GetComponent<MeshFilter>();
+            mf.mesh = mesh;
+
+            var col = gameObject.AddComponent<MeshCollider>();
+            BuildingCenter = col.bounds.center;
+            GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+            HeightLevel = BuildingCenter.y + col.bounds.extents.y;
+
+            RoofEdgePlanes = ProcessRoofEdges(mesh);
+
+            BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
+            BuildingDataIsProcessed = true;
         }
 
         private void Loader_LoadingCompleted(bool loadSucceeded)

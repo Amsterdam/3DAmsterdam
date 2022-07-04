@@ -83,10 +83,18 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
+        
+        public delegate void CityJsonBagLoadedEventHandler(object source, Mesh mesh);
+        public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
         public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
         {
             BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
+        }
+
+        public void RaiseCityJsonBagLoaded(Mesh mesh)
+        {
+            CityJsonBagLoaded?.Invoke(this, mesh);
         }
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
@@ -232,7 +240,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public IEnumerator GetCityJsonBag(string id)
         {
-            var cityjson = File.ReadAllText(@"E:\cityjson\NL.IMBAG.Pand.0518100000226302.json");
+            //var cityjson = File.ReadAllText(@"E:\cityjson\NL.IMBAG.Pand.0518100000226302.json");
+            //var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\kubus_met_gaten.json");
+            var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\VCS\0518100000226302.json");
+
+            
             CityJsonBagReceived?.Invoke(cityjson);
             yield return null;
 
