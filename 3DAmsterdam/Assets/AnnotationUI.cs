@@ -107,4 +107,9 @@ public class AnnotationUI : MonoBehaviour
     {
         numberBackgroundImage.color = selected ? selectedColor : normalColor;
     }
+
+    private void OnDestroy()
+    {
+        saveData.DeleteSaveData();
+    }
 }

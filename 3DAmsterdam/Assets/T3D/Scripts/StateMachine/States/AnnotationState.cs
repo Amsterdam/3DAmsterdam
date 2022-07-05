@@ -119,6 +119,9 @@ public class AnnotationState : State
         annotationMarkers.Remove(marker);
         Destroy(marker.gameObject);
 
+        if (id == ActiveSelectedId)
+            ActiveSelectedId = 0;
+
         RecalculateIds();
         RecalculeteContentHeight();
     }
