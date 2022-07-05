@@ -74,8 +74,8 @@ namespace Netherlands3D.Interface.Layers
 				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
 				newCustomlayer.transform.SetParent(annotationsContainer);
 
-				if (createdByUser)
-					linkedWorldObject.GetComponent<Annotation>().PlaceUsingPointer();
+				//if (createdByUser)
+				//	linkedWorldObject.GetComponent<Annotation>().PlaceUsingPointer();
 			}
 			else if (type == LayerType.CAMERA) 
 			{

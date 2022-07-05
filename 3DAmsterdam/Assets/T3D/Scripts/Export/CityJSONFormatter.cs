@@ -32,7 +32,7 @@ public static class CityJSONFormatter
         Metadata = new JSONObject();
 
         if (convertToRD)
-            Metadata.Add("referenceSystem", "EPSG:28992");
+            Metadata.Add("referenceSystem", "urn:ogc:def:crs:EPSG::28992");
 
         RootObject["type"] = "CityJSON";
         RootObject["version"] = "1.0";

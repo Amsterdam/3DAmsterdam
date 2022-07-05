@@ -41,7 +41,9 @@ namespace T3D.Uitbouw
 
     public abstract class CityObject : MonoBehaviour
     {
-        public string Name;
+        private static int IdCounter = 0;
+
+        public string Name { get; private set; }
         public CityObjectType Type;
 
         public int Lod { get; protected set; } = 3;
@@ -57,7 +59,8 @@ namespace T3D.Uitbouw
 
         protected virtual void Start()
         {
-            Name = Guid.NewGuid().ToString();
+            IdCounter++;
+            Name = "id-" + IdCounter;
             UpdateSurfaces();
             CityJSONFormatter.AddCityObejct(this);
         }
@@ -125,6 +128,30 @@ namespace T3D.Uitbouw
 
             obj["geometry"] = new JSONArray();
             obj["geometry"].Add(GetGeometryNode());
+
+
+            obj["attributes"] = GetAnnotations();
+            return obj;
+        }
+
+        private JSONObject GetAnnotations()
+        {
+            var obj = new JSONObject();
+
+            foreach (var ann in AnnotationState.AnnotationUIs)
+            {
+                if (Name == ann.ParentCityObject)
+                {
+                    var annotation = new JSONObject();
+                    var point = new JSONArray();
+                    point.Add("x", ann.ConnectionPointRD.x);
+                    point.Add("y", ann.ConnectionPointRD.y);
+                    point.Add("z", ann.ConnectionPointRD.z);
+                    annotation.Add("location", point);
+                    annotation.Add("text", ann.Text);
+                    obj.Add("Annotation " + (ann.Id+1), annotation);
+                }
+            }
             return obj;
         }
 
@@ -132,7 +159,7 @@ namespace T3D.Uitbouw
         {
             var node = new JSONObject();
             node["type"] = "MultiSurface"; //todo support other types?
-            node["lod"] = Lod.ToString();
+            node["lod"] = Lod;
             var boundaries = new JSONArray();
             for (int i = 0; i < Surfaces.Length; i++)
             {

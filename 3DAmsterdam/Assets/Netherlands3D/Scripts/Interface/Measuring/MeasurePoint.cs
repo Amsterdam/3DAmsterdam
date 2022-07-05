@@ -56,7 +56,7 @@ public class MeasurePoint : MonoBehaviour
 
 	public void SetSelectable(bool selectable)
     {
-		var layer = selectable ? LayerMask.NameToLayer("BoundaryFeatures") : LayerMask.NameToLayer("Default");
+		var layer = selectable ? LayerMask.NameToLayer("SelectionPoints") : LayerMask.NameToLayer("Default");
 		heightIndicator.layer = layer;
 		pointIndicator.layer = layer;
 	}

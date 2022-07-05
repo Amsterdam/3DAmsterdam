@@ -56,12 +56,14 @@ public class ObjectClickHandler : MonoBehaviour
     /// </summary>
     /// <param name="layerMask">The layermask to filter the click for</param>
     /// <returns></returns>
-    public static bool GetClickOnObject(bool allowClickOnNothing, out Collider clickedCollider, int layerMask = Physics.DefaultRaycastLayers)
+    public static bool GetClickOnObject(bool allowClickOnNothing, out RaycastHit hit, int layerMask = Physics.DefaultRaycastLayers, bool uiBlocks = true)
     {
-        clickedCollider = null;
+        hit = new RaycastHit();
 
-        if (OverUI && layerMask == LayerMask.NameToLayer("UI")) //compensate for UI not having physics colliders
+        //var containsUI = layerMask == (layerMask | (1 << LayerMask.NameToLayer("UI")));
+        if (uiBlocks && OverUI) //compensate for UI not having physics colliders
         {
+            //print("over ui");
             return false;
         }
 
@@ -76,37 +78,38 @@ public class ObjectClickHandler : MonoBehaviour
 
             //if mouse did not move too much, wait for mouse up and raycast to see if the collider is the same as the one clicked on
             Ray ray = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(ray, out var raycastHit, Mathf.Infinity, layerMask))
             {
-                if (clickColliders.Contains(hit.collider))
+                print(raycastHit.collider);
+                if (clickColliders.Contains(raycastHit.collider))
                 {
-                    clickedCollider = hit.collider;
+                    hit = raycastHit;
                     //print("clicked on " + hit.collider);
                     return true;
                 }
             }
 
-            bool a = true; // assume there are no clicked colliders
+            bool clickedOnNothing = true; // assume there are no clicked colliders
             foreach (var col in clickColliders)
             {
                 var isInMask = layerMask == (layerMask | (1 << col.gameObject.layer));
                 if (isInMask)
                 {
                     //if the collider is in the mask, return false
-                    a = false;
+                    clickedOnNothing = false;
                     break;
                 }
             }
 
-            return allowClickOnNothing && a;//allowClickOnNothing && clickColliders.Count == 0; //return true if clicked on nothing
+            return allowClickOnNothing && clickedOnNothing;//allowClickOnNothing && clickColliders.Count == 0; //return true if clicked on nothing
         }
         //print("failed all paths");
         return false;
     }
 
-    public static bool GetClickOnObject(bool allowClickOnNothing, int layerMask = Physics.DefaultRaycastLayers)
+    public static bool GetClickOnObject(bool allowClickOnNothing, int layerMask = Physics.DefaultRaycastLayers, bool uiBlocks = true)
     {
-        return GetClickOnObject(allowClickOnNothing, out var hitCol, layerMask);
+        return GetClickOnObject(allowClickOnNothing, out _, layerMask, uiBlocks);
     }
 
     public static bool GetDrag(out Collider draggedCollider, int layerMask = Physics.DefaultRaycastLayers)

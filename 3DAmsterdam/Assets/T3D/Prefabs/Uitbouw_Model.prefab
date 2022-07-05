@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 1652044654856456080}
   - component: {fileID: 4773198678137506252}
   - component: {fileID: 3494823665210763266}
+  - component: {fileID: 6691745721325876304}
   m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -274,3 +275,20 @@ MonoBehaviour:
     type: 3}
   numberOfLines: 0
   mySelectableMesh: {fileID: 4773198678137506252}
+  cursorPointPrefab: {fileID: 0}
+--- !u!114 &6691745721325876304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772c5df69630544b1a5d1c750435b8ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  numberOfLines: 2

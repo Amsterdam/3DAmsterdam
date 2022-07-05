@@ -102,7 +102,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
         else if (planeIntersect)
             mousePositionInWorld = ray.origin + ray.direction * enter;
 
-        if (ObjectClickHandler.GetClickOnObject(true, LayerMask.NameToLayer("UI")))
+        if (ObjectClickHandler.GetClickOnObject(true, LayerMask.GetMask("SelectionPoints")))
         {
             if (!isValidMeshPoint)
             {
