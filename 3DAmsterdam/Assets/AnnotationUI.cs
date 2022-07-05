@@ -36,6 +36,11 @@ public class AnnotationUI : MonoBehaviour
     private InputField inputField;
     [SerializeField]
     private RectTransform collapseIcon;
+    [SerializeField]
+    private Image numberBackgroundImage;
+    [SerializeField]
+    private Color selectedColor;
+    private Color normalColor;
 
     private AnnotationUISaveData saveData;
 
@@ -50,6 +55,7 @@ public class AnnotationUI : MonoBehaviour
         myRectTransform = GetComponent<RectTransform>();
         annotator = GetComponentInParent<AnnotationState>();
         saveData = new AnnotationUISaveData("undefined");
+        normalColor = numberBackgroundImage.color;
     }
 
     private void OnEnable()
@@ -95,5 +101,10 @@ public class AnnotationUI : MonoBehaviour
         Id = id;
         numberText.text = (id + 1).ToString();
         saveData.SetId(numberText.text);
+    }
+
+    public void SetSelectedColor(bool selected)
+    {
+        numberBackgroundImage.color = selected ? selectedColor : normalColor;
     }
 }

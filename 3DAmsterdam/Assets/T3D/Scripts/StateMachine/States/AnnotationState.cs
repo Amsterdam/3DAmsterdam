@@ -23,6 +23,7 @@ public class AnnotationState : State
     public int AmountOfAnnotations => AnnotationUIs.Count;
 
     public bool AllowSelection { get; set; } = true;
+    public int ActiveSelectedId = 0;
 
     protected override void Awake()
     {
@@ -42,34 +43,15 @@ public class AnnotationState : State
 
         foreach (var node in annotationSaveDataNode)
         {
-            //var key = node.Key;
             var data = node.Value;
 
-            //var placedBoundaryFeature = Instantiate(selectedComponent.ComponentObject/*savedPosition, savedRotation*/);
             var parent = data["ParentCityObject"];
             var connectionPoint = data["ConnectionPoint"];
             var text = data["AnnotationText"];
-            //placedBoundaryFeature.LoadData(int.Parse(key), prefabName);
             CreateAnnotation(parent, connectionPoint.ReadVector3());
             AnnotationUIs[AmountOfAnnotations - 1].SetText(text);
         }
     }
-
-    //public void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
-    //{
-    //    //the ids may need to be adjusted to maintain an increment of 1
-    //    var lastBf = SavedBoundaryFeatures[SavedBoundaryFeatures.Count - 1];
-    //    var deletedID = feature.Id;
-
-    //    //set the id of the last boundary feature to the id of the feature to be deleted to maintain an increment of 1
-    //    lastBf.SaveData.SetId(deletedID);
-    //    //delete the saveData of the deleted feature.
-    //    feature.SaveData.DeleteSaveData();
-    //    // delete the bf from the list
-    //    SavedBoundaryFeatures.Remove(feature);
-
-    //    return;
-    //}
 
     protected override void Start()
     {
@@ -94,14 +76,22 @@ public class AnnotationState : State
 
     private void SelectAnnotation(int id)
     {
-        print("selecting: " + id);
+        //print("selecting: " + id);
+        AnnotationUIs[ActiveSelectedId].SetSelectedColor(false);
+        annotationMarkers[ActiveSelectedId].SetSelectedColor(false);
+
         var selectedAnnotation = AnnotationUIs[id];
+        var selectedMarker= annotationMarkers[id];
 
         if (!selectedAnnotation.IsOpen)
             selectedAnnotation.ToggleAnnotation();
 
+        selectedAnnotation.SetSelectedColor(true);
+        selectedMarker.SetSelectedColor(true);
+
         RecalculeteContentHeight();
         scroll.SetSelectedChild(id);
+        ActiveSelectedId = id;
     }
 
     private void CreateAnnotation(string parentCityObject, Vector3 connectionPoint)
@@ -114,8 +104,10 @@ public class AnnotationState : State
         var annotationUI = Instantiate(annotationPrefab, annotationParent);
         AnnotationUIs.Add(annotationUI);
         annotationUI.Initialize(id, parentCityObject, connectionPoint);
-        RecalculeteContentHeight();
-        scroll.SetSelectedChild(id);
+
+        SelectAnnotation(id);
+        //RecalculeteContentHeight();
+        //scroll.SetSelectedChild(id);
     }
 
     public void RemoveAnnotation(int id)

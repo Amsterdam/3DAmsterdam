@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
@@ -12,6 +13,10 @@ public class AnnotationMarker : MeasurePoint
 
     public int Id { get; private set; }
 
+    [SerializeField]
+    private Color selectedColor;
+    private Color normalColor;
+
     void Awake()
     {
         //SetId(id);
@@ -19,6 +24,7 @@ public class AnnotationMarker : MeasurePoint
         idLabel = ServiceLocator.GetService<CoordinateNumbers>().CreateGenericWorldPointFollower(idMarkerPrefab);
         idLabel.AlignWithWorldPosition(transform.position);
         SetSelectable(true);
+        normalColor = idLabel.GetComponent<Image>().color;
     }
 
     public void SetId(int id)
@@ -31,5 +37,10 @@ public class AnnotationMarker : MeasurePoint
     {
         if (idLabel)
             Destroy(idLabel.gameObject);
+    }
+
+    public void SetSelectedColor(bool selected)
+    {
+        idLabel.GetComponent<Image>().color = selected ? selectedColor : normalColor;
     }
 }
