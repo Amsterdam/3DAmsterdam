@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AnnotationUISaveData : SaveDataContainer
 {
     //public int Id; //unique id for this boundary feature
+    public Vector3 ConnectionPoint;
     public string AnnotationText;
 
     public AnnotationUISaveData(string instanceId) : base(instanceId)
@@ -63,9 +65,20 @@ public class AnnotationUI : MonoBehaviour
         annotator.RecalculeteContentHeight();
     }
 
+    public void SetText(string text)
+    {
+        inputField.text = text;
+    }
+
     public void DeleteAnnotation()
     {
         annotator.RemoveAnnotation(Id);
+    }
+
+    public void Initialize(int id, Vector3 connectionPoint)
+    {
+        SetId(id);
+        saveData.ConnectionPoint = connectionPoint;
     }
 
     public void SetId(int id)
