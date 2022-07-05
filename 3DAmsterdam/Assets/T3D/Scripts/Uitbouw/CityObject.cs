@@ -149,7 +149,7 @@ namespace T3D.Uitbouw
                     point.Add("z", ann.ConnectionPointRD.z);
                     annotation.Add("location", point);
                     annotation.Add("text", ann.Text);
-                    obj.Add("Annotation " + ann.Id+1, annotation);
+                    obj.Add("Annotation " + (ann.Id+1), annotation);
                 }
             }
             return obj;

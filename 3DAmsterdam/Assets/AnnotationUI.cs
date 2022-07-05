@@ -34,6 +34,8 @@ public class AnnotationUI : MonoBehaviour
     private AnnotationState annotator;
     [SerializeField]
     private InputField inputField;
+    [SerializeField]
+    private RectTransform collapseIcon;
 
     private AnnotationUISaveData saveData;
 
@@ -41,7 +43,7 @@ public class AnnotationUI : MonoBehaviour
     public bool IsOpen => annotationBody.gameObject.activeInHierarchy;
     public string Text => saveData.AnnotationText;
     public string ParentCityObject => saveData.ParentCityObject;
-    public Vector3RD ConnectionPointRD => ConvertCoordinates.CoordConvert.UnitytoRD(saveData.ConnectionPoint);
+    public Vector3RD ConnectionPointRD => CoordConvert.UnitytoRD(saveData.ConnectionPoint);
 
     private void Awake()
     {
@@ -65,6 +67,7 @@ public class AnnotationUI : MonoBehaviour
     {
         float newHeight = IsOpen ? myRectTransform.sizeDelta.y - annotationBody.sizeDelta.y : myRectTransform.sizeDelta.y + annotationBody.sizeDelta.y;
         myRectTransform.sizeDelta = new Vector2(myRectTransform.sizeDelta.x, newHeight);
+        collapseIcon.Rotate(new Vector3(0, 0, 180));
 
         annotationBody.gameObject.SetActive(!IsOpen);
         annotator.RecalculeteContentHeight();

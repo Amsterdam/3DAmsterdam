@@ -115,7 +115,6 @@ public class AnnotationState : State
         AnnotationUIs.Add(annotationUI);
         annotationUI.Initialize(id, parentCityObject, connectionPoint);
         RecalculeteContentHeight();
-        print("scroll: " + scroll);
         scroll.SetSelectedChild(id);
     }
 

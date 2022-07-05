@@ -28,7 +28,7 @@ public class ScrollToSelected : MonoBehaviour
 
     public void SetSelectedChild(int id)
     {
-       selected = m_ScrollRect.content.transform.GetChild(id).gameObject;
+        selected = m_ScrollRect.content.transform.GetChild(id).gameObject;
     }
 
     void UpdateScrollToSelected()
@@ -61,14 +61,14 @@ public class ScrollToSelected : MonoBehaviour
         {
             float step = selectedPosition - above;
             float newY = currentScrollRectPosition + step;
-            float newNormalizedY = newY / contentHeightDifference;
+            float newNormalizedY = Mathf.Clamp01(newY / contentHeightDifference);
             m_ScrollRect.normalizedPosition = Vector2.Lerp(m_ScrollRect.normalizedPosition, new Vector2(0, newNormalizedY), scrollSpeed * Time.deltaTime);
         }
         else if (selectedPosition < below)
         {
             float step = selectedPosition - below;
             float newY = currentScrollRectPosition + step;
-            float newNormalizedY = newY / contentHeightDifference;
+            float newNormalizedY = Mathf.Clamp01(newY / contentHeightDifference);
             m_ScrollRect.normalizedPosition = Vector2.Lerp(m_ScrollRect.normalizedPosition, new Vector2(0, newNormalizedY), scrollSpeed * Time.deltaTime);
         }
     }
