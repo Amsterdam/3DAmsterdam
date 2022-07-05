@@ -119,6 +119,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
 
+        public string CityJsonBag;
+
         void Awake()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -258,10 +260,9 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                 }
                 else
-                {
-                    var cityjson = uwr.downloadHandler.text;
-                    Debug.Log(cityjson);
-                    CityJsonBagReceived?.Invoke(cityjson);
+                {                    
+                    CityJsonBag = uwr.downloadHandler.text;
+                    CityJsonBagReceived?.Invoke(CityJsonBag);
                 }
 
             }

@@ -33,10 +33,7 @@ public class HTMLInitSaveData : SaveDataContainer
 public class T3DInit : MonoBehaviour, IUniqueService
 {
     public bool IsEditMode { get; private set; } = true;
-
-    public TileVisualizer TileVisualizer;
-    public CityJsonBagVisualizer CityJsonBagVisualizer;
-
+   
     public HTMLInitSaveData HTMLData = null;
 
     public Netherlands3D.Rendering.RenderSettings RenderSettings;

@@ -75,6 +75,7 @@ public class ViewSubmittedRequestState : State
         {
             print("setting submitted to false");
             ServiceLocator.GetService<T3DInit>().HTMLData.HasSubmitted = false;
+            GoToPreviousState();
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
