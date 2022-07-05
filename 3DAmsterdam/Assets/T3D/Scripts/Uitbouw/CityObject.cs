@@ -159,7 +159,7 @@ namespace T3D.Uitbouw
         {
             var node = new JSONObject();
             node["type"] = "MultiSurface"; //todo support other types?
-            node["lod"] = Lod.ToString();
+            node["lod"] = Lod;
             var boundaries = new JSONArray();
             for (int i = 0; i < Surfaces.Length; i++)
             {
