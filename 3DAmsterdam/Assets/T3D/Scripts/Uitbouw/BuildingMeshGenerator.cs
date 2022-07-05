@@ -36,10 +36,30 @@ namespace Netherlands3D.T3D.Uitbouw
         protected void Start()//in start to avoid race conditions
         {
             //base.Start();
-            ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
+            //ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
             ServiceLocator.GetService<MetadataLoader>().BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
 
+            ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
+        }
+
+        private void OnCityJsonBagLoaded(object source, Mesh mesh)
+        {
+            
+            //transform.position = args.TileOffset;
+            var mf = GetComponent<MeshFilter>();
+            mf.mesh = mesh;
+
+            var col = gameObject.AddComponent<MeshCollider>();
+            BuildingCenter = col.bounds.center;
+            GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+            HeightLevel = BuildingCenter.y + col.bounds.extents.y;
+
+            RoofEdgePlanes = ProcessRoofEdges(mesh);
+
+            BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
+            BuildingDataIsProcessed = true;
         }
 
         private void Loader_LoadingCompleted(bool loadSucceeded)
@@ -48,23 +68,23 @@ namespace Netherlands3D.T3D.Uitbouw
             IsBeschermd = ServiceLocator.GetService<T3DInit>().HTMLData.IsBeschermd;
         }
 
-        private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-        {
-            var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
-            transform.position = args.TileOffset;
-            var mf = GetComponent<MeshFilter>();
-            mf.mesh = buildingMesh;
+        //private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+        //{
+        //    var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
+        //    transform.position = args.TileOffset;
+        //    var mf = GetComponent<MeshFilter>();
+        //    mf.mesh = buildingMesh;
 
-            var col = gameObject.AddComponent<MeshCollider>();
-            BuildingCenter = col.bounds.center;
-            GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
-            HeightLevel = BuildingCenter.y + col.bounds.extents.y;
+        //    var col = gameObject.AddComponent<MeshCollider>();
+        //    BuildingCenter = col.bounds.center;
+        //    GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+        //    HeightLevel = BuildingCenter.y + col.bounds.extents.y;
 
-            RoofEdgePlanes = ProcessRoofEdges(buildingMesh);
+        //    RoofEdgePlanes = ProcessRoofEdges(buildingMesh);
 
-            BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
-            BuildingDataIsProcessed = true;
-        }
+        //    BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
+        //    BuildingDataIsProcessed = true;
+        //}
 
         private Plane[] ProcessRoofEdges(Mesh buildingMesh)
         {

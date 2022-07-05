@@ -16,7 +16,8 @@ public class SubmitPermitRequestState : State
     [SerializeField] private InputField mailInputField;
     [SerializeField] private InputField commentsInputField;
 
-    public static string UserMail;// => userMail.Value;
+    public static string UserName = "onbekend";// => userMail.Value; //todo: save this info somewhere instead of static variables
+    public static string UserMail;// => userMail.Value; //todo: save this info somewhere instead of static variables
     private SubmitPermitRequestStateSaveDataContainer saveData;
 
     protected override void Awake()
@@ -40,6 +41,7 @@ public class SubmitPermitRequestState : State
     public override void StateCompletedAction()
     {
         saveData.UserName = nameInputField.text;
+        UserName = saveData.UserName;
         saveData.UserMail = mailInputField.text;
         UserMail = saveData.UserMail;
         saveData.UserComments = commentsInputField.text;

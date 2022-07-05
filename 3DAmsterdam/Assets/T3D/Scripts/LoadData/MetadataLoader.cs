@@ -83,10 +83,18 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
+        
+        public delegate void CityJsonBagLoadedEventHandler(object source, Mesh mesh);
+        public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
         public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
         {
             BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
+        }
+
+        public void RaiseCityJsonBagLoaded(Mesh mesh)
+        {
+            CityJsonBagLoaded?.Invoke(this, mesh);
         }
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
@@ -98,6 +106,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BimCityJsonEventHandler(string cityJson);
         public event BimCityJsonEventHandler BimCityJsonReceived;
 
+        public delegate void CityJsonBagEventHandler(string cityJson);
+        public event CityJsonBagEventHandler CityJsonBagReceived;
+
         [SerializeField]
         private BuildingMeshGenerator building;
         [SerializeField]
@@ -107,6 +118,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public static UitbouwBase Uitbouw { get; private set; }
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
+
+        public string CityJsonBag;
 
         void Awake()
         {
@@ -225,6 +238,34 @@ namespace Netherlands3D.T3D.Uitbouw
             string cityjson = File.ReadAllText(filepath);
 
             BimCityJsonReceived?.Invoke(cityjson);
+        }
+
+        public IEnumerator GetCityJsonBag(string id)
+        {
+            //var cityjson = File.ReadAllText(@"E:\cityjson\NL.IMBAG.Pand.0518100000226302.json");
+            //var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\kubus_met_gaten.json");
+            //var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\VCS\0518100000226302.json");
+
+
+            //CityJsonBagReceived?.Invoke(cityjson);
+            //yield return null;
+
+            var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&RESOURCEID=NL.IMBAG.Pand.{id}&OUTPUTFORMAT=application%2Fjson";
+            var uwr = UnityWebRequest.Get(url);
+
+            using (uwr)
+            {
+                yield return uwr.SendWebRequest();
+                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+                {
+                }
+                else
+                {                    
+                    CityJsonBag = uwr.downloadHandler.text;
+                    CityJsonBagReceived?.Invoke(CityJsonBag);
+                }
+
+            }
         }
 
         void ProcessPerceelData(JSONNode jsonData)

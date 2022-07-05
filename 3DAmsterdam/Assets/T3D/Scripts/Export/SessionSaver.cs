@@ -37,7 +37,7 @@ public static class SessionSaver
         //SessionId = "7e184780-a9c3-11ec-ac3e-5b3e00f4b66e";
         //SessionId = "d114e8f0-aea8-11ec-b7c3-51a5ce73359d";
         //SessionId = "831201c0-ba78-11ec-a2c7-f3c0d57d2cd6"; //Testgebouw2
-        SessionId = "4f966cc0-e8ac-11ec-a08e-bb6256c734e4"; //no snap
+        //SessionId = "4f966cc0-e8ac-11ec-a08e-bb6256c734e4"; //no snap
         //SessionId = "47f81880-bbe1-11ec-bb7e-b7bbd72d450c"; //snap
         //SessionId = "961bc940-bfd7-11ec-8a43-ddfbd3cd7e77"; //shapeable
         //SessionId = "5c66b840-cae5-11ec-9fe1-e30841db76e6"; // uploaded
@@ -45,6 +45,9 @@ public static class SessionSaver
         //SessionId = "b9c68c40-d201-11ec-bab9-853726a718cd"; //ifc converter bug (nosnap, upload flow)
         //SessionId = "2029d500-e738-11ec-b6ff-d190c2e036a3";
         //SessionId = "2e614640-ebce-11ec-b22e-81bc97112413";
+
+        SessionId = "b1c02c00-f7b7-11ec-bc3d-6feff600655c"; //Johan Gramstraat 83 Den Haag
+
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
