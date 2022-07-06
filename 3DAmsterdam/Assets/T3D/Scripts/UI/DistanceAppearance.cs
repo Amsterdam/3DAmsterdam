@@ -24,8 +24,8 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     private void Awake()
     {
-        texts = GetComponentsInChildren<Text>();
-        images = GetComponentsInChildren<Image>();
+        texts = GetComponentsInChildren<Text>(true);
+        images = GetComponentsInChildren<Image>(true);
         numberInputField = GetComponent<NumberInputField>();
         SetTargetTransparency(notHoveringTextAlpha, notHoveringImageAlpha);
     }

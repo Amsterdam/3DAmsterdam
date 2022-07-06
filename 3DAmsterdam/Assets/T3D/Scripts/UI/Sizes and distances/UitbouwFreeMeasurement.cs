@@ -202,6 +202,7 @@ public class UitbouwFreeMeasurement : DistanceMeasurement
             newLine.LinePoints[0].PointScale = 0;
         lines.Add(newLine);
         numberOfLines++;
+        newLine.EnableDeleteButton(true);
     }
 
     private void NewLine_DeleteButtonPressed(BuildingMeasuring source)

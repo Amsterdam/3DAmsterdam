@@ -53,9 +53,16 @@ namespace Netherlands3D.T3D
         {
             var lineObject = Instantiate(measurementLine);
             var measuring = lineObject.GetComponent<BuildingMeasuring>();
-            measuring.EnableDeleteButton(!ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall);
+            //bool showDeleteButton = !ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall;
+            //measuring.EnableDeleteButton();
             measuring.DistanceInputOverride += Measuring_DistanceInputOverride;
             return measuring;
+        }
+
+        public void EnableDeleteButtons(bool enable)
+        {
+            foreach (var l in lines)
+                l.EnableDeleteButton(enable);
         }
 
         protected abstract void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta);

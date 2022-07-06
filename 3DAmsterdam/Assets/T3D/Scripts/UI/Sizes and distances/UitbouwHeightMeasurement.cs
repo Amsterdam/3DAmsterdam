@@ -44,7 +44,7 @@ public class UitbouwHeightMeasurement : DistanceMeasurement
     {
         bool planeFound = GetNextRoofEdgePlane(ray, out _, out var intersectionPoint);
         lines[lineIndex].gameObject.SetActive(planeFound);
-        lines[lineIndex].EnableDeleteButton(false); //todo: move so this is only called once
+        //lines[lineIndex].EnableDeleteButton(false); //todo: move so this is only called once
         if (planeFound)
         {
             lines[lineIndex].SetLinePosition(point, intersectionPoint);

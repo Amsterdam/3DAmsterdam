@@ -50,6 +50,8 @@ public class BuildingMeasuring : Interactable
     public delegate void DeleteButtonPressedEventHandler(BuildingMeasuring source);
     public event DeleteButtonPressedEventHandler DeleteButtonPressed;
 
+    private bool deleteable;
+
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -257,7 +259,7 @@ public class BuildingMeasuring : Interactable
                 distanceLabel = ServiceLocator.GetService<CoordinateNumbers>().CreateNumberInputField();
                 distanceLabel.DistanceInputOverride += DistanceLabel_DistanceInputOverride;
                 distanceLabel.DeleteButtonPressed += DistanceLabel_DeleteButtonPressed;
-
+                distanceLabel.EnableDeleteButton(deleteable);
                 //distanceLabel.EnableDeleteButton(!ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall && RestrictionChecker.ActiveUitbouw.Gizmo.Mode != GizmoMode.MoveHeight); //todo: move this elsewhere
             }
 
@@ -303,6 +305,7 @@ public class BuildingMeasuring : Interactable
 
     public void EnableDeleteButton(bool enabled)
     {
+        deleteable = enabled;
         if (distanceLabel)
             distanceLabel.EnableDeleteButton(enabled);
     }
