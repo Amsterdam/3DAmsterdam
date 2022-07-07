@@ -119,7 +119,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
 
-        public string CityJsonBag;
+        public string CityJsonBag { get; private set; }
 
         void Awake()
         {
