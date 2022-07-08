@@ -75,7 +75,10 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             //var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, false);
 
-            AddMesh(mesh);
+            if (mesh != null)
+            {
+                AddMesh(mesh);
+            }
             //AddMeshGameObject(key, mesh);
         }
 

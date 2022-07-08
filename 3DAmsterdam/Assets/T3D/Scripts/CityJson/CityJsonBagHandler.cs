@@ -2,13 +2,13 @@ using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
 using System.Collections.Generic;
+using System.Linq;
 using T3D.LoadData;
 using UnityEngine;
 
 
 public class CityJsonBagHandler : MonoBehaviour
 {
-
     void OnEnable()
     {
         ServiceLocator.GetService<MetadataLoader>().CityJsonBagReceived += OnCityJsonBagReceived;       
@@ -35,11 +35,17 @@ public class CityJsonBagHandler : MonoBehaviour
         {
             //var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, true);
-            meshes.Add(mesh);            
+            if (mesh != null)
+            {
+                meshes.Add(mesh);
+            }
         }
 
-        var combinedMesh = CombineMeshes(meshes);
-        ServiceLocator.GetService<MetadataLoader>().RaiseCityJsonBagLoaded(combinedMesh);
+        if (meshes.Any())
+        {
+            var combinedMesh = CombineMeshes(meshes);
+            ServiceLocator.GetService<MetadataLoader>().RaiseCityJsonBagLoaded(combinedMesh);
+        }
 
     }
 
