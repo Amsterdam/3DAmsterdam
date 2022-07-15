@@ -139,7 +139,6 @@ namespace Netherlands3D.T3D.Uitbouw
             StartCoroutine(GetPerceelData(position));
 
             StartCoroutine(RequestBuildingOutlineData(id));
-
         }
 
         IEnumerator RequestBuildingOutlineData(string bagId)

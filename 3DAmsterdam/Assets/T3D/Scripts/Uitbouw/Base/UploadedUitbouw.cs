@@ -29,6 +29,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override Vector3 BackCenter => meshFilter.transform.position + mesh.bounds.center + transform.forward * transformedExtents.z;
 
+        //protected override void Start()
+        //{
+        //    base.Start();
+        //    CityObject = JSONNode.Parse(ServiceLocator.GetService<MetadataLoader>().CityJsonBag);
+        //}
+
         public override void UpdateDimensions()
         {
             SetDimensions(Multiply(meshFilter.transform.lossyScale, mesh.bounds.size));

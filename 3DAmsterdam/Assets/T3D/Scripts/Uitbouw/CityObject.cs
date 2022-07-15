@@ -10,6 +10,17 @@ using System;
 
 namespace T3D.Uitbouw
 {
+    public enum GeometryType
+    {
+        MultiPoint = 00,
+        MultiLineString = 10,
+        MultiSurface = 20,
+        CompositeSurface = 21,
+        Solid = 30,
+        MultiSolid = 40,
+        CompositeSolid = 41,
+    }
+
     public enum CityObjectType
     {
         // 1000-2000: 1st level city objects
@@ -42,6 +53,15 @@ namespace T3D.Uitbouw
     public abstract class CityObject : MonoBehaviour
     {
         private static int IdCounter = 0;
+        public static readonly Dictionary<GeometryType, int> GeometryDepth = new Dictionary<GeometryType, int>{
+            {GeometryType.MultiPoint, 0 }, //A "MultiPoint" has an array with the indices of the vertices; this array can be empty.
+            {GeometryType.MultiLineString, 1 }, //A "MultiLineString" has an array of arrays, each containing the indices of a LineString
+            {GeometryType.MultiSurface, 2 }, //A "MultiSurface", or a "CompositeSurface", has an array containing surfaces, each surface is modelled by an array of array, the first array being the exterior boundary of the surface, and the others the interior boundaries.
+            {GeometryType.CompositeSurface, 2 },
+            {GeometryType.Solid, 3 }, //A "Solid" has an array of shells, the first array being the exterior shell of the solid, and the others the interior shells. Each shell has an array of surfaces, modelled in the exact same way as a MultiSurface/CompositeSurface.
+            {GeometryType.MultiSolid, 4 }, //A "MultiSolid", or a "CompositeSolid", has an array containing solids, each solid is modelled as above.
+            {GeometryType.CompositeSolid, 4 },
+        };
 
         public string Name { get; private set; }
         public CityObjectType Type;
@@ -176,7 +196,7 @@ namespace T3D.Uitbouw
             return node;
         }
 
-        private JSONNode GetSemantics()
+        protected virtual JSONNode GetSemantics()
         {
             var node = new JSONObject();
             var surfaceSemantics = new JSONArray();
