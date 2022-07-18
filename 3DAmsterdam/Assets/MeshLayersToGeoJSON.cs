@@ -12,6 +12,9 @@ public class MeshLayersToGeoJSON : MonoBehaviour
     [SerializeField]
     private Transform meshesRoot;
 
+    [SerializeField]
+    private int maxVerticesPerFrame = 50000;
+
     [ContextMenu("Export .geojson")]
     private void ExportGeoJSON()
     {
@@ -21,23 +24,26 @@ public class MeshLayersToGeoJSON : MonoBehaviour
     private IEnumerator Export()
     {
         var meshRenderers = meshesRoot.GetComponentsInChildren<MeshFilter>();
-
-        var targetFile = EditorUtility.SaveFilePanel("Where to export .geojson", "", "export.json", "*");
-        if (File.Exists(targetFile)) File.Delete(targetFile);
-        using (StreamWriter writer = new StreamWriter(targetFile))
+        var targetFolder = EditorUtility.SaveFolderPanel("Where to export .geojson files", "", "");
+        foreach (var mesh in meshRenderers)
         {
-            writer.WriteLine("{\"type\":\"FeatureCollection\",\"features\":[");
+            Debug.Log($"Starting: {mesh.name}");
+            yield return new WaitForEndOfFrame();
 
-            foreach(var mesh in meshRenderers)
+            var fileOutput = targetFolder + "/" + mesh.name + ".geojson";
+            if(File.Exists(fileOutput)) File.Delete(fileOutput);
+
+            using (StreamWriter writer = new StreamWriter(fileOutput))
             {
+                writer.WriteLine("{\"type\":\"FeatureCollection\",\"features\":[");
                 var sharedMesh = mesh.sharedMesh;
                 var triangles = sharedMesh.triangles;
                 var vertices = sharedMesh.vertices;
                 var normals = sharedMesh.normals;
                 int trianglesDrawn = 0;
-                for (int i = 0; i < triangles.Length; i+=3)
+                for (int i = 0; i < triangles.Length; i += 3)
                 {
-                    if ((i % 10000) == 0)
+                    if ((i % maxVerticesPerFrame) == 0)
                     {
                         Debug.Log($"{mesh.name}: {i}");
                         yield return new WaitForEndOfFrame();
@@ -58,7 +64,22 @@ public class MeshLayersToGeoJSON : MonoBehaviour
                     if (normal.y < 0) continue;
                     trianglesDrawn++;
 
-                    var hexColorNormalRounded = (Vector3.Dot(Vector3.back, normal) > 0.5f) ? "00FF00" : "FF0000";
+                    var hexColorNormalRounded = "";
+                    if (Vector3.Dot(Vector3.back, normal) > 0.5f) {
+                        hexColorNormalRounded = "00FF00"; //Green faces south
+                    }
+                    else if (Vector3.Dot(Vector3.forward, normal) > 0.5f)
+                    {
+                        hexColorNormalRounded = "FF0000"; //Red faces north
+                    }
+                    else if (Vector3.Dot(Vector3.right, normal) > 0.5f)
+                    {
+                        hexColorNormalRounded = "0000FF"; //Blue faces east
+                    }
+                    else if (Vector3.Dot(Vector3.left, normal) > 0.5f)
+                    {
+                        hexColorNormalRounded = "000000"; //Black faces west
+                    }
 
                     if (trianglesDrawn != 1) writer.Write(",");
                     writer.WriteLine("{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[");
@@ -66,10 +87,11 @@ public class MeshLayersToGeoJSON : MonoBehaviour
                     writer.Write("]},");
                     writer.WriteLine("\"properties\":{\"normal\":\"#" + hexColorNormal + "\",\"roundedNormal\":\"#" + hexColorNormalRounded + "\"}}");
                 }
-            }
 
-            writer.WriteLine("]}");
+                writer.WriteLine("]}");
+            }
+            Debug.Log($"Complete: {mesh.name}");
+            yield return new WaitForEndOfFrame();
         }
-        yield return null;
     }
 }
