@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
@@ -45,6 +46,7 @@ public static class CityJSONFormatter
 
         foreach (var obj in CityObjects)
         {
+            Debug.Log("adding: " + obj);
             AddCityObejctToJSONData(obj);
         }
 
@@ -62,9 +64,12 @@ public static class CityJSONFormatter
     {
         obj.UpdateSurfaces(); // update latest changes
 
-        foreach (var surface in obj.Surfaces)
+        foreach (var shell in obj.Solids)
         {
-            AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+            foreach (var surface in shell)
+            {
+                AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+            }
         }
         if (convertToRD)
             RecalculateGeographicalExtents(RDVertices);
@@ -76,7 +81,7 @@ public static class CityJSONFormatter
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
     private static void AddCityGeometry(CityObject parent, CitySurface surface)
     {
-        //Debug.Log("adding verts for: " + surface.name + " of " + parent.Name);
+        Debug.Log("adding verts for: " + surface + " of " + parent.Name);
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];

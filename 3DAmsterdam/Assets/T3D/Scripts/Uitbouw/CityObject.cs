@@ -67,7 +67,8 @@ namespace T3D.Uitbouw
         public CityObjectType Type;
 
         public int Lod { get; protected set; } = 3;
-        public CitySurface[] Surfaces { get; private set; }
+        public List<CitySurface[]> Solids { get; protected set; }
+        public CitySurface[] Surfaces => Solids[0];
         private List<CityObject> cityChildren = new List<CityObject>();
         public CityObject[] CityChildren => cityChildren.ToArray();
         public CityObject[] CityParents { get; private set; } = new CityObject[0];
@@ -85,9 +86,11 @@ namespace T3D.Uitbouw
             CityJSONFormatter.AddCityObejct(this);
         }
 
-        public void UpdateSurfaces()
+        public virtual void UpdateSurfaces()
         {
-            Surfaces = GetSurfaces();
+            Solids = new List<CitySurface[]>();
+            Solids.Add(GetSurfaces()); //todo: fix this for different geometry types, currently this is based on a multisurface
+            //Surfaces = GetSurfaces();
         }
 
         public void SetParents(CityObject[] newParents)

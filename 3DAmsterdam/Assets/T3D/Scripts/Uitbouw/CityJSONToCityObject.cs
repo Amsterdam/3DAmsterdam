@@ -22,8 +22,6 @@ public class CityJSONToCityObject : CityObject
 
     public override CitySurface[] GetSurfaces()
     {
-        print("getting surfaces: " + sourceSurfaces.ToString());
-
         List<CitySurface> citySurfaces = new List<CitySurface>();
 
         foreach (var surfaceNode in sourceSurfaces) //multiple geometry objects represent different LODs
@@ -42,9 +40,9 @@ public class CityJSONToCityObject : CityObject
                 {
                     //var oldIndex = indices[i][j];
                     var oldIndex = surfaceArray[i][j];
-                    var v = combinedVertices[oldIndex.AsInt];
+                    var vert = combinedVertices[oldIndex.AsInt];
                     localIndices[i] = j;
-                    polygonVerts[j] = new Vector3((float)v.x, (float)v.y, (float)v.z);
+                    polygonVerts[j] = new Vector3((float)vert.x, (float)vert.y, (float)vert.z);
                 }
                 indices.Add(localIndices);
                 vertices.Add(polygonVerts);
@@ -52,6 +50,7 @@ public class CityJSONToCityObject : CityObject
 
             var polygon = new CityPolygon(vertices[0], indices[0]);
             var surface = new CitySurface(polygon);
+
             for (int i = 1; i < indices.Count; i++)
             {
                 var p = new CityPolygon(vertices[i], indices[i]);
@@ -72,6 +71,94 @@ public class CityJSONToCityObject : CityObject
         return indices;
     }
 
+    public override void UpdateSurfaces()
+    {
+        Solids = new List<CitySurface[]>();
+        var geometries = objectNode["geometry"];
+        foreach (var geometry in geometries) //multiple geometry objects represent different LODs
+        {
+            GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), geometry.Value["type"].Value);
+            print(geometryType);
+            geometryDepth = GeometryDepth[geometryType];
+            sourceBoundaries = geometry.Value["boundaries"].AsArray;//GetBoundaryArrayFromSourceGeometry(geometry, geometryDepth);
+            print("source boundaries: " + sourceBoundaries.ToString());
+            switch (geometryDepth)
+            {
+                case 0:
+                    throw new NotImplementedException();
+                    break;
+                case 1:
+                    throw new NotImplementedException();
+                    break;
+                case 2:
+                    sourceSurfaces = sourceBoundaries.AsArray;
+                    Solids.Add(GetSurfaces());
+                    break;
+                case 3:
+                    for (int i = 0; i < sourceBoundaries.Count; i++)
+                    {
+                        sourceSurfaces = sourceBoundaries[i].AsArray;
+                        print("source surfaces: " + sourceSurfaces.ToString());
+                        Solids.Add(GetSurfaces());
+                    }
+                    break;
+                case 4:
+                    throw new NotImplementedException();
+                    break;
+                default:
+                    throw new IndexOutOfRangeException("Boundary depth: " + geometryDepth + " is out of range");
+            }
+            Solids.Add(GetSurfaces()); //todo: fix this for different geometry types, currently this is based on a multisurface
+        }
+    }
+
+    private JSONArray GetBoundaryArrayFromSourceGeometry(JSONNode geometry, int depth)
+    {
+        var boundaries = new JSONArray();
+        //var solids = new JSONArray();
+        //var shells = new JSONArray();
+        sourceBoundaries = geometry["boundaries"].AsArray;
+        //print("geometry node: " + objectNode["boundaries"].ToString());
+        switch (depth)
+        {
+            case 0:
+                throw new NotImplementedException();
+                break;
+            case 1:
+                throw new NotImplementedException();
+                break;
+            case 2:
+                //sourceSurfaces = sourceBoundaries;
+                //UpdateSurfaces();
+                var sourceSurfaces = sourceBoundaries;
+                for (int i = 0; i < sourceSurfaces.Count; i++)
+                {
+                    var surfaceArray = Surfaces[i].GetJSONPolygons();
+                    boundaries.Add(surfaceArray);
+                }
+                return boundaries;
+            case 3: //todo: this code currently only supports 1 outer shell, and no inner shells, because the CityJsonVisualizer and CityObject classes are not built for inner shells at this time
+                //sourceSurfaces = sourceBoundaries[0].AsArray;
+                //UpdateSurfaces();
+                for (int i = 0; i < Solids.Count; i++)
+                {
+                    var shells = new JSONArray();
+                    for (int j = 0; j < Surfaces.Length; j++)
+                    {
+                        var surfaceArray = Surfaces[i].GetJSONPolygons();
+                        shells.Add(surfaceArray);
+                    }
+                    boundaries.Add(shells);
+                }
+                return boundaries;
+            case 4:
+                throw new NotImplementedException();
+                break;
+            default:
+                throw new IndexOutOfRangeException("Boundary depth: " + depth + " is out of range");
+        }
+    }
+
     public override JSONObject GetGeometryNode()
     {
         var newNode = new JSONObject();
@@ -81,10 +168,11 @@ public class CityJSONToCityObject : CityObject
         {
             GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), geometry.Value["type"].Value);
             newNode["type"] = geometryType.ToString();
+            print(geometryType);
             newNode["lod"] = geometry.Value["lod"].AsInt;
 
             geometryDepth = GeometryDepth[geometryType];
-            newNode["boundaries"] = GetBoundaryArray(geometryDepth);
+            newNode["boundaries"] = GetBoundariesNode(geometryDepth);
 
             if (objectNode["semantics"] != null)
             {
@@ -95,14 +183,9 @@ public class CityJSONToCityObject : CityObject
         return newNode;
     }
 
-    private JSONArray GetBoundaryArray(int depth)
+    private JSONArray GetBoundariesNode(int depth)
     {
         var boundaries = new JSONArray();
-        //var solids = new JSONArray();
-        //var shells = new JSONArray();
-        sourceBoundaries = objectNode["geometry"]["boundaries"].AsArray;
-        print("gnode: " + objectNode.ToString());
-        print("geometry node: " + objectNode["boundaries"].ToString());
         switch (depth)
         {
             case 0:
@@ -112,25 +195,24 @@ public class CityJSONToCityObject : CityObject
                 throw new NotImplementedException();
                 break;
             case 2:
-                sourceSurfaces = sourceBoundaries;
-                UpdateSurfaces();
                 for (int i = 0; i < Surfaces.Length; i++)
                 {
                     var surfaceArray = Surfaces[i].GetJSONPolygons();
                     boundaries.Add(surfaceArray);
                 }
                 return boundaries;
-            case 3: //todo: this code currently only supports 1 outer shell, and no inner shells, because the CityJsonVisualizer and CityObject classes are not built for inner shells at this time
-                sourceSurfaces = sourceBoundaries[0].AsArray;
-                print("outer shell: " + sourceSurfaces.ToString());
-                UpdateSurfaces();
-                var shells = new JSONArray();
-                for (int i = 0; i < Surfaces.Length; i++)
+            case 3: 
+                var solidArray = new JSONArray();
+                for (int i = 0; i < Solids.Count; i++)
                 {
-                    var surfaceArray = Surfaces[i].GetJSONPolygons();
-                    shells.Add(surfaceArray);
+                    var surfaces = Solids[i];
+                    for (int j = 0; j < surfaces.Length; j++)
+                    {
+                        var surfaceArray = surfaces[j].GetJSONPolygons();
+                        solidArray.Add(surfaceArray);
+                    }
+                    boundaries.Add(solidArray);
                 }
-                boundaries.Add(shells);
                 return boundaries;
             case 4:
                 throw new NotImplementedException();
@@ -138,7 +220,6 @@ public class CityJSONToCityObject : CityObject
             default:
                 throw new IndexOutOfRangeException("Boundary depth: " + depth + " is out of range");
         }
-
     }
 
     protected override JSONNode GetSemantics()
@@ -150,6 +231,9 @@ public class CityJSONToCityObject : CityObject
     {
         this.objectNode = objectNode;
         this.combinedVertices = combinedVertices;
+        //print(objectNode["type"].ToString());
+        //Type = (CityObjectType)Enum.Parse(typeof(CityObjectType), objectNode["type"].Value);
+        //print("cotL: type: " +Type);
     }
 
     //public void ParseCityJSON(string json)

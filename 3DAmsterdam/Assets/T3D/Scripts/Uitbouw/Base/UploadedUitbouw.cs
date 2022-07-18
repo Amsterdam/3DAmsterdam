@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
+using T3D.Uitbouw;
+using System;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
     public class UploadedUitbouw : UitbouwBase
     {
-        public JSONNode CityObject { get; private set; }
+        private List<CityObject> cityObjects;
         [SerializeField]
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
@@ -29,11 +31,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override Vector3 BackCenter => meshFilter.transform.position + mesh.bounds.center + transform.forward * transformedExtents.z;
 
-        //protected override void Start()
-        //{
-        //    base.Start();
-        //    CityObject = JSONNode.Parse(ServiceLocator.GetService<MetadataLoader>().CityJsonBag);
-        //}
+        protected override void Start()
+        {
+            base.Start();
+            //CityObject = JSONNode.Parse(ServiceLocator.GetService<MetadataLoader>().CityJsonBag);
+            cityObjects = new List<CityObject>();
+        }
 
         public override void UpdateDimensions()
         {
@@ -51,6 +54,12 @@ namespace Netherlands3D.T3D.Uitbouw
         public static Vector3 Multiply(Vector3 a, Vector3 b)
         {
             return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+        }
+
+        public void AddCityObject(CityJSONToCityObject newCityObject)
+        {
+            cityObjects.Add(newCityObject);
+            newCityObject.Type = CityObjectType.BuildingPart;
         }
     }
 }
