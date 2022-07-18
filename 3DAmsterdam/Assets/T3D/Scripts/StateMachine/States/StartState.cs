@@ -11,7 +11,9 @@ public class StartState : State
         if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
             return 0;
 
-        return ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall ? 0 : 1;
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel == false) return 2;
+
+        return ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall ? 0 : 1; 
     }
 
     public override void StateEnteredAction()
@@ -35,7 +37,7 @@ public class StartState : State
             RestrictionChecker.ActivePerceel.IsLoaded
         );
 
-        if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel && ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
         {
             var visualizer = ServiceLocator.GetService<CityJsonVisualiser>();
             visualizer.VisualizeCityJson();
@@ -43,6 +45,7 @@ public class StartState : State
                 visualizer.HasLoaded
             );
         }
+
         GoToNextState();
     }
 

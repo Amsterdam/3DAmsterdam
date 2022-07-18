@@ -28,6 +28,7 @@ public class HTMLInitSaveData : SaveDataContainer
     public bool IsMonument;
     public bool IsBeschermd;
     public bool SnapToWall;
+    public bool Add3DModel;    
 }
 
 public class T3DInit : MonoBehaviour, IUniqueService
