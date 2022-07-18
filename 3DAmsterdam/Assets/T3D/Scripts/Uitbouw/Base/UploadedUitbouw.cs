@@ -9,7 +9,7 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class UploadedUitbouw : UitbouwBase
     {
-        private List<CityObject> cityObjects;
+        private List<CityObject> cityObjects = new List<CityObject>();
         [SerializeField]
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
@@ -31,13 +31,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override Vector3 BackCenter => meshFilter.transform.position + mesh.bounds.center + transform.forward * transformedExtents.z;
 
-        protected override void Start()
-        {
-            base.Start();
-            //CityObject = JSONNode.Parse(ServiceLocator.GetService<MetadataLoader>().CityJsonBag);
-            cityObjects = new List<CityObject>();
-        }
-
         public override void UpdateDimensions()
         {
             SetDimensions(Multiply(meshFilter.transform.lossyScale, mesh.bounds.size));
@@ -58,6 +51,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void AddCityObject(CityJSONToCityObject newCityObject)
         {
+            if (cityObjects.Contains(newCityObject))
+            {
+                Debug.LogError("list already contains this City object");
+                return;
+            }
+
             cityObjects.Add(newCityObject);
             newCityObject.Type = CityObjectType.BuildingPart;
         }

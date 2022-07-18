@@ -41,6 +41,7 @@ public class CityJSONToCityObject : CityObject
                     //var oldIndex = indices[i][j];
                     var oldIndex = surfaceArray[i][j];
                     var vert = combinedVertices[oldIndex.AsInt];
+                    //ConvertCoordinates.CoordConvert.RDtoUnity(vert);
                     localIndices[i] = j;
                     polygonVerts[j] = new Vector3((float)vert.x, (float)vert.y, (float)vert.z);
                 }
@@ -78,10 +79,8 @@ public class CityJSONToCityObject : CityObject
         foreach (var geometry in geometries) //multiple geometry objects represent different LODs
         {
             GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), geometry.Value["type"].Value);
-            print(geometryType);
             geometryDepth = GeometryDepth[geometryType];
             sourceBoundaries = geometry.Value["boundaries"].AsArray;//GetBoundaryArrayFromSourceGeometry(geometry, geometryDepth);
-            print("source boundaries: " + sourceBoundaries.ToString());
             switch (geometryDepth)
             {
                 case 0:
@@ -98,7 +97,6 @@ public class CityJSONToCityObject : CityObject
                     for (int i = 0; i < sourceBoundaries.Count; i++)
                     {
                         sourceSurfaces = sourceBoundaries[i].AsArray;
-                        print("source surfaces: " + sourceSurfaces.ToString());
                         Solids.Add(GetSurfaces());
                     }
                     break;
@@ -108,7 +106,6 @@ public class CityJSONToCityObject : CityObject
                 default:
                     throw new IndexOutOfRangeException("Boundary depth: " + geometryDepth + " is out of range");
             }
-            Solids.Add(GetSurfaces()); //todo: fix this for different geometry types, currently this is based on a multisurface
         }
     }
 
@@ -168,7 +165,6 @@ public class CityJSONToCityObject : CityObject
         {
             GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), geometry.Value["type"].Value);
             newNode["type"] = geometryType.ToString();
-            print(geometryType);
             newNode["lod"] = geometry.Value["lod"].AsInt;
 
             geometryDepth = GeometryDepth[geometryType];
@@ -201,7 +197,7 @@ public class CityJSONToCityObject : CityObject
                     boundaries.Add(surfaceArray);
                 }
                 return boundaries;
-            case 3: 
+            case 3:
                 var solidArray = new JSONArray();
                 for (int i = 0; i < Solids.Count; i++)
                 {
@@ -231,13 +227,5 @@ public class CityJSONToCityObject : CityObject
     {
         this.objectNode = objectNode;
         this.combinedVertices = combinedVertices;
-        //print(objectNode["type"].ToString());
-        //Type = (CityObjectType)Enum.Parse(typeof(CityObjectType), objectNode["type"].Value);
-        //print("cotL: type: " +Type);
     }
-
-    //public void ParseCityJSON(string json)
-    //{
-    //    geometryNode = JSONNode.Parse(json);
-    //}
 }
