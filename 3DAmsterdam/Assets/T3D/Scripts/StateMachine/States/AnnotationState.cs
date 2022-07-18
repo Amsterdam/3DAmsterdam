@@ -19,6 +19,8 @@ public class AnnotationState : State
     [SerializeField]
     private ScrollToSelected scroll;
 
+    public GameObject PreviousButton;
+
     public static List<AnnotationUI> AnnotationUIs = new List<AnnotationUI>();
     public int AmountOfAnnotations => AnnotationUIs.Count;
 
@@ -39,6 +41,8 @@ public class AnnotationState : State
 
     private void LoadSavedAnnotations()
     {
+        PreviousButton.SetActive( ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
+
         var annotationSaveDataNode = SessionSaver.GetJSONNodeOfType(typeof(AnnotationUISaveData).ToString());
 
         foreach (var node in annotationSaveDataNode)

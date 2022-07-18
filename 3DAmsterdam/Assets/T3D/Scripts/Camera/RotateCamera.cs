@@ -95,7 +95,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     {
         //wait until Ground level and building center are known, and  the active uitbouw exists
         Vector3 dir;
-        if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel == false || ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
         {
             yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActivePerceel != null);
             dir = RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter;
