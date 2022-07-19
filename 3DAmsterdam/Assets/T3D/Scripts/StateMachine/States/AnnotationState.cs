@@ -146,8 +146,7 @@ public class AnnotationState : State
         foreach (var ann in AnnotationUIs)
         {
             height += ann.GetComponent<RectTransform>().sizeDelta.y;
-        }
-
-        annotationParent.sizeDelta = new Vector2(annotationParent.sizeDelta.x, height);
+        }       
+        annotationParent.sizeDelta = new Vector2(annotationParent.sizeDelta.x, AnnotationUIs.Count > 0 ? height : 0);        
     }
 }
