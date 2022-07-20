@@ -47,7 +47,8 @@ public static class SessionSaver
         //SessionId = "2e614640-ebce-11ec-b22e-81bc97112413";
 
         //SessionId = "b1c02c00-f7b7-11ec-bc3d-6feff600655c"; //Johan Gramstraat 83 Den Haag
-        SessionId = "e8094d50-fde3-11ec-90bd-6d0b17474de4"; //uploaded uitbouw test
+        //SessionId = "e8094d50-fde3-11ec-90bd-6d0b17474de4"; //uploaded uitbouw test
+        SessionId = "fd387d20-0835-11ed-b7de-dbf64ddb94ff"; //new export with sketchup testfile
 
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
