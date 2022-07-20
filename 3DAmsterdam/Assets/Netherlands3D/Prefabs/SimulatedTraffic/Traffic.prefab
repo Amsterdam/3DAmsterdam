@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4284331359740463625
 Transform:
   m_ObjectHideFlags: 0
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -44,16 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b43a88e34e772644a9a9787f8368076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allCars: []
-  carPrefab: {fileID: 100422141189343707, guid: 1d9bf29c2a9ae2348b6ad14a31743d82,
-    type: 3}
-  carSpeed: 20
-  enableCarSimulation: 0
+  allVehicles: []
+  vehicleSpeed: 20
+  enableVehicleSimulation: 0
   enableBoundsSimulation: 0
-  minimumCarRenderDistance: 500
-  mediumCarRenderDistance: 1000
-  maximumCarRenderDistance: 1500
+  minimumVehicleRenderDistance: 500
+  mediumVehicleRenderDistance: 1000
+  maximumVehicleRenderDistance: 1500
   terrainLayer: {fileID: 0}
+  vehicles: []
+  totalColorWeight: 0
+  totalVehicleTypeWeight: 0
 --- !u!114 &4284331359740463631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,8 +68,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a84df65be31fd45890464f575f74f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startTrafficAreaSelection: {fileID: 11400000, guid: 85a75562a45a0f343b19c054235b9230,
+    type: 2}
+  abortSelection: {fileID: 0}
+  receivedBounds: {fileID: 0}
+  changeGridSelectionColor: {fileID: 11400000, guid: 95ae469a43f52f946b65a33dcacb116d,
+    type: 2}
+  requestGridSelection: {fileID: 0}
   roadObject: {fileID: 7679492964155593117, guid: 7e451d51f538f3c498a06302bc3a7bc7,
     type: 3}
   allLoadedRoads: []
   shuffledRoadsList: []
-  grid: {fileID: 0}
+  stopButton: {fileID: 0}
+  selectionColor: {r: 1, g: 0.8302624, b: 0, a: 1}

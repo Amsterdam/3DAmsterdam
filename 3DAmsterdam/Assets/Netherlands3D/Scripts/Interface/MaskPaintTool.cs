@@ -11,15 +11,14 @@ namespace Netherlands3D.Interface.Tools
     public class MaskPaintTool : MonoBehaviour
     {   
         [Header("Listen to events")]
-        [SerializeField]
-        private TriggerEvent startCreatingMask;
+        [SerializeField] private TriggerEvent startCreatingMask;
+        [SerializeField] private TriggerEvent abortSelection;
+        [SerializeField] private ObjectEvent receivedBounds;
 
         [Header("Trigger events")]
-        [SerializeField]
-        private TriggerEvent createdMask;
-
-        [SerializeField]
-        private GridSelection gridSelection;
+        [SerializeField] private ObjectEvent changeGridSelectionColor;
+        [SerializeField] private TriggerEvent requestGridSelection;
+        [SerializeField] private TriggerEvent createdMask;
 
         [SerializeField]
         private RuntimeMask runtimeRectangularMask;
@@ -29,25 +28,29 @@ namespace Netherlands3D.Interface.Tools
         [SerializeField]
         private Material maskBlockMaterial;
 
-		private void Awake()
-		{
-            if (startCreatingMask) startCreatingMask.started.AddListener(StartPaintingMask);
-            gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
-        }
+        [SerializeField]
+        private Color selectionColor;
 
-		private void Start()
+
+        private void Awake()
 		{
-            this.gameObject.SetActive(false);
-		}
+            startCreatingMask.started.AddListener(StartPaintingMask);
+            abortSelection.started.AddListener(Abort);
+        }
 
 		private void StartPaintingMask()
         {
-            gridSelection.StartSelection(maskBlockMaterial);
+
+            this.gameObject.SetActive(true);
+            requestGridSelection.started.Invoke();
+            changeGridSelectionColor.started.Invoke(selectionColor);
+            receivedBounds.started.RemoveAllListeners();
+            receivedBounds.started.AddListener((bounds) => { SelectedMaskBounds((Bounds)bounds); });
         }
 
-		private void OnEnable()
+        private void Abort()
         {
-            if(HelpMessage.Instance) HelpMessage.Instance.Show(helpMessage);
+            gameObject.SetActive(false);
         }
 
 		private void SelectedMaskBounds(Bounds bounds)
@@ -55,8 +58,11 @@ namespace Netherlands3D.Interface.Tools
             runtimeRectangularMask.MoveToBounds(bounds);
             createdMask.started.Invoke();
             PropertiesPanel.Instance.OpenLayers();
-
-            gridSelection.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
+        private void OnEnable()
+        {
+            if (HelpMessage.Instance) HelpMessage.Instance.Show(helpMessage);
         }
     }
 }

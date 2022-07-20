@@ -10,11 +10,21 @@ using UnityEditor;
 using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Events;
 
 namespace Netherlands3D.Traffic
 {
     public class GenerateRoads : MonoBehaviour
     {
+        [Header("Listen to events")]
+        [SerializeField] private TriggerEvent startTrafficAreaSelection;
+        [SerializeField] private TriggerEvent abortSelection;
+        [SerializeField] private ObjectEvent receivedBounds;
+
+        [Header("Trigger events")]
+        [SerializeField] private ObjectEvent changeGridSelectionColor;
+        [SerializeField] private TriggerEvent requestGridSelection;
+
         public GameObject roadObject;
 
         public List<RoadObject> allLoadedRoads = new List<RoadObject>();
@@ -28,40 +38,47 @@ namespace Netherlands3D.Traffic
         private Vector3WGS bottomLeftWGS;
         private Vector3WGS topRightWGS;
 
-        public GridSelection grid;
         public GameObject stopButton;
+
+        [SerializeField]
+        private Color selectionColor;
+
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
             }
+
+            startTrafficAreaSelection.started.AddListener(StartSelectingArea);
+            abortSelection.started.AddListener(Abort);
         }
 
-        public void WaitForGridBounds()
+        private void Abort()
         {
-            //Make sure you only subscribe once
-            grid.onGridSelected.RemoveAllListeners();
-            grid.onGridSelected.AddListener(ShowTraffic);
+            gameObject.SetActive(false);
         }
 
-        public void StopWaitingForGridBounds()
+        private void StartSelectingArea()
         {
-            grid.onGridSelected.RemoveListener(ShowTraffic);
+            this.gameObject.SetActive(true);
+
+            receivedBounds.started.RemoveAllListeners();
+            receivedBounds.started.AddListener((bounds) => { ShowTraffic((Bounds)bounds); });
+            changeGridSelectionColor.started.Invoke(selectionColor);
+            requestGridSelection.started.Invoke();
         }
 
         public void ShowTraffic(Bounds bounds)
         {
             bottomLeftWGS = CoordConvert.UnitytoWGS84(bounds.min);
             topRightWGS = CoordConvert.UnitytoWGS84(bounds.max);
-            StopWaitingForGridBounds();
             StartSimulation();
         }
 
         public void StartSimulation()
         {
             gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
-            grid.gameObject.SetActive(false);
             stopButton.SetActive(true);
             allLoadedRoads.Clear();
             gameObject.GetComponent<TrafficSimulator>().StartSimulation(true);
