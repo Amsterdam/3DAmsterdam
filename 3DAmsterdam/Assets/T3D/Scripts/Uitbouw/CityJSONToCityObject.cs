@@ -40,10 +40,12 @@ public class CityJSONToCityObject : CityObject
                 {
                     //var oldIndex = indices[i][j];
                     var oldIndex = surfaceArray[i][j];
-                    var vert = combinedVertices[oldIndex.AsInt];
+                    var oldVert = combinedVertices[oldIndex.AsInt]; //combinedVertices are in unity space
+                    var newVert = transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.y, (float)oldVert.z) + transform.position;
+                    //newVert += transform.position;
                     //ConvertCoordinates.CoordConvert.RDtoUnity(vert);
                     localIndices[i] = j;
-                    polygonVerts[j] = new Vector3((float)vert.x, (float)vert.y, (float)vert.z);
+                    polygonVerts[j] = newVert;
                 }
                 indices.Add(localIndices);
                 vertices.Add(polygonVerts);

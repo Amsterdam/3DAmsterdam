@@ -78,7 +78,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, false);
 
             AddMesh(mesh);
-            var newCityObject = uitbouw.gameObject.AddComponent<CityJSONToCityObject>();
+            var newCityObject = uitbouw.MeshFilter.gameObject.AddComponent<CityJSONToCityObject>();
             newCityObject.SetNode(co.Value, cityJsonModel.vertices);
             uitbouw.AddCityObject(newCityObject);
             //AddMeshGameObject(key, mesh);
