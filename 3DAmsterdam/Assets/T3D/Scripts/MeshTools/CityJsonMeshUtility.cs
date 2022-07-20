@@ -20,13 +20,18 @@ public class CityJsonMeshUtility
     public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
     {
         List<Vector3> verts = GetVerts(cityModel, flipYZ);
-        return GetMeshes(verts, cityObject).ToArray();
+        var meshes = GetMeshes(verts, cityObject);
+
+        if (meshes != null) return meshes.ToArray();
+        else return null;
 
     }
 
     public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
     {
         var meshes = CreateMeshes(cityModel, cityObject, flipYZ);
+
+        if (meshes == null) return null;
 
         //combine the meshes
         CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];
@@ -73,10 +78,23 @@ public class CityJsonMeshUtility
     {
         var geometries = cityObject["geometry"].AsArray;
         int highestLodIndex = 0;
+
+        int highestLod = 0;
+
         for (int i = 0; i < geometries.Count; i++)
         {
             var lod = geometries[i]["lod"].AsInt;
-            if (lod > highestLodIndex) highestLodIndex = i;
+            if (lod > highestLod)
+            {
+                highestLod = lod;
+                highestLodIndex = i;                
+            }
+        }
+
+        //ignore LOD0 geometry
+        if (highestLod == 0)
+        {            
+            return null;            
         }
 
         List<Mesh> meshes = new List<Mesh>();

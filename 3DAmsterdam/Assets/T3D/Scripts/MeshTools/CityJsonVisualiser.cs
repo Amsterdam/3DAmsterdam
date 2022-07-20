@@ -77,11 +77,14 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             //var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, false);
 
-            AddMesh(mesh);
-            var newCityObject = uitbouw.MeshFilter.gameObject.AddComponent<CityJSONToCityObject>();
-            newCityObject.SetNode(co.Value, cityJsonModel.vertices);
-            uitbouw.AddCityObject(newCityObject);
-            //AddMeshGameObject(key, mesh);
+            if (mesh != null)
+            {
+                AddMesh(mesh);
+                var newCityObject = uitbouw.MeshFilter.gameObject.AddComponent<CityJSONToCityObject>();
+                newCityObject.SetNode(co.Value, cityJsonModel.vertices);
+                uitbouw.AddCityObject(newCityObject);
+                //AddMeshGameObject(key, mesh);
+            }
         }
 
         //re-initialize the usermovementaxes to ensure the new meshes are dragable

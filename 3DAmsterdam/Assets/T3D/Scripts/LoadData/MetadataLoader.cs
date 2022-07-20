@@ -109,6 +109,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void CityJsonBagEventHandler(string cityJson);
         public event CityJsonBagEventHandler CityJsonBagReceived;
 
+        public delegate void CityJsonBagBoundingBoxEventHandler(string cityJson, string excludeBagId);
+        public event CityJsonBagBoundingBoxEventHandler CityJsonBagBoundingBoxReceived;
+
         [SerializeField]
         private BuildingMeshGenerator building;
         [SerializeField]
@@ -262,6 +265,27 @@ namespace Netherlands3D.T3D.Uitbouw
                 {                    
                     CityJsonBag = uwr.downloadHandler.text;
                     CityJsonBagReceived?.Invoke(CityJsonBag);
+                }
+
+            }
+        }
+
+        public IEnumerator GetCityJsonBagBoundingBox(double x, double y, string excludeBagId)
+        {            
+            string bbox = $"{x - 25},{y - 25},{x + 25},{y + 25}";
+
+            var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&BBOX={bbox}&OUTPUTFORMAT=application%2Fjson";
+            var uwr = UnityWebRequest.Get(url);
+
+            using (uwr)
+            {
+                yield return uwr.SendWebRequest();
+                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+                {
+                }
+                else
+                {                    
+                    CityJsonBagBoundingBoxReceived?.Invoke(uwr.downloadHandler.text, excludeBagId);
                 }
 
             }
