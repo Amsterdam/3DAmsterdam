@@ -46,7 +46,6 @@ public static class CityJSONFormatter
 
         foreach (var obj in CityObjects)
         {
-            Debug.Log("adding: " + obj);
             AddCityObejctToJSONData(obj);
         }
 
@@ -81,7 +80,6 @@ public static class CityJSONFormatter
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
     private static void AddCityGeometry(CityObject parent, CitySurface surface)
     {
-        Debug.Log("adding verts for: " + surface + " of " + parent.Name);
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
