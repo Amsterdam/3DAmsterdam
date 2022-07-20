@@ -31,9 +31,6 @@ namespace Netherlands3D.Interface
 		private Bounds exportBounds;
 		private string helpMessage = "<b>Shift+Klik+Sleep</b> om het download gebied te selecteren";
 
-		[SerializeField]
-		private Material downloadBlockMaterial;
-
 		private bool acceptedTerms = false;
 
 		[SerializeField]

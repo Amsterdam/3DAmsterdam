@@ -29,6 +29,9 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private bool drawing = false;
 
+		[SerializeField]
+		private Material coloringMaterial;
+
 		private GameObject scaleBlock;
 		private Dictionary<Vector3Int, GameObject> selectionBlocks;
 
@@ -115,8 +118,7 @@ namespace Netherlands3D.Interface
 
 		public void SetMaterialColor(object color)
 		{
-			if (scaleBlock)
-				scaleBlock.GetComponent<MeshRenderer>().sharedMaterial.color = (Color)color;
+			coloringMaterial.SetColor("_TintColor", (Color)color);
 		}
 
 		private void OnEnable()

@@ -56,7 +56,8 @@ namespace Netherlands3D.Traffic
 
         private void Abort()
         {
-            gameObject.SetActive(false);
+            //Keep traffic active after placing
+            //gameObject.SetActive(false);
         }
 
         private void StartSelectingArea()

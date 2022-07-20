@@ -26,9 +26,6 @@ namespace Netherlands3D.Interface.Tools
         private string helpMessage = "<b>Shift+Klik+Sleep</b> om het masker gebied te selecteren";
 
         [SerializeField]
-        private Material maskBlockMaterial;
-
-        [SerializeField]
         private Color selectionColor;
 
 

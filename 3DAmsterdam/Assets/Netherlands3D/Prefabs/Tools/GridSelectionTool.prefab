@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3605162004707707930}
   - component: {fileID: 6905590986598923903}
   - component: {fileID: 5366328271299638312}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: SelectionBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: decb9374e7762bb4ebcfd392bf9399b4, type: 2}
+  - {fileID: 2100000, guid: e5a1246a3cadecb4e91621d1fdf8cbb8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,6 +135,7 @@ MonoBehaviour:
   blockKeyboardNavigationInteractions: 0
   gridSelectionBlock: {fileID: 4066160254706343728}
   drawing: 0
+  coloringMaterial: {fileID: 2100000, guid: e5a1246a3cadecb4e91621d1fdf8cbb8, type: 2}
   requestGridSelection: {fileID: 11400000, guid: 96783fbdc263e164a88cc292f4367e19,
     type: 2}
   onGridSelected: {fileID: 11400000, guid: 28eaa5ee02efa904bacb83503263c44c, type: 2}
