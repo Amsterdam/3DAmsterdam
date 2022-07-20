@@ -29,7 +29,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public JSONNode GetJSONPolygon(bool isHole)
         {
             //Assert.IsTrue(BoundaryConverterIsSet);
-
             int[] absoluteBoundaries = new int[LocalBoundaries.Length];
             for (int i = 0; i < LocalBoundaries.Length; i++)
             {

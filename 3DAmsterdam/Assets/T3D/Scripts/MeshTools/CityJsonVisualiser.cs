@@ -10,7 +10,6 @@ using T3D.LoadData;
 //using T3D.LoadData;
 using UnityEngine;
 
-
 public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 {
     public Material MeshMaterial;
@@ -69,6 +68,9 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
+        //var cityObject = GetComponentInChildren<CityJSONToCityObject>(true);
+        //if (cityObject)
+        //    cityObject.ParseCityJSON(cityJson);
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
@@ -78,8 +80,11 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             if (mesh != null)
             {
                 AddMesh(mesh);
+                var newCityObject = uitbouw.MeshFilter.gameObject.AddComponent<CityJSONToCityObject>();
+                newCityObject.SetNode(co.Value, cityJsonModel.vertices);
+                uitbouw.AddCityObject(newCityObject);
+                //AddMeshGameObject(key, mesh);
             }
-            //AddMeshGameObject(key, mesh);
         }
 
         //re-initialize the usermovementaxes to ensure the new meshes are dragable

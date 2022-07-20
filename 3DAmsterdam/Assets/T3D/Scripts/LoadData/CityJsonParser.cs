@@ -129,7 +129,7 @@ namespace T3D.LoadData
                     else
                     {
                         //var posRd = new Vector3RD(centerWorld.x + rd.x - centerx, centerWorld.y + rd.y - centery, centerWorld.z + rd.z);
-                        var vertCoordinates = new Vector3Double(rd.x - centerx, centerWorld.z + rd.z, rd.y - centery);
+                        var vertCoordinates = new Vector3Double(rd.x - centerx, rd.z + centerWorld.z, rd.y - centery);
                         vertices.Add(vertCoordinates);
                     }
                 }

@@ -72,7 +72,6 @@ public class CityJsonMeshUtility
         {
             return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
         }
-        
     }
 
     private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)
