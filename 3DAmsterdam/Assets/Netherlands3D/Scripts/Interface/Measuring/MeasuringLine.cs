@@ -47,6 +47,8 @@ public class MeasuringLine : Interactable
 	[SerializeField]
 	private int maxVertexSnapPerFrame = 10000;
 
+	private bool addedListener = false;
+
 	private void Awake()
 	{
 		lineRenderer = GetComponent<LineRenderer>();
@@ -57,19 +59,24 @@ public class MeasuringLine : Interactable
 
 	private void OnEnable()
 	{
-		HelpMessage.Instance.Show("<b>Klik</b> om een beginpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
+		HelpMessage.Show("<b>Klik</b> om een beginpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 
 		ResetLine(); //Start hidden, wait for clicks
 		TakeInteractionPriority();
 
-		Selector.Instance.registeredClickInput.AddListener(PlacePoint);
+        if (Selector.Instance) {
+			addedListener = true;
+			Selector.Instance.registeredClickInput.AddListener(PlacePoint);
+		}
 	}
 
 	public override void OnDisable()
 	{
 		base.OnDisable();
 		ResetLine();
-		Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
+
+		if(addedListener)
+			Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
 	}
 
 	public override void Escape()
@@ -270,7 +277,7 @@ public class MeasuringLine : Interactable
 			distanceText.DrawDistance(distanceMeasured, "m");
 			distanceText.ResetInput();
 
-			HelpMessage.Instance.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
+			HelpMessage.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
 		}
 		else if (distanceText)
 		{

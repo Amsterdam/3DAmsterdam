@@ -57,8 +57,7 @@ namespace Netherlands3D.Interface
 
 		public void OnEnable()
 		{
-			if(HelpMessage.Instance)
-				HelpMessage.Instance.Show(helpMessage);	
+			HelpMessage.Show(helpMessage);	
 		}
 
 		public void SetBounds(Bounds gridBounds)

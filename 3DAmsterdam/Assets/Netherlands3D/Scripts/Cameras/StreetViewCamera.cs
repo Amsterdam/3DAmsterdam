@@ -41,7 +41,7 @@ namespace Netherlands3D.Cameras
 
 		private void OnEnable()
 		{
-			HelpMessage.Instance.Show(helpMessage);
+			HelpMessage.Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();
@@ -50,7 +50,7 @@ namespace Netherlands3D.Cameras
 		private void OnDisable()
 		{
 			exitFirstPersonButton.gameObject.SetActive(true);
-			HelpMessage.Instance.Hide();
+			HelpMessage.Hide();
 			hideMenuButton.gameObject.SetActive(false);
 		}
 

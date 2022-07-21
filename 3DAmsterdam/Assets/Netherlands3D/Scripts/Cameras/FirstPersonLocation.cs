@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface
 
 			if (waitingForClick)
 			{
-				HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
+				HelpMessage.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
 				PropertiesPanel.Instance.OpenCustomObjects();
 			}
 		}
@@ -42,7 +42,7 @@ namespace Netherlands3D.Interface
 			base.Placed();
 			placedAnimator.enabled = true;
 			savedRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-			HelpMessage.Instance.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
+			HelpMessage.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
 		}
 
 		private void EnableObject()

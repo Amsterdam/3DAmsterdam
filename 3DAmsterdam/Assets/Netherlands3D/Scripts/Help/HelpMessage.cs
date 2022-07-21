@@ -36,21 +36,20 @@ namespace Netherlands3D.Help
             onShowHelpMessage.started.AddListener(Show);
         }
 
-        public void Show(string textMessage)
+        public static void Show(string textMessage)
         {
-            allowHideViaInteraction = false;
-            oneFrameHasPassed = false; 
+            if (Instance == null) return;
 
+            Instance.allowHideViaInteraction = false;
+            Instance.oneFrameHasPassed = false; 
             Instance.textMessageField.text = textMessage;
-
-            gameObject.SetActive(true);
-
-            StopAllCoroutines(); //Stop any running fade counters
-            StartCoroutine(StartWaitForAllowHide());
-            StartCoroutine(WaitForFadeOut());
+            Instance.gameObject.SetActive(true);
+            Instance.StopAllCoroutines(); //Stop any running fade counters
+            Instance.StartCoroutine(Instance.StartWaitForAllowHide());
+            Instance.StartCoroutine(Instance.WaitForFadeOut());
         }
 
-        private IEnumerator StartWaitForAllowHide()
+        public IEnumerator StartWaitForAllowHide()
         {
             yield return new WaitForEndOfFrame();
             oneFrameHasPassed = true;
@@ -58,31 +57,31 @@ namespace Netherlands3D.Help
             allowHideViaInteraction = true;
         }
 
-        private IEnumerator WaitForFadeOut()
+        public IEnumerator WaitForFadeOut()
         {
             yield return new WaitForSeconds(messageTime);
             yield return FadeOut();
 		}
 
-        private IEnumerator FadeOut()
+        public IEnumerator FadeOut()
         {
             textMessageField.CrossFadeAlpha(0, fadeOutTime, false);
             yield return new WaitForSeconds(fadeOutTime);
             gameObject.SetActive(false);
         }
 
-        public void Hide(bool instantHide = false)
+        public static void Hide(bool instantHide = false)
         {
-            if (gameObject.activeSelf && oneFrameHasPassed && (allowHideViaInteraction || instantHide))
+            if (Instance.gameObject.activeSelf && Instance.oneFrameHasPassed && (Instance.allowHideViaInteraction || instantHide))
             {
-                StopAllCoroutines();
+                Instance.StopAllCoroutines();
                 if (instantHide)
                 {
-                    gameObject.SetActive(false);
+                    Instance.gameObject.SetActive(false);
                 }
                 else
                 {
-                    StartCoroutine(FadeOut());
+                    Instance.StartCoroutine(Instance.FadeOut());
                 }
             }
         }

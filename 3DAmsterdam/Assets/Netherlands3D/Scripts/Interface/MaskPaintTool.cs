@@ -59,7 +59,7 @@ namespace Netherlands3D.Interface.Tools
         }
         private void OnEnable()
         {
-            if (HelpMessage.Instance) HelpMessage.Instance.Show(helpMessage);
+           HelpMessage.Show(helpMessage);
         }
     }
 }

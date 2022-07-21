@@ -19,7 +19,7 @@ namespace Netherlands3D.Masking
 
 		private void OnEnable()
 		{
-            HelpMessage.Instance.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
+            HelpMessage.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
             TakeInteractionPriority();
             runtimeMask.ClearAllMasks();
         }
