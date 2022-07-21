@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4284331359740463630}
   - component: {fileID: 4284331359740463631}
   m_Layer: 0
-  m_Name: Traffic
+  m_Name: TrafficSimulator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,7 +53,13 @@ MonoBehaviour:
   mediumVehicleRenderDistance: 1000
   maximumVehicleRenderDistance: 1500
   terrainLayer: {fileID: 0}
-  vehicles: []
+  vehicles:
+  - vehicleType: {fileID: 7326046871663922719, guid: b7320b661a3d45444b3b82087747b06f,
+      type: 3}
+    vehicleFrequency: 80
+  - vehicleType: {fileID: 782032297653149876, guid: a8e639404a11e9a4ca94dc085a928a37,
+      type: 3}
+    vehicleFrequency: 20
   totalColorWeight: 0
   totalVehicleTypeWeight: 0
 --- !u!114 &4284331359740463631
@@ -70,11 +76,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startTrafficAreaSelection: {fileID: 11400000, guid: 85a75562a45a0f343b19c054235b9230,
     type: 2}
-  abortSelection: {fileID: 0}
-  receivedBounds: {fileID: 0}
+  abortSelection: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
+  receivedBounds: {fileID: 11400000, guid: 28eaa5ee02efa904bacb83503263c44c, type: 2}
   changeGridSelectionColor: {fileID: 11400000, guid: 95ae469a43f52f946b65a33dcacb116d,
     type: 2}
-  requestGridSelection: {fileID: 0}
+  requestGridSelection: {fileID: 11400000, guid: 96783fbdc263e164a88cc292f4367e19,
+    type: 2}
   roadObject: {fileID: 7679492964155593117, guid: 7e451d51f538f3c498a06302bc3a7bc7,
     type: 3}
   allLoadedRoads: []

@@ -41,8 +41,6 @@ namespace Netherlands3D
         private bool snapshotPreferenceNavigation;
         public Toggle snapshotMainMenu;
         private bool snapshotPreferenceMainMenu;
-        public Toggle snapshotLoD;
-        private bool snapshotPreferenceLoD;
 
 
         public Text snapshotResolution;
@@ -119,7 +117,6 @@ namespace Netherlands3D
             snapshotPreferenceUI = snapshotUI.isOn;
             snapshotPreferenceNavigation = snapshotNavigation.isOn;
             snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
-            snapshotPreferenceLoD = snapshotLoD.isOn;
 
             //Align snapshot camera with our own active camera
             snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
@@ -268,7 +265,6 @@ namespace Netherlands3D
             RenderTexture.active = null;
             snapshotNavigation.isOn = true;
             snapshotMainMenu.isOn = true;
-            snapshotLoD.isOn = true;
 
             // Cleanup textures
             Destroy(screenshotRenderTexture);
@@ -292,7 +288,6 @@ namespace Netherlands3D
             snapshotUI.isOn = snapshotPreferenceUI;
             snapshotNavigation.isOn = snapshotPreferenceNavigation;
             snapshotMainMenu.isOn = snapshotPreferenceMainMenu;
-            snapshotLoD.isOn = snapshotPreferenceLoD;
         }
 
 

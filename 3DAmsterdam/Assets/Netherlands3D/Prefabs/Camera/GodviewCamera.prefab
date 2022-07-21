@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 8089436527420917118}
   - component: {fileID: 6874005418290581582}
   - component: {fileID: 4905035341649260907}
-  - component: {fileID: 8354288608701459187}
   - component: {fileID: 4164029231790784657}
   m_Layer: 0
   m_Name: GodviewCamera
@@ -170,34 +169,6 @@ MonoBehaviour:
   maxShadowDistance: 4000
   minShadowDistance: 100
   useFixedValue: 0
---- !u!114 &8354288608701459187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164494881010118419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87a20399635cf294fb08830818bc71a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  width: 1920
-  height: 1080
-  snapshotCamera: {fileID: 0}
-  screenShot: {fileID: 0}
-  screenshotRenderTexture: {fileID: 0}
-  fileType: 
-  fileName: 
-  snapshotUI: {fileID: 0}
-  snapshotNavigation: {fileID: 0}
-  snapshotMainMenu: {fileID: 0}
-  snapshotLoD: {fileID: 0}
-  snapshotResolution: {fileID: 0}
-  snapshotFileType: {fileID: 0}
-  snapshotName: {fileID: 0}
-  responsiveCanvas: {fileID: 0}
-  panelGraphics: []
 --- !u!114 &4164029231790784657
 MonoBehaviour:
   m_ObjectHideFlags: 0
