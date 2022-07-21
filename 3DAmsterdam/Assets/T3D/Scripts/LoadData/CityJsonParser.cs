@@ -43,7 +43,7 @@ namespace T3D.LoadData
         /// The constructor loads the vertices and applies the scale and translate parameters and converts from RD/WGS84 to Unity
         /// </summary>
         /// <param name="jsonstring">The cityjson string</param>
-        public CityJsonModel(string jsonstring, Vector3RD centerWorld)
+        public CityJsonModel(string jsonstring, Vector3RD centerWorld, bool checkDistanceFromCenter)
         {
 
             cityjsonNode = JSON.Parse(jsonstring);
@@ -98,10 +98,6 @@ namespace T3D.LoadData
             var centerx = minx + ((maxx - minx) / 2);
             var centery = miny + ((maxy - miny) / 2);
 
-            //Debug.Log($"x: {minx} - {maxx}");
-            //Debug.Log($"y: {miny} - {maxy}");
-            //Debug.Log($"z: {minz} - {maxz}");
-
             //now load all the vertices with the scaler and offset applied
             foreach (JSONNode node in cityjsonNode["vertices"])
             {
@@ -113,26 +109,29 @@ namespace T3D.LoadData
 
                 if (IsValidRD(rd))
                 {
-                    var center = Netherlands3D.Config.activeConfiguration.RelativeCenterRD;
 
-                    var check_x = Math.Abs(rd.x - center.x);
-                    var check_y = Math.Abs(rd.y - center.y);
-
-                    var perceelRadius = RestrictionChecker.ActivePerceel.Radius;
-
-                    if(check_x > perceelRadius || check_y > perceelRadius)
+                    if (checkDistanceFromCenter)
                     {
-                        var vertCoordinates = new Vector3Double(rd.x - centerx, rd.z + centerWorld.z, rd.y - centery);
-                        vertices.Add(vertCoordinates);
+                        var center = Netherlands3D.Config.activeConfiguration.RelativeCenterRD;
+                        var check_x = Math.Abs(rd.x - center.x);
+                        var check_y = Math.Abs(rd.y - center.y);
+
+                        var perceelRadius = RestrictionChecker.ActivePerceel.Radius;
+
+                        if (check_x > perceelRadius || check_y > perceelRadius)
+                        {
+                            var vertCoordinates = new Vector3Double(rd.x - centerx, rd.z + centerWorld.z, rd.y - centery);
+                            vertices.Add(vertCoordinates);
+                        }
+                        else
+                        {
+                            AddToVertices(rd);
+                        }
                     }
                     else
                     {
-                        var unityCoordinates = CoordConvert.RDtoUnity(rd);
-                        var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
-                        vertices.Add(vertCoordinates);
+                        AddToVertices(rd);
                     }
-
-
                 }
                 else //is it WGS84 or is it Unity coordinate
                 {
@@ -180,6 +179,13 @@ namespace T3D.LoadData
             //    }
             //    Materials.Add(mat);
             //}
+        }
+
+        private void AddToVertices(Vector3RD rd)
+        {
+            var unityCoordinates = CoordConvert.RDtoUnity(rd);
+            var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
+            vertices.Add(vertCoordinates);
         }
 
         public List<Building> LoadBuildings(double lod)

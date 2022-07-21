@@ -21,12 +21,12 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
     private void OnCityJsonBagBoundingBoxReceived(string cityJson, string excludeBagId)
     {
-        ParseCityJson(cityJson, excludeBagId);
+        ParseCityJson(cityJson, excludeBagId, false);
     }
 
-    private void ParseCityJson(string cityjson, string excludeBagId)
+    private void ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
     {
-        var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD());
+        var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD(), checkDistanceFromCenter);
         var meshmaker = new CityJsonMeshUtility();
 
         List<Mesh> meshes = new List<Mesh>();
