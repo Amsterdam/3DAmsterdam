@@ -8,6 +8,7 @@ using Netherlands3D.T3D.Uitbouw;
 using System.Linq;
 using System;
 
+
 namespace T3D.LoadData
 {
     [System.Serializable]
@@ -112,9 +113,24 @@ namespace T3D.LoadData
 
                 if (IsValidRD(rd))
                 {
-                    var unityCoordinates = CoordConvert.RDtoUnity(rd);
-                    var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
-                    vertices.Add(vertCoordinates);
+                    var center = Netherlands3D.Config.activeConfiguration.RelativeCenterRD;
+
+                    var check_x = Math.Abs(rd.x - center.x);
+                    var check_y = Math.Abs(rd.y - center.y);
+
+                    if(check_x > 40 || check_y > 40)
+                    {
+                        var vertCoordinates = new Vector3Double(rd.x - centerx, rd.z + centerWorld.z, rd.y - centery);
+                        vertices.Add(vertCoordinates);
+                    }
+                    else
+                    {
+                        var unityCoordinates = CoordConvert.RDtoUnity(rd);
+                        var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
+                        vertices.Add(vertCoordinates);
+                    }
+
+
                 }
                 else //is it WGS84 or is it Unity coordinate
                 {
