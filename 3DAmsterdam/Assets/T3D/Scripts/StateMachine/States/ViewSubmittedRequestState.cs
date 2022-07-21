@@ -11,9 +11,11 @@ public class ViewSubmittedRequestState : State
     private string defaultDateText, defaultProjectIDText;
 
     [SerializeField]
-    private BoundaryFeatureLabelInfo label;
+    private BoundaryFeatureLabelInfo boundaryFeatureLabel;
     [SerializeField]
-    private RectTransform labelPanel;
+    private AnnotationLabelInfo annotationLabel;
+    [SerializeField]
+    private RectTransform boundaryFeaturePanel, annotationPanel;
 
     [SerializeField]
     private ScrollRect scrollRect;
@@ -34,6 +36,7 @@ public class ViewSubmittedRequestState : State
     {
         DisplayMetadata();
         DisplayBoundaryFeatures();
+        DisplayAnnotations();
 
         ServiceLocator.GetService<JsonSessionSaver>().EnableAutoSave(false);
     }
@@ -54,8 +57,17 @@ public class ViewSubmittedRequestState : State
     {
         foreach (var bf in PlaceBoundaryFeaturesState.SavedBoundaryFeatures)
         {
-            var newLabel = Instantiate(label, labelPanel);
+            var newLabel = Instantiate(boundaryFeatureLabel, boundaryFeaturePanel);
             newLabel.SetInfo(bf);
+        }
+    }
+
+    public void DisplayAnnotations()
+    {
+        foreach (var ann in AnnotationState.AnnotationUIs)
+        {
+            var newLabel = Instantiate(annotationLabel, annotationPanel);
+            newLabel.SetInfo(ann);
         }
     }
 
