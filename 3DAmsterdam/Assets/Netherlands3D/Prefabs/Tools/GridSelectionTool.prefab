@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3605162004707707930}
   - component: {fileID: 6905590986598923903}
   - component: {fileID: 5366328271299638312}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: SelectionBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -50, y: 50, z: -50}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5279267763681953419}
   m_RootOrder: 0
@@ -51,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -59,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: decb9374e7762bb4ebcfd392bf9399b4, type: 2}
+  - {fileID: 2100000, guid: e5a1246a3cadecb4e91621d1fdf8cbb8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,6 +111,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3605162004707707930}
   m_Father: {fileID: 0}
@@ -132,12 +135,12 @@ MonoBehaviour:
   blockKeyboardNavigationInteractions: 0
   gridSelectionBlock: {fileID: 4066160254706343728}
   drawing: 0
-  onGridSelected:
-    m_PersistentCalls:
-      m_Calls: []
-  onToolDisabled:
-    m_PersistentCalls:
-      m_Calls: []
+  coloringMaterial: {fileID: 2100000, guid: e5a1246a3cadecb4e91621d1fdf8cbb8, type: 2}
+  requestGridSelection: {fileID: 11400000, guid: 96783fbdc263e164a88cc292f4367e19,
+    type: 2}
+  onGridSelected: {fileID: 11400000, guid: 28eaa5ee02efa904bacb83503263c44c, type: 2}
+  setMaterialColor: {fileID: 11400000, guid: 95ae469a43f52f946b65a33dcacb116d, type: 2}
+  abortSelection: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
   selectionBlockMeshRenderer: {fileID: 5366328271299638312}
 --- !u!114 &8327563808130888798
 MonoBehaviour:

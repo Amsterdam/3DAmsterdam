@@ -11,6 +11,7 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Netherlands3D.Core;
+using Netherlands3D.Events;
 
 namespace Netherlands3D.Interface
 {
@@ -28,15 +29,22 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private bool drawing = false;
 
+		[SerializeField]
+		private Material coloringMaterial;
+
 		private GameObject scaleBlock;
 		private Dictionary<Vector3Int, GameObject> selectionBlocks;
 
 		private Vector3Int startGridPosition;
 
-		[System.Serializable]
-		public class BoundsEvent : UnityEvent<Bounds> { };
-		public BoundsEvent onGridSelected;
-		public UnityEvent onToolDisabled;
+		[Header("Listen to events")]
+		[SerializeField] private TriggerEvent requestGridSelection;
+
+		[Header("Trigger events")]
+		[SerializeField] private ObjectEvent onGridSelected;
+		[SerializeField] private ObjectEvent setMaterialColor;
+		[SerializeField] private TriggerEvent abortSelection;
+		
 
 		private Coordinate bottomLeftCoordinateVisual;
 		private Coordinate topRightCoordinateVisual;
@@ -49,6 +57,10 @@ namespace Netherlands3D.Interface
 		private void Awake()
 		{
 			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
+
+			requestGridSelection.started.AddListener(StartSelection);
+			abortSelection.started.AddListener(AbortSelection);
+			setMaterialColor.started.AddListener(SetMaterialColor);
 		}
 
 		private void Start()
@@ -67,17 +79,8 @@ namespace Netherlands3D.Interface
 			doneInitialisation = true;
 		}
 
-		/// <summary>
-		/// Fresh start for the grid selection tool with optional material override (to have a unique block color)
-		/// </summary>
-		/// <param name="toolMaterial">Optional material override for the selection blocks</param>
-		public void StartSelection(Material toolMaterial)
+		public void StartSelection()
 		{
-			if(toolMaterial)
-			{
-				SetMainMaterial(toolMaterial);
-			}
-
 			gameObject.SetActive(true);
 			//Fresh start, clear a previous selection block visual
 			if (scaleBlock) Destroy(scaleBlock);
@@ -113,11 +116,9 @@ namespace Netherlands3D.Interface
 			}
 		}
 
-		private void SetMainMaterial(Material material)
+		public void SetMaterialColor(object color)
 		{
-			selectionBlockMeshRenderer.sharedMaterial = material;
-			if(scaleBlock)
-				scaleBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
+			coloringMaterial.SetColor("_TintColor", (Color)color);
 		}
 
 		private void OnEnable()
@@ -151,8 +152,6 @@ namespace Netherlands3D.Interface
 			if (topRightCoordinateVisual)
 				topRightCoordinateVisual.gameObject.SetActive(false);
 
-			onToolDisabled.Invoke();
-
 			if (VisualGrid.Instance)
 				VisualGrid.Instance.Hide();
 
@@ -165,7 +164,17 @@ namespace Netherlands3D.Interface
 
 			base.Escape();
 			gameObject.SetActive(false);
+
+			abortSelection.started.Invoke();
 		}
+
+		private void AbortSelection()
+        {
+			base.Escape();
+			gameObject.SetActive(false);
+		}
+
+
 
 		private void Update()
 		{
@@ -287,7 +296,7 @@ namespace Netherlands3D.Interface
 			{
 				var bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
 				Debug.Log("bbox="+(bounds.min.x + Config.activeConfiguration.RelativeCenterRD.x)+"," + (bounds.min.z + Config.activeConfiguration.RelativeCenterRD.y) + "," + (bounds.max.x + Config.activeConfiguration.RelativeCenterRD.x) + ","+(bounds.max.z + Config.activeConfiguration.RelativeCenterRD.y));
-				onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+				onGridSelected.started.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
 			}
 		}
 	}

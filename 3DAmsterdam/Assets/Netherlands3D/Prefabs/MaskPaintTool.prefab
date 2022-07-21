@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -50, y: 93, z: -50}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5036980250855119130}
   m_RootOrder: 0
@@ -51,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -91,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5036980250855119130}
   - component: {fileID: 1803648893726234169}
-  - component: {fileID: 8703502851307644808}
+  - component: {fileID: 6590835851126774109}
   m_Layer: 0
   m_Name: MaskPaintTool
   m_TagString: Untagged
@@ -106,9 +108,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4145566587580368009}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3992509691017066640}
   m_Father: {fileID: 0}
@@ -127,11 +130,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startCreatingMask: {fileID: 11400000, guid: c5a8b67aa4133ae408c4593533fde188, type: 2}
-  createdMask: {fileID: 11400000, guid: f2fdab44d2a63594aa895603b1fcc3a5, type: 2}
-  gridSelection: {fileID: 8703502851307644808}
+  abortSelection: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
+  receivedBounds: {fileID: 11400000, guid: 28eaa5ee02efa904bacb83503263c44c, type: 2}
+  changeGridSelectionColor: {fileID: 11400000, guid: 95ae469a43f52f946b65a33dcacb116d,
+    type: 2}
+  requestGridSelection: {fileID: 11400000, guid: 96783fbdc263e164a88cc292f4367e19,
+    type: 2}
+  createdMask: {fileID: 11400000, guid: 9e285dc3a2939754f93631c17a406881, type: 2}
   runtimeRectangularMask: {fileID: 0}
   maskBlockMaterial: {fileID: 2100000, guid: decb9374e7762bb4ebcfd392bf9399b4, type: 2}
---- !u!114 &8703502851307644808
+  selectionColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+--- !u!114 &6590835851126774109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,19 +149,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4145566587580368009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92bc6a105b955374b8985e9d351fd432, type: 3}
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuState: 1
-  blockMouseSelectionInteractions: 1
-  blockMouseNavigationInteractions: 0
-  blockKeyboardNavigationInteractions: 0
-  gridSelectionBlock: {fileID: 3087841768213050647}
-  drawing: 0
-  onGridSelected:
-    m_PersistentCalls:
-      m_Calls: []
-  onToolDisabled:
-    m_PersistentCalls:
-      m_Calls: []
-  selectionBlockMeshRenderer: {fileID: 5886512646914657870}
