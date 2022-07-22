@@ -20,6 +20,9 @@ public class ViewSubmittedRequestState : State
     [SerializeField]
     private ScrollRect scrollRect;
     private float defaultScrollElasticity;
+    
+    [SerializeField]
+    private  List<GameObject> HideObjectsForAnnotationOnly;
 
     protected override void Awake()
     {
@@ -34,6 +37,10 @@ public class ViewSubmittedRequestState : State
 
     public override void StateEnteredAction()
     {
+        HideObjectsForAnnotationOnly.ForEach(x => {
+                x.SetActive(ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
+            });
+
         DisplayMetadata();
         DisplayBoundaryFeatures();
         DisplayAnnotations();
