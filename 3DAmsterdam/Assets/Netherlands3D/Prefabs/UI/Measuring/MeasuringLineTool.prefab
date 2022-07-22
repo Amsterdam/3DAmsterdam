@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5569696231675204980}
   - component: {fileID: 5569696231675204983}
   - component: {fileID: 5569696231675204982}
-  - component: {fileID: 7208368598718033221}
   - component: {fileID: 6759319997721361969}
+  - component: {fileID: 5918575110261784325}
   m_Layer: 0
   m_Name: MeasuringLineTool
   m_TagString: Untagged
@@ -54,6 +54,7 @@ MonoBehaviour:
   blockMouseSelectionInteractions: 1
   blockMouseNavigationInteractions: 0
   blockKeyboardNavigationInteractions: 0
+  takeInteractionPriorityAtStart: 0
   lineWidth: 0.005
   pointScale: 0.015
   targetLayers:
@@ -174,18 +175,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &7208368598718033221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5569696231675204981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6759319997721361969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +203,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &5918575110261784325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569696231675204981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5569696232127709034
 PrefabInstance:
   m_ObjectHideFlags: 0

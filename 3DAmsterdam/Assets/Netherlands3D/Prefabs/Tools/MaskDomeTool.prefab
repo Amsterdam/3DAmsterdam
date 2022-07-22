@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 6643961936273848155}
   - component: {fileID: 8077526602918759243}
   - component: {fileID: 7314729822325482878}
-  - component: {fileID: 350089830358453907}
-  - component: {fileID: 5814338166406044394}
   - component: {fileID: 5490217294447470049}
+  - component: {fileID: 6994462291200616771}
   m_Layer: 0
   m_Name: MaskDomeTool
   m_TagString: Untagged
@@ -138,31 +137,8 @@ MonoBehaviour:
   blockMouseSelectionInteractions: 1
   blockMouseNavigationInteractions: 0
   blockKeyboardNavigationInteractions: 0
---- !u!114 &350089830358453907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030503002781947417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7ff9e3eb9fe43f49a8175c00dfdd970, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activateLayers: []
---- !u!114 &5814338166406044394
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030503002781947417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  takeInteractionPriorityAtStart: 0
+  abortMasking: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
 --- !u!114 &5490217294447470049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +167,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &6994462291200616771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030503002781947417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

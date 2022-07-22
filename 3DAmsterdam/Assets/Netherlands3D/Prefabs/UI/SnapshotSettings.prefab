@@ -1247,7 +1247,7 @@ GameObject:
   - component: {fileID: 6317659124323231062}
   - component: {fileID: 7305353752323797063}
   - component: {fileID: 4001426847471649857}
-  - component: {fileID: 5329451582636161135}
+  - component: {fileID: 6914832744508003227}
   m_Layer: 16
   m_Name: SnapshotSettings
   m_TagString: Untagged
@@ -1365,6 +1365,7 @@ MonoBehaviour:
   blockMouseSelectionInteractions: 1
   blockMouseNavigationInteractions: 1
   blockKeyboardNavigationInteractions: 1
+  takeInteractionPriorityAtStart: 0
   closeWindowButton: {fileID: 1750715269}
 --- !u!114 &7305353752323797063
 MonoBehaviour:
@@ -1421,7 +1422,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
---- !u!114 &5329451582636161135
+--- !u!114 &6914832744508003227
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

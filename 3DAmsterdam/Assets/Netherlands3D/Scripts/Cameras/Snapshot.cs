@@ -61,6 +61,8 @@ namespace Netherlands3D
         [SerializeField]
         private Graphic[] panelGraphics;
 
+        private bool ignoredFirstStart = false;
+
 		private void Awake()
 		{
             panelGraphics = this.GetComponentsInChildren<Graphic>();
@@ -73,6 +75,11 @@ namespace Netherlands3D
 
         private void OnEnable()
         {
+            if (!ignoredFirstStart)
+            {
+                ignoredFirstStart = true;
+                return;
+            }
             EnablePanelGraphics(true);
             UpdateFields();            
         }

@@ -72,7 +72,7 @@ namespace Netherlands3D.Help
 
         public static void Hide(bool instantHide = false)
         {
-            if (Instance.gameObject.activeSelf && Instance.oneFrameHasPassed && (Instance.allowHideViaInteraction || instantHide))
+            if (Instance && Instance.gameObject.activeSelf && Instance.oneFrameHasPassed && (Instance.allowHideViaInteraction || instantHide))
             {
                 Instance.StopAllCoroutines();
                 if (instantHide)

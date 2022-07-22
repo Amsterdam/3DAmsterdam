@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Events;
 using Netherlands3D.Help;
 using Netherlands3D.Interface;
 using Netherlands3D.ObjectInteraction;
@@ -11,10 +12,13 @@ namespace Netherlands3D.Masking
 {
     public class MaskDome : Interactable
     {
+        [Header("Trigger events")]
+        [SerializeField] private TriggerEvent abortMasking;
         private RuntimeMask runtimeMask;
         void Awake()
         {
             runtimeMask = GetComponent<RuntimeMask>();
+            abortMasking.started.AddListener(Escape);
         }
 
 		private void OnEnable()
@@ -34,7 +38,7 @@ namespace Netherlands3D.Masking
             gameObject.SetActive(false);
 		}
 
-		void Update()
+        void Update()
         {
             MoveWithPointer();
             runtimeMask.ApplyNewPositionAndScale();
