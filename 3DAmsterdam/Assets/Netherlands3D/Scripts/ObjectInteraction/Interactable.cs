@@ -18,7 +18,9 @@ namespace Netherlands3D.ObjectInteraction
         public bool blockMouseSelectionInteractions = false;
         public bool blockMouseNavigationInteractions = true;
         public bool blockKeyboardNavigationInteractions = false;
-        
+        public bool takeInteractionPriorityAtStart = true;
+        private bool firstStartPassed = false;
+
         private InputActionMap actionMap;
         public InputActionMap ActionMap {
             get
@@ -36,6 +38,12 @@ namespace Netherlands3D.ObjectInteraction
         /// </summary>
         public virtual void TakeInteractionPriority()
         {
+            if(!takeInteractionPriorityAtStart && !firstStartPassed)
+            {
+                firstStartPassed = true;
+                return;
+            }
+
             if (ActionMap != null) ActionMap.Enable();
 
             if(Selector.Instance)
