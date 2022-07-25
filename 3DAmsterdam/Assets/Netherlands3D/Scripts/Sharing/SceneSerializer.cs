@@ -17,20 +17,10 @@ namespace Netherlands3D.Sharing
 {
     public class SceneSerializer : MonoBehaviour
     {
-        [SerializeField]
         private InterfaceLayers interfaceLayers;
 
         [SerializeField]
         private RectTransform customLayerContainer;
-
-        [SerializeField]
-        private RectTransform annotationsContainer;
-
-        [SerializeField]
-        private RectTransform camerasContainer;
-
-        [SerializeField]
-        private RectTransform cameraLayersGroup;
 
         [SerializeField]
         private Annotation annotationPrefab;
@@ -38,7 +28,6 @@ namespace Netherlands3D.Sharing
         [SerializeField]
         GameObject cameraPrefab;
 
-        [SerializeField]
         private SunSettings sunSettings;
 
         [SerializeField]
@@ -67,6 +56,12 @@ namespace Netherlands3D.Sharing
         [Tooltip("Remove these objects when we are looking at a shared scene with editing not allowed")]
         [SerializeField]
         private GameObject[] objectsRemovedInViewMode;
+
+        private void Awake()
+        {
+            interfaceLayers = FindObjectOfType<InterfaceLayers>();
+            sunSettings = FindObjectOfType<SunSettings>();
+        }
 
         private void Start()
 		{
@@ -153,7 +148,7 @@ namespace Netherlands3D.Sharing
                 //Create the 2D annotation
                 var annotationData = scene.annotations[i];
 
-                Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
+                Annotation annotation = Instantiate(annotationPrefab, customLayerContainer);
                 annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
@@ -193,7 +188,7 @@ namespace Netherlands3D.Sharing
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
                 GameObject cameraObject = Instantiate(cameraPrefab);
                 cameraObject.name = cameraPoint.name;
-                cameraObject.transform.SetParent(camerasContainer, false);
+                cameraObject.transform.SetParent(customLayerContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
                 cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
                 cameraObject.GetComponent<FirstPersonLocation>().waitingForClick = false;
@@ -382,7 +377,7 @@ namespace Netherlands3D.Sharing
         /// <returns>Array containing serializeable data</returns>
         private SerializableScene.Annotation[] GetAnnotations()
         {
-            var annotations = annotationsContainer.GetComponentsInChildren<Annotation>(true);
+            var annotations = customLayerContainer.GetComponentsInChildren<Annotation>(true);
             var annotationsData = new List<SerializableScene.Annotation>();
             
             foreach (var annotation in annotations)
@@ -406,7 +401,7 @@ namespace Netherlands3D.Sharing
 
         private SerializableScene.CameraPoint[] GetCameras()
         {
-              var customLayerChildren = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
+              var customLayerChildren = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
               var cameraPointsData = new List<SerializableScene.CameraPoint>();
               
               foreach (var child in customLayerChildren)
