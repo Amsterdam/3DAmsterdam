@@ -63,7 +63,7 @@ namespace Netherlands3D.Settings {
 			minimap = FindObjectOfType<MapViewer>();
 			fpsCounter = FindObjectOfType<Fps>();
 			canvasSettings = FindObjectOfType<CanvasSettings>();
-
+			waterReflectionCamera = FindObjectOfType<WaterReflectionCamera>(true);
 
 #if !UNITY_EDITOR && UNITY_WEBGL
 			IsMobileDevice = IsMobile();
