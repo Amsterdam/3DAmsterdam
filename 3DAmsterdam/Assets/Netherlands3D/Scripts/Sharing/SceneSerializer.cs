@@ -19,23 +19,16 @@ namespace Netherlands3D.Sharing
     {
         private InterfaceLayers interfaceLayers;
 
-        [SerializeField]
-        private RectTransform customLayerContainer;
+        [SerializeField] private RectTransform customLayerContainer;
+        [SerializeField] private Annotation annotationPrefab;
 
-        [SerializeField]
-        private Annotation annotationPrefab;
-
-        [SerializeField]
-        GameObject cameraPrefab;
+        [SerializeField] GameObject cameraPrefab;
 
         private SunSettings sunSettings;
 
-        [SerializeField]
-        private InterfaceLayer buildingsLayer;
-        [SerializeField]
-        private InterfaceLayer treesLayer;
-        [SerializeField]
-        private InterfaceLayer groundLayer;
+        [SerializeField] private InterfaceLayer buildingsLayer;
+        [SerializeField] private InterfaceLayer treesLayer;
+        [SerializeField] private InterfaceLayer groundLayer;
 
         private string urlViewIDVariable = "view=";
 
@@ -44,18 +37,14 @@ namespace Netherlands3D.Sharing
         public string sharedSceneId = "";
 
         [Header("Custom object shader source references")]
-        [SerializeField]
-        private Material opaqueMaterialSource;
-        [SerializeField]
-        private Material transparentMaterialSource;
+        [SerializeField] private Material opaqueMaterialSource;
+        [SerializeField] private Material transparentMaterialSource;
 
         [Tooltip("Remove these objects when we are looking at a shared scene with editing allowed")]
-        [SerializeField]
-        private GameObject[] objectsRemovedInEditMode;
+        [SerializeField] private GameObject[] objectsRemovedInEditMode;
 
         [Tooltip("Remove these objects when we are looking at a shared scene with editing not allowed")]
-        [SerializeField]
-        private GameObject[] objectsRemovedInViewMode;
+        [SerializeField] private GameObject[] objectsRemovedInViewMode;
 
         private void Awake()
         {
