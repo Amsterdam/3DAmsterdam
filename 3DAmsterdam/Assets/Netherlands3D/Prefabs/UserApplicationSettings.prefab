@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: -0.44225287, y: 0.11874839, z: -0.059205774, w: -0.8870208}
   m_LocalPosition: {x: 366.8702, y: 442.23788, z: 6.5355835}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5808193173905523447}
   m_RootOrder: 0
@@ -41,6 +42,7 @@ GameObject:
   - component: {fileID: 5808193173905523447}
   - component: {fileID: 1744183435973826930}
   - component: {fileID: 1620163357301275705}
+  - component: {fileID: 4679500497928695069}
   m_Layer: 0
   m_Name: UserApplicationSettings
   m_TagString: Untagged
@@ -58,6 +60,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4844926604623465392}
   m_Father: {fileID: 0}
@@ -82,13 +85,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d8a703f0e05b09145a20afdca8874501, type: 2}
   - {fileID: 11400000, guid: fcc5cd8e296527d4797619c408314e73, type: 2}
   - {fileID: 11400000, guid: 60acf7f5dcfc4584ca9c185eae0c464f, type: 2}
-  interfaceLayers: {fileID: 0}
-  minimap: {fileID: 0}
-  fpsCounter: {fileID: 0}
-  canvasSettings: {fileID: 0}
   terrainLayer: {fileID: 0}
   stats: {fileID: 1802846755166398200, guid: 68c29ab80d86caf4398981161cc8f686, type: 3}
-  lodSlider: {fileID: 0}
 --- !u!114 &1620163357301275705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,13 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccef527f2f293449a14025b6383723a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  postProcessingVolumes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  postEffectGameObjects:
-  - {fileID: 0}
-  realtimeReflectionProbe: {fileID: 0}
+  realtimeReflectionsObject: {fileID: 0}
   aoRenderFeature: {fileID: -8540687902898676516, guid: d190a601dc54b944ca6d4c59c10fdbca,
     type: 2}
   forwardRendererData: {fileID: 11400000, guid: d190a601dc54b944ca6d4c59c10fdbca,
@@ -118,3 +110,15 @@ MonoBehaviour:
   aoDisabledLayerMask:
     serializedVersion: 2
     m_Bits: 64567
+--- !u!114 &4679500497928695069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891215064021093206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 453349986ee792045876ddd1e271cc61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

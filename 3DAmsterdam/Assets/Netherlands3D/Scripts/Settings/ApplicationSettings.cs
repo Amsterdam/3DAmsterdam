@@ -33,17 +33,14 @@ namespace Netherlands3D.Settings {
 
 		private const string playerPrefKey = "applicationSettings";
 
-        [SerializeField]
+		//Dependencies we fetch at start
         private InterfaceLayers interfaceLayers;
-
-        [SerializeField]
         private MapViewer minimap;
-
-        [SerializeField]
         private Fps fpsCounter;
-
-		[SerializeField]
+		private TileHandler tileHandler;
 		private CanvasSettings canvasSettings;
+		private WaterReflectionCamera waterReflectionCamera;
+
         private Rendering.RenderSettings renderSettings;
 
 		[SerializeField]
@@ -54,14 +51,6 @@ namespace Netherlands3D.Settings {
 
 		public static ApplicationSettings Instance;
 
-		[SerializeField]
-		private Slider lodSlider;
-
-		private TileHandler tileHandler;
-
-		[SerializeField]
-		private WaterReflectionCamera waterReflectionCamera;
-
 		public bool IsMobileDevice { get => isMobileDevice; set => isMobileDevice = value; }
 
 		private void Awake()
@@ -69,7 +58,12 @@ namespace Netherlands3D.Settings {
 			Instance = this;
 			IsMobileDevice = forceMobileDevice;
 
+			interfaceLayers = FindObjectOfType<InterfaceLayers>();
 			tileHandler = FindObjectOfType<TileHandler>();
+			minimap = FindObjectOfType<MapViewer>();
+			fpsCounter = FindObjectOfType<Fps>();
+			canvasSettings = FindObjectOfType<CanvasSettings>();
+
 
 #if !UNITY_EDITOR && UNITY_WEBGL
 			IsMobileDevice = IsMobile();
@@ -120,8 +114,6 @@ namespace Netherlands3D.Settings {
 
 			//Place camera at the mobile starting position ( closer to the ground )
 			CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
-			
-			lodSlider.value = lodSlider.minValue;
 
 			Selector.Instance.AllowDelayedSubObjectSelections = false;
 		}

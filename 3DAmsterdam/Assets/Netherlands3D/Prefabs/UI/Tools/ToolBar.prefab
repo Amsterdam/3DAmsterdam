@@ -812,7 +812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipText: Downloads
+  tooltipText: Download selectiegebied
 --- !u!1001 &3732437636180649043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1274,6 +1274,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 666169196745353647}
     m_Modifications:
+    - target: {fileID: 8729436290598581140, guid: 39658359fa9dff740a6639817b1915a4,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 8729436290598581141, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_Sprite
