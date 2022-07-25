@@ -18,11 +18,13 @@ namespace Netherlands3D
 
         [SerializeField] private Camera snapshotCamera;
 
+        private Graphic[] panelGraphics;
+        private Canvas[] canvases;
+
         private Texture2D screenShot;
         private RenderTexture screenshotRenderTexture;
 
         [SerializeField] private string fileType;
-
         [SerializeField] private string fileName;
 
         private const string resolutionSeparator = "×";
@@ -38,8 +40,6 @@ namespace Netherlands3D
         public Text snapshotFileType;
         public Text snapshotName;
 
-
-        public Canvas[] canvases;
         private bool takeScreenshotOnNextFrame;
         private IEnumerator screenshotCoroutine;
 
@@ -48,9 +48,6 @@ namespace Netherlands3D
         /// </summary>
         [DllImport("__Internal")]
         private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
-
-        [SerializeField]
-        private Graphic[] panelGraphics;
 
         private bool ignoredFirstStart = false;
 
