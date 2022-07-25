@@ -49,7 +49,6 @@ namespace Netherlands3D.Interface.Sharing
 		[SerializeField]
 		private SharedURL sharedURL;
 
-		[SerializeField]
 		private SceneSerializer sceneSerializer;
 
 		private SharingState state = SharingState.SHARING_OPTIONS;
@@ -60,6 +59,9 @@ namespace Netherlands3D.Interface.Sharing
 		private bool waitingForIndexedDBSync = false;
 		void OnEnable()
 		{
+			if (!sceneSerializer)
+				sceneSerializer = FindObjectOfType<SceneSerializer>();
+
 			ChangeState(SharingState.SHARING_OPTIONS);
 		}
 
