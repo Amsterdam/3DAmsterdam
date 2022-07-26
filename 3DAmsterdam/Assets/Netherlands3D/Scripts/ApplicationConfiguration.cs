@@ -49,12 +49,12 @@ namespace Netherlands3D
                     Debug.Log($"Successfully downloaded external config: {externalConfigFilePath}");
                     var json = request.downloadHandler.text;
                     JsonUtility.FromJsonOverwrite(json, configurationFile);
-
-                    Config.isLoadingOverrides = false;
                 }
                 else{
                     Debug.Log($"Could not load: {externalConfigFilePath}. Using default config.");
                 }
+
+                Config.isLoadingOverrides = false;
 
                 SetConfig();
             }

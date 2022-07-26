@@ -22,7 +22,7 @@ namespace Netherlands3D.Interface.Tools
 
 		private void OnDisable()
 		{
-			HelpMessage.Instance.Hide(true);
+			HelpMessage.Hide(true);
 			ToolBar.Instance.DisabledTool(this);
 		}
 	}

@@ -6,11 +6,21 @@ using Netherlands3D.Core;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Logging;
 using Netherlands3D.Help;
+using Netherlands3D.Events;
 
 namespace Netherlands3D.Interface
 {
 	public class LayerExporter : MonoBehaviour
 	{
+		[Header("Listen to events")]
+		[SerializeField] private TriggerEvent startAreaDownload;
+		[SerializeField] private TriggerEvent abortSelection;
+		[SerializeField] private ObjectEvent receivedBounds;
+
+		[Header("Trigger events")]
+		[SerializeField] private ObjectEvent changeGridSelectionColor;
+		[SerializeField] private TriggerEvent requestGridSelection;
+
 		private string selectedExportFormat = "";
 
 		[SerializeField]
@@ -19,29 +29,35 @@ namespace Netherlands3D.Interface
 		private bool[] exportLayerToggles = new bool[5] { true, true, true, true, true };
 
 		private Bounds exportBounds;
-
-		public GridSelection gridSelection;
-
 		private string helpMessage = "<b>Shift+Klik+Sleep</b> om het download gebied te selecteren";
-
-		[SerializeField]
-		private Material downloadBlockMaterial;
 
 		private bool acceptedTerms = false;
 
-		public void OnEnable()
-		{
-			HelpMessage.Instance.Show(helpMessage);
-			//Make sure you only subscribe once
-			gridSelection.StartSelection(downloadBlockMaterial);
+		[SerializeField]
+		private Color selectionColor;
 
-			gridSelection.onGridSelected.RemoveAllListeners();
-			gridSelection.onGridSelected.AddListener(SetBounds);
+		private void Awake()
+		{
+			startAreaDownload.started.AddListener(StartSelectingArea);
+			abortSelection.started.AddListener(Abort);
+		}
+		private void Abort()
+		{
+			gameObject.SetActive(false);
 		}
 
-		private void OnDisable()
+		private void StartSelectingArea()
 		{
-			gridSelection.onGridSelected.RemoveListener(SetBounds);
+			this.gameObject.SetActive(true);
+			changeGridSelectionColor.started.Invoke(selectionColor);
+			receivedBounds.started.RemoveAllListeners();
+			receivedBounds.started.AddListener((bounds) => { SetBounds((Bounds)bounds); });
+			requestGridSelection.started.Invoke();
+		}
+
+		public void OnEnable()
+		{
+			HelpMessage.Show(helpMessage);	
 		}
 
 		public void SetBounds(Bounds gridBounds)

@@ -92,7 +92,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void StartPlacementByClick()
 		{
-			HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
+			HelpMessage.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 			PlacementSettings();
 			placeActionEvent = placeAction.SubscribePerformed(Place);

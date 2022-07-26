@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -794.02783, y: 677.8898, z: -1082.045}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -43,26 +44,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19ca48cf59c2fa147999c7ae041f8794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interfaceLayers: {fileID: 0}
   customLayerContainer: {fileID: 0}
-  annotationsContainer: {fileID: 0}
-  camerasContainer: {fileID: 0}
-  cameraLayersGroup: {fileID: 0}
   annotationPrefab: {fileID: 0}
   cameraPrefab: {fileID: 3104785432663551129, guid: a9dd34b66ea57f9438ef803126ca3aa4,
     type: 3}
-  sunSettings: {fileID: 0}
   buildingsLayer: {fileID: 0}
   treesLayer: {fileID: 0}
   groundLayer: {fileID: 0}
-  urlViewIDVariable: ?view=
   sharedSceneId: 
   opaqueMaterialSource: {fileID: 2100000, guid: 1fe8f06ed37452e4f81e807883c905ec,
     type: 2}
   transparentMaterialSource: {fileID: 2100000, guid: 3b7aa421b5f299048a9abe0ca9ef6efa,
     type: 2}
-  objectsRemovedInEditMode:
-  - {fileID: 0}
+  objectsRemovedInEditMode: []
   objectsRemovedInViewMode:
   - {fileID: 0}
   - {fileID: 0}

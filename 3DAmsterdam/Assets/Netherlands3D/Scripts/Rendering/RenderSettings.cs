@@ -14,14 +14,10 @@ namespace Netherlands3D.Rendering
         private bool antiAliasing = true;
         private bool postEffects = true;
 
-        [SerializeField]
         private Volume[] postProcessingVolumes;
 
         [SerializeField]
-        private GameObject[] postEffectGameObjects;
-
-        [SerializeField]
-        private GameObject realtimeReflectionProbe;
+        private GameObject realtimeReflectionsObject;
 
         [SerializeField]
         private ScriptableRendererFeature aoRenderFeature;
@@ -40,6 +36,8 @@ namespace Netherlands3D.Rendering
         private void Awake()
 		{
             Instance = this;
+
+            postProcessingVolumes = FindObjectsOfType<Volume>();
         }
 
 		/// <summary>
@@ -67,7 +65,7 @@ namespace Netherlands3D.Rendering
 
         public void ToggleReflections(bool reflectionsOn)
         {
-            realtimeReflectionProbe.SetActive(reflectionsOn);
+            realtimeReflectionsObject.SetActive(reflectionsOn);
             EnviromentSettings.SetReflections(reflectionsOn);
         }
 
@@ -78,9 +76,6 @@ namespace Netherlands3D.Rendering
 
             foreach(Volume volume in postProcessingVolumes)
                 volume.enabled = effectsOn;
-
-            foreach (GameObject gameObject in postEffectGameObjects)
-                gameObject.SetActive(effectsOn);
 
             SetPostProcessing();
         }

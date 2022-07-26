@@ -12,13 +12,14 @@ GameObject:
   - component: {fileID: -4848450406567721921}
   - component: {fileID: 3521395809354684327}
   - component: {fileID: 4307490740009008391}
+  - component: {fileID: 3975033448507346986}
   m_Layer: 0
   m_Name: DownloadAreaTool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2878007151613157084
 Transform:
   m_ObjectHideFlags: 0
@@ -29,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -45,14 +47,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ed8dec9185ecd24da4c76a47027f9cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startAreaDownload: {fileID: 11400000, guid: a7fb3ac83d1c64b4d95c4664a1f76ab8, type: 2}
+  abortSelection: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
+  receivedBounds: {fileID: 11400000, guid: 28eaa5ee02efa904bacb83503263c44c, type: 2}
+  changeGridSelectionColor: {fileID: 11400000, guid: 95ae469a43f52f946b65a33dcacb116d,
+    type: 2}
+  requestGridSelection: {fileID: 11400000, guid: 96783fbdc263e164a88cc292f4367e19,
+    type: 2}
   selectableLayers:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  gridSelection: {fileID: 0}
-  downloadBlockMaterial: {fileID: 0}
+  selectionColor: {r: 0.013375282, g: 1, b: 0, a: 0.5019608}
 --- !u!114 &3521395809354684327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,5 +83,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a082f5c1fa3231b45813311cc8cc9262, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3975033448507346986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4292801992654040942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
