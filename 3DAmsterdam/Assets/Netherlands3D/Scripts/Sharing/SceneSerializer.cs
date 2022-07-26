@@ -48,8 +48,8 @@ namespace Netherlands3D.Sharing
 
         private void Awake()
         {
-            interfaceLayers = FindObjectOfType<InterfaceLayers>();
-            sunSettings = FindObjectOfType<SunSettings>();
+            interfaceLayers = FindObjectOfType<InterfaceLayers>(true);
+            sunSettings = FindObjectOfType<SunSettings>(true);
         }
 
         private void Start()
@@ -77,6 +77,7 @@ namespace Netherlands3D.Sharing
 		/// </summary>
 		[ContextMenu("Load last saved ID")] 
         public void GetTestId(){
+            Debug.Log($"Trying to load scene: {sharedSceneId}");
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
         #endif
@@ -96,6 +97,7 @@ namespace Netherlands3D.Sharing
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.result != UnityWebRequest.Result.Success || !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
+                Debug.Log(getSceneRequest.error);
                 WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
