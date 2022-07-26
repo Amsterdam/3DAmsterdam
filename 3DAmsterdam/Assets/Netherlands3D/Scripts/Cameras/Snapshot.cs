@@ -68,6 +68,8 @@ namespace Netherlands3D
                 ignoredFirstStart = true;
                 return;
             }
+
+            SaveCurrentToggleStates();
             EnablePanelGraphics(true);
             UpdateFields();            
         }
@@ -108,14 +110,22 @@ namespace Netherlands3D
                 fileName = snapshotName.text;
             }
 
-            // After taking a screenshot the toggles for UI that the user set get saved
-            snapshotPreferenceUI = snapshotUI.isOn;
-            snapshotPreferenceNavigation = snapshotNavigation.isOn;
-            snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
+            SaveCurrentToggleStates();
 
             //Align snapshot camera with our own active camera
             snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
             snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+        }
+
+        /// <summary>
+        /// Store current state of toggle elements
+        /// </summary>
+        private void SaveCurrentToggleStates()
+        {
+            // After taking a screenshot the toggles for UI that the user set get saved
+            snapshotPreferenceUI = snapshotUI.isOn;
+            snapshotPreferenceNavigation = snapshotNavigation.isOn;
+            snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
         }
 
         private IEnumerator Screenshotting()
