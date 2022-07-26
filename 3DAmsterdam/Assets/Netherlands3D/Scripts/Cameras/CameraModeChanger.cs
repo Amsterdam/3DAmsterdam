@@ -60,6 +60,11 @@ namespace Netherlands3D.Cameras
             if (latLongStringEvent) latLongStringEvent.started.AddListener(ChangedPointFromUrl);
         }
 
+        public void BackToFirstPerson()
+        {
+            FirstPersonMode(currentCamera.transform.position, currentCamera.transform.rotation);
+        }
+
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
         {
             PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
