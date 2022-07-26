@@ -850,31 +850,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
-        m_MethodName: set_isOn
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1856522237250236402}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
-        m_MethodName: set_isOn
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
         m_MethodName: set_isOn
         m_Mode: 0
@@ -913,7 +889,7 @@ GameObject:
   - component: {fileID: 1994623102245883150}
   - component: {fileID: 8910183127388486398}
   m_Layer: 5
-  m_Name: Image
+  m_Name: SpecificToggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1382,8 +1358,6 @@ MonoBehaviour:
   width: 1920
   height: 1080
   snapshotCamera: {fileID: 0}
-  screenShot: {fileID: 0}
-  screenshotRenderTexture: {fileID: 0}
   fileType: 
   fileName: 
   snapshotUI: {fileID: 4578348205352020849}
@@ -1392,8 +1366,6 @@ MonoBehaviour:
   snapshotResolution: {fileID: 6092698996298613883}
   snapshotFileType: {fileID: 882342840484281922}
   snapshotName: {fileID: 8154273963114635979}
-  responsiveCanvas: {fileID: 0}
-  panelGraphics: []
 --- !u!114 &4001426847471649857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3717,9 +3689,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 11400000, guid: 91c0cf226e039d44682f7c578e6cf7dd, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4762,9 +4734,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 11400000, guid: c90bf730d3e7a574e8f35fec19aaef94, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -13,25 +13,19 @@ namespace Netherlands3D
 {
     public class Snapshot : MonoBehaviour
     {
-        [SerializeField]
-        private int width = 1920;
-        [SerializeField]
-        private int height = 1080;
+        [SerializeField] private int width = 1920;
+        [SerializeField] private int height = 1080;
 
-        [SerializeField]
-        private Camera snapshotCamera;
+        [SerializeField] private Camera snapshotCamera;
 
-        [SerializeField]
+        private Graphic[] panelGraphics;
+        private Canvas[] canvases;
+
         private Texture2D screenShot;
-
-        [SerializeField]
         private RenderTexture screenshotRenderTexture;
 
-        [SerializeField]
-        private String fileType;
-
-        [SerializeField]
-        private String fileName;
+        [SerializeField] private string fileType;
+        [SerializeField] private string fileName;
 
         private const string resolutionSeparator = "×";
 
@@ -42,13 +36,10 @@ namespace Netherlands3D
         public Toggle snapshotMainMenu;
         private bool snapshotPreferenceMainMenu;
 
-
         public Text snapshotResolution;
         public Text snapshotFileType;
         public Text snapshotName;
 
-
-        public Canvas responsiveCanvas;
         private bool takeScreenshotOnNextFrame;
         private IEnumerator screenshotCoroutine;
 
@@ -58,15 +49,12 @@ namespace Netherlands3D
         [DllImport("__Internal")]
         private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
-        [SerializeField]
-        private Graphic[] panelGraphics;
-
         private bool ignoredFirstStart = false;
 
 		private void Awake()
 		{
             panelGraphics = this.GetComponentsInChildren<Graphic>();
-
+            canvases = FindObjectsOfType<Canvas>();
             screenshotCoroutine = Screenshotting();
 #if UNITY_EDITOR
             screenshotCoroutine = ScreenshottingEditor();
@@ -80,6 +68,8 @@ namespace Netherlands3D
                 ignoredFirstStart = true;
                 return;
             }
+
+            SaveCurrentToggleStates();
             EnablePanelGraphics(true);
             UpdateFields();            
         }
@@ -120,14 +110,22 @@ namespace Netherlands3D
                 fileName = snapshotName.text;
             }
 
-            // After taking a screenshot the toggles for UI that the user set get saved
-            snapshotPreferenceUI = snapshotUI.isOn;
-            snapshotPreferenceNavigation = snapshotNavigation.isOn;
-            snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
+            SaveCurrentToggleStates();
 
             //Align snapshot camera with our own active camera
             snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
             snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+        }
+
+        /// <summary>
+        /// Store current state of toggle elements
+        /// </summary>
+        private void SaveCurrentToggleStates()
+        {
+            // After taking a screenshot the toggles for UI that the user set get saved
+            snapshotPreferenceUI = snapshotUI.isOn;
+            snapshotPreferenceNavigation = snapshotNavigation.isOn;
+            snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
         }
 
         private IEnumerator Screenshotting()
@@ -261,8 +259,11 @@ namespace Netherlands3D
             snapshotCamera.Render();
 
             // Resets canvas
-            responsiveCanvas.worldCamera = null;
-            responsiveCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            foreach (var canvas in canvases)
+            {
+                canvas.worldCamera = null;
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            }
 
             screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             screenShot.Apply();
@@ -308,9 +309,12 @@ namespace Netherlands3D
             // Allows the camera to see what is on the canvas if user wants to see UI
             if (snapshotUI.isOn)
             {
-                responsiveCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-                responsiveCanvas.worldCamera = snapshotCamera;
-                responsiveCanvas.planeDistance = snapshotCamera.nearClipPlane + 0.1f;
+                foreach (var canvas in canvases)
+                {
+                    canvas.worldCamera = snapshotCamera;
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    canvas.planeDistance = snapshotCamera.nearClipPlane + 0.1f;
+                }
             }
             gameObject.SetActive(true);
             takeScreenshotOnNextFrame = true;

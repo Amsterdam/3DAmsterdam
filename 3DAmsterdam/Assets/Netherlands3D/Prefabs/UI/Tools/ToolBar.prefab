@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 666169196745353646}
   - component: {fileID: 334441708763133778}
   - component: {fileID: 3476863442995011303}
+  - component: {fileID: 2187394788655046274}
   m_Layer: 5
   m_Name: ToolBar
   m_TagString: Untagged
@@ -127,6 +128,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &2187394788655046274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666169196745353644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: c90bf730d3e7a574e8f35fec19aaef94, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 666169196745353644}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &2661054349865196472
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -812,7 +847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipText: Downloads
+  tooltipText: Download selectiegebied
 --- !u!1001 &3732437636180649043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1274,6 +1309,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 666169196745353647}
     m_Modifications:
+    - target: {fileID: 8729436290598581140, guid: 39658359fa9dff740a6639817b1915a4,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 8729436290598581141, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_Sprite

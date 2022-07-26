@@ -21,7 +21,6 @@ namespace Netherlands3D.Interface
         public static float canvasScale = 1.0f;
 
         private float maxAutoWidth = 1.5f;
-
         private float referenceWidth = 1920.0f;
 
 		private void Awake()

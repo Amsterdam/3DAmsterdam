@@ -49,7 +49,6 @@ namespace Netherlands3D.Interface.Sharing
 		[SerializeField]
 		private SharedURL sharedURL;
 
-		[SerializeField]
 		private SceneSerializer sceneSerializer;
 
 		private SharingState state = SharingState.SHARING_OPTIONS;
@@ -60,6 +59,9 @@ namespace Netherlands3D.Interface.Sharing
 		private bool waitingForIndexedDBSync = false;
 		void OnEnable()
 		{
+			if (!sceneSerializer)
+				sceneSerializer = FindObjectOfType<SceneSerializer>();
+
 			ChangeState(SharingState.SHARING_OPTIONS);
 		}
 
@@ -85,10 +87,13 @@ namespace Netherlands3D.Interface.Sharing
 			progressBar.Percentage(0.2f);
 
 			ChangeState(SharingState.SHARING_SCENE);
-			yield return new WaitForEndOfFrame(); 
-			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
-			print(jsonScene);
+			yield return new WaitForEndOfFrame();
+			var serializedScene = sceneSerializer.SerializeScene(editAllowToggle.isOn);
 
+			var jsonScene = JsonUtility.ToJson(serializedScene, true);
+			print(jsonScene);
+			serializedScene = null;
+			
 			print("Save scene using url:" + Config.activeConfiguration.sharingUploadScenePath);
 			//Post basic scene, and optionaly get unique tokens in return
 			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingUploadScenePath, jsonScene);

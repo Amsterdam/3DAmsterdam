@@ -1,7 +1,7 @@
 ﻿namespace Netherlands3D.Sharing
 {
     [System.Serializable]
-    public struct SerializableScene
+    public class SerializableScene
     {
         public string appVersion;
         public string buildType;
