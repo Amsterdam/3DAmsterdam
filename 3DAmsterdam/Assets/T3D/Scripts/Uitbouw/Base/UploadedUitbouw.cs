@@ -19,17 +19,17 @@ namespace Netherlands3D.T3D.Uitbouw
 
         Vector3 transformedExtents;
 
-        public override Vector3 LeftCenter => meshFilter.transform.position + mesh.bounds.center - transform.right * transformedExtents.x;
+        public override Vector3 LeftCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center - transform.right * transformedExtents.x;
 
-        public override Vector3 RightCenter => meshFilter.transform.position + mesh.bounds.center + transform.right * transformedExtents.x;
+        public override Vector3 RightCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center + transform.right * transformedExtents.x;
 
-        public override Vector3 TopCenter => meshFilter.transform.position + mesh.bounds.center + transform.up * transformedExtents.y;
+        public override Vector3 TopCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center + transform.up * transformedExtents.y;
 
-        public override Vector3 BottomCenter => meshFilter.transform.position + mesh.bounds.center - transform.up * transformedExtents.y;
+        public override Vector3 BottomCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center - transform.up * transformedExtents.y;
 
-        public override Vector3 FrontCenter => meshFilter.transform.position + mesh.bounds.center - transform.forward * transformedExtents.z;
+        public override Vector3 FrontCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center - transform.forward * transformedExtents.z;
 
-        public override Vector3 BackCenter => meshFilter.transform.position + mesh.bounds.center + transform.forward * transformedExtents.z;
+        public override Vector3 BackCenter => meshFilter.transform.position + transform.rotation * mesh.bounds.center + transform.forward * transformedExtents.z;
 
         public override void UpdateDimensions()
         {
