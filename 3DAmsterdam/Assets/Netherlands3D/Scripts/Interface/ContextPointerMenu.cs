@@ -138,6 +138,8 @@ namespace Netherlands3D.Interface
 		{
 			CloseContextMenu();
 
+			this.transform.SetAsLastSibling();
+
 			contextItemsPanel.transform.position = Mouse.current.position.ReadValue();
 			contextItemsPanel.gameObject.SetActive(true);
 
