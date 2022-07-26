@@ -65,7 +65,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         if (useTestJSON)
             cityJson = testJSON.text;
 
-        var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD());
+        var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
         var meshmaker = new CityJsonMeshUtility();
 
         //var cityObject = GetComponentInChildren<CityJSONToCityObject>(true);

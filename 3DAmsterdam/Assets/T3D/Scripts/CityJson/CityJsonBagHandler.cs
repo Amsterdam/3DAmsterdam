@@ -26,7 +26,7 @@ public class CityJsonBagHandler : MonoBehaviour
 
     private void ParseCityJson(string cityjson)
     {
-        var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD());
+        var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD(), false);
         var meshmaker = new CityJsonMeshUtility();
 
         List<Mesh> meshes = new List<Mesh>();
