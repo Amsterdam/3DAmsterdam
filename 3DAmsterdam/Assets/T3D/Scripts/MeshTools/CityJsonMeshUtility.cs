@@ -46,7 +46,8 @@ public class CityJsonMeshUtility
         //mesh.RecalculateBounds();
         //mesh.vertices = TransformVertices(mesh, -mesh.bounds.center, Quaternion.identity, Vector3.one); 
         //offset the vertices so that the center of the mesh bounding box of the selected mesh LOD is at (0,0,0)
-        
+
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         return mesh;
     }

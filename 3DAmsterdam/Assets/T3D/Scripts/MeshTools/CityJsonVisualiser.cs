@@ -87,13 +87,20 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             }
         }
 
-        //re-initialize the usermovementaxes to ensure the new meshes are dragable
-        //EnableUploadedModel(true);
         uitbouw.SetMeshFilter(uitbouw.MeshFilter);
 
-        var depthOffset = -transform.forward * uitbouw.Depth / 2;
-        var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
-        uitbouw.MeshFilter.transform.localPosition = depthOffset + heightOffset;
+        //center mesh
+        var offset = uitbouw.MeshFilter.mesh.bounds.center;
+        offset.y -= uitbouw.MeshFilter.mesh.bounds.extents.y;
+        offset += uitbouw.transform.forward * uitbouw.Depth / 2;
+        uitbouw.MeshFilter.transform.localPosition = -offset;
+
+        //re-initialize the usermovementaxes to ensure the new meshes are dragable
+        //EnableUploadedModel(true);
+
+        //var depthOffset = -transform.forward * uitbouw.Depth / 2;
+        //var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
+        //uitbouw.MeshFilter.transform.localPosition = depthOffset + heightOffset;
 
         uitbouw.InitializeUserMovementAxes();
 
@@ -111,6 +118,8 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 
         meshFilter.mesh = new Mesh();
         meshFilter.mesh.CombineMeshes(combine);
+        meshFilter.mesh.RecalculateBounds();
+        meshFilter.mesh.RecalculateNormals();
 
         uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
     }
