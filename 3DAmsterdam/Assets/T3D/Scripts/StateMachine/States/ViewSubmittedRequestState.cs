@@ -41,11 +41,25 @@ public class ViewSubmittedRequestState : State
                 x.SetActive(ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
             });
 
+        ClearDisplayTags();
+
         DisplayMetadata();
         DisplayBoundaryFeatures();
         DisplayAnnotations();
 
         ServiceLocator.GetService<JsonSessionSaver>().EnableAutoSave(false);
+    }
+
+    private void ClearDisplayTags()
+    {
+        foreach (Transform tag in boundaryFeaturePanel)
+        {
+            Destroy(tag.gameObject);
+        }
+        foreach (Transform tag in annotationPanel)
+        {
+            Destroy(tag.gameObject);
+        }
     }
 
     private void DisplayMetadata()
