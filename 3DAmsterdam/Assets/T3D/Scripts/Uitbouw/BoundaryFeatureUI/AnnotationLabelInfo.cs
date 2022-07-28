@@ -8,15 +8,9 @@ public class AnnotationLabelInfo : MonoBehaviour
 
     public void SetInfo(AnnotationUI ann)
     {
-        annotationNumber.text = (ann.Id + 1).ToString();
+        annotationNumber.text = "Annotatie " + (ann.Id + 1).ToString();
         annotationText.text = ann.Text;
-        //featureSize.text = FormatSize(ann.Size);
-    }
 
-    //private string FormatSize(Vector2 size)
-    //{
-    //    var x = Mathf.RoundToInt(size.x * 100f);
-    //    var y = Mathf.RoundToInt(size.y * 100f);
-    //    return x + " x " + y;
-    //}
+        //annotationText.rectTransform.sizeDelta = new Vector2(annotationText.rectTransform.sizeDelta.x, annotationText.preferredHeight);
+    }
 }
