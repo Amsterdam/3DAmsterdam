@@ -41,8 +41,6 @@ public class CsvFileParser : MonoBehaviour
     [SerializeField]
     private IntEvent onSelectCSVContentType;
     [SerializeField]
-    private BoolEvent onToggleBetaFeatures;
-    [SerializeField]
     private TriggerEvent onClearData;
 
     [SerializeField]
@@ -92,7 +90,6 @@ public class CsvFileParser : MonoBehaviour
 
     private void Awake()
 	{
-		onToggleBetaFeatures.started.AddListener(Show);
 		onFilesImported.started.AddListener(LoadCsvFromFile);
 
         onSelectCSVContentType.started.AddListener(SelectCSVContentType);
@@ -209,11 +206,6 @@ public class CsvFileParser : MonoBehaviour
     {
         setProgressBarPercentage.started.Invoke(((float)lineNr / (float)ofTotal) * 100.0f);
         setProgressBarDetailedMessage.started.Invoke($"Regels gelezen: {lineNr}/{ofTotal}");
-    }
-
-    private void Show(bool active)
-    {
-        gameObject.SetActive(active);
     }
 
     public void AutoDetectCSVContent()

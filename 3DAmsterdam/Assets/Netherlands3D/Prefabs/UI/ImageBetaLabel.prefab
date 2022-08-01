@@ -28,6 +28,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6291378800588939692}
   m_RootOrder: 0
@@ -91,7 +92,6 @@ GameObject:
   - component: {fileID: 2333878735643765619}
   - component: {fileID: 7411932635100659678}
   - component: {fileID: 7683625763702124390}
-  - component: {fileID: 8499397203833865641}
   m_Layer: 5
   m_Name: ImageBetaLabel
   m_TagString: Untagged
@@ -109,6 +109,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7121143437733681991}
   m_Father: {fileID: 0}
@@ -170,15 +171,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorStyle: 0
---- !u!114 &8499397203833865641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8324879535466911116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e21d63f60ba821c4896de34d3256b976, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

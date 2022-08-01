@@ -53,6 +53,9 @@ namespace Netherlands3D.Settings {
 
 		public bool IsMobileDevice { get => isMobileDevice; set => isMobileDevice = value; }
 
+		[SerializeField]
+		private BoolEvent toggleBetaFeatures;
+
 		private void Awake()
 		{
 			Instance = this;
@@ -142,8 +145,8 @@ namespace Netherlands3D.Settings {
 				ApplySettings();
 			});
 
-			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
-				settings.showExperimentelFeatures = toggle;
+			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentalFeatures, (toggle) => {
+				settings.showExperimentalFeatures = toggle;
 				ApplySettings();
 			});
 
@@ -272,7 +275,7 @@ namespace Netherlands3D.Settings {
 			
 			minimap.gameObject.SetActive(settings.drawMap);
 
-			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
+			toggleBetaFeatures.started.Invoke(settings.showExperimentalFeatures);
 
 			canvasSettings.ChangeCanvasScale(settings.canvasScale * 0.01f);
 
