@@ -27,7 +27,7 @@ public class CityJsonMeshUtility
 
     }
 
-    public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
+    public Mesh CreateMesh(Matrix4x4 localToWorldMatrix, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
     {
         var meshes = CreateMeshes(cityModel, cityObject, flipYZ);
 
@@ -38,7 +38,7 @@ public class CityJsonMeshUtility
         for (int i = 0; i < meshes.Length; i++)
         {
             combineInstanceArray[i].mesh = meshes[i];
-            combineInstanceArray[i].transform = transform.localToWorldMatrix;
+            combineInstanceArray[i].transform = localToWorldMatrix;
         }
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;

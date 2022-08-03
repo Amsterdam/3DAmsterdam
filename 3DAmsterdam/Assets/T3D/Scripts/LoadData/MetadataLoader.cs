@@ -47,7 +47,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Area = area;
 
             var centerAndRadius = Utilities.GeometryCalculator.GetCenterAndRadius(perceel);
-            Center = new Vector2RD( centerAndRadius.Center.x, centerAndRadius.Center.y);
+            Center = new Vector2RD(centerAndRadius.Center.x, centerAndRadius.Center.y);
             Radius = centerAndRadius.Radius;
         }
     }
@@ -83,8 +83,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
-        
-        public delegate void CityJsonBagLoadedEventHandler(object source, Mesh mesh);
+
+        public delegate void CityJsonBagLoadedEventHandler(object source, string sourceJson, Mesh mesh);
         public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
         public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
@@ -92,9 +92,9 @@ namespace Netherlands3D.T3D.Uitbouw
             BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
         }
 
-        public void RaiseCityJsonBagLoaded(Mesh mesh)
+        public void RaiseCityJsonBagLoaded(string sourceJson, Mesh mesh)
         {
-            CityJsonBagLoaded?.Invoke(this, mesh);
+            CityJsonBagLoaded?.Invoke(this, sourceJson, mesh);
         }
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
@@ -135,7 +135,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void RequestBuildingData(Vector3RD position, string id)
         {
             if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile && (!string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) || !string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.BlobId)))
-            { 
+            {
                 StartCoroutine(GetBimCityJson());
             }
 
@@ -262,7 +262,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                 }
                 else
-                {                    
+                {
                     CityJsonBag = uwr.downloadHandler.text;
                     CityJsonBagReceived?.Invoke(CityJsonBag);
                 }
@@ -271,7 +271,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         public IEnumerator GetCityJsonBagBoundingBox(double x, double y, string excludeBagId)
-        {            
+        {
             string bbox = $"{x - 25},{y - 25},{x + 25},{y + 25}";
 
             var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&BBOX={bbox}&OUTPUTFORMAT=application%2Fjson";
@@ -284,7 +284,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                 }
                 else
-                {                    
+                {
                     CityJsonBagBoundingBoxReceived?.Invoke(uwr.downloadHandler.text, excludeBagId);
                 }
 

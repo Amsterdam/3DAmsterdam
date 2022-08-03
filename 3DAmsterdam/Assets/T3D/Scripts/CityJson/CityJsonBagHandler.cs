@@ -11,7 +11,7 @@ public class CityJsonBagHandler : MonoBehaviour
 {
     void OnEnable()
     {
-        ServiceLocator.GetService<MetadataLoader>().CityJsonBagReceived += OnCityJsonBagReceived;       
+        ServiceLocator.GetService<MetadataLoader>().CityJsonBagReceived += OnCityJsonBagReceived;
     }
 
     void OnDisable()
@@ -21,10 +21,12 @@ public class CityJsonBagHandler : MonoBehaviour
 
     private void OnCityJsonBagReceived(string cityJson)
     {
-        ParseCityJson(cityJson);
+        var mesh = ParseCityJson(cityJson);
+        if (mesh != null)
+            ServiceLocator.GetService<MetadataLoader>().RaiseCityJsonBagLoaded(cityJson, mesh);
     }
 
-    private void ParseCityJson(string cityjson)
+    private Mesh ParseCityJson(string cityjson)
     {
         var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD(), false);
         var meshmaker = new CityJsonMeshUtility();
@@ -34,7 +36,7 @@ public class CityJsonBagHandler : MonoBehaviour
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             //var key = co.Key;
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, true);
+            var mesh = meshmaker.CreateMesh(transform.localToWorldMatrix, cityJsonModel, co.Value, true);
             if (mesh != null)
             {
                 meshes.Add(mesh);
@@ -44,26 +46,23 @@ public class CityJsonBagHandler : MonoBehaviour
         if (meshes.Any())
         {
             var combinedMesh = CombineMeshes(meshes);
-            ServiceLocator.GetService<MetadataLoader>().RaiseCityJsonBagLoaded(combinedMesh);
+            return combinedMesh;
         }
-
+        return null;
     }
 
     Mesh CombineMeshes(List<Mesh> meshes)
-    {        
+    {
         CombineInstance[] combine = new CombineInstance[meshes.Count];
 
-        for (int i=0; i<meshes.Count; i++)
+        for (int i = 0; i < meshes.Count; i++)
         {
-            combine[i].mesh = meshes[i];        
+            combine[i].mesh = meshes[i];
             combine[i].transform = transform.localToWorldMatrix;
         }
 
         var mesh = new Mesh();
         mesh.CombineMeshes(combine);
         return mesh;
-
     }
-
-   
 }

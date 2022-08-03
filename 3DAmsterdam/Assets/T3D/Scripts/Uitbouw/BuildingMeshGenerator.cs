@@ -44,9 +44,9 @@ namespace Netherlands3D.T3D.Uitbouw
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
         }
 
-        private void OnCityJsonBagLoaded(object source, Mesh mesh)
+        private void OnCityJsonBagLoaded(object source, string sourceJson, Mesh mesh)
         {
-            
+
             //transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
             mf.mesh = mesh;

@@ -64,15 +64,15 @@ public class CityJSONToCityObject : CityObject
         return citySurfaces.ToArray();
     }
 
-    private int[] GetInidces(JSONArray indicesNode)
-    {
-        var indices = new int[indicesNode.Count];
-        for (int i = 0; i < indicesNode.Count; i++)
-        {
-            indices[i] = indicesNode[i];
-        }
-        return indices;
-    }
+    //private int[] GetInidces(JSONArray indicesNode)
+    //{
+    //    var indices = new int[indicesNode.Count];
+    //    for (int i = 0; i < indicesNode.Count; i++)
+    //    {
+    //        indices[i] = indicesNode[i];
+    //    }
+    //    return indices;
+    //}
 
     public override void UpdateSurfaces()
     {

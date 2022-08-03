@@ -35,7 +35,7 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
         {
             if (co.Key.Contains(excludeBagId)) continue;
             
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, true);
+            var mesh = meshmaker.CreateMesh(transform.localToWorldMatrix, cityJsonModel, co.Value, true);
 
             if (mesh != null)
             {
