@@ -65,30 +65,26 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         if (useTestJSON)
             cityJson = testJSON.text;
 
-        //var meshmaker = new CityJsonMeshUtility();
-        //foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
-        //{
-        //var key = co.Key;
-        //var mesh = meshmaker.CreateMesh(transform.localToWorldMatrix, cityJsonModel, co.Value, false);
+        print("parsing: " + cityJson);
+        HandleTextFile.WriteString("test.json", cityJson);
 
         var meshFilter = uitbouw.MeshFilter;
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
-        var meshes = ParseCityJson(cityJsonModel, transform.localToWorldMatrix);
+        var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix);
+        var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
 
         foreach (var pair in meshes)
         {
             var mesh = pair.Value;
             if (mesh != null)
             {
-                //AddMesh(mesh);
-                var newCityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
-                newCityObject.SetNode(pair.Key, cityJsonModel.vertices);
-                uitbouw.AddCityObject(newCityObject);
-                //AddMeshGameObject(key, mesh);
+                var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
+                cityObject.SetNode(pair.Key, cityJsonModel.vertices);
+                uitbouw.AddCityObject(cityObject);
             }
         }
-        var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
-
+        meshFilter.mesh = combinedMesh;
+        uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
 
         uitbouw.SetMeshFilter(uitbouw.MeshFilter);
 
@@ -137,21 +133,23 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 
     public static Mesh CombineMeshes(List<Mesh> meshes, Matrix4x4 localToWorldMatrix)
     {
-        if (meshes.Any())
+        //if (meshes.Any())
+        //{
+        CombineInstance[] combine = new CombineInstance[meshes.Count];
+
+        for (int i = 0; i < meshes.Count; i++)
         {
-            CombineInstance[] combine = new CombineInstance[meshes.Count];
-
-            for (int i = 0; i < meshes.Count; i++)
-            {
-                combine[i].mesh = meshes[i];
-                combine[i].transform = localToWorldMatrix;
-            }
-
-            var mesh = new Mesh();
-            mesh.CombineMeshes(combine);
-            return mesh;
+            combine[i].mesh = meshes[i];
+            combine[i].transform = localToWorldMatrix;
         }
-        return null;
+
+        var mesh = new Mesh();
+        mesh.CombineMeshes(combine);
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+        return mesh;
+        //}
+        //return null;
     }
 
     //void AddMesh(Mesh newMesh)

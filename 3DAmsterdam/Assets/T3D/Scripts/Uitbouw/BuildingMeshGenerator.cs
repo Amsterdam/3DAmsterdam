@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.LayerSystem;
 using ConvertCoordinates;
+using T3D.LoadData;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -38,13 +39,33 @@ namespace Netherlands3D.T3D.Uitbouw
             //base.Start();
             //ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
             ServiceLocator.GetService<MetadataLoader>().BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
-
-            ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+            //ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+            ServiceLocator.GetService<MetadataLoader>().CityJsonBagReceived += BuildingMeshGenerator_CityJsonBagReceived;
 
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
         }
 
-        private void OnCityJsonBagLoaded(object source, string sourceJson, Mesh mesh)
+        private void BuildingMeshGenerator_CityJsonBagReceived(string cityJson)
+        {
+            var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
+            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix);
+            var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
+
+            foreach (var pair in meshes)
+            {
+                var mesh = pair.Value;
+                if (mesh != null)
+                {
+                    var cityObject = GetComponent<CityJSONToCityObject>();
+                    cityObject.SetNode(pair.Key, cityJsonModel.vertices);
+                    //uitbouw.AddCityObject(newCityObject);
+                    //AddMeshGameObject(key, mesh);
+                }
+            }
+            ProcessMesh(combinedMesh);
+        }
+
+        private void ProcessMesh(Mesh mesh)
         {
 
             //transform.position = args.TileOffset;

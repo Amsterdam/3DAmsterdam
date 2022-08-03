@@ -85,17 +85,17 @@ namespace Netherlands3D.T3D.Uitbouw
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
         public delegate void CityJsonBagLoadedEventHandler(object source, string sourceJson, Mesh mesh);
-        public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
+        //public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
         public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
         {
             BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
         }
 
-        public void RaiseCityJsonBagLoaded(string sourceJson, Mesh mesh)
-        {
-            CityJsonBagLoaded?.Invoke(this, sourceJson, mesh);
-        }
+        //public void RaiseCityJsonBagLoaded(string sourceJson, Mesh mesh)
+        //{
+        //    CityJsonBagLoaded?.Invoke(this, sourceJson, mesh);
+        //}
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;

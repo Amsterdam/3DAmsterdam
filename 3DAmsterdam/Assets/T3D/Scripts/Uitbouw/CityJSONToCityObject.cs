@@ -20,6 +20,11 @@ public class CityJSONToCityObject : CityObject
     //private JSONArray sourcePolygons;
     private JSONArray sourceBoundaries = new JSONArray();
 
+    protected override void Start()
+    {
+        //base.Start(); //dont call base.Start here, call it when the node is set in SetNode()
+    }
+
     public override CitySurface[] GetSurfaces()
     {
         List<CitySurface> citySurfaces = new List<CitySurface>();
@@ -77,6 +82,8 @@ public class CityJSONToCityObject : CityObject
     public override void UpdateSurfaces()
     {
         Solids = new List<CitySurface[]>();
+        //if (!objectNode)
+        //    print(gameObject.name + " does not have object node");
         var geometries = objectNode["geometry"];
         foreach (var geometry in geometries) //multiple geometry objects represent different LODs
         {
@@ -229,5 +236,6 @@ public class CityJSONToCityObject : CityObject
     {
         this.objectNode = objectNode;
         this.combinedVertices = combinedVertices;
+        base.Start();
     }
 }
