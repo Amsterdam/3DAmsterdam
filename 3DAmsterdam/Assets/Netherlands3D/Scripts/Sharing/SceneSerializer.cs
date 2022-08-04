@@ -22,7 +22,8 @@ namespace Netherlands3D.Sharing
         [SerializeField] private RectTransform customLayerContainer;
         [SerializeField] private Annotation annotationPrefab;
 
-        [SerializeField] GameObject cameraPrefab;
+        [SerializeField] private Transform cameraPositionsContainer;
+        [SerializeField] private GameObject cameraPrefab;
 
         private SunSettings sunSettings;
 
@@ -177,12 +178,9 @@ namespace Netherlands3D.Sharing
             for (int i = 0; i < scene.cameraPoints.Length; i++) 
             {
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
-                GameObject cameraObject = Instantiate(cameraPrefab);
+                var cameraObject = Instantiate(cameraPrefab,cameraPositionsContainer);
                 cameraObject.name = cameraPoint.name;
-                cameraObject.transform.SetParent(customLayerContainer, false);
-                cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
-                cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
-                cameraObject.GetComponent<FirstPersonLocation>().waitingForClick = false;
+                cameraObject.transform.SetPositionAndRotation(cameraPoint.position, cameraPoint.rotation);
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
                 newCustomLayer.Active = true;
             }
@@ -398,14 +396,14 @@ namespace Netherlands3D.Sharing
               foreach (var child in customLayerChildren)
               {
                     if (child.LayerType != LayerType.CAMERA) continue;
-                    var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
+
+                    var firstPersonObject = child.LinkedObject.GetComponent<SavedCameraPosition>();
                     if (!firstPersonObject) continue;
 
-                    var follower = child.LinkedObject.GetComponent<WorldPointFollower>();
                     cameraPointsData.Add(new SerializableScene.CameraPoint
                     {
-                        position = follower.WorldPosition,
-                        rotation = firstPersonObject.savedRotation,
+                        position = child.LinkedObject.transform.position,
+                        rotation = child.LinkedObject.transform.rotation,
                         name = child.LinkedObject.name
                     });
               }

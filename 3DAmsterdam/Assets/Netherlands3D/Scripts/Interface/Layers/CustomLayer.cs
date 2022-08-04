@@ -32,12 +32,9 @@ namespace Netherlands3D.Interface.Layers
                 CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
                 annotation.StartEditingText();
             }
-
             else if (layerType == LayerType.CAMERA) 
             {
-                WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
-                FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
-                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
+                Camera.main.transform.SetPositionAndRotation(LinkedObject.transform.position, LinkedObject.transform.rotation);
             }
             else
             {

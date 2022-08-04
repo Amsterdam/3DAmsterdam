@@ -54,7 +54,7 @@ namespace Netherlands3D.ObjectInteraction
 			StartScale = this.transform.localScale;
 
 			//Make sure this object has a collider
-			if (!gameObject.GetComponent<MeshCollider>())
+			if (!gameObject.GetComponent<Collider>())
 				gameObject.AddComponent<MeshCollider>();
 
 			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
