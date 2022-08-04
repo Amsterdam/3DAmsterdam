@@ -86,7 +86,33 @@ namespace Netherlands3D.Cameras
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
             OnFirstPersonModeEvent?.Invoke();
+
+            //Flatten rotation (so end result looks forward instead of down)
+            var eulerRotation = rotation.eulerAngles;
+            eulerRotation.x = 0;
+            rotation = Quaternion.Euler(eulerRotation);
+
             TransitionCamera(currentCamera.transform, position, rotation);
+        }
+        public void GodViewMode()
+        {
+            PointerLock.SetMode(PointerLock.Mode.DEFAULT);
+
+            this.CameraMode = CameraMode.GodView;
+            Vector3 currentPosition = currentCamera.transform.position;
+            Quaternion rot = currentCamera.transform.rotation;
+            Vector3 forward = currentCamera.transform.forward;
+            currentCamera.SetActive(false);
+            currentCamera = godViewCam;
+            currentCamera.transform.position = currentPosition;
+            currentCamera.transform.rotation = rot;
+            currentCamera.SetActive(true);
+            CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
+            ActiveCamera = currentCamera.GetComponent<Camera>();
+            OnGodViewModeEvent?.Invoke();
+
+            var lookingDown = Quaternion.LookRotation(Vector3.down, forward);
+            TransitionCamera(currentCamera.transform, currentPosition + Vector3.up * 400, lookingDown, true);
         }
 
         public void TransitionCamera(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
@@ -133,24 +159,6 @@ namespace Netherlands3D.Cameras
 
             var convertedCoordinate = CoordConvert.WGS84toUnity(longitude, latitude);
             currentCamera.transform.position = new Vector3(convertedCoordinate.x, Mathf.Max(this.transform.position.y,300), convertedCoordinate.z);
-        }
-
-        public void GodViewMode()
-        {
-            PointerLock.SetMode(PointerLock.Mode.DEFAULT);
-
-            this.CameraMode = CameraMode.GodView;
-            Vector3 currentPosition = currentCamera.transform.position;
-            Quaternion rot = currentCamera.transform.rotation;
-            currentCamera.SetActive(false);
-            currentCamera = godViewCam;
-            currentCamera.transform.position = currentPosition;
-            currentCamera.transform.rotation = rot;
-            currentCamera.SetActive(true);
-            CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
-            ActiveCamera = currentCamera.GetComponent<Camera>();
-            OnGodViewModeEvent?.Invoke();
-            TransitionCamera(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
         }
     }
 

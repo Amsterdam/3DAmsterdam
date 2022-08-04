@@ -17,6 +17,10 @@ namespace Netherlands3D.Cameras
         public UnityEvent OnReverseMoved;
         public RotationEvent OnMovedRotation;
         public bool stopMovement = false;
+
+        [Serializable]
+        public class RotationEvent : UnityEvent<Quaternion> {}
+
         public GameObject EnableFPSCam() 
         {
             FPSCam.gameObject.SetActive(true);
@@ -63,9 +67,5 @@ namespace Netherlands3D.Cameras
             stopMovement = true;
         }
 
-    }
-    [Serializable]
-    public class RotationEvent : UnityEvent<Quaternion>
-    {
     }
 }
