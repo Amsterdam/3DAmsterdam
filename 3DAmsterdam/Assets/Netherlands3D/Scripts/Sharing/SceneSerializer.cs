@@ -22,6 +22,7 @@ namespace Netherlands3D.Sharing
         [SerializeField] private RectTransform customLayerContainer;
         [SerializeField] private Annotation annotationPrefab;
 
+        [SerializeField] private Transform annotationsContainer;
         [SerializeField] private Transform cameraPositionsContainer;
         [SerializeField] private GameObject cameraPrefab;
 
@@ -140,7 +141,7 @@ namespace Netherlands3D.Sharing
                 //Create the 2D annotation
                 var annotationData = scene.annotations[i];
 
-                Annotation annotation = Instantiate(annotationPrefab, customLayerContainer);
+                Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
@@ -366,22 +367,26 @@ namespace Netherlands3D.Sharing
         /// <returns>Array containing serializeable data</returns>
         private SerializableScene.Annotation[] GetAnnotations()
         {
-            var annotations = customLayerContainer.GetComponentsInChildren<Annotation>(true);
+            var customLayer = customLayerContainer.GetComponentsInChildren<CustomLayer>(false);
             var annotationsData = new List<SerializableScene.Annotation>();
             
-            foreach (var annotation in annotations)
+            foreach (var layer in customLayer)
             {
-                annotationsData.Add(new SerializableScene.Annotation
+                var annotation = layer.LinkedObject.GetComponent<Annotation>();
+                if (annotation)
                 {
-                    active = annotation.interfaceLayer.Active,
-                    position = new SerializableScene.Vector3 
-                    { 
-                        x = annotation.WorldPointerFollower.WorldPosition.x, 
-                        y = annotation.WorldPointerFollower.WorldPosition.y, 
-                        z = annotation.WorldPointerFollower.WorldPosition.z 
-                    },
-                    bodyText = annotation.BodyText
-                });
+                    annotationsData.Add(new SerializableScene.Annotation
+                    {
+                        active = layer.Active,
+                        position = new SerializableScene.Vector3
+                        {
+                            x = annotation.WorldPointerFollower.WorldPosition.x,
+                            y = annotation.WorldPointerFollower.WorldPosition.y,
+                            z = annotation.WorldPointerFollower.WorldPosition.z
+                        },
+                        bodyText = annotation.BodyText
+                    });
+                }
             }
 
             return annotationsData.ToArray();
