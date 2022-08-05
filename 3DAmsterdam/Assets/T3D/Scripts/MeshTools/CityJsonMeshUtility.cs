@@ -46,7 +46,6 @@ public class CityJsonMeshUtility
             mesh.RecalculateNormals();
 
             var lod = cityObject["geometry"][i]["lod"].AsInt;
-            Debug.Log(cityObject.ToString());
             var identifier = new CityObjectIdentifier(cityObjectKey, cityObject["geometry"][i], lod);
             meshes.Add(identifier, mesh);
         }
@@ -101,10 +100,10 @@ public class CityJsonMeshUtility
         var meshes = new List<Mesh>();
 
         //ignore LOD0 geometry
-        if (geometry["lod"] == 0)
-        {
-            return meshes;
-        }
+        //if (geometry["lod"] == 0)
+        //{
+        //    return meshes;
+        //}
         string geometrytype = geometry["type"].Value;
 
         JSONNode boundariesNode = geometry["boundaries"];

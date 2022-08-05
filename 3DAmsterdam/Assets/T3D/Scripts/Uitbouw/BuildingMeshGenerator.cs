@@ -49,30 +49,24 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
             var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true);
-            var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
+            //var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
 
             //HandleTextFile.WriteString("sourcebuilding.json", cityJson);
 
-            foreach (var pair in meshes)
-            {
-                var mesh = pair.Value;
-                if (mesh != null)
-                {
-                    var cityObject = GetComponent<CityJSONToCityObject>();
-                    cityObject.SetNode(pair.Key.Node, cityJsonModel.vertices);
-                    //uitbouw.AddCityObject(newCityObject);
-                    //AddMeshGameObject(key, mesh);
-                }
-            }
-            ProcessMesh(combinedMesh);
+            var cityObject = GetComponent<CityJSONToCityObject>();
+            cityObject.SetNodes(meshes, cityJsonModel.vertices);
+            var activeMesh = cityObject.SetMeshActive(2); //todo: not hardcode the active lod
+
+            if (activeMesh)
+                ProcessMesh(activeMesh);
         }
 
         private void ProcessMesh(Mesh mesh)
         {
 
             //transform.position = args.TileOffset;
-            var mf = GetComponent<MeshFilter>();
-            mf.mesh = mesh;
+            //var mf = GetComponent<MeshFilter>();
+            //mf.mesh = mesh;
 
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;

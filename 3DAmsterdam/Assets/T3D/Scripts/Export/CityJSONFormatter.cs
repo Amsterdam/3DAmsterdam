@@ -15,7 +15,7 @@ public static class CityJSONFormatter
     private static JSONObject Metadata;
     private static JSONObject cityObjects;
     private static JSONArray Vertices;
-    private static JSONArray RDVertices; 
+    private static JSONArray RDVertices;
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
@@ -65,19 +65,22 @@ public static class CityJSONFormatter
     {
         obj.UpdateSurfaces(); // update latest changes
 
-        foreach (var shell in obj.Solids)
+        foreach (var lod in obj.Solids)
         {
-            foreach (var surface in shell)
+            foreach (var shell in lod.Value)
             {
-                AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                foreach (var surface in shell)
+                {
+                    AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                }
             }
-        }
-        if (convertToRD)
-            RecalculateGeographicalExtents(RDVertices);
-        else
-            RecalculateGeographicalExtents(Vertices);
+            if (convertToRD)
+                RecalculateGeographicalExtents(RDVertices);
+            else
+                RecalculateGeographicalExtents(Vertices);
 
-        cityObjects[obj.Id] = obj.GetJsonObject();
+            cityObjects[obj.Id] = obj.GetJsonObject();
+        }
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed

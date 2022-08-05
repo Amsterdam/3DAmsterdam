@@ -28,12 +28,11 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
     {
         var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true);
 
-        foreach (var pair in buildingMeshes)
+        foreach (var pair in buildingMeshes.ToList()) //go to list to avoid Collection was modiefied errors
         {
             if (pair.Key.Key.Contains(excludeBagId))
             {
                 buildingMeshes.Remove(pair.Key);
-                break;
             }
         }
 

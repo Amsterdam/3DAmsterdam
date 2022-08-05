@@ -91,16 +91,11 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false);
         var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
 
-        foreach (var pair in meshes)
-        {
-            var mesh = pair.Value;
-            if (mesh != null)
-            {
-                var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
-                cityObject.SetNode(pair.Key.Node, cityJsonModel.vertices);
-                uitbouw.AddCityObject(cityObject);
-            }
-        }
+        var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
+        cityObject.SetNodes(meshes, cityJsonModel.vertices);
+        uitbouw.AddCityObject(cityObject);
+        cityObject.SetMeshActive(2);
+
         meshFilter.mesh = combinedMesh;
         uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
 

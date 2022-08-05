@@ -12,7 +12,7 @@ public class MeshToCityJSONConverter : CityObject
 
     public override CitySurface[] GetSurfaces()
     {
-        var meshFilter = GetComponent<MeshFilter>();
+        meshFilter = GetComponent<MeshFilter>();
 
         var mesh = meshFilter.mesh;
         verts = mesh.vertices;
