@@ -198,16 +198,6 @@ public class CityJSONToCityObject : CityObject
     private JSONArray GetBoundariesNode(int lod, int depth)
     {
         var boundaries = new JSONArray();
-        print("depth: " +depth);
-        print("lod: " + lod);
-
-        foreach (var solid in Solids)
-        {
-            print(solid.Key);
-        }
-
-        print(Solids[lod]);
-
         switch (depth)
         {
             case 0:
@@ -240,7 +230,6 @@ public class CityJSONToCityObject : CityObject
                 throw new NotImplementedException();
                 break;
             default:
-                print("get bnodes "+depth + "\t out of range");
                 throw new IndexOutOfRangeException("Boundary depth: " + depth + " is out of range");
         }
     }
