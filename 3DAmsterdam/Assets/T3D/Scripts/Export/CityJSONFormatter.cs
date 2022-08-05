@@ -15,7 +15,7 @@ public static class CityJSONFormatter
     private static JSONObject Metadata;
     private static JSONObject cityObjects;
     private static JSONArray Vertices;
-    private static JSONArray RDVertices;
+    private static JSONArray RDVertices; 
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
@@ -40,7 +40,7 @@ public static class CityJSONFormatter
         RootObject["metadata"] = Metadata;
         RootObject["CityObjects"] = cityObjects;
         if (convertToRD)
-            RootObject["vertices"] = RDVertices;
+            RootObject["vertices"] = RDVertices;//todo: remove duplicate vertices, and make indices point to the same one, HashSet<T> is probably fastest for this
         else
             RootObject["vertices"] = Vertices;
 
@@ -48,6 +48,8 @@ public static class CityJSONFormatter
         {
             AddCityObejctToJSONData(obj);
         }
+
+        //HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
@@ -74,7 +76,8 @@ public static class CityJSONFormatter
             RecalculateGeographicalExtents(RDVertices);
         else
             RecalculateGeographicalExtents(Vertices);
-        cityObjects[obj.Name] = obj.GetJsonObject();
+
+        cityObjects[obj.Id] = obj.GetJsonObject();
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed

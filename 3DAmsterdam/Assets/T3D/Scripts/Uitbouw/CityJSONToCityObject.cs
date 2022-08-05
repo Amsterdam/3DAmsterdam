@@ -36,6 +36,41 @@ public class CityJSONToCityObject : CityObject
             var surfaceArray = surfaceNode.Value.AsArray;
             List<int[]> indices = new List<int[]>();
             List<Vector3[]> vertices = new List<Vector3[]>();
+
+            //todo: currently vertices are duplicated, change this to not be the case (perhaps by adding a check in the CityJSON Formatter)
+            //Dictionary<int, int> oldToNewVertexIndices = new Dictionary<int, int>();
+            //for (int i = 0; i < surfaceArray.Count; i++) //for each polygon in the surface
+            //{
+            //    var localIndices = new int[surfaceArray[i].Count];
+            //    List<Vector3> newVerts = new List<Vector3>();
+            //    for (int j = 0; j < surfaceArray[i].Count; j++) //for each index in the polygon
+            //    {
+            //        //var oldIndex = indices[i][j];
+            //        var oldIndex = surfaceArray[i][j];
+            //        int newIndex = -1;
+            //        var oldVert = combinedVertices[oldIndex.AsInt]; //combinedVertices are in unity space
+            //        var newVert = transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.y, (float)oldVert.z) + transform.position;
+
+            //        if (oldIndex == 23)
+            //            print("23" + oldVert + "\t" + newVert);
+
+            //        if (oldToNewVertexIndices.ContainsKey(oldIndex))
+            //        {
+            //            newIndex = oldToNewVertexIndices[oldIndex];
+            //        }
+            //        else
+            //        {
+            //            newIndex = oldToNewVertexIndices.Count;
+            //        }
+            //        //newVert += transform.position;
+            //        //ConvertCoordinates.CoordConvert.RDtoUnity(vert);
+            //        localIndices[i] = newIndex;
+            //        newVerts[j] = newVert;
+            //    }
+            //    indices.Add(localIndices);
+            //    vertices.Add(newVerts.ToArray());
+            //}
+
             for (int i = 0; i < surfaceArray.Count; i++)
             {
                 //indices.Add(GetInidces(surfaceArray[i].AsArray));
@@ -46,11 +81,11 @@ public class CityJSONToCityObject : CityObject
                     //var oldIndex = indices[i][j];
                     var oldIndex = surfaceArray[i][j];
                     var oldVert = combinedVertices[oldIndex.AsInt]; //combinedVertices are in unity space
-                    var newVert = transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.y, (float)oldVert.z) + transform.position;
+                    var newVertUnity = transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.z, (float)oldVert.y) + transform.position;
                     //newVert += transform.position;
                     //ConvertCoordinates.CoordConvert.RDtoUnity(vert);
                     localIndices[i] = j;
-                    polygonVerts[j] = newVert;
+                    polygonVerts[j] = newVertUnity;
                 }
                 indices.Add(localIndices);
                 vertices.Add(polygonVerts);

@@ -10,6 +10,20 @@ using T3D.LoadData;
 //using T3D.LoadData;
 using UnityEngine;
 
+public struct CityObjectIdentifier
+{
+    public string Key;
+    public JSONNode Node;
+    public int Lod;
+
+    public CityObjectIdentifier(string key, JSONNode node, int lod)
+    {
+        Key = key;
+        Lod = lod;
+        Node = node;
+    }
+}
+
 public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 {
     public Material MeshMaterial;
@@ -58,6 +72,13 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         //EnableUploadedModel(true);
     }
 
+    public void EnableUploadedModel(bool enable)
+    {
+        uitbouw.gameObject.SetActive(enable);
+        uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
+        uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
+    }
+
     private IEnumerator ParseCityJson(bool useTestJson)
     {
         yield return new WaitUntil(() => cityJson != string.Empty);
@@ -65,12 +86,9 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         if (useTestJSON)
             cityJson = testJSON.text;
 
-        print("parsing: " + cityJson);
-        HandleTextFile.WriteString("test.json", cityJson);
-
         var meshFilter = uitbouw.MeshFilter;
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
-        var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix);
+        var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false);
         var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
 
         foreach (var pair in meshes)
@@ -79,7 +97,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
             if (mesh != null)
             {
                 var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
-                cityObject.SetNode(pair.Key, cityJsonModel.vertices);
+                cityObject.SetNode(pair.Key.Node, cityJsonModel.vertices);
                 uitbouw.AddCityObject(cityObject);
             }
         }
@@ -106,26 +124,27 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         HasLoaded = true;
     }
 
-    public static Dictionary<JSONNode, Mesh> ParseCityJson(string cityJson, Matrix4x4 localToWorldMatrix)
+    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(string cityJson, Matrix4x4 localToWorldMatrix, bool flipYZ)
     {
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), false);
-        return ParseCityJson(cityJsonModel, localToWorldMatrix);
+        return ParseCityJson(cityJsonModel, localToWorldMatrix, flipYZ);
     }
 
-    public static Dictionary<JSONNode, Mesh> ParseCityJson(CityJsonModel cityJsonModel, Matrix4x4 localToWorldMatrix)
+    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(CityJsonModel cityJsonModel, Matrix4x4 localToWorldMatrix, bool flipYZ)
     {
         //var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), false);
         var meshmaker = new CityJsonMeshUtility();
 
-        Dictionary<JSONNode, Mesh> meshes = new Dictionary<JSONNode, Mesh>();
+        Dictionary<CityObjectIdentifier, Mesh> meshes = new Dictionary<CityObjectIdentifier, Mesh>();
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
-            //var key = co.Key;
-            var mesh = meshmaker.CreateMesh(localToWorldMatrix, cityJsonModel, co.Value, true);
-            if (mesh != null)
+            var key = co.Key;
+            var geometries = meshmaker.CreateMeshes(key, localToWorldMatrix, cityJsonModel, co.Value, flipYZ);
+
+            foreach (var g in geometries)
             {
-                meshes.Add(co.Value, mesh);
+                meshes.Add(g.Key, g.Value);
             }
         }
         return meshes;
@@ -169,27 +188,20 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     //    uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
     //}
 
-    void AddMeshGameObject(string name, Mesh mesh)
-    {
-        GameObject gam = new GameObject(name);
-        var meshfilter = gam.AddComponent<MeshFilter>();
-        meshfilter.sharedMesh = mesh;
-        var meshrenderer = gam.AddComponent<MeshRenderer>();
-        meshrenderer.material = MeshMaterial;
-        gam.transform.SetParent(uitbouw.transform);
-        gam.AddComponent<BoxCollider>();
+    //void AddMeshGameObject(string name, Mesh mesh)
+    //{
+    //    GameObject gam = new GameObject(name);
+    //    var meshfilter = gam.AddComponent<MeshFilter>();
+    //    meshfilter.sharedMesh = mesh;
+    //    var meshrenderer = gam.AddComponent<MeshRenderer>();
+    //    meshrenderer.material = MeshMaterial;
+    //    gam.transform.SetParent(uitbouw.transform);
+    //    gam.AddComponent<BoxCollider>();
 
-        uitbouw.SetMeshFilter(meshfilter);
+    //    uitbouw.SetMeshFilter(meshfilter);
 
-        var depthOffset = -transform.forward * uitbouw.Depth / 2;
-        var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
-        gam.transform.localPosition = depthOffset + heightOffset;
-    }
-
-    public void EnableUploadedModel(bool enable)
-    {
-        uitbouw.gameObject.SetActive(enable);
-        uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
-        uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
-    }
+    //    var depthOffset = -transform.forward * uitbouw.Depth / 2;
+    //    var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
+    //    gam.transform.localPosition = depthOffset + heightOffset;
+    //}
 }

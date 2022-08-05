@@ -48,8 +48,10 @@ namespace Netherlands3D.T3D.Uitbouw
         private void BuildingMeshGenerator_CityJsonBagReceived(string cityJson)
         {
             var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
-            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix);
+            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true);
             var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
+
+            //HandleTextFile.WriteString("sourcebuilding.json", cityJson);
 
             foreach (var pair in meshes)
             {
@@ -57,7 +59,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (mesh != null)
                 {
                     var cityObject = GetComponent<CityJSONToCityObject>();
-                    cityObject.SetNode(pair.Key, cityJsonModel.vertices);
+                    cityObject.SetNode(pair.Key.Node, cityJsonModel.vertices);
                     //uitbouw.AddCityObject(newCityObject);
                     //AddMeshGameObject(key, mesh);
                 }

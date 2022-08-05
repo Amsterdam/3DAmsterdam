@@ -52,6 +52,7 @@ namespace T3D.Uitbouw
 
     public abstract class CityObject : MonoBehaviour
     {
+        private const string idPrefix = "NL.IMBAG.Pand.";
         private static int IdCounter = 0;
         public static readonly Dictionary<GeometryType, int> GeometryDepth = new Dictionary<GeometryType, int>{
             {GeometryType.MultiPoint, 0 }, //A "MultiPoint" has an array with the indices of the vertices; this array can be empty.
@@ -63,7 +64,27 @@ namespace T3D.Uitbouw
             {GeometryType.CompositeSolid, 4 },
         };
 
-        public string Name { get; private set; }
+        //private bool idIsSet = false;
+        //private string id;
+        public string Id { get; private set; }
+        //{
+        //    get
+        //    {
+        //        if (!idIsSet)
+        //        {
+        //            print(gameObject.name + " does not have id set");
+        //            throw new ArgumentNullException("Bag Id for CityObject is not set, cannot generate valid ID");
+        //        }
+        //        print("getting id: " + id);
+        //        return id;
+        //    }
+        //    private set
+        //    {
+        //        idIsSet = true;
+        //        id = value;
+        //    }
+        //}
+
         public CityObjectType Type;
 
         public int Lod { get; protected set; } = 3;
@@ -77,13 +98,27 @@ namespace T3D.Uitbouw
 
         [SerializeField]
         private bool includeSemantics;
+        [SerializeField]
+        private bool isMainBuilding;
 
         protected virtual void Start()
         {
-            IdCounter++;
-            Name = "id-" + IdCounter;
             UpdateSurfaces();
             CityJSONFormatter.AddCityObejct(this);
+            var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
+            SetID(bagId);
+        }
+
+        public void SetID(string bagId)
+        {
+            if (isMainBuilding)
+            {
+                Id = idPrefix + bagId;
+                return;
+            }
+
+            Id = idPrefix + bagId + "-" + IdCounter;
+            IdCounter++;
         }
 
         public virtual void UpdateSurfaces()
@@ -134,7 +169,7 @@ namespace T3D.Uitbouw
                 for (int i = 0; i < CityParents.Length; i++)
                 {
                     Assert.IsTrue(IsValidParent(this, CityParents[i]));
-                    parents[i] = CityParents[i].Name;
+                    parents[i] = CityParents[i].Id;
                 }
                 obj["parents"] = parents;
             }
@@ -143,7 +178,7 @@ namespace T3D.Uitbouw
                 var children = new JSONArray();
                 for (int i = 0; i < CityChildren.Length; i++)
                 {
-                    children[i] = CityChildren[i].Name;
+                    children[i] = CityChildren[i].Id;
                 }
                 obj["children"] = children;
             }
@@ -163,7 +198,7 @@ namespace T3D.Uitbouw
 
             foreach (var ann in AnnotationState.AnnotationUIs)
             {
-                if (Name == ann.ParentCityObject)
+                if (Id == ann.ParentCityObject)
                 {
                     var annotation = new JSONObject();
                     var point = new JSONArray();
@@ -172,7 +207,7 @@ namespace T3D.Uitbouw
                     point.Add("z", ann.ConnectionPointRD.z);
                     annotation.Add("location", point);
                     annotation.Add("text", ann.Text);
-                    obj.Add("Annotation " + (ann.Id+1), annotation);
+                    obj.Add("Annotation " + (ann.Id + 1), annotation);
                 }
             }
             return obj;

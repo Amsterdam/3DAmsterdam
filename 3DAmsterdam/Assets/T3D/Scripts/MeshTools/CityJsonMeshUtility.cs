@@ -17,39 +17,45 @@ public class CityJsonMeshUtility
         public Vector3 Point;
     }
 
-    public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
+    public Mesh[] CreateBoundaryMeshes(CityJsonModel cityModel, JSONNode geometry, bool flipYZ)
     {
         List<Vector3> verts = GetVerts(cityModel, flipYZ);
-        var meshes = GetMeshes(verts, cityObject);
-
-        if (meshes != null) return meshes.ToArray();
-        else return null;
-
+        var meshes = BoundariesToMeshes(verts, geometry);
+        return meshes.ToArray();
     }
 
-    public Mesh CreateMesh(Matrix4x4 localToWorldMatrix, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ)
+    public Dictionary<CityObjectIdentifier, Mesh> CreateMeshes(string cityObjectKey, Matrix4x4 localToWorldMatrix, CityJsonModel cityModel, JSONNode cityObject, bool flipYZ) //dictionary of <LOD, Mesh>city
     {
-        var meshes = CreateMeshes(cityModel, cityObject, flipYZ);
+        var meshes = new Dictionary<CityObjectIdentifier, Mesh>();
 
-        if (meshes == null) return null;
-
-        //combine the meshes
-        CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];
-        for (int i = 0; i < meshes.Length; i++)
+        var lods = cityObject["geometry"].Count;
+        for (int i = 0; i < lods; i++)
         {
-            combineInstanceArray[i].mesh = meshes[i];
-            combineInstanceArray[i].transform = localToWorldMatrix;
+            var boundaryMeshes = CreateBoundaryMeshes(cityModel, cityObject["geometry"][i], flipYZ);
+            //combine the boundary meshes
+            CombineInstance[] combineInstanceArray = new CombineInstance[boundaryMeshes.Length];
+            for (int j = 0; j < boundaryMeshes.Length; j++)
+            {
+                combineInstanceArray[j].mesh = boundaryMeshes[j];
+                combineInstanceArray[j].transform = localToWorldMatrix;
+            }
+            Mesh mesh = new Mesh();
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.CombineMeshes(combineInstanceArray);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+
+            var lod = cityObject["geometry"][i]["lod"].AsInt;
+            Debug.Log(cityObject.ToString());
+            var identifier = new CityObjectIdentifier(cityObjectKey, cityObject["geometry"][i], lod);
+            meshes.Add(identifier, mesh);
         }
-        Mesh mesh = new Mesh();
-        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        mesh.CombineMeshes(combineInstanceArray);
         //mesh.RecalculateBounds();
         //mesh.vertices = TransformVertices(mesh, -mesh.bounds.center, Quaternion.identity, Vector3.one); 
         //offset the vertices so that the center of the mesh bounding box of the selected mesh LOD is at (0,0,0)
 
-        mesh.RecalculateBounds();
-        mesh.RecalculateNormals();
-        return mesh;
+
+        return meshes;
     }
 
     public static Vector3[] TransformVertices(Mesh mesh, Vector3 translaton, Quaternion rotation, Vector3 scale)
@@ -75,42 +81,42 @@ public class CityJsonMeshUtility
         }
     }
 
-    private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)
+    private List<Mesh> BoundariesToMeshes(List<Vector3> verts, JSONNode geometry)
     {
-        var geometries = cityObject["geometry"].AsArray;
-        int highestLodIndex = 0;
+        //var geometries = cityObject["geometry"].AsArray;
+        //int highestLodIndex = 0;
 
-        int highestLod = 0;
+        //int highestLod = 0;
 
-        for (int i = 0; i < geometries.Count; i++)
-        {
-            var lod = geometries[i]["lod"].AsInt;
-            if (lod > highestLod)
-            {
-                highestLod = lod;
-                highestLodIndex = i;                
-            }
-        }
+        //for (int i = 0; i < geometries.Count; i++)
+        //{
+        //    var lod = geometries[i]["lod"].AsInt;
+        //    if (lod > highestLod)
+        //    {
+        //        highestLod = lod;
+        //        highestLodIndex = i;
+        //    }
+        //}
+
+        var meshes = new List<Mesh>();
 
         //ignore LOD0 geometry
-        if (highestLod == 0)
-        {            
-            return null;            
+        if (geometry["lod"] == 0)
+        {
+            return meshes;
         }
+        string geometrytype = geometry["type"].Value;
 
-        List<Mesh> meshes = new List<Mesh>();
-        string geometrytype = cityObject["geometry"][highestLodIndex]["type"].Value;
-
-        JSONNode boundariesNode = cityObject["geometry"][highestLodIndex]["boundaries"];
+        JSONNode boundariesNode = geometry["boundaries"];
         if (geometrytype == "Solid")
         {
-            boundariesNode = cityObject["geometry"][highestLodIndex]["boundaries"][0];
+            boundariesNode = geometry["boundaries"][0]; //todo: add support for multiple shells
         }
 
         // End if no BoundariesNode
         if (boundariesNode is null)
         {
-            return null;
+            return meshes;
         }
 
         foreach (JSONNode boundary in boundariesNode)
@@ -119,14 +125,14 @@ public class CityJsonMeshUtility
 
             List<List<Vector3>> holes = new List<List<Vector3>>();
 
-            if (boundary.Count > 1)
+            //if (boundary.Count > 1)
+            //{
+            for (int i = 1; i < boundary.Count; i++)
             {
-                for (int i = 1; i < boundary.Count; i++)
-                {
-                    var innerRing = boundary[i];
-                    holes.Add(GetBounderyVertices(verts, innerRing));
-                }
+                var innerRing = boundary[i];
+                holes.Add(GetBounderyVertices(verts, innerRing));
             }
+            //}
 
             Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 

@@ -27,7 +27,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
 
             var boundaryFeatures = GetComponentsInChildren<BoundaryFeature>();
-            foreach(var bf in boundaryFeatures)
+            foreach (var bf in boundaryFeatures)
             {
                 citySurfaces.Add(bf.Surface);
             }
