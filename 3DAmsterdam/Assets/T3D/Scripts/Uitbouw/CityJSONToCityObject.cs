@@ -250,12 +250,13 @@ public class CityJSONToCityObject : CityObject
     public Mesh SetMeshActive(int lod)
     {
         var pair = geometryNodes.FirstOrDefault(i => i.Key.Lod == lod);
-        //if (pair != null)
-        //{
-        //activeLod = lod;
-        meshFilter.mesh = pair.Value;
-        //GetComponentInChildren<MeshCollider>().sharedMesh = pair.Value;
-        return pair.Value;
-        //}
+        if (pair.Value != null)
+        {
+            activeLod = lod;
+            meshFilter.mesh = pair.Value;
+            //GetComponentInChildren<MeshCollider>().sharedMesh = pair.Value;
+            return pair.Value;
+        }
+        return null;
     }
 }

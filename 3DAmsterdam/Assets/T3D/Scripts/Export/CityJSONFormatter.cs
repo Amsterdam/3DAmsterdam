@@ -49,7 +49,7 @@ public static class CityJSONFormatter
             AddCityObejctToJSONData(obj);
         }
 
-        //HandleTextFile.WriteString("export.json", RootObject.ToString());
+        HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
@@ -74,13 +74,14 @@ public static class CityJSONFormatter
                     AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
                 }
             }
-            if (convertToRD)
-                RecalculateGeographicalExtents(RDVertices);
-            else
-                RecalculateGeographicalExtents(Vertices);
-
-            cityObjects[obj.Id] = obj.GetJsonObject();
         }
+
+        if (convertToRD)
+            RecalculateGeographicalExtents(RDVertices);
+        else
+            RecalculateGeographicalExtents(Vertices);
+
+        cityObjects[obj.Id] = obj.GetJsonObject();
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
