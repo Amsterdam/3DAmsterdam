@@ -317,12 +317,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contextMenuState: 1
-  blockMouseSelectionInteractions: 0
+  blockMouseSelectionInteractions: 1
   blockMouseNavigationInteractions: 1
   blockKeyboardNavigationInteractions: 0
   takeInteractionPriorityAtStart: 1
+  actionAsset: {fileID: -944628639613478452, guid: 2698d86e9a34ec84793773d62b42502d,
+    type: 3}
   cameraRotation: {x: 0, y: 0, z: 0, w: 1}
   startPlacement: {fileID: 11400000, guid: bbdc81aa4dab45d4e8fda59e75fd069e, type: 2}
+  pushCameraOnScreenBounds: 1
+  panSpeed: 0.01
 --- !u!114 &1312412780584063243
 MonoBehaviour:
   m_ObjectHideFlags: 0
