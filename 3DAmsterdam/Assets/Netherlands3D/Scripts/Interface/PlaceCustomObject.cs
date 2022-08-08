@@ -68,8 +68,7 @@ namespace Netherlands3D.Interface
             spawnedObject.name = (objectName!="") ? objectName : spawnedObject.name.Replace("(Clone)", "");
 
             CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(spawnedObject, layerType);
-
-            if (layerType == LayerType.ANNOTATION || layerType == LayerType.CAMERA)
+            if (layerType == LayerType.ANNOTATION)
             {
                 //Set container layer for objects that have a connection with an interfacelayer
                 spawnedObject.GetComponent<PlaceOnClick>().interfaceLayer = interfaceLayer;

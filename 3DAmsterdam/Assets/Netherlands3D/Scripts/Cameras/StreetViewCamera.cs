@@ -5,6 +5,7 @@ using Netherlands3D.TileSystem;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Help;
 using Netherlands3D.Settings;
+using Netherlands3D.Events;
 
 namespace Netherlands3D.Cameras
 {
@@ -15,22 +16,17 @@ namespace Netherlands3D.Cameras
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
 
-		[SerializeField]
-		private GameObject toolBar;
-
-		[SerializeField]
-		private Button hideMenuButton;
-
-		[SerializeField]
-		private Button exitFirstPersonButton;
-
 		private Camera cameraComponent;
 
 		private Ray ray;
 		private RaycastHit hit;
 
+		[Multiline]
 		[SerializeField]
-		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.";
+		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.\n\n Gebruik de <b>Escape</b> toets om te stoppen.";
+
+		[SerializeField]
+		private BoolEvent firstPersonModeActive;
 
 		private void Awake()
 		{
@@ -40,16 +36,14 @@ namespace Netherlands3D.Cameras
 		private void OnEnable()
 		{
 			HelpMessage.Show(helpMessage);
-
-			exitFirstPersonButton.gameObject.SetActive(false);
-			DisableMenus();
+			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
+			firstPersonModeActive.started.Invoke(true);
 		}
 
 		private void OnDisable()
 		{
-			exitFirstPersonButton.gameObject.SetActive(true);
 			HelpMessage.Hide();
-			hideMenuButton.gameObject.SetActive(false);
+			firstPersonModeActive.started.Invoke(false);
 		}
 
 		public void EnableKeyboardActionMap(bool enabled)
@@ -60,24 +54,6 @@ namespace Netherlands3D.Cameras
 		public void EnableMouseActionMap(bool enabled)
 		{
 			//
-		}
-
-		public void EnableMenus()
-		{
-			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
-			PropertiesPanel.Instance.gameObject.SetActive(true);
-
-			toolBar.SetActive(true);
-			hideMenuButton.gameObject.SetActive(true);
-		}
-
-		public void DisableMenus()
-		{
-			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-			PropertiesPanel.Instance.gameObject.SetActive(false);
-
-			toolBar.SetActive(false);
-			hideMenuButton.gameObject.SetActive(false);
 		}
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
@@ -108,7 +84,8 @@ namespace Netherlands3D.Cameras
 			//In WebGL we catch this unlocking on the JS side
 			if(Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
-				EnableMenus();
+				CameraModeChanger.Instance.GodViewMode();
+				HelpMessage.Hide(true);
 			}
 #endif
 			if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
@@ -211,7 +188,7 @@ namespace Netherlands3D.Cameras
 
 		public void ResetNorth(bool resetTopDown = false)
 		{
-			//Not implemented
+			this.transform.forward = Vector3.forward;
 		}
 
 		/// <summary>

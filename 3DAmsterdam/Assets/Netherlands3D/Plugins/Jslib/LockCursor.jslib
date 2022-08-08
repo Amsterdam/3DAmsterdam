@@ -4,7 +4,7 @@ mergeInto(LibraryManager.library, {
 		{
 			var unityCanvas = document.getElementById("unity-canvas");
 			if (document.pointerLockElement != unityCanvas && document.mozPointerLockElement != unityCanvas) {
-				unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
+				unityInstance.SendMessage("CameraModeChanger", "GodViewMode");
 			}
 		}
 		//Cursor locking for First Person camera mode

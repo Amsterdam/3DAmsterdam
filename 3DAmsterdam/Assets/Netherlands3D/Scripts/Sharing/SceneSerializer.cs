@@ -22,7 +22,9 @@ namespace Netherlands3D.Sharing
         [SerializeField] private RectTransform customLayerContainer;
         [SerializeField] private Annotation annotationPrefab;
 
-        [SerializeField] GameObject cameraPrefab;
+        [SerializeField] private Transform annotationsContainer;
+        [SerializeField] private Transform cameraPositionsContainer;
+        [SerializeField] private GameObject cameraPrefab;
 
         private SunSettings sunSettings;
 
@@ -139,7 +141,7 @@ namespace Netherlands3D.Sharing
                 //Create the 2D annotation
                 var annotationData = scene.annotations[i];
 
-                Annotation annotation = Instantiate(annotationPrefab, customLayerContainer);
+                Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
@@ -177,12 +179,9 @@ namespace Netherlands3D.Sharing
             for (int i = 0; i < scene.cameraPoints.Length; i++) 
             {
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
-                GameObject cameraObject = Instantiate(cameraPrefab);
+                var cameraObject = Instantiate(cameraPrefab,cameraPositionsContainer);
                 cameraObject.name = cameraPoint.name;
-                cameraObject.transform.SetParent(customLayerContainer, false);
-                cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
-                cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
-                cameraObject.GetComponent<FirstPersonLocation>().waitingForClick = false;
+                cameraObject.transform.SetPositionAndRotation(cameraPoint.position, cameraPoint.rotation);
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
                 newCustomLayer.Active = true;
             }
@@ -368,22 +367,26 @@ namespace Netherlands3D.Sharing
         /// <returns>Array containing serializeable data</returns>
         private SerializableScene.Annotation[] GetAnnotations()
         {
-            var annotations = customLayerContainer.GetComponentsInChildren<Annotation>(true);
+            var customLayer = customLayerContainer.GetComponentsInChildren<CustomLayer>(false);
             var annotationsData = new List<SerializableScene.Annotation>();
             
-            foreach (var annotation in annotations)
+            foreach (var layer in customLayer)
             {
-                annotationsData.Add(new SerializableScene.Annotation
+                var annotation = layer.LinkedObject.GetComponent<Annotation>();
+                if (annotation)
                 {
-                    active = annotation.interfaceLayer.Active,
-                    position = new SerializableScene.Vector3 
-                    { 
-                        x = annotation.WorldPointerFollower.WorldPosition.x, 
-                        y = annotation.WorldPointerFollower.WorldPosition.y, 
-                        z = annotation.WorldPointerFollower.WorldPosition.z 
-                    },
-                    bodyText = annotation.BodyText
-                });
+                    annotationsData.Add(new SerializableScene.Annotation
+                    {
+                        active = layer.Active,
+                        position = new SerializableScene.Vector3
+                        {
+                            x = annotation.WorldPointerFollower.WorldPosition.x,
+                            y = annotation.WorldPointerFollower.WorldPosition.y,
+                            z = annotation.WorldPointerFollower.WorldPosition.z
+                        },
+                        bodyText = annotation.BodyText
+                    });
+                }
             }
 
             return annotationsData.ToArray();
@@ -398,14 +401,14 @@ namespace Netherlands3D.Sharing
               foreach (var child in customLayerChildren)
               {
                     if (child.LayerType != LayerType.CAMERA) continue;
-                    var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
+
+                    var firstPersonObject = child.LinkedObject.GetComponent<SavedCameraPosition>();
                     if (!firstPersonObject) continue;
 
-                    var follower = child.LinkedObject.GetComponent<WorldPointFollower>();
                     cameraPointsData.Add(new SerializableScene.CameraPoint
                     {
-                        position = follower.WorldPosition,
-                        rotation = firstPersonObject.savedRotation,
+                        position = child.LinkedObject.transform.position,
+                        rotation = child.LinkedObject.transform.rotation,
                         name = child.LinkedObject.name
                     });
               }
