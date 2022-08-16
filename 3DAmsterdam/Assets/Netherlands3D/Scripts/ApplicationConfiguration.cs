@@ -5,6 +5,7 @@ using Netherlands3D.Core;
 using System;
 using UnityEngine.Networking;
 using System.IO;
+using System.Globalization;
 
 namespace Netherlands3D
 {
@@ -25,6 +26,8 @@ namespace Netherlands3D
 
 		void Awake()
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
             SetConfig();
 
             if (loadExternalConfigFile)
