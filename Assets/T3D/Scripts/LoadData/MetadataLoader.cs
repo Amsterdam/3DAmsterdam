@@ -17,19 +17,6 @@ using System.IO;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    //public class ObjectDataEventArgs : EventArgs
-    //{
-    //    public bool IsLoaded { get; private set; }
-    //    public ObjectData ObjectData { get; private set; }
-    //    public Vector3 TileOffset;
-
-    //    public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
-    //    {
-    //        IsLoaded = isLoaded;
-    //        ObjectData = objectData;
-    //        TileOffset = tileOffset;
-    //    }
-    //}
 
     public class PerceelDataEventArgs : EventArgs
     {
