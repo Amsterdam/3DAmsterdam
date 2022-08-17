@@ -17,19 +17,19 @@ using System.IO;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class ObjectDataEventArgs : EventArgs
-    {
-        public bool IsLoaded { get; private set; }
-        public ObjectData ObjectData { get; private set; }
-        public Vector3 TileOffset;
+    //public class ObjectDataEventArgs : EventArgs
+    //{
+    //    public bool IsLoaded { get; private set; }
+    //    public ObjectData ObjectData { get; private set; }
+    //    public Vector3 TileOffset;
 
-        public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
-        {
-            IsLoaded = isLoaded;
-            ObjectData = objectData;
-            TileOffset = tileOffset;
-        }
-    }
+    //    public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
+    //    {
+    //        IsLoaded = isLoaded;
+    //        ObjectData = objectData;
+    //        TileOffset = tileOffset;
+    //    }
+    //}
 
     public class PerceelDataEventArgs : EventArgs
     {
@@ -80,17 +80,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject shapableUitbouwPrefab;
         [SerializeField]
         private GameObject uploadedUitbouwPrefab;
-
-        public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
-        public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
         
         public delegate void CityJsonBagLoadedEventHandler(object source, Mesh mesh);
         public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
-        public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
-        {
-            BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
-        }
+
 
         public void RaiseCityJsonBagLoaded(Mesh mesh)
         {
@@ -343,48 +337,6 @@ namespace Netherlands3D.T3D.Uitbouw
             //uitbouwPrefab.transform.position = pos;
         }
 
-        private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
-        {
-            var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
-
-            ObjectMappingClass data;
-
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-            {
-                yield return uwr.SendWebRequest();
-
-                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
-                }
-                else
-                {
-                    //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
-
-                    ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
-
-                    objectMapping.highlightIDs = new List<string>()
-                {
-                    id
-                };
-
-                    //Debug.Log($"hasid:{data.ids.Contains(id)}");
-
-                    newAssetBundle.Unload(true);
-
-                    objectMapping.ApplyDataToIDsTexture();
-                    var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
-                    BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
-                }
-
-            }
-            yield return null;
-        }
     }
 }
 
