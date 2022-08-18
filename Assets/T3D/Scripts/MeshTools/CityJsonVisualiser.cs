@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using T3D.LoadData;
+using T3D.Uitbouw;
 //using T3D.LoadData;
 using UnityEngine;
 
@@ -135,6 +136,8 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
+            var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
+            CityObject.IdPrefix = key.Split(bagId.ToCharArray())[0];
             var geometries = meshmaker.CreateMeshes(key, localToWorldMatrix, cityJsonModel, co.Value, flipYZ);
 
             foreach (var g in geometries)

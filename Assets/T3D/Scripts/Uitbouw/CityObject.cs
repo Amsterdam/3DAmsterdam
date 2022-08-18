@@ -52,8 +52,18 @@ namespace T3D.Uitbouw
 
     public abstract class CityObject : MonoBehaviour
     {
-        private const string idPrefix = "NL.IMBAG.Pand.";
+        private static string idPrefix = "NL.IMBAG.Pand.";
+        public static string IdPrefix
+        {
+            get => idPrefix;
+            set
+            {
+                idPrefix = value;
+                print("set id prefix value to: " + value);
+            }
+        }
         private static int IdCounter = 0;
+
         public static readonly Dictionary<GeometryType, int> GeometryDepth = new Dictionary<GeometryType, int>{
             {GeometryType.MultiPoint, 0 }, //A "MultiPoint" has an array with the indices of the vertices; this array can be empty.
             {GeometryType.MultiLineString, 1 }, //A "MultiLineString" has an array of arrays, each containing the indices of a LineString
@@ -95,11 +105,11 @@ namespace T3D.Uitbouw
         {
             if (isMainBuilding)
             {
-                Id = idPrefix + bagId;
+                Id = IdPrefix + bagId;
                 return;
             }
 
-            Id = idPrefix + bagId + "-" + IdCounter;
+            Id = IdPrefix + bagId + "-" + IdCounter;
             IdCounter++;
         }
 
