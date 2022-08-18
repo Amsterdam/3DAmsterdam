@@ -26,47 +26,17 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
     private void ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
     {
-        var cityJsonModel = new CityJsonModel(cityjson, new Vector3RD(), checkDistanceFromCenter);
-        var meshmaker = new CityJsonMeshUtility();
+        var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true);
 
-        List<Mesh> meshes = new List<Mesh>();
-
-        foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
+        foreach (var pair in buildingMeshes.ToList()) //go to list to avoid Collection was modiefied errors
         {
-            if (co.Key.Contains(excludeBagId)) continue;
-            
-            var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value, true);
-
-            if (mesh != null)
+            if (pair.Key.Key.Contains(excludeBagId))
             {
-                meshes.Add(mesh);
+                buildingMeshes.Remove(pair.Key);
             }
         }
 
-        if (meshes.Any())
-        {
-            var combinedMesh = CombineMeshes(meshes);
-            GetComponent<MeshFilter>().sharedMesh = combinedMesh;
-        }
-
-
+        var combinedMesh = CityJsonVisualiser.CombineMeshes(buildingMeshes.Values.ToList(), transform.localToWorldMatrix);
+        GetComponent<MeshFilter>().sharedMesh = combinedMesh;
     }
-
-    Mesh CombineMeshes(List<Mesh> meshes)
-    {        
-        CombineInstance[] combine = new CombineInstance[meshes.Count];
-
-        for (int i=0; i<meshes.Count; i++)
-        {
-            combine[i].mesh = meshes[i];        
-            combine[i].transform = transform.localToWorldMatrix;
-        }
-
-        var mesh = new Mesh();
-        mesh.CombineMeshes(combine);
-        return mesh;
-
-    }
-
-   
 }

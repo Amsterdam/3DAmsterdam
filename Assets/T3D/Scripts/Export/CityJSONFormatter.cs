@@ -40,7 +40,7 @@ public static class CityJSONFormatter
         RootObject["metadata"] = Metadata;
         RootObject["CityObjects"] = cityObjects;
         if (convertToRD)
-            RootObject["vertices"] = RDVertices;
+            RootObject["vertices"] = RDVertices;//todo: remove duplicate vertices, and make indices point to the same one, HashSet<T> is probably fastest for this
         else
             RootObject["vertices"] = Vertices;
 
@@ -48,6 +48,8 @@ public static class CityJSONFormatter
         {
             AddCityObejctToJSONData(obj);
         }
+
+        HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
@@ -63,18 +65,23 @@ public static class CityJSONFormatter
     {
         obj.UpdateSurfaces(); // update latest changes
 
-        foreach (var shell in obj.Solids)
+        foreach (var lod in obj.Solids)
         {
-            foreach (var surface in shell)
+            foreach (var shell in lod.Value)
             {
-                AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                foreach (var surface in shell)
+                {
+                    AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                }
             }
         }
+
         if (convertToRD)
             RecalculateGeographicalExtents(RDVertices);
         else
             RecalculateGeographicalExtents(Vertices);
-        cityObjects[obj.Name] = obj.GetJsonObject();
+
+        cityObjects[obj.Id] = obj.GetJsonObject();
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed

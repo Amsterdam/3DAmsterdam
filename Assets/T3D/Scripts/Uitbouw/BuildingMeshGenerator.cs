@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.LayerSystem;
 using ConvertCoordinates;
+using T3D.LoadData;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -38,18 +39,34 @@ namespace Netherlands3D.T3D.Uitbouw
             //base.Start();
             //ServiceLocator.GetService<MetadataLoader>().BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
             ServiceLocator.GetService<MetadataLoader>().BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
-
-            ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+            //ServiceLocator.GetService<MetadataLoader>().CityJsonBagLoaded += OnCityJsonBagLoaded;
+            ServiceLocator.GetService<MetadataLoader>().CityJsonBagReceived += BuildingMeshGenerator_CityJsonBagReceived;
 
             SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
         }
 
-        private void OnCityJsonBagLoaded(object source, Mesh mesh)
+        private void BuildingMeshGenerator_CityJsonBagReceived(string cityJson)
         {
-            
+            var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
+            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true);
+            //var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
+
+            //HandleTextFile.WriteString("sourcebuilding.json", cityJson);
+
+            var cityObject = GetComponent<CityJSONToCityObject>();
+            cityObject.SetNodes(meshes, cityJsonModel.vertices);
+            var activeMesh = cityObject.SetMeshActive(2); //todo: not hardcode the active lod
+
+            if (activeMesh)
+                ProcessMesh(activeMesh);
+        }
+
+        private void ProcessMesh(Mesh mesh)
+        {
+
             //transform.position = args.TileOffset;
-            var mf = GetComponent<MeshFilter>();
-            mf.mesh = mesh;
+            //var mf = GetComponent<MeshFilter>();
+            //mf.mesh = mesh;
 
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;

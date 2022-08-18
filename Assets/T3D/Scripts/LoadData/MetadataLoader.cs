@@ -17,6 +17,19 @@ using System.IO;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
+    public class ObjectDataEventArgs : EventArgs
+    {
+        public bool IsLoaded { get; private set; }
+        public ObjectData ObjectData { get; private set; }
+        public Vector3 TileOffset;
+
+        public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
+        {
+            IsLoaded = isLoaded;
+            ObjectData = objectData;
+            TileOffset = tileOffset;
+        }
+    }
 
     public class PerceelDataEventArgs : EventArgs
     {
@@ -34,7 +47,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Area = area;
 
             var centerAndRadius = Utilities.GeometryCalculator.GetCenterAndRadius(perceel);
-            Center = new Vector2RD( centerAndRadius.Center.x, centerAndRadius.Center.y);
+            Center = new Vector2RD(centerAndRadius.Center.x, centerAndRadius.Center.y);
             Radius = centerAndRadius.Radius;
         }
     }
@@ -67,16 +80,22 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject shapableUitbouwPrefab;
         [SerializeField]
         private GameObject uploadedUitbouwPrefab;
-        
-        public delegate void CityJsonBagLoadedEventHandler(object source, Mesh mesh);
-        public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
+        public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
+        public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
+        public delegate void CityJsonBagLoadedEventHandler(object source, string sourceJson, Mesh mesh);
+        //public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
 
-        public void RaiseCityJsonBagLoaded(Mesh mesh)
+        public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
         {
-            CityJsonBagLoaded?.Invoke(this, mesh);
+            BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
         }
+
+        //public void RaiseCityJsonBagLoaded(string sourceJson, Mesh mesh)
+        //{
+        //    CityJsonBagLoaded?.Invoke(this, sourceJson, mesh);
+        //}
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;
@@ -116,7 +135,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void RequestBuildingData(Vector3RD position, string id)
         {
             if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile && (!string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.ModelId) || !string.IsNullOrEmpty(ServiceLocator.GetService<T3DInit>().HTMLData.BlobId)))
-            { 
+            {
                 StartCoroutine(GetBimCityJson());
             }
 
@@ -243,7 +262,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                 }
                 else
-                {                    
+                {
                     CityJsonBag = uwr.downloadHandler.text;
                     CityJsonBagReceived?.Invoke(CityJsonBag);
                 }
@@ -252,7 +271,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         public IEnumerator GetCityJsonBagBoundingBox(double x, double y, string excludeBagId)
-        {            
+        {
             string bbox = $"{x - 25},{y - 25},{x + 25},{y + 25}";
 
             var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&BBOX={bbox}&OUTPUTFORMAT=application%2Fjson";
@@ -265,7 +284,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                 }
                 else
-                {                    
+                {
                     CityJsonBagBoundingBoxReceived?.Invoke(uwr.downloadHandler.text, excludeBagId);
                 }
 
@@ -324,6 +343,48 @@ namespace Netherlands3D.T3D.Uitbouw
             //uitbouwPrefab.transform.position = pos;
         }
 
+        private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
+        {
+            var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
+
+            ObjectMappingClass data;
+
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
+                }
+                else
+                {
+                    //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
+
+                    ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+
+                    objectMapping.highlightIDs = new List<string>()
+                {
+                    id
+                };
+
+                    //Debug.Log($"hasid:{data.ids.Contains(id)}");
+
+                    newAssetBundle.Unload(true);
+
+                    objectMapping.ApplyDataToIDsTexture();
+                    var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+                    BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
+                }
+
+            }
+            yield return null;
+        }
     }
 }
 
