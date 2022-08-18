@@ -49,7 +49,7 @@ public static class CityJSONFormatter
             AddCityObejctToJSONData(obj);
         }
 
-        HandleTextFile.WriteString("export.json", RootObject.ToString());
+        //HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
