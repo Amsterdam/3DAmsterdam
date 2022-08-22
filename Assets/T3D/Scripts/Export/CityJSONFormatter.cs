@@ -49,7 +49,7 @@ public static class CityJSONFormatter
             AddCityObejctToJSONData(obj);
         }
 
-        //HandleTextFile.WriteString("export.json", RootObject.ToString());
+        HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
@@ -64,14 +64,14 @@ public static class CityJSONFormatter
     private static void AddCityObejctToJSONData(CityObject obj)
     {
         obj.UpdateSurfaces(); // update latest changes
-
+        var objVerts = new Dictionary<Vector3, int>();
         foreach (var lod in obj.Solids)
         {
             foreach (var shell in lod.Value)
             {
                 foreach (var surface in shell)
                 {
-                    AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                    AddCityGeometry(obj, surface, objVerts); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
                 }
             }
         }
@@ -85,37 +85,47 @@ public static class CityJSONFormatter
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
-    private static void AddCityGeometry(CityObject parent, CitySurface surface)
+    private static void AddCityGeometry(CityObject parent, CitySurface surface, Dictionary<Vector3, int> currentObjectVertices)
     {
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
             polygon.LocalToAbsoluteBoundaryConverter = new Dictionary<int, int>(); //reset the dictionary if a previous export occurred
 
+            var absoluteVertexIndex = -1;
             for (int j = 0; j < polygon.Vertices.Length; j++)
             {
                 Vector3 vert = polygon.Vertices[j];
-                Vector3RD vertRD = CoordConvert.UnitytoRD(vert);
 
-                if (swapYZ)
+                if (currentObjectVertices.ContainsKey(vert)) // if vert already exists in the list, use that index.
                 {
-                    Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
-                    var rdArray = new JSONArray();
-                    rdArray.Add(vertRD.x); //rd swaps y and z already, so don't do it again
-                    rdArray.Add(vertRD.y);
-                    rdArray.Add(vertRD.z);
-                    RDVertices.Add(rdArray);
+                    absoluteVertexIndex = currentObjectVertices[vert];
                 }
-                else
+                else //vertex does not already exist, add a new vert to the list
                 {
-                    Vertices.Add(vert);
-                    var rdArray = new JSONArray();
-                    rdArray.Add(vertRD.x);
-                    rdArray.Add(vertRD.z);
-                    rdArray.Add(vertRD.y);
-                    RDVertices.Add(rdArray);
+                    Vector3RD vertRD = CoordConvert.UnitytoRD(vert);
+                    if (swapYZ)
+                    {
+                        Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
+                        var rdArray = new JSONArray();
+                        rdArray.Add(vertRD.x); //rd swaps y and z already, so don't do it again
+                        rdArray.Add(vertRD.y);
+                        rdArray.Add(vertRD.z);
+                        RDVertices.Add(rdArray);
+                    }
+                    else
+                    {
+                        Vertices.Add(vert);
+                        var rdArray = new JSONArray();
+                        rdArray.Add(vertRD.x);
+                        rdArray.Add(vertRD.z);
+                        rdArray.Add(vertRD.y);
+                        RDVertices.Add(rdArray);
+                    }
+                    absoluteVertexIndex = Vertices.Count - 1;
+                    currentObjectVertices.Add(vert, absoluteVertexIndex);
                 }
-                polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
+                polygon.LocalToAbsoluteBoundaryConverter.Add(j, absoluteVertexIndex);
             }
             //polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
         }
