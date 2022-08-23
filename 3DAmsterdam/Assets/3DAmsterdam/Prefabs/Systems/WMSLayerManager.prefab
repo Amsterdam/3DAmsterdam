@@ -58,3 +58,11 @@ MonoBehaviour:
   ShowWMSOnTerrain: {fileID: 0}
   ShowWMSOnBuildingsAndTerrain: {fileID: 0}
   UnloadWMSService: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+  wmsLods:
+  - textureSize: 16
+    maximumDistance: 6000
+  - textureSize: 1024
+    maximumDistance: 3000
+  - textureSize: 2048
+    maximumDistance: 1000
+  tileSize: 1500
