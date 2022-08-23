@@ -193,20 +193,25 @@ namespace T3D.Uitbouw
             var geometryArray = new JSONArray();
             foreach (var lod in Solids.Keys)
             {
-                print("addin liod" + lod);
                 //obj["geometry"] = GetGeometryNode(lod);
                 geometryArray.Add(GetGeometryNode(lod));
             }
             obj["geometry"] = geometryArray;
 
-            obj["attributes"] = GetAnnotations();
+            obj["attributes"] = GetAttributes();
             return obj;
         }
 
-        private JSONObject GetAnnotations()
+        protected virtual JSONObject GetAttributes()
         {
             var obj = new JSONObject();
+            obj.Add("annotations", GetAnnotationNode());
+            return obj;
+        }
 
+        protected JSONObject GetAnnotationNode()
+        {
+            var annotationNode = new JSONObject();
             foreach (var ann in AnnotationState.AnnotationUIs)
             {
                 if (Id == ann.ParentCityObject)
@@ -218,10 +223,10 @@ namespace T3D.Uitbouw
                     point.Add("z", ann.ConnectionPointRD.z);
                     annotation.Add("location", point);
                     annotation.Add("text", ann.Text);
-                    obj.Add("Annotation " + (ann.Id + 1), annotation);
+                    annotationNode.Add("Annotation " + (ann.Id + 1), annotation);
                 }
             }
-            return obj;
+            return annotationNode;
         }
 
         public virtual JSONObject GetGeometryNode(int lod)
@@ -229,23 +234,23 @@ namespace T3D.Uitbouw
             //var newGeometryArray = new JSONObject();
             //for (int i = 0; i < 1; i++) //multiple geometry objects represent different LODs
             //{
-                var geometryObject = new JSONObject();
-                geometryObject["type"] = "MultiSurface"; //todo support other types?
-                geometryObject["lod"] = activeLod;
-                var boundaries = new JSONArray();
-                for (int j = 0; j < Surfaces[lod].Length; j++)
-                {
-                    var surfaceArray = Surfaces[lod][j].GetJSONPolygons();
-                    boundaries.Add(surfaceArray);
-                }
-                geometryObject["boundaries"] = boundaries;
+            var geometryObject = new JSONObject();
+            geometryObject["type"] = "MultiSurface"; //todo support other types?
+            geometryObject["lod"] = activeLod;
+            var boundaries = new JSONArray();
+            for (int j = 0; j < Surfaces[lod].Length; j++)
+            {
+                var surfaceArray = Surfaces[lod][j].GetJSONPolygons();
+                boundaries.Add(surfaceArray);
+            }
+            geometryObject["boundaries"] = boundaries;
 
-                if (includeSemantics)
-                {
-                    var semantics = GetSemantics(activeLod);
-                    geometryObject["semantics"] = semantics;
-                }
-                //newGeometryArray.Add(geometryObject);
+            if (includeSemantics)
+            {
+                var semantics = GetSemantics(activeLod);
+                geometryObject["semantics"] = semantics;
+            }
+            //newGeometryArray.Add(geometryObject);
             //}
             return geometryObject;
         }

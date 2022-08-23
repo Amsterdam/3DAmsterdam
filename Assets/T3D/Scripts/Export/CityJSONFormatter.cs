@@ -20,6 +20,8 @@ public static class CityJSONFormatter
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
+    private static Dictionary<string, JSONNode> extensionNodes = new Dictionary<string, JSONNode>();
+    private static JSONObject presentLoDs;
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
     private static bool convertToRD = true; //convert Unity space to RD space?
@@ -31,6 +33,7 @@ public static class CityJSONFormatter
         Vertices = new JSONArray();
         RDVertices = new JSONArray();
         Metadata = new JSONObject();
+        presentLoDs = new JSONObject();
 
         if (convertToRD)
             Metadata.Add("referenceSystem", "urn:ogc:def:crs:EPSG::28992");
@@ -48,6 +51,17 @@ public static class CityJSONFormatter
         {
             AddCityObejctToJSONData(obj);
         }
+        Metadata.Add("presentLoDs", presentLoDs);
+
+        foreach (var node in extensionNodes)
+        {
+            RootObject[node.Key] = node.Value;
+        }
+
+        if (convertToRD)
+            RecalculateGeographicalExtents(RDVertices);
+        else
+            RecalculateGeographicalExtents(Vertices);
 
         HandleTextFile.WriteString("export.json", RootObject.ToString());
 
@@ -74,12 +88,10 @@ public static class CityJSONFormatter
                     AddCityGeometry(obj, surface, objVerts); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
                 }
             }
+            var lodCount = presentLoDs[lod.Key.ToString()].AsInt;
+            presentLoDs[lod.Key.ToString()] = lodCount + 1;
+            Debug.Log(lod.Key + " new lod count: " + (lodCount + 1)); 
         }
-
-        if (convertToRD)
-            RecalculateGeographicalExtents(RDVertices);
-        else
-            RecalculateGeographicalExtents(Vertices);
 
         cityObjects[obj.Id] = obj.GetJsonObject();
     }
@@ -172,5 +184,10 @@ public static class CityJSONFormatter
 
         //Debug.Log(geographicalExtent.Count);
         Metadata["geographicalExtent"] = geographicalExtent;
+    }
+
+    public static void AddExtensionNode(string key, JSONNode node)
+    {
+        extensionNodes.Add(key, node);
     }
 }

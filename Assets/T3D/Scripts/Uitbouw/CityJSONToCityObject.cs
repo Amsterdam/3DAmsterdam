@@ -12,6 +12,7 @@ using UnityEngine;
 public class CityJSONToCityObject : CityObject
 {
     private Dictionary<CityObjectIdentifier, Mesh> geometryNodes;
+    private JSONObject attributes;
     private List<Vector3Double> combinedVertices;
     private int geometryDepth = -1;
 
@@ -242,9 +243,16 @@ public class CityJSONToCityObject : CityObject
         return geometry.Key.Node["semantics"];
     }
 
-    public void SetNodes(Dictionary<CityObjectIdentifier, Mesh> meshes, List<Vector3Double> combinedVertices)
+    protected override JSONObject GetAttributes()
+    {
+        attributes.Add("annotations", GetAnnotationNode());
+        return attributes;
+    }
+
+    public void SetNodes(Dictionary<CityObjectIdentifier, Mesh> meshes, JSONObject attributes, List<Vector3Double> combinedVertices)
     {
         this.geometryNodes = meshes;
+        this.attributes = attributes;
         this.combinedVertices = combinedVertices;
         base.Start();
     }
