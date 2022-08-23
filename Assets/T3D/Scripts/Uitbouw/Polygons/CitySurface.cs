@@ -100,19 +100,19 @@ public class CitySurface
         return surfaceArray;
     }
 
-    public JSONNode GetSemanticObject(CitySurface[] allObjectSurfaces)
+    public JSONNode GetSemanticObject(CitySurface[] allGeometrySurfaces)
     {
         var node = new JSONObject();
         node["type"] = SurfaceType.ToString();
         //node["name"] = name;
 
         if (semanticParent != null)
-            node["parent"] = GetParentIndex(allObjectSurfaces);
+            node["parent"] = GetParentIndex(allGeometrySurfaces);
 
         if (semanticChildren.Count > 0)
         {
             var childrenNode = new JSONArray();
-            var childIndices = GetChildIndices(allObjectSurfaces);
+            var childIndices = GetChildIndices(allGeometrySurfaces);
             foreach (var c in childIndices)
             {
                 childrenNode.Add(c);
