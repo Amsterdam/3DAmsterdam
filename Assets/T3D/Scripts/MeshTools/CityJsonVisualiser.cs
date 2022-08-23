@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using T3D.LoadData;
+using T3D.Uitbouw;
 //using T3D.LoadData;
 using UnityEngine;
 
@@ -37,6 +38,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
     private TextAsset testJSON;
     [SerializeField]
     private bool useTestJSON;
+    private static string[] definedNodes = { "type", "version", "CityObjects", "vertices", "extensions", "metadata", "transform", "appearance", "geometry-templates" };
 
     private void Awake()
     {
@@ -89,10 +91,12 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var meshFilter = uitbouw.MeshFilter;
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
         var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false);
+        var attributes = GetAttributes(cityJsonModel.cityjsonNode["CityObjects"]);
+        AddExtensionNodes(cityJsonModel.cityjsonNode);
         var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
 
         var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
-        cityObject.SetNodes(meshes, cityJsonModel.vertices);
+        cityObject.SetNodes(meshes, attributes, cityJsonModel.vertices);
         uitbouw.AddCityObject(cityObject);
         cityObject.SetMeshActive(2);
 
@@ -119,6 +123,31 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         HasLoaded = true;
     }
 
+    public static void AddExtensionNodes(JSONNode cityjsonNode)
+    {
+        foreach (var node in cityjsonNode)
+        {
+            if (definedNodes.Contains(node.Key))
+                continue;
+
+            CityJSONFormatter.AddExtensionNode(node.Key, node.Value);
+        }
+    }
+
+    public static JSONObject GetAttributes(JSONNode cityjsonNode)
+    {
+        var attributesNode = new JSONObject();
+        foreach (KeyValuePair<string, JSONNode> co in cityjsonNode)
+        {
+            var attributes = co.Value["attributes"];
+            foreach (var attr in attributes)
+            {
+                attributesNode[attr.Key] = attr.Value; //todo: might overwrite attributes due to merge
+            }
+        }
+        return attributesNode;
+    }
+
     public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(string cityJson, Matrix4x4 localToWorldMatrix, bool flipYZ)
     {
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), false);
@@ -135,6 +164,8 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
+            var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
+            CityObject.IdPrefix = key.Split(bagId.ToCharArray())[0];
             var geometries = meshmaker.CreateMeshes(key, localToWorldMatrix, cityJsonModel, co.Value, flipYZ);
 
             foreach (var g in geometries)
@@ -142,6 +173,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
                 meshes.Add(g.Key, g.Value);
             }
         }
+
         return meshes;
     }
 

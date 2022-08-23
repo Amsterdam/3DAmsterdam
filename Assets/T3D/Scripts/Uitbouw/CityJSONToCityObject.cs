@@ -12,6 +12,7 @@ using UnityEngine;
 public class CityJSONToCityObject : CityObject
 {
     private Dictionary<CityObjectIdentifier, Mesh> geometryNodes;
+    private JSONObject attributes;
     private List<Vector3Double> combinedVertices;
     private int geometryDepth = -1;
 
@@ -81,6 +82,7 @@ public class CityJSONToCityObject : CityObject
     public override void UpdateSurfaces()
     {
         Solids = new Dictionary<int, List<CitySurface[]>>();
+        //Surfaces = new Dictionary<int, CitySurface[]>();
         //if (!objectNode)
         //    print(gameObject.name + " does not have object node");
         foreach (var node in geometryNodes.Keys) //multiple geometry objects represent different LODs
@@ -168,31 +170,32 @@ public class CityJSONToCityObject : CityObject
     //    }
     //}
 
-    public override JSONArray GetGeometryNode()
+    public override JSONObject GetGeometryNode(int lod)
     {
-        var newGeometryArray = new JSONArray();
+        //var newGeometryArray = new JSONArray();
 
-        foreach (var sourceGeometry in geometryNodes.Keys) //multiple geometry objects represent different LODs
+        //foreach (var sourceGeometry in geometryNodes.Keys) //multiple geometry objects represent different LODs
+        //{
+        var sourceGeometry = geometryNodes.Keys.FirstOrDefault(k => k.Lod == lod);
+        var geometryObject = new JSONObject();
+        GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), sourceGeometry.Node["type"].Value);
+        geometryObject["type"] = geometryType.ToString();
+        geometryObject["lod"] = lod;
+
+        geometryDepth = GeometryDepth[geometryType];
+        geometryObject["boundaries"] = GetBoundariesNode(lod, geometryDepth);
+
+        if (sourceGeometry.Node["semantics"] != null)
         {
-            var geometryObject = new JSONObject();
-            GeometryType geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), sourceGeometry.Node["type"].Value);
-            geometryObject["type"] = geometryType.ToString();
-            geometryObject["lod"] = sourceGeometry.Lod;
-
-            geometryDepth = GeometryDepth[geometryType];
-            geometryObject["boundaries"] = GetBoundariesNode(sourceGeometry.Lod, geometryDepth);
-
-            if (sourceGeometry.Node["semantics"] != null)
-            {
-                var semantics = GetSemantics(sourceGeometry.Lod);
-                geometryObject["semantics"] = semantics;
-            }
-            newGeometryArray.Add(geometryObject);
+            var semantics = GetSemantics(lod);
+            geometryObject["semantics"] = semantics;
         }
+        //newGeometryArray.Add(geometryObject);
+        //}
 
         //print("ga " + newGeometryArray.ToString());
         //print("go " + newGeometryArray.AsObject.ToString());
-        return newGeometryArray;
+        return geometryObject;
     }
 
     private JSONArray GetBoundariesNode(int lod, int depth)
@@ -207,9 +210,9 @@ public class CityJSONToCityObject : CityObject
                 throw new NotImplementedException();
                 break;
             case 2:
-                for (int i = 0; i < Surfaces.Length; i++)
+                for (int i = 0; i < Surfaces[lod].Length; i++)
                 {
-                    var surfaceArray = Surfaces[i].GetJSONPolygons();
+                    var surfaceArray = Surfaces[lod][i].GetJSONPolygons();
                     boundaries.Add(surfaceArray);
                 }
                 return boundaries;
@@ -240,9 +243,16 @@ public class CityJSONToCityObject : CityObject
         return geometry.Key.Node["semantics"];
     }
 
-    public void SetNodes(Dictionary<CityObjectIdentifier, Mesh> meshes, List<Vector3Double> combinedVertices)
+    protected override JSONObject GetAttributes()
+    {
+        attributes.Add("annotations", GetAnnotationNode());
+        return attributes;
+    }
+
+    public void SetNodes(Dictionary<CityObjectIdentifier, Mesh> meshes, JSONObject attributes, List<Vector3Double> combinedVertices)
     {
         this.geometryNodes = meshes;
+        this.attributes = attributes;
         this.combinedVertices = combinedVertices;
         base.Start();
     }

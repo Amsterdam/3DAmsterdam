@@ -20,6 +20,8 @@ public static class CityJSONFormatter
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
+    private static Dictionary<string, JSONNode> extensionNodes = new Dictionary<string, JSONNode>();
+    private static JSONObject presentLoDs;
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
     private static bool convertToRD = true; //convert Unity space to RD space?
@@ -31,6 +33,7 @@ public static class CityJSONFormatter
         Vertices = new JSONArray();
         RDVertices = new JSONArray();
         Metadata = new JSONObject();
+        presentLoDs = new JSONObject();
 
         if (convertToRD)
             Metadata.Add("referenceSystem", "urn:ogc:def:crs:EPSG::28992");
@@ -48,8 +51,19 @@ public static class CityJSONFormatter
         {
             AddCityObejctToJSONData(obj);
         }
+        Metadata.Add("presentLoDs", presentLoDs);
 
-        //HandleTextFile.WriteString("export.json", RootObject.ToString());
+        foreach (var node in extensionNodes)
+        {
+            RootObject[node.Key] = node.Value;
+        }
+
+        if (convertToRD)
+            RecalculateGeographicalExtents(RDVertices);
+        else
+            RecalculateGeographicalExtents(Vertices);
+
+        HandleTextFile.WriteString("export.json", RootObject.ToString());
 
         return RootObject.ToString();
     }
@@ -64,58 +78,66 @@ public static class CityJSONFormatter
     private static void AddCityObejctToJSONData(CityObject obj)
     {
         obj.UpdateSurfaces(); // update latest changes
-
+        var objVerts = new Dictionary<Vector3, int>();
         foreach (var lod in obj.Solids)
         {
             foreach (var shell in lod.Value)
             {
                 foreach (var surface in shell)
                 {
-                    AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
+                    AddCityGeometry(obj, surface, objVerts); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
                 }
             }
+            var lodCount = presentLoDs[lod.Key.ToString()].AsInt;
+            presentLoDs[lod.Key.ToString()] = lodCount + 1;
+            Debug.Log(lod.Key + " new lod count: " + (lodCount + 1)); 
         }
-
-        if (convertToRD)
-            RecalculateGeographicalExtents(RDVertices);
-        else
-            RecalculateGeographicalExtents(Vertices);
 
         cityObjects[obj.Id] = obj.GetJsonObject();
     }
 
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
-    private static void AddCityGeometry(CityObject parent, CitySurface surface)
+    private static void AddCityGeometry(CityObject parent, CitySurface surface, Dictionary<Vector3, int> currentObjectVertices)
     {
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
             polygon.LocalToAbsoluteBoundaryConverter = new Dictionary<int, int>(); //reset the dictionary if a previous export occurred
 
+            var absoluteVertexIndex = -1;
             for (int j = 0; j < polygon.Vertices.Length; j++)
             {
                 Vector3 vert = polygon.Vertices[j];
-                Vector3RD vertRD = CoordConvert.UnitytoRD(vert);
 
-                if (swapYZ)
+                if (currentObjectVertices.ContainsKey(vert)) // if vert already exists in the list, use that index.
                 {
-                    Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
-                    var rdArray = new JSONArray();
-                    rdArray.Add(vertRD.x); //rd swaps y and z already, so don't do it again
-                    rdArray.Add(vertRD.y);
-                    rdArray.Add(vertRD.z);
-                    RDVertices.Add(rdArray);
+                    absoluteVertexIndex = currentObjectVertices[vert];
                 }
-                else
+                else //vertex does not already exist, add a new vert to the list
                 {
-                    Vertices.Add(vert);
-                    var rdArray = new JSONArray();
-                    rdArray.Add(vertRD.x);
-                    rdArray.Add(vertRD.z);
-                    rdArray.Add(vertRD.y);
-                    RDVertices.Add(rdArray);
+                    Vector3RD vertRD = CoordConvert.UnitytoRD(vert);
+                    if (swapYZ)
+                    {
+                        Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
+                        var rdArray = new JSONArray();
+                        rdArray.Add(vertRD.x); //rd swaps y and z already, so don't do it again
+                        rdArray.Add(vertRD.y);
+                        rdArray.Add(vertRD.z);
+                        RDVertices.Add(rdArray);
+                    }
+                    else
+                    {
+                        Vertices.Add(vert);
+                        var rdArray = new JSONArray();
+                        rdArray.Add(vertRD.x);
+                        rdArray.Add(vertRD.z);
+                        rdArray.Add(vertRD.y);
+                        RDVertices.Add(rdArray);
+                    }
+                    absoluteVertexIndex = Vertices.Count - 1;
+                    currentObjectVertices.Add(vert, absoluteVertexIndex);
                 }
-                polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
+                polygon.LocalToAbsoluteBoundaryConverter.Add(j, absoluteVertexIndex);
             }
             //polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
         }
@@ -162,5 +184,10 @@ public static class CityJSONFormatter
 
         //Debug.Log(geographicalExtent.Count);
         Metadata["geographicalExtent"] = geographicalExtent;
+    }
+
+    public static void AddExtensionNode(string key, JSONNode node)
+    {
+        extensionNodes.Add(key, node);
     }
 }

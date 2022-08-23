@@ -52,8 +52,18 @@ namespace T3D.Uitbouw
 
     public abstract class CityObject : MonoBehaviour
     {
-        private const string idPrefix = "NL.IMBAG.Pand.";
+        private static string idPrefix = "NL.IMBAG.Pand.";
+        public static string IdPrefix
+        {
+            get => idPrefix;
+            set
+            {
+                idPrefix = value;
+                print("set id prefix value to: " + value);
+            }
+        }
         private static int IdCounter = 0;
+
         public static readonly Dictionary<GeometryType, int> GeometryDepth = new Dictionary<GeometryType, int>{
             {GeometryType.MultiPoint, 0 }, //A "MultiPoint" has an array with the indices of the vertices; this array can be empty.
             {GeometryType.MultiLineString, 1 }, //A "MultiLineString" has an array of arrays, each containing the indices of a LineString
@@ -69,7 +79,19 @@ namespace T3D.Uitbouw
 
         protected int activeLod = 3;
         public Dictionary<int, List<CitySurface[]>> Solids { get; protected set; }
-        public CitySurface[] Surfaces => Solids[activeLod][0];
+        public Dictionary<int, CitySurface[]> Surfaces //todo: don't recaluclate every time
+        {
+            get
+            {
+                var surfaces = new Dictionary<int, CitySurface[]>();
+                foreach (var solid in Solids)
+                {
+                    surfaces.Add(solid.Key, solid.Value[0]);
+                }
+                return surfaces;
+            }
+        }
+        //public CitySurface[] Surfaces => Solids[activeLod][0];
         private List<CityObject> cityChildren = new List<CityObject>();
         public CityObject[] CityChildren => cityChildren.ToArray();
         public CityObject[] CityParents { get; private set; } = new CityObject[0];
@@ -95,11 +117,11 @@ namespace T3D.Uitbouw
         {
             if (isMainBuilding)
             {
-                Id = idPrefix + bagId;
+                Id = IdPrefix + bagId;
                 return;
             }
 
-            Id = idPrefix + bagId + "-" + IdCounter;
+            Id = IdPrefix + bagId + "-" + IdCounter;
             IdCounter++;
         }
 
@@ -168,16 +190,28 @@ namespace T3D.Uitbouw
 
 
             //obj["geometry"] = new JSONArray();
-            obj["geometry"] = GetGeometryNode();
+            var geometryArray = new JSONArray();
+            foreach (var lod in Solids.Keys)
+            {
+                //obj["geometry"] = GetGeometryNode(lod);
+                geometryArray.Add(GetGeometryNode(lod));
+            }
+            obj["geometry"] = geometryArray;
 
-            obj["attributes"] = GetAnnotations();
+            obj["attributes"] = GetAttributes();
             return obj;
         }
 
-        private JSONObject GetAnnotations()
+        protected virtual JSONObject GetAttributes()
         {
             var obj = new JSONObject();
+            obj.Add("annotations", GetAnnotationNode());
+            return obj;
+        }
 
+        protected JSONObject GetAnnotationNode()
+        {
+            var annotationNode = new JSONObject();
             foreach (var ann in AnnotationState.AnnotationUIs)
             {
                 if (Id == ann.ParentCityObject)
@@ -189,36 +223,36 @@ namespace T3D.Uitbouw
                     point.Add("z", ann.ConnectionPointRD.z);
                     annotation.Add("location", point);
                     annotation.Add("text", ann.Text);
-                    obj.Add("Annotation " + (ann.Id + 1), annotation);
+                    annotationNode.Add("Annotation " + (ann.Id + 1), annotation);
                 }
             }
-            return obj;
+            return annotationNode;
         }
 
-        public virtual JSONArray GetGeometryNode()
+        public virtual JSONObject GetGeometryNode(int lod)
         {
-            var newGeometryArray = new JSONArray();
-            for (int i = 0; i < 1; i++) //multiple geometry objects represent different LODs
+            //var newGeometryArray = new JSONObject();
+            //for (int i = 0; i < 1; i++) //multiple geometry objects represent different LODs
+            //{
+            var geometryObject = new JSONObject();
+            geometryObject["type"] = "MultiSurface"; //todo support other types?
+            geometryObject["lod"] = activeLod;
+            var boundaries = new JSONArray();
+            for (int j = 0; j < Surfaces[lod].Length; j++)
             {
-                var geometryObject = new JSONObject();
-                geometryObject["type"] = "MultiSurface"; //todo support other types?
-                geometryObject["lod"] = activeLod;
-                var boundaries = new JSONArray();
-                for (int j = 0; j < Surfaces.Length; j++)
-                {
-                    var surfaceArray = Surfaces[j].GetJSONPolygons();
-                    boundaries.Add(surfaceArray);
-                }
-                geometryObject["boundaries"] = boundaries;
-
-                if (includeSemantics)
-                {
-                    var semantics = GetSemantics(activeLod);
-                    geometryObject["semantics"] = semantics;
-                }
-                newGeometryArray.Add(geometryObject);
+                var surfaceArray = Surfaces[lod][j].GetJSONPolygons();
+                boundaries.Add(surfaceArray);
             }
-            return newGeometryArray;
+            geometryObject["boundaries"] = boundaries;
+
+            if (includeSemantics)
+            {
+                var semantics = GetSemantics(activeLod);
+                geometryObject["semantics"] = semantics;
+            }
+            //newGeometryArray.Add(geometryObject);
+            //}
+            return geometryObject;
         }
 
         protected virtual JSONNode GetSemantics(int lod)
@@ -226,9 +260,9 @@ namespace T3D.Uitbouw
             var node = new JSONObject();
             var surfaceSemantics = new JSONArray();
             var indices = new JSONArray();
-            for (int i = 0; i < Surfaces.Length; i++)
+            for (int i = 0; i < Surfaces[lod].Length; i++)
             {
-                surfaceSemantics.Add(Surfaces[i].GetSemanticObject(Surfaces));
+                surfaceSemantics.Add(Surfaces[lod][i].GetSemanticObject(Surfaces[lod]));
                 indices.Add(i);
             }
 
