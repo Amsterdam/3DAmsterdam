@@ -63,8 +63,6 @@ public static class CityJSONFormatter
         else
             RecalculateGeographicalExtents(Vertices);
 
-        HandleTextFile.WriteString("export.json", RootObject.ToString());
-
         return RootObject.ToString();
     }
 
