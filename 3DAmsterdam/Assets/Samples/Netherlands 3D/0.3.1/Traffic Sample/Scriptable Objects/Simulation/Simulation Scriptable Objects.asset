@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dabf81528c1e500428e2dec75e5dbd64, type: 3}
+  m_Name: Simulation Scriptable Objects
+  m_EditorClassIdentifier: 
+  eventUpdateRealtime: {fileID: 11400000, guid: 0a2ae6a8ef751564c8e9090ba927b3f8, type: 2}
+  eventSimulationTimeChanged: {fileID: 11400000, guid: 7cbbabc4c6ca5f044a5492fb55a52b94, type: 2}
+  eventSimulationSpeedChanged: {fileID: 11400000, guid: 221a2b2e7995a9940a2b93b76f04d386, type: 2}
+  eventSimulationStateChanged: {fileID: 11400000, guid: 93027ea80592f354c9f4b393f8881da0, type: 2}
+  simulationTime: {fileID: 11400000, guid: 45384d89a76d18340bbcb11dfc8b8f82, type: 2}
+  simulationSpeed: {fileID: 11400000, guid: b62124e41bd8f704fbd00b900dc9778d, type: 2}
+  simulationState: {fileID: 11400000, guid: 2f0f64cea92c55a4b845d4667baaf80f, type: 2}
