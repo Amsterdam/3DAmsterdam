@@ -13,23 +13,22 @@ MonoBehaviour:
   m_Name: Clear
   m_EditorClassIdentifier: 
   enviromentName: Clear
-  skyIcon: {fileID: 2800000, guid: e51568325f1616442bb44e03c5027e5e, type: 3}
-  fogColorDay: {r: 1, g: 0.9773585, b: 0.9009434, a: 1}
+  fogColorDay: {r: 1, g: 1, b: 1, a: 1}
   fogColorNight: {r: 0, g: 0, b: 0, a: 1}
   skyColorsDay:
-  - {r: 0.81568635, g: 0.79215693, b: 0.7803922, a: 1}
-  - {r: 0.37254903, g: 0.38823533, b: 0.40000004, a: 1}
-  - {r: 0.2392157, g: 0.227451, b: 0.20784315, a: 1}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
   skyColorsNight:
-  - {r: 0.740566, g: 0.870283, b: 1, a: 1}
-  - {r: 0.122152, g: 0.14032628, b: 0.4245283, a: 1}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   skyMap: {fileID: 0}
   exposureDay: 1
   exposureNight: 0.1
-  skyTintColorDay: {r: 1, g: 1, b: 1, a: 1}
-  skyTintColorNight: {r: 1, g: 1, b: 1, a: 1}
+  skyTintColorDay: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  skyTintColorNight: {r: 0, g: 0, b: 1, a: 1}
   sunTexture: {fileID: 0}
   haloTexture: {fileID: 0}
-  sunTextureTintColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  sunTextureTintColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   sunHaloTextureTintColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

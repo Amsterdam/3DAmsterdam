@@ -1,13 +1,10 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Help;
 using Netherlands3D.Interface;
-using Netherlands3D.LayerSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class BuildingMeasuring : Interactable
 {
@@ -24,9 +21,6 @@ public class BuildingMeasuring : Interactable
     private NumberInputField distanceLabel;
 
     private int placementStepIndex = -1;
-
-    [SerializeField]
-    private AssetbundleMeshLayer[] targetLayers;
 
     [SerializeField]
     private List<MeasurePoint> linePoints;
@@ -122,7 +116,6 @@ public class BuildingMeasuring : Interactable
     private void PreviewNextPoint()
     {
         Vector3 previewPoint = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
-        PrepareColliders(previewPoint);
 
         //Shoot ray to get precise point on collider
         if (Physics.Raycast(Selector.mainSelectorRay, out RaycastHit hit))
@@ -164,16 +157,6 @@ public class BuildingMeasuring : Interactable
     private void ChangeLineType(MeasurePoint.Shape shape)
     {
         foreach (var linePoint in linePoints) linePoint.ChangeShape(shape);
-    }
-
-    private void PrepareColliders(Vector3 placementPoint)
-    {
-        //Make sure our targetlayers have colliders
-        foreach (var hitTargetLayer in targetLayers)
-        {
-            //Make sure all tiles close to mouse have a collider
-            hitTargetLayer.AddMeshColliders(placementPoint);
-        }
     }
 
     /// <summary>

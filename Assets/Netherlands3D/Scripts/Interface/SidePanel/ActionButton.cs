@@ -1,7 +1,4 @@
-﻿using Netherlands3D.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +10,6 @@ namespace Netherlands3D.Interface.SidePanel
 
         [SerializeField]
         private Text buttonText;
-
-        private void Start()
-        {
-            gameObject.AddComponent<AnalyticsClickTrigger>();
-        }
 
         public void Select()
         {

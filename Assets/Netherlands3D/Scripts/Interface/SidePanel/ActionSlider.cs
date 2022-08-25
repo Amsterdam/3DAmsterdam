@@ -1,7 +1,4 @@
-﻿using Netherlands3D.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,11 +16,6 @@ namespace Netherlands3D.Interface.SidePanel
 
         [SerializeField]
         private Text sliderTextMax;
-
-        private void Start()
-        {
-            slider.gameObject.AddComponent<AnalyticsClickTrigger>();
-        }
 
         public void SliderChange(float value)
         {
