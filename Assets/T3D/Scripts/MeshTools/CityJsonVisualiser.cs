@@ -98,6 +98,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
         cityObject.SetNodes(meshes, attributes, cityJsonModel.vertices);
         uitbouw.AddCityObject(cityObject);
+        uitbouw.ReparentToMainBuilding(RestrictionChecker.ActiveBuilding.GetComponent<CityObject>());
         cityObject.SetMeshActive(2);
 
         meshFilter.mesh = combinedMesh;
