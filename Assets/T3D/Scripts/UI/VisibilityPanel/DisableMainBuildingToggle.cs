@@ -5,28 +5,11 @@ using T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DisableMainBuildingToggle : MonoBehaviour
+public class DisableMainBuildingToggle : UIToggle
 {
-    private Toggle disableMainBuildingToggle;
     private int activeLod;
-    //private CityObjectType uitbouwType;
 
-    private void Awake()
-    {
-        disableMainBuildingToggle = GetComponent<Toggle>();
-    }
-
-    private void OnEnable()
-    {
-        disableMainBuildingToggle.onValueChanged.AddListener(ToggleMainBuilding);
-    }
-
-    private void OnDisable()
-    {
-        disableMainBuildingToggle.onValueChanged.RemoveListener(ToggleMainBuilding);
-    }
-
-    private void ToggleMainBuilding(bool active)
+    protected override void ToggleAction(bool active)
     {
         CityJSONToCityObject building = RestrictionChecker.ActiveBuilding.GetComponent<CityJSONToCityObject>();
         var uitbouw = RestrictionChecker.ActiveUitbouw as UploadedUitbouw;//.GetComponent<CityObject>();

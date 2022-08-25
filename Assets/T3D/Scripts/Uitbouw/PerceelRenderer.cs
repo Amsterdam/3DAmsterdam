@@ -159,6 +159,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //perceelOutlineGameObject.SetActive(active);
 
             terreinMeshGameObject.SetActive(!active);
+            perceelOutlineGameObject.SetActive(!active);
         }
     }
 }

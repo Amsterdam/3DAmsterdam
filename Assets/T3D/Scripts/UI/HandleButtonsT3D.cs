@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
-    public Button ButtonOmgeving;
+    //public Button ButtonOmgeving;
     public Button ButtonZon;
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
@@ -20,7 +20,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomOut;
     public Button ButtonToggleRotateFirstperson;
 
-    public GameObject BuildingsLayer;    
+    //public GameObject BuildingsLayer;    
     public GameObject Zonnepaneel;
 
     public DropUp MaandenDropup;
@@ -44,7 +44,7 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
-        ButtonOmgeving.onClick.AddListener(ToggleBuildings);
+        //ButtonOmgeving.onClick.AddListener(ToggleBuildings);
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
@@ -72,13 +72,13 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();
     }
 
-    void ToggleBuildings()
-    {
-        //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
-        BuildingsLayer.SetActive(!BuildingsLayer.activeSelf);
+    //void ToggleBuildings()
+    //{
+    //    //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
+    //    BuildingsLayer.SetActive(!BuildingsLayer.activeSelf);
         
-        RestrictionChecker.ActivePerceel.SetPerceelActive(!BuildingsLayer.activeSelf);
-    }
+    //    RestrictionChecker.ActivePerceel.SetPerceelActive(!BuildingsLayer.activeSelf);
+    //}
 
     #region Sun related
     void ToggleZonnepaneel()
@@ -154,12 +154,12 @@ public class HandleButtonsT3D : MonoBehaviour
         return months[monthIndex];
     }
 
-    //called by the UI button events in the inspector
-    public void AllowUitbouwMovement(bool enable)
-    {
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(enable);
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(enable);
-    }
+    ////called by the UI button events in the inspector
+    //public void AllowUitbouwMovement(bool enable)
+    //{
+    //    RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(enable);
+    //    RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(enable);
+    //}
 
     #endregion
 }
