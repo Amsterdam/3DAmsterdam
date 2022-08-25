@@ -10,9 +10,6 @@ public class DisableSurroundingBuildingsToggle : UIToggle
 
     protected override void ToggleAction(bool active)
     {
-        //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
         BuildingsLayer.SetActive(active);
-
-        //RestrictionChecker.ActivePerceel.SetPerceelActive(!BuildingsLayer.activeSelf);
     }
 }
