@@ -1,9 +1,4 @@
-﻿using Netherlands3D.Help;
-using Netherlands3D.InputHandler;
-using Netherlands3D.Interface;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Netherlands3D.Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

@@ -1,5 +1,4 @@
 ﻿using Netherlands3D;
-using Netherlands3D.Settings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,9 +26,6 @@ public class EnviromentSettings : MonoBehaviour
     private float sunUpAmount = 1.0f;
     [SerializeField]
     private float sunDownAmount = -1.0f;
-
-    [SerializeField]
-    private Material intensityMaterialTrees;
 
     private static bool visualsUpdateRequired = false;
 
@@ -119,10 +115,7 @@ public class EnviromentSettings : MonoBehaviour
     public void UpdateSunBasedVisuals()
     {
         //Reduce sun strength when we go down the horizon
-        sun.intensity = Mathf.InverseLerp(sunDownAmount, sunUpAmount, Vector3.Dot(sun.transform.forward,Vector3.up));
-
-        //Apply sunlight to tree darkness (who use a very simple unlit shader)
-        intensityMaterialTrees.SetFloat("_Light", Mathf.Max(sun.intensity, 0.3f));
+        sun.intensity = Mathf.InverseLerp(sunDownAmount, sunUpAmount, Vector3.Dot(sun.transform.forward,Vector3.up)) * 1.3f;
 
         //Change the fog and ambient color based on this intensity
         RenderSettings.fogColor = Color.Lerp(

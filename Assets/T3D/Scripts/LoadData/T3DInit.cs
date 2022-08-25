@@ -1,7 +1,6 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.Cameras;
-using Netherlands3D.Settings;
 using Netherlands3D.T3D.Uitbouw;
 using System.Collections;
 using System.Collections.Generic;
@@ -70,7 +69,6 @@ public class T3DInit : MonoBehaviour, IUniqueService
         Config.activeConfiguration.RelativeCenterRD = new Vector2RD(HTMLData.RDPosition.x, HTMLData.RDPosition.y);
 
         GotoPosition(HTMLData.RDPosition);
-        //StartCoroutine(TileVisualizer.LoadTile(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));
 
         StartCoroutine(ServiceLocator.GetService<MetadataLoader>().GetCityJsonBag(HTMLData.BagId));
         StartCoroutine(ServiceLocator.GetService<MetadataLoader>().GetCityJsonBagBoundingBox(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));

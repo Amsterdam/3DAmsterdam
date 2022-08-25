@@ -105,7 +105,11 @@ public class AnnotationUI : MonoBehaviour
 
     public void SetSelectedColor(bool selected)
     {
-        numberBackgroundImage.color = selected ? selectedColor : normalColor;
+        var color = selected ? selectedColor : normalColor;
+        color.a = 256f;
+        numberBackgroundImage.color = color;
+        
+        //numberBackgroundImage.color = new Color(1, 1, 0, 1);
     }
 
     private void OnDestroy()

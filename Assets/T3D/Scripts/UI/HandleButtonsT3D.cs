@@ -1,7 +1,6 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
-using Netherlands3D.LayerSystem;
 using Netherlands3D.Sun;
 using Netherlands3D.T3D.Uitbouw;
 using System;

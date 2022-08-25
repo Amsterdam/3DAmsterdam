@@ -1,5 +1,4 @@
-﻿using Netherlands3D.BAG;
-using Netherlands3D.Cameras;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
@@ -71,8 +70,7 @@ namespace Netherlands3D.Interface.SidePanel
         private GameObject seperatorLinePrefab;
         [SerializeField]
         private GameObject spacerPrefab;
-        [SerializeField]
-        private SelectionOutliner selectionOutlinerPrefab;
+
         [SerializeField]
         private NameAndURL urlPrefab;
         [SerializeField]
@@ -487,10 +485,7 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkedBox, checkAction);
         }
-        public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
-        {
-            Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);
-        }
+
         public void AddCustomPrefab(GameObject prefab)
         {
             Instantiate(prefab, targetFieldsContainer);

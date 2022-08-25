@@ -8,8 +8,6 @@ public class EnviromentProfile : ScriptableObject
 {
     public string enviromentName = "Clear";
 
-    public Texture2D skyIcon;
-
     public Color fogColorDay = Color.white;
     public Color fogColorNight = Color.black;
 

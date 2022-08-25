@@ -1,5 +1,4 @@
 ﻿using ConvertCoordinates;
-using Netherlands3D.BAG;
 using System;
 using System.Collections;
 using System.Collections.Generic;

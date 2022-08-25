@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.Interface;
-using Netherlands3D.Interface.SidePanel;
-using Netherlands3D.LayerSystem;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -20,15 +18,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class ObjectDataEventArgs : EventArgs
     {
         public bool IsLoaded { get; private set; }
-        public ObjectData ObjectData { get; private set; }
         public Vector3 TileOffset;
-
-        public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
-        {
-            IsLoaded = isLoaded;
-            ObjectData = objectData;
-            TileOffset = tileOffset;
-        }
     }
 
     public class PerceelDataEventArgs : EventArgs
@@ -85,17 +75,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
         public delegate void CityJsonBagLoadedEventHandler(object source, string sourceJson, Mesh mesh);
-        //public event CityJsonBagLoadedEventHandler CityJsonBagLoaded;
-
-        public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
-        {
-            BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
-        }
-
-        //public void RaiseCityJsonBagLoaded(string sourceJson, Mesh mesh)
-        //{
-        //    CityJsonBagLoaded?.Invoke(this, sourceJson, mesh);
-        //}
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;
@@ -178,15 +157,12 @@ namespace Netherlands3D.T3D.Uitbouw
                     list.Add(polygonArray);
                     totalArea += GeometryCalculator.Area(polygonArray);
                 }
-                //print("outline loaded");
                 BuildingOutlineLoaded?.Invoke(this, new BuildingOutlineEventArgs(true, list, totalArea));
             }
         }
 
         IEnumerator GetPerceelData(Vector3RD position)
         {
-            //yield return null;
-
             var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
             var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX={bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
 
@@ -227,31 +203,8 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        IEnumerator GetBimCityJsonFile()
-        {
-            yield return null;
-
-            //var filepath = @"F:\T3D\CityJson stuff\data\15ad2866-8d14-44e1-8b2e-2a18275134b6.json";
-            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
-            var filepath = @"/Users/Tom/Documents/TSCD/T3D/sketchup cityjson files/02_2018_uitbouw_components.skp.json";
-
-            //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
-            //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
-            string cityjson = File.ReadAllText(filepath);
-
-            BimCityJsonReceived?.Invoke(cityjson);
-        }
-
         public IEnumerator GetCityJsonBag(string id)
         {
-            //var cityjson = File.ReadAllText(@"E:\cityjson\NL.IMBAG.Pand.0518100000226302.json");
-            //var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\kubus_met_gaten.json");
-            //var cityjson = File.ReadAllText(@"F:\T3D\Data\CityJson\VCS\0518100000226302.json");
-
-
-            //CityJsonBagReceived?.Invoke(cityjson);
-            //yield return null;
-
             var url = $"https://tomcat.totaal3d.nl/happyflow-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=bldg:Building&RESOURCEID=NL.IMBAG.Pand.{id}&OUTPUTFORMAT=application%2Fjson";
             var uwr = UnityWebRequest.Get(url);
 
@@ -339,52 +292,10 @@ namespace Netherlands3D.T3D.Uitbouw
                     Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
                 }
             }
-            //uitbouwPrefab.SetActive(true);
-            //uitbouwPrefab.transform.position = pos;
+
         }
 
-        private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
-        {
-            var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
 
-            ObjectMappingClass data;
-
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-            {
-                yield return uwr.SendWebRequest();
-
-                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
-                }
-                else
-                {
-                    //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
-
-                    ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
-
-                    objectMapping.highlightIDs = new List<string>()
-                {
-                    id
-                };
-
-                    //Debug.Log($"hasid:{data.ids.Contains(id)}");
-
-                    newAssetBundle.Unload(true);
-
-                    objectMapping.ApplyDataToIDsTexture();
-                    var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
-                    BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
-                }
-
-            }
-            yield return null;
-        }
     }
 }
 
