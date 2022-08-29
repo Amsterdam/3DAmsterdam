@@ -78,6 +78,10 @@ namespace Netherlands3D.Interface
 			{
 				Instance = this;
 			}
+
+			//Temporary fix regaring new feature that breaks WASD/Arrow keys in Input System 1.4.1
+			//Regarding: https://forum.unity.com/threads/input-system-1-4-1-released.1306062/
+			InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
 		}
 
 		void Start()
