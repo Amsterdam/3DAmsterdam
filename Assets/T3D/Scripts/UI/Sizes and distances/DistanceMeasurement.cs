@@ -35,7 +35,7 @@ namespace Netherlands3D.T3D
             set
             {
                 drawDistanceActive = value;
-                //UpdateMeasurementLines();
+                UpdateMeasurementLines();
             }
         }
 
