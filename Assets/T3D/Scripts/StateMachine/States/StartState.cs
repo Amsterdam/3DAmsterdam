@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class StartState : State
 {
+    [SerializeField]
+    private GameObject visibilityPanel;
+
     public override int GetDesiredStateIndex()
     {
         if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
@@ -56,6 +59,12 @@ public class StartState : State
             base.LoadSavedState(); //continue loading states the data once the data is loaded
         else
             StepEndedByUser(); //use By User function to ensure state Index in incremented;
+    }
+
+    public override void StateCompletedAction()
+    {
+        base.StateCompletedAction();
+        visibilityPanel.SetActive(true);
     }
 
     //public override void StateEnteredAction()

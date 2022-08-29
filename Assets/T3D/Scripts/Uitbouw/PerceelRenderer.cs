@@ -53,7 +53,11 @@ namespace Netherlands3D.T3D.Uitbouw
             Perceel = args.Perceel;
             GenerateMeshFromPerceel(args.Perceel);
             RenderPerceelOutline(args.Perceel);
+
             SetPerceelActive(false);
+            SetTerrainActive(true);
+            SetPerceelOutlineActive(true);
+
             Area = args.Area;
             var coord = CoordConvert.RDtoUnity(args.Center);
             Center = new Vector3(coord.x, Center.y, coord.z);
@@ -141,8 +145,18 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelMeshGameObject.SetActive(active);
             //perceelOutlineGameObject.SetActive(active);
 
-            terreinMeshGameObject.SetActive(!active);
-            perceelOutlineGameObject.SetActive(!active);
+            //terreinMeshGameObject.SetActive(!active);
+            //perceelOutlineGameObject.SetActive(!active);
+        }
+
+        public void SetPerceelOutlineActive(bool active)
+        {
+            perceelOutlineGameObject.SetActive(active);
+        }
+
+        public void SetTerrainActive(bool active)
+        {
+            terreinMeshGameObject.SetActive(active);
         }
     }
 }

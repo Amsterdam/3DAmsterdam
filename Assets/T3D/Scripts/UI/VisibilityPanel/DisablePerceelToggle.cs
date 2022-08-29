@@ -7,6 +7,6 @@ public class DisablePerceelToggle : UIToggle
 {
     protected override void ToggleAction(bool active)
     {
-        RestrictionChecker.ActivePerceel.SetPerceelActive(active);
+        RestrictionChecker.ActivePerceel.SetPerceelOutlineActive(active);
     }
 }
