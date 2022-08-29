@@ -11,7 +11,6 @@ using UnityEngine.UI;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
-    public Button ButtonOmgeving;
     public Button ButtonZon;
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
@@ -19,7 +18,6 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomOut;
     public Button ButtonToggleRotateFirstperson;
 
-    public GameObject BuildingsLayer;    
     public GameObject Zonnepaneel;
 
     public DropUp MaandenDropup;
@@ -43,7 +41,6 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
-        ButtonOmgeving.onClick.AddListener(ToggleBuildings);
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
@@ -69,14 +66,6 @@ public class HandleButtonsT3D : MonoBehaviour
         dateTimeNow = new DateTime(dateTimeNow.Year, month + 1, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, 0);
         UpdateSun();
         UpdateTijd();
-    }
-
-    void ToggleBuildings()
-    {
-        //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
-        BuildingsLayer.SetActive(!BuildingsLayer.activeSelf);
-        
-        RestrictionChecker.ActivePerceel.SetPerceelActive(!BuildingsLayer.activeSelf);
     }
 
     #region Sun related
@@ -151,13 +140,6 @@ public class HandleButtonsT3D : MonoBehaviour
     string GetMonthString(int monthIndex)
     {
         return months[monthIndex];
-    }
-
-    //called by the UI button events in the inspector
-    public void AllowUitbouwMovement(bool enable)
-    {
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(enable);
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(enable);
     }
 
     #endregion

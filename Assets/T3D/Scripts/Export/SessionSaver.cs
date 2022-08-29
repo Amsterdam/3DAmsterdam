@@ -52,6 +52,7 @@ public static class SessionSaver
         //SessionId = "9924a050-0ce2-11ed-b2e1-6fd693bef9a8";//new export with sketchup testfile, with snap
         //SessionId = "e5f0dc50-13d6-11ed-aa77-8595e0614b2f"; //annotation only
         SessionId = "5c0827e0-13ff-11ed-be89-71de1e5c51ce";
+        //SessionId = "1a21dab0-2485-11ed-a576-bd18e2523c39";
 
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");

@@ -72,6 +72,11 @@ public static class CityJSONFormatter
         CityObjects.Add(obj);
     }
 
+    public static void RemoveCityObject(CityObject obj)
+    {
+        CityObjects.Remove(obj);
+    }
+
     // Called when a CityObject is created todo: remove when cityObject is destroyed
     private static void AddCityObejctToJSONData(CityObject obj)
     {
@@ -88,7 +93,6 @@ public static class CityJSONFormatter
             }
             var lodCount = presentLoDs[lod.Key.ToString()].AsInt;
             presentLoDs[lod.Key.ToString()] = lodCount + 1;
-            Debug.Log(lod.Key + " new lod count: " + (lodCount + 1)); 
         }
 
         cityObjects[obj.Id] = obj.GetJsonObject();
@@ -186,6 +190,9 @@ public static class CityJSONFormatter
 
     public static void AddExtensionNode(string key, JSONNode node)
     {
-        extensionNodes.Add(key, node);
+        if (extensionNodes.ContainsKey(key))
+            extensionNodes[key] = node;
+        else
+            extensionNodes.Add(key, node);
     }
 }

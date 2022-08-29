@@ -27,12 +27,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (allowDragOnMouseUp && Input.GetMouseButtonUp(0)) //set allowdrag if the button is released and the flag is set in SetAllowMovement()
-            {
-                AllowDrag = true;
-                allowDragOnMouseUp = false;
-            }
-
             if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
             {
                 ProcessPlanarMoveUserInput();
@@ -43,6 +37,13 @@ namespace Netherlands3D.T3D.Uitbouw
             }
 
             ProcessMovementLimits();
+
+            if (allowDragOnMouseUp && Input.GetMouseButtonUp(0)) //set allowdrag if the button is released and the flag is set in SetAllowMovement()
+            {
+                AllowDrag = true;
+                allowDragOnMouseUp = false;
+                print("setting allow drag to true");
+            }
         }
 
         private void ProcessMovementLimits()
@@ -162,6 +163,7 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 AllowDrag = false;
                 allowDragOnMouseUp = allowed && ServiceLocator.GetService<T3DInit>().IsEditMode;
+                print("allowing drag on mouse up");
             }
 
             var measuring = GetComponent<UitbouwMeasurement>();
