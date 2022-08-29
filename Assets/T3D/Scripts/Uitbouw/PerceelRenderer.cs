@@ -1,12 +1,8 @@
 ﻿using ConvertCoordinates;
-using Netherlands3D.Interface.SidePanel;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Netherlands3D.Interface.Layers;
 using Netherlands3D.Utilities;
-using System;
-using Netherlands3D.Cameras;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -111,19 +107,6 @@ namespace Netherlands3D.T3D.Uitbouw
             filter.mesh = mesh;
         }
 
-        //private GameObject CreatePerceelGameObject()
-        //{
-        //    var obj = new GameObject();
-        //    obj.name = "Perceelmesh";
-        //    obj.transform.SetParent(transform);
-        //    obj.AddComponent<MeshFilter>();
-        //    var renderer = obj.AddComponent<MeshRenderer>();
-        //    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
-        //    obj.AddComponent<SelectableMesh>();
-
-        //    return obj;
-        //}
-
         void RenderPerceelOutline(List<Vector2[]> perceel)
         {
             List<Vector2> vertices = new List<Vector2>();
@@ -159,6 +142,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //perceelOutlineGameObject.SetActive(active);
 
             terreinMeshGameObject.SetActive(!active);
+            perceelOutlineGameObject.SetActive(!active);
         }
     }
 }

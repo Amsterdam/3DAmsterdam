@@ -26,7 +26,7 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
     private void ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
     {
-        var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true);
+        var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true, false);
 
         foreach (var pair in buildingMeshes.ToList()) //go to list to avoid Collection was modiefied errors
         {

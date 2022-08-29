@@ -78,6 +78,7 @@ namespace T3D.Uitbouw
         public CityObjectType Type;
 
         protected int activeLod = 3;
+        public int ActiveLod => activeLod;
         public Dictionary<int, List<CitySurface[]>> Solids { get; protected set; }
         public Dictionary<int, CitySurface[]> Surfaces //todo: don't recaluclate every time
         {

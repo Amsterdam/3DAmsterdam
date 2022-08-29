@@ -17,11 +17,7 @@ namespace Netherlands3D
 
         void Awake()
         {   
-            //#if DEVELOPMENT
-            //Config.activeConfiguration = (acceptanceConfigurationFile) ? acceptanceConfigurationFile : configurationFile;
-//#elif PRODUCTION
             Config.activeConfiguration = configurationFile;
-//#endif
             Debug.Log("Loaded config: " + Config.activeConfiguration.name);
         }
     }

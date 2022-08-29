@@ -81,6 +81,9 @@ public class ViewSubmittedRequestState : State
             var newLabel = Instantiate(boundaryFeatureLabel, boundaryFeaturePanel);
             newLabel.SetInfo(bf);
         }
+
+        //disable text if panel is empty
+        boundaryFeaturePanel.parent.GetChild(0).gameObject.SetActive(boundaryFeaturePanel.childCount > 0);       
     }
 
     public void DisplayAnnotations()
@@ -90,6 +93,7 @@ public class ViewSubmittedRequestState : State
             var newLabel = Instantiate(annotationLabel, annotationPanel);
             newLabel.SetInfo(ann);
         }
+        //annotationPanel.parent.GetChild(0).gameObject.SetActive(annotationPanel.childCount > 0);
     }
 
     private void Update()

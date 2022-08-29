@@ -18,6 +18,8 @@ public class PlaceUitbouwState : State
     public override void StateEnteredAction()
     {
         base.StateEnteredAction();
+        DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+        RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
         RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
         if (!uitbouwMovement.AllowDrag)
         {

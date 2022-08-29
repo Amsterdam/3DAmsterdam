@@ -90,7 +90,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 
         var meshFilter = uitbouw.MeshFilter;
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
-        var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false);
+        var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false, false);
         var attributes = GetAttributes(cityJsonModel.cityjsonNode["CityObjects"]);
         AddExtensionNodes(cityJsonModel.cityjsonNode);
         var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
@@ -98,6 +98,7 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
         cityObject.SetNodes(meshes, attributes, cityJsonModel.vertices);
         uitbouw.AddCityObject(cityObject);
+        uitbouw.ReparentToMainBuilding(RestrictionChecker.ActiveBuilding.GetComponent<CityObject>());
         cityObject.SetMeshActive(2);
 
         meshFilter.mesh = combinedMesh;
@@ -148,13 +149,13 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         return attributesNode;
     }
 
-    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(string cityJson, Matrix4x4 localToWorldMatrix, bool flipYZ)
+    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(string cityJson, Matrix4x4 localToWorldMatrix, bool flipYZ, bool useKeytoSetExportIdPrefix)
     {
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), false);
-        return ParseCityJson(cityJsonModel, localToWorldMatrix, flipYZ);
+        return ParseCityJson(cityJsonModel, localToWorldMatrix, flipYZ, useKeytoSetExportIdPrefix);
     }
 
-    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(CityJsonModel cityJsonModel, Matrix4x4 localToWorldMatrix, bool flipYZ)
+    public static Dictionary<CityObjectIdentifier, Mesh> ParseCityJson(CityJsonModel cityJsonModel, Matrix4x4 localToWorldMatrix, bool flipYZ, bool useKeytoSetExportIdPrefix)
     {
         //var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), false);
         var meshmaker = new CityJsonMeshUtility();
@@ -164,8 +165,11 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
-            var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
-            CityObject.IdPrefix = key.Split(bagId.ToCharArray())[0];
+            if (useKeytoSetExportIdPrefix)
+            {
+                var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
+                CityObject.IdPrefix = key.Split(bagId.ToCharArray())[0];
+            }
             var geometries = meshmaker.CreateMeshes(key, localToWorldMatrix, cityJsonModel, co.Value, flipYZ);
 
             foreach (var g in geometries)

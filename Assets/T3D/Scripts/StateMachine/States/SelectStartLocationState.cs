@@ -79,6 +79,8 @@ public class SelectStartLocationState : State
         ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
+        DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+        RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
         RestrictionChecker.ActiveUitbouw.EnableGizmo(false);

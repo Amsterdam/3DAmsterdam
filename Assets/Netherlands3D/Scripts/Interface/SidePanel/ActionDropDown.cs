@@ -1,5 +1,4 @@
-﻿using Netherlands3D.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,11 +12,6 @@ namespace Netherlands3D.Interface.SidePanel
 		private Action<string> optionAction;
 
 		private string currentValue = "";
-
-		private void Start()
-		{
-			dropdown.gameObject.AddComponent<AnalyticsClickTrigger>();
-		}
 
 		public void SetAction(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
 		{
@@ -36,14 +30,6 @@ namespace Netherlands3D.Interface.SidePanel
 			{
 				var newSelection = dropdown.options[dropdown.value].text;
 
-				Analytics.SendEvent("ChangedDropdownValue",
-					new Dictionary<string, object>
-					{
-						{ "From", currentValue },
-						{ "To",  newSelection },
-						{ "Container", (transform.parent) ? transform.parent.name : ""}
-					}
-				);
 				gameObject.name = "Dropdown: " + newSelection;
 				optionAction.Invoke(newSelection);
 			});

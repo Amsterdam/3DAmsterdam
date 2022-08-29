@@ -1,13 +1,10 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Help;
 using Netherlands3D.Interface;
-using Netherlands3D.LayerSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class MeasuringLine : Interactable
 {
@@ -24,9 +21,6 @@ public class MeasuringLine : Interactable
 	private Distance distanceText;
 
 	private int placementStepIndex = -1;
-
-	[SerializeField]
-	private AssetbundleMeshLayer[] targetLayers;
 
 	[SerializeField]
 	private List<MeasurePoint> linePoints;
@@ -102,7 +96,6 @@ public class MeasuringLine : Interactable
 	private void PreviewNextPoint()
 	{
 		Vector3 previewPoint = ServiceLocator.GetService<CameraModeChanger>().CurrentCameraControls.GetPointerPositionInWorld();
-		PrepareColliders(previewPoint);
 
 		//Shoot ray to get precise point on collider
 		if (Physics.Raycast(Selector.mainSelectorRay, out RaycastHit hit))
@@ -146,15 +139,6 @@ public class MeasuringLine : Interactable
 		foreach (var linePoint in linePoints) linePoint.ChangeShape(shape);
 	}
 
-	private void PrepareColliders(Vector3 placementPoint)
-	{
-		//Make sure our targetlayers have colliders
-		foreach (var hitTargetLayer in targetLayers)
-		{
-			//Make sure all tiles close to mouse have a collider
-			hitTargetLayer.AddMeshColliders(placementPoint);
-		}
-	}
 
 	/// <summary>
 	/// Placement steps where 0 is clear/nothing shown, and the others place the points, and show the line

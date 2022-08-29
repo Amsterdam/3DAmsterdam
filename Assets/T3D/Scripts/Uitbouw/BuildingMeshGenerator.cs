@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Netherlands3D.LayerSystem;
 using ConvertCoordinates;
 using T3D.LoadData;
 
@@ -48,12 +47,10 @@ namespace Netherlands3D.T3D.Uitbouw
         private void BuildingMeshGenerator_CityJsonBagReceived(string cityJson)
         {
             var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
-            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true);
+            var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true, true);
             var attributes = CityJsonVisualiser.GetAttributes(cityJsonModel.cityjsonNode["CityObjects"]);
             CityJsonVisualiser.AddExtensionNodes(cityJsonModel.cityjsonNode);
             //var combinedMesh = CityJsonVisualiser.CombineMeshes(meshes.Values.ToList(), transform.localToWorldMatrix);
-
-            //HandleTextFile.WriteString("sourcebuilding.json", cityJson);
 
             var cityObject = GetComponent<CityJSONToCityObject>();
             cityObject.SetNodes(meshes, attributes, cityJsonModel.vertices);
@@ -65,10 +62,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessMesh(Mesh mesh)
         {
-
-            //transform.position = args.TileOffset;
-            //var mf = GetComponent<MeshFilter>();
-            //mf.mesh = mesh;
 
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;
@@ -86,24 +79,6 @@ namespace Netherlands3D.T3D.Uitbouw
             IsMonument = ServiceLocator.GetService<T3DInit>().HTMLData.IsMonument;
             IsBeschermd = ServiceLocator.GetService<T3DInit>().HTMLData.IsBeschermd;
         }
-
-        //private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-        //{
-        //    var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
-        //    transform.position = args.TileOffset;
-        //    var mf = GetComponent<MeshFilter>();
-        //    mf.mesh = buildingMesh;
-
-        //    var col = gameObject.AddComponent<MeshCollider>();
-        //    BuildingCenter = col.bounds.center;
-        //    GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
-        //    HeightLevel = BuildingCenter.y + col.bounds.extents.y;
-
-        //    RoofEdgePlanes = ProcessRoofEdges(buildingMesh);
-
-        //    BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
-        //    BuildingDataIsProcessed = true;
-        //}
 
         private Plane[] ProcessRoofEdges(Mesh buildingMesh)
         {
@@ -148,66 +123,5 @@ namespace Netherlands3D.T3D.Uitbouw
             AbsoluteBuildingCorners = q.ToArray();
         }
 
-        public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
-        {
-            var idIndex = objectData.ids.FindIndex(o => o.Contains(id));
-
-            //copy mesh data to avoid getting a copy every iteration in the loop
-            var sourceVerts = objectData.mesh.vertices;
-            var sourceTriangles = objectData.mesh.triangles;
-            var sourceUVs = objectData.uvs;
-
-            List<int> vertIndices = new List<int>();
-            for (int i = 0; i < objectData.vectorMap.Count; i++)
-            {
-                //var vertcount = objectData
-
-                if (objectData.vectorMap[i] == idIndex)
-                {
-                    vertIndices.Add(i);
-                }
-            }
-
-            var vertices = new List<Vector3>();
-            var triangles = new List<int>();
-            var uvs = new List<Vector2>();
-
-            List<int> usedVerts = new List<int>();
-            for (int i = 0; i < sourceTriangles.Length; i += 3)
-            {
-                //check if the current triangle is part of the extracted verts
-                if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
-                {
-                    //add matching triangle to my mesh
-                    for (int j = 0; j < 3; j++)
-                    {
-                        //check if this vertex is already used
-                        var existingVertIndex = usedVerts.FindIndex(x => x == sourceTriangles[i + j]);
-                        int newTriIndex = -1;
-                        if (existingVertIndex == -1) //vert not found, add this vert
-                        {
-                            vertices.Add(sourceVerts[sourceTriangles[i + j]]);
-                            // uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
-                            newTriIndex = vertices.Count - 1;
-                            usedVerts.Add(sourceTriangles[i + j]);
-                        }
-                        else //vert already in use, so just add the triangle index
-                        {
-                            newTriIndex = existingVertIndex;
-                        }
-
-                        triangles.Add(newTriIndex);
-                    }
-                }
-            }
-
-            //generate mesh from data
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertices.ToArray();
-            mesh.triangles = triangles.ToArray();
-            //  mesh.uv = uvs.ToArray();
-            mesh.RecalculateNormals();
-            return mesh;
-        }
     }
 }

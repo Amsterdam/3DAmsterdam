@@ -60,5 +60,23 @@ namespace Netherlands3D.T3D.Uitbouw
             cityObjects.Add(newCityObject);
             newCityObject.Type = CityObjectType.BuildingPart;
         }
+
+        public void UnparentFromMainBuilding()
+        {
+            foreach(var co in cityObjects)
+            {
+                co.SetParents(new CityObject[0]);
+                co.Type = CityObjectType.Building;
+            }
+        }
+
+        public void ReparentToMainBuilding(CityObject mainBuilding)
+        {
+            foreach(var co in cityObjects)
+            {
+                co.SetParents(new CityObject[] { mainBuilding });
+                co.Type = CityObjectType.BuildingPart;
+            }
+        }
     }
 }
