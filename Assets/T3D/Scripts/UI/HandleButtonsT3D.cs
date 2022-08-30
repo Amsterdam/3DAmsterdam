@@ -33,6 +33,14 @@ public class HandleButtonsT3D : MonoBehaviour
 
     private float zoomSpeed = 150;
 
+    private CameraModeChanger currentCam
+    {
+        get
+        {
+            return ServiceLocator.GetService<CameraModeChanger>();
+        }
+    }
+
     List<string> months = new List<string>()
     {
         "JAN","FEB","MRT","APR","MEI","JUN","JUL","AUG","SEP","OKT","NOV","DEC"
@@ -95,18 +103,36 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void ZoomIn()
     {
-        if (ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.TopDown)
-            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize -= 5;
+        if (currentCam.CurrentMode == CameraMode.TopDown)
+            currentCam.ActiveCamera.orthographicSize -= 5;
         else
-            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position + (Time.deltaTime * ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward * zoomSpeed);
+        {
+            var newpos = currentCam.ActiveCamera.transform.position + (Time.deltaTime * currentCam.ActiveCamera.transform.forward * zoomSpeed);
+            
+            if(currentCam.CurrentMode == CameraMode.StreetView)
+            {
+                newpos.y = currentCam.ActiveCamera.transform.position.y;
+            }
+            
+            currentCam.ActiveCamera.transform.position = newpos;
+        }
     }
 
     void ZoomOut()
     {
-        if (ServiceLocator.GetService<CameraModeChanger>().CurrentMode == CameraMode.TopDown)
-            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.orthographicSize += 5;
+        if (currentCam.CurrentMode == CameraMode.TopDown)
+            currentCam.ActiveCamera.orthographicSize += 5;
         else
-            ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position = ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.position - (Time.deltaTime * ServiceLocator.GetService<CameraModeChanger>().ActiveCamera.transform.forward * zoomSpeed);
+        {
+            var newpos = currentCam.ActiveCamera.transform.position - (Time.deltaTime * currentCam.ActiveCamera.transform.forward * zoomSpeed);
+            if (currentCam.CurrentMode == CameraMode.StreetView)
+            {
+                newpos.y = currentCam.ActiveCamera.transform.position.y;
+            }
+
+            currentCam.ActiveCamera.transform.position = newpos;
+        }
+            
     }
 
     void ToggleRotateFirstperson()

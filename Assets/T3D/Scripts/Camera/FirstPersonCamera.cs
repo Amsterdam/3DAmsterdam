@@ -95,13 +95,11 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
             dir = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveBuilding.BuildingCenter;
         }
 
-        //dir.y = 0;
         dir.Normalize();
 
         var newpos = CameraTargetPoint + (dir * firstPersonCameraDistance);
         transform.position = new Vector3(newpos.x, transform.position.y, newpos.z);
        
-      //  SetNormalizedCameraHeight(RestrictionChecker.ActiveBuilding.GroundLevel);
         transform.LookAt(CameraTargetPoint);
     }
 
