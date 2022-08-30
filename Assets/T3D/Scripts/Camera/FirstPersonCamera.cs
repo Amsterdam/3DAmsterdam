@@ -23,16 +23,45 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
     private float rotationSpeed = 0.5f;
     private IAction dragActionMouse;
 
+    private Vector2 buildingCenter;
+
     public CameraMode Mode => CameraMode.StreetView;
+
+    public static Vector3 CameraTargetPoint
+    {
+        get
+        {
+            if (RestrictionChecker.ActiveUitbouw)
+            {
+                return RestrictionChecker.ActiveUitbouw.CenterPoint;
+            }
+            else if (RestrictionChecker.ActiveBuilding)
+            {
+                return RestrictionChecker.ActiveBuilding.BuildingCenter;
+            }
+            print("no camera target point found using Vector3.zero");
+            return Vector3.zero;
+        }
+    }
+
 
     private void Awake()
     {
         myCam = GetComponent<Camera>();
+
+        buildingCenter = new Vector2(RestrictionChecker.ActiveBuilding.BuildingCenter.x, RestrictionChecker.ActiveBuilding.BuildingCenter.z);
+
+        var deltaPos = new Vector2(transform.forward.x, transform.forward.z).normalized * Input.GetAxis("Vertical") + new Vector2(transform.right.x, transform.right.z).normalized * Input.GetAxis("Horizontal");
+        deltaPos *= moveSpeed * Time.deltaTime;
+        var newPos = new Vector2(transform.position.x, transform.position.z) + deltaPos;
+
+        transform.position = new Vector3(newPos.x, transform.position.y, newPos.y);
+
     }
 
     private void OnEnable()
     {
-        SetCameraStartPosition();
+        StartCoroutine( SetCameraStartPosition() );
     }
 
     private void Start()
@@ -51,20 +80,38 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
         HandleFirstPersonKeyboard();
     }
 
-    public void SetCameraStartPosition()
+    private IEnumerator SetCameraStartPosition()
     {
-        var pos = RestrictionChecker.ActivePerceel.Center;
-        pos.y = RestrictionChecker.ActiveBuilding.GroundLevel + cameraHeightAboveGroundLevel;
-        transform.position = pos;
+        //wait until Ground level and building center are known, and  the active uitbouw exists
+        Vector3 dir;
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel == false || ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActivePerceel != null);
+            dir = RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
+        else
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActiveUitbouw != null);
+            dir = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
+
+        //dir.y = 0;
+        dir.Normalize();
+
+        var newpos = CameraTargetPoint + (dir * firstPersonCameraDistance);
+        transform.position = new Vector3(newpos.x, transform.position.y, newpos.z);
+       
+      //  SetNormalizedCameraHeight(RestrictionChecker.ActiveBuilding.GroundLevel);
+        transform.LookAt(CameraTargetPoint);
     }
 
     private void HandleFirstPersonKeyboard()
     {
-        var buildingCenter = new Vector2(RestrictionChecker.ActiveBuilding.BuildingCenter.x, RestrictionChecker.ActiveBuilding.BuildingCenter.z);
 
         var deltaPos = new Vector2(transform.forward.x, transform.forward.z).normalized * Input.GetAxis("Vertical") + new Vector2(transform.right.x, transform.right.z).normalized * Input.GetAxis("Horizontal");
         deltaPos *= moveSpeed * Time.deltaTime;
         var newPos = new Vector2(transform.position.x, transform.position.z) + deltaPos;
+
         var newDist = Vector2.Distance(newPos, buildingCenter);
         if (newDist > MaxFirstPersonDistance)
         {
