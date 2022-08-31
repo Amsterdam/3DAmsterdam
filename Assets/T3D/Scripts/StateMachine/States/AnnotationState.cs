@@ -33,6 +33,16 @@ public class AnnotationState : State
         AnnotationUIs = new List<AnnotationUI>(); //ensure the static list is emptied whenever the scene is reset
     }
 
+    public override int GetDesiredStateIndex()
+    {
+        //if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
+        //    return 0;
+
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel == false) return 2;
+
+        return ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall ? 0 : 1;
+    }
+
     public override void StateLoadedAction()
     {
         if (SessionSaver.LoadPreviousSession)
@@ -41,7 +51,7 @@ public class AnnotationState : State
 
     private void LoadSavedAnnotations()
     {
-        PreviousButton.SetActive( ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
+        //PreviousButton.SetActive( ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
 
         var annotationSaveDataNode = SessionSaver.GetJSONNodeOfType(typeof(AnnotationUISaveData).ToString());
 

@@ -11,6 +11,7 @@ public class StartState : State
 
     public override int GetDesiredStateIndex()
     {
+        return 2;
         if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
             return 0;
 
