@@ -35,6 +35,7 @@ public class AnnotationState : State
 
     public override int GetDesiredStateIndex()
     {
+        return 3;
         //if (ServiceLocator.GetService<T3DInit>().HTMLData == null)
         //    return 0;
 
