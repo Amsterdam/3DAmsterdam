@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,6 +79,12 @@ public class SelectOptionState : State
             );
         }
         EndState();
+    }
+
+    public override void StateEnteredAction()
+    {
+        base.StateEnteredAction();
+        RestrictionChecker.ActiveBuilding.SelectedWall.gameObject.SetActive(false);
     }
 
     //private void GoToNextState()

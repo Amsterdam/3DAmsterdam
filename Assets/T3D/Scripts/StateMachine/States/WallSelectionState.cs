@@ -66,6 +66,7 @@ public class WallSelectionState : State
     {
         ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.GodView);
 
+        building.SelectedWall.gameObject.SetActive(true);
         building.SelectedWall.AllowSelection = true;
         building.SelectedWall.WallChanged = false;
 
