@@ -24,8 +24,16 @@ namespace Netherlands3D
 
 		public ConfigurationFile ConfigurationFile { get => configurationFile; }
 
-		void Awake()
+        [SerializeField]
+        private bool blockOtherInputInHTML = true;
+
+        void Awake()
         {
+#if !UNITY_EDITOR && UNITY_WEBGL
+            // disable WebGLInput.captureAllKeyboardInput so elements in web page can handle keyboard inputs
+            WebGLInput.captureAllKeyboardInput = blockOtherInputInHTML;
+#endif
+
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
             SetConfig();
