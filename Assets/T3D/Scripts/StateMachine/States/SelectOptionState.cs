@@ -8,13 +8,17 @@ using UnityEngine.UI;
 public class SelectOptionState : State
 {
     [SerializeField]
-    private Toggle noModelToggle, uploadedModelToggle, snapToggle;
+    private Toggle noModelToggle, uploadedModelToggle, snapToggle, otherBuildingPartToggle;
     [SerializeField]
-    private GameObject modelSettingsPanel;
+    private GameObject modelSettingsPanel, notSupportedPanel;
+    [SerializeField]
+    private Button nextButton;
 
     private void Update()
     {
         modelSettingsPanel.SetActive(!noModelToggle.isOn);
+        nextButton.interactable = !otherBuildingPartToggle.isOn && !noModelToggle.isOn;
+        notSupportedPanel.SetActive(otherBuildingPartToggle.isOn);
     }
 
     public override int GetDesiredStateIndex()
@@ -23,7 +27,6 @@ public class SelectOptionState : State
         ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall = snapToggle.isOn;
         ServiceLocator.GetService<T3DInit>().HTMLData.HasFile= uploadedModelToggle.isOn;
 
-        print(ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel);
         if (noModelToggle.isOn)
         {
             return 0;
