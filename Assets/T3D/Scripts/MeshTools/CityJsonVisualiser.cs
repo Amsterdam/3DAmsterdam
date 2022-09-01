@@ -83,10 +83,10 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
 
     private IEnumerator ParseCityJson(bool useTestJson)
     {
-        yield return new WaitUntil(() => cityJson != string.Empty);
-
         if (useTestJSON)
             cityJson = testJSON.text;
+
+        yield return new WaitUntil(() => cityJson != string.Empty);
 
         var meshFilter = uitbouw.MeshFilter;
         var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);

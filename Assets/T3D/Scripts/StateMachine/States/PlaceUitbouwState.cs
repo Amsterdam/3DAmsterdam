@@ -45,7 +45,10 @@ public class PlaceUitbouwState : State
 
     private Vector3 GetSpawnPosition()
     {
-        return building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
+            return building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
+        else
+            return RestrictionChecker.ActiveUitbouw.transform.position;
     }
 
     private void CreateOrEnableUitbouw(Vector3 location)
