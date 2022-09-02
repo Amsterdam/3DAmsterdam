@@ -56,21 +56,9 @@ public class PlaceUitbouwState : State
     {
         ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
 
-        //if (RestrictionChecker.ActiveUitbouw)
-        //{
-            //re-enable uitbouw that was previously placed
-            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
-            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); 
-            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
-            if (building.SelectedWall.WallChanged)
-            {
-                RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);
-            }
-        //}
-        //else
-        //{
-        //    //create uitbouw since there was no uitbouw previously placed
-        //    ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
-        //}
+        if (building.SelectedWall.WallChanged)
+        {
+            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);
+        }
     }
 }

@@ -87,13 +87,4 @@ public class SelectOptionState : State
         RestrictionChecker.ActiveBuilding.SelectedWall.gameObject.SetActive(false);
         ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(false);
     }
-
-    //private void GoToNextState()
-    //{
-    //    var stateSaver = ServiceLocator.GetService<StateSaver>();
-    //    if (stateSaver.ActiveStateIndex != stateSaver.GetStateIndex(this))
-    //        EndState(); //continue loading states the data once the data is loaded
-    //    else
-    //        StepEndedByUser(); //use By User function to ensure state Index in incremented;
-    //}
 }
