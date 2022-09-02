@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class SelectOptionState : State
 {
     [SerializeField]
-    private Toggle noModelToggle, uploadedModelToggle, snapToggle, otherBuildingPartToggle;
+    private Toggle noModelToggle, drawToggle, uploadedModelToggle, snapToggle, freePlaceToggle, otherBuildingPartToggle;
     [SerializeField]
     private GameObject modelSettingsPanel, uploadPanel, notSupportedPanel;
     [SerializeField]
@@ -53,13 +53,45 @@ public class SelectOptionState : State
 
     protected override void LoadSavedState()
     {
+        LoadModelToggles();
+
+        uploadedModelToggle.isOn = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
+
         StateLoadedAction();
         var stateSaver = GetComponentInParent<StateSaver>();
         var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex);
         if (ActiveState != savedState)
         {
+            if (uploadedModelToggle.isOn)
+                LoadModel();
             StartCoroutine(LoadModelAndGoToNextState());
         }
+    }
+
+    private void LoadModelToggles()
+    {
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel && ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
+        {
+            uploadedModelToggle.isOn = true;
+            LoadSnapToggles();
+        }
+        else if (ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel && !ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
+        {
+            drawToggle.isOn = true;
+            LoadSnapToggles();
+        }
+        else
+        {
+            noModelToggle.isOn = true;
+        }
+    }
+
+    private void LoadSnapToggles()
+    {
+        if (ServiceLocator.GetService<T3DInit>().HTMLData.SnapToWall)
+            snapToggle.isOn = true;
+        else
+            freePlaceToggle.isOn = true;
     }
 
     //called by button in inspector
