@@ -1,6 +1,7 @@
 using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using T3D.LoadData;
@@ -21,11 +22,12 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
     private void OnCityJsonBagBoundingBoxReceived(string cityJson, string excludeBagId)
     {
-        ParseCityJson(cityJson, excludeBagId, false);
+        StartCoroutine( ParseCityJson(cityJson, excludeBagId, false));
     }
 
-    private void ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
+    private IEnumerator ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
     {
+        yield return new WaitUntil(()=>RestrictionChecker.ActivePerceel.IsLoaded); //needed because perceelRadius is needed
         var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true, false);
 
         foreach (var pair in buildingMeshes.ToList()) //go to list to avoid Collection was modiefied errors

@@ -46,6 +46,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void BuildingMeshGenerator_CityJsonBagReceived(string cityJson)
         {
+            StartCoroutine(ParseBuildingCityJson(cityJson));
+        }
+
+        private IEnumerator ParseBuildingCityJson(string cityJson)
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActivePerceel.IsLoaded); //needed because perceelRadius is needed
+
             var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD(), true);
             var meshes = CityJsonVisualiser.ParseCityJson(cityJsonModel, transform.localToWorldMatrix, true, true);
             var attributes = CityJsonVisualiser.GetAttributes(cityJsonModel.cityjsonNode["CityObjects"]);
