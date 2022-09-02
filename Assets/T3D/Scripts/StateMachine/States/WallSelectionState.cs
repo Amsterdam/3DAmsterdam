@@ -70,12 +70,13 @@ public class WallSelectionState : State
         building.SelectedWall.AllowSelection = true;
         building.SelectedWall.WallChanged = false;
 
-        if (RestrictionChecker.ActiveUitbouw)
-        {
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
-            RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
-        }
+        ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(false);
+        //if (RestrictionChecker.ActiveUitbouw)
+        //{
+        //    RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
+        //    RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
+        //    RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
+        //}
     }
 
     public override void StateCompletedAction()

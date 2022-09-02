@@ -27,13 +27,15 @@ public class DisableUitbouwToggle : UIToggle
 
     protected override void ToggleAction(bool active)
     {
-        if (RestrictionChecker.ActiveUitbouw)
-        {
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); //disable movement and measuring lines
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); //disable rotation
-            RestrictionChecker.ActiveUitbouw.EnableGizmo(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
-            RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(active); //disable uitbouw that was already placed, but preserve any boundary features that were added
-        }
+        //if (RestrictionChecker.ActiveUitbouw)
+        //{
+
+            ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(active);
+            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); //disable movement and measuring lines
+            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); //disable rotation
+            //RestrictionChecker.ActiveUitbouw.EnableGizmo(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
+            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(active); //disable uitbouw that was already placed, but preserve any boundary features that were added
+        //}
     }
 
     public void SetIsOnWithoutNotify(bool value)

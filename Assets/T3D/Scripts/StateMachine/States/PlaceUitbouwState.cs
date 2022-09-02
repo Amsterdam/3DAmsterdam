@@ -24,14 +24,15 @@ public class PlaceUitbouwState : State
         uitbouwMovement = RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>();
         uitbouwRotation = RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>();
 
-        DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
-        RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
-        RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
-        if (!uitbouwMovement.AllowDrag)
-        {
-            uitbouwMovement.SetAllowMovement(true);
-            uitbouwRotation.SetAllowRotation(true);
-        }
+        //DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+        ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(true);
+        //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
+        //RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
+        //if (!uitbouwMovement.AllowDrag)
+        //{
+        //    uitbouwMovement.SetAllowMovement(true);
+        //    uitbouwRotation.SetAllowRotation(true);
+        //}
     }
 
     public override void StateCompletedAction()
@@ -53,21 +54,23 @@ public class PlaceUitbouwState : State
 
     private void CreateOrEnableUitbouw(Vector3 location)
     {
-        if (RestrictionChecker.ActiveUitbouw)
-        {
+        ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
+
+        //if (RestrictionChecker.ActiveUitbouw)
+        //{
             //re-enable uitbouw that was previously placed
-            RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); //disable rotation
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
+            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
+            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); 
+            //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
             if (building.SelectedWall.WallChanged)
             {
                 RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);
             }
-        }
-        else
-        {
-            //create uitbouw since there was no uitbouw previously placed
-            ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
-        }
+        //}
+        //else
+        //{
+        //    //create uitbouw since there was no uitbouw previously placed
+        //    ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(location);
+        //}
     }
 }

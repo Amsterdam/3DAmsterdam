@@ -85,6 +85,7 @@ public class SelectOptionState : State
     {
         base.StateEnteredAction();
         RestrictionChecker.ActiveBuilding.SelectedWall.gameObject.SetActive(false);
+        ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(false);
     }
 
     //private void GoToNextState()

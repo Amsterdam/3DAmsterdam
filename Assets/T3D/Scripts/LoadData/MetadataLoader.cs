@@ -67,7 +67,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class MetadataLoader : MonoBehaviour, IUniqueService
     {
         [SerializeField]
-        private GameObject shapableUitbouwPrefab;
+        private GameObject shapableUitbouw;
         [SerializeField]
         private GameObject uploadedUitbouwPrefab;
 
@@ -276,26 +276,73 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw(Vector3 spawnPosition)
         {
             //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            if (!Uitbouw)
+            //if (!Uitbouw)
+            //{
+            //if (Uitbouw)
+            EnableActiveuitbouw(false);
+
+            //if (Uitbouw)
+            //{
+            //    Uitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false);
+            //    Uitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false);
+            //    Uitbouw.GetComponent<UitbouwMeasurement>().enabled = false;
+
+            //    if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
+            //    {
+            //        var obj = ServiceLocator.GetService<CityJsonVisualiser>();
+            //        obj.EnableUploadedModel(false);
+            //    }
+            //    else
+            //    {
+
+            //        shapableUitbouw.SetActive(false);
+            //    }
+            //}
+
+            if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
             {
-                if (ServiceLocator.GetService<T3DInit>().HTMLData.HasFile)
-                {
-                    var obj = ServiceLocator.GetService<CityJsonVisualiser>();
-                    //obj.VisualizeCityJson();
-                    obj.EnableUploadedModel(true);
-                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>(true);
-                    Uitbouw.transform.position = spawnPosition;
-                }
-                else
-                {
-                    var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
-                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
-                }
+                var visualiser = ServiceLocator.GetService<CityJsonVisualiser>();
+                //obj.VisualizeCityJson();
+                //obj.EnableUploadedModel(true);
+                Uitbouw = visualiser.GetComponentInChildren<UitbouwBase>(true);
+                //Uitbouw.transform.position = spawnPosition;
             }
+            else
+            {
+                //shapableUitbouw.SetActive(true);
+                //shapableUitbouw.transform.position = spawnPosition;
+                //shapableUitbouw.transform.rotation = Quaternion.identity;
+                Uitbouw = shapableUitbouw.GetComponentInChildren<UitbouwBase>(true);
+            }
+
+            EnableActiveuitbouw(true);
+            Uitbouw.GetComponent<UitbouwMovement>().SetPosition(spawnPosition);
+            //}
 
         }
 
+        //public void EnableUploadedUitbouw(bool active)
+        //{
+        //    var obj = ServiceLocator.GetService<CityJsonVisualiser>();
+        //    obj.EnableUploadedModel(active);
+        //}
 
+        //public void EnableShapeableUibouw(bool active)
+        //{
+        //    shapableUitbouw.SetActive(active);
+        //}
+
+        public void EnableActiveuitbouw(bool active)
+        {
+            if (!Uitbouw)
+                return;
+
+            Uitbouw.transform.parent.gameObject.SetActive(active);
+            Uitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); 
+            Uitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
+            Uitbouw.EnableGizmo(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
+            DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+        }
     }
 }
 

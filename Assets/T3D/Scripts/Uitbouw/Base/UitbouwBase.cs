@@ -114,6 +114,7 @@ namespace Netherlands3D.T3D.Uitbouw
         protected virtual void Awake()
         {
             saveData = new UitbouwBaseSaveDataContainer();
+            building = RestrictionChecker.ActiveBuilding; 
             InitializeUserMovementAxes();
         }
 
@@ -150,11 +151,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Start()
         {
-            building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
             {
                 transform.SetPositionAndRotation(saveData.Position, saveData.Rotation);
             }
+            //transform.parent.gameObject.SetActive(false);
         }
 
         protected virtual void Update()

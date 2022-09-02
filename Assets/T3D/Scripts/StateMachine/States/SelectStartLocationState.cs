@@ -71,19 +71,20 @@ public class SelectStartLocationState : State
 
     public override void StateEnteredAction()
     {
-        if (!RestrictionChecker.ActiveUitbouw)
-        {
+        //if (!RestrictionChecker.ActiveUitbouw)
+        //{
             ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(placeLocation);
-        }
+        //}
 
         ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
-        DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
-        RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
-        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
-        RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
+        //ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(true);
+        //DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+        //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
+        //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
+        //RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
+        //RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
         RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = true;
 
         //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
