@@ -74,9 +74,9 @@ namespace Netherlands3D.ObjectInteraction
 
 			meshCollider = GetComponent<Collider>();
 
-			bounds = new Bounds(gameObject.transform.position, Vector3.zero);
-			Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-			bounds = mesh.bounds;
+			//bounds = new Bounds(gameObject.transform.position, Vector3.zero);
+			//Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+			//bounds = mesh.bounds;
 
 			if (stickToMouse)
 			{
@@ -103,7 +103,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void PlacementSettings()
 		{
-			gridShaped = IsGridShaped(bounds);
+			gridShaped = false;
 			if (gridShaped)
 			{
 				PlaceOnGrid(true);
@@ -179,7 +179,11 @@ namespace Netherlands3D.ObjectInteraction
 				blockMouseNavigationInteractions = true;
 
 				stickToMouse = false;
-				placedTransformable.Invoke(this.gameObject);
+                if (placedTransformable!= null)
+                {
+					placedTransformable.Invoke(this.gameObject);
+				}
+               
 
 				Select();
 				StopInteraction();
