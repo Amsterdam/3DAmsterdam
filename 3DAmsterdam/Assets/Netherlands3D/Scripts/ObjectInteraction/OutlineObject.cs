@@ -11,11 +11,12 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void Awake()
 		{
-			//Make sure our position mathes that of our parent transform
+           //Make sure our position mathes that of our parent transform
 			this.transform.localRotation = Quaternion.identity;
 			this.transform.localPosition = Vector3.zero;
 
 			//Just use my parent's mesh at initialization
+
 			SetMesh(transform.parent.GetComponent<MeshFilter>().sharedMesh);
 		}
 

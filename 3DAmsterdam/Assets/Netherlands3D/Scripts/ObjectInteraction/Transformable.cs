@@ -54,8 +54,13 @@ namespace Netherlands3D.ObjectInteraction
 			StartScale = this.transform.localScale;
 
 			//Make sure this object has a collider
-			if (!gameObject.GetComponent<Collider>())
-				gameObject.AddComponent<MeshCollider>();
+			
+			if (GetComponentsInChildren<Collider>().Length == 0)
+                foreach (var item in GetComponentsInChildren<MeshFilter>())
+                {
+					item.gameObject.AddComponent<MeshCollider>();
+				}
+				
 
 			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
 			blockMouseSelectionInteractions = true;
@@ -72,11 +77,16 @@ namespace Netherlands3D.ObjectInteraction
 			ActionMap = ActionHandler.actions.Transformable;
 			placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
 
-			meshCollider = GetComponent<Collider>();
+			//meshCollider = GetComponent<Collider>();
 
 			bounds = new Bounds(gameObject.transform.position, Vector3.zero);
-			Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-			bounds = mesh.bounds;
+			//Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+
+			foreach (var item in gameObject.GetComponentsInChildren<Renderer>())
+            {
+				bounds.Encapsulate(item.bounds);
+            }
+			//bounds = mesh.bounds;
 
 			if (stickToMouse)
 			{
@@ -98,7 +108,11 @@ namespace Netherlands3D.ObjectInteraction
 			placeActionEvent = placeAction.SubscribePerformed(Place);
 			TakeInteractionPriority();
 			StartCoroutine(StickToMouse());
-			meshCollider.enabled = false;
+            foreach (var item in gameObject.GetComponentsInChildren<Collider>())
+            {
+				item.enabled = false;
+            }
+
 		}
 
 		private void PlacementSettings()
@@ -165,7 +179,10 @@ namespace Netherlands3D.ObjectInteraction
 				yield return new WaitForEndOfFrame();
 			}
 			//stickToMouse = false;
-			meshCollider.enabled = true;
+			foreach (var item in gameObject.GetComponentsInChildren<Collider>())
+			{
+				item.enabled = true;
+			}
 		}
 
 		public void Place(IAction action)
@@ -179,7 +196,7 @@ namespace Netherlands3D.ObjectInteraction
 				blockMouseNavigationInteractions = true;
 
 				stickToMouse = false;
-				placedTransformable.Invoke(this.gameObject);
+				if(placedTransformable!=null) placedTransformable.Invoke(this.gameObject);
 
 				Select();
 				StopInteraction();
