@@ -87,60 +87,63 @@ namespace Netherlands3D.Events
         //Treat first contour as outer contour, and extra contours as holes
         public GameObject CreateAndReturnPolygon(List<IList<Vector3>> contours)
         {
-            if (polygonCount >= maxPolygons) return null;
-            polygonCount++;
 
-            var polygon = new Poly2Mesh.Polygon();
-            var outerContour = (List<Vector3>)contours[0];
-            FixSequentialDoubles(outerContour);
-            if (outerContour.Count < 3) return null;
+            return null;
 
-            if (reverseWindingOrder) outerContour.Reverse();
+//            if (polygonCount >= maxPolygons) return null;
+//            polygonCount++;
 
-            polygon.outside = outerContour;
+//            var polygon = new Poly2Mesh.Polygon();
+//            var outerContour = (List<Vector3>)contours[0];
+//            FixSequentialDoubles(outerContour);
+//            if (outerContour.Count < 3) return null;
 
-            for (int i = 0; i < polygon.outside.Count; i++)
-            {
-                polygon.outside[i] = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
-            }
+//            if (reverseWindingOrder) outerContour.Reverse();
 
-            if (contours.Count > 1)
-            {
-                for (int i = 1; i < contours.Count; i++)
-                {
-                    var holeContour = (List<Vector3>)contours[i];
-                    FixSequentialDoubles(holeContour);
+//            polygon.outside = outerContour;
+
+//            for (int i = 0; i < polygon.outside.Count; i++)
+//            {
+//                polygon.outside[i] = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
+//            }
+
+//            if (contours.Count > 1)
+//            {
+//                for (int i = 1; i < contours.Count; i++)
+//                {
+//                    var holeContour = (List<Vector3>)contours[i];
+//                    FixSequentialDoubles(holeContour);
                     
-                    if (holeContour.Count > 2)
-                    {
-                        if (reverseWindingOrder) holeContour.Reverse();
-                        polygon.holes.Add(holeContour);
-                    }
-                }
-            }
-            var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
-            if (newPolygonMesh) newPolygonMesh.RecalculateNormals();
+//                    if (holeContour.Count > 2)
+//                    {
+//                        if (reverseWindingOrder) holeContour.Reverse();
+//                        polygon.holes.Add(holeContour);
+//                    }
+//                }
+//            }
+//            var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
+//            if (newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
-            if (setUVCoordinates)
-            {
-                SetUVCoordinates(newPolygonMesh);
-            }
+//            if (setUVCoordinates)
+//            {
+//                SetUVCoordinates(newPolygonMesh);
+//            }
 
-            var newPolygonObject = new GameObject();
-#if UNITY_EDITOR
-            //Do not bother setting object name outside of Editor untill we need it.
-            newPolygonObject.name = currentObjectName;
-#endif
-            newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
-            newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
-            if (addColliders)
-                newPolygonObject.AddComponent<MeshCollider>().sharedMesh = newPolygonMesh;
+//            var newPolygonObject = new GameObject();
+//#if UNITY_EDITOR
+//            //Do not bother setting object name outside of Editor untill we need it.
+//            newPolygonObject.name = currentObjectName;
+//#endif
+//            newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
+//            newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
+//            if (addColliders)
+//                newPolygonObject.AddComponent<MeshCollider>().sharedMesh = newPolygonMesh;
 
-            newPolygonObject.transform.SetParent(this.transform);
-            newPolygonObject.transform.Translate(0, extrusionHeight, 0);
+//            newPolygonObject.transform.SetParent(this.transform);
+//            newPolygonObject.transform.Translate(0, extrusionHeight, 0);
 
-            if (createdPolygonGameObject) createdPolygonGameObject.Invoke(newPolygonObject);
-            return newPolygonObject;
+//            if (createdPolygonGameObject) createdPolygonGameObject.Invoke(newPolygonObject);
+//            return newPolygonObject;
         }
 
         /// <summary>

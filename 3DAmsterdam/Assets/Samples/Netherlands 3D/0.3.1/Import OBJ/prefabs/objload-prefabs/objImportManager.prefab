@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7078713874569698863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7078713874569698861}
+  - component: {fileID: 7078713874569698860}
+  - component: {fileID: 7078713874569698858}
+  m_Layer: 0
+  m_Name: objImportManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7078713874569698861
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7078713874569698863}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 221.69666, y: 467.76608, z: 2.1348267}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7078713874569698860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7078713874569698863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5e2d96ed65840c4db3c30c231619908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseMaterial: {fileID: 2100000, guid: 2750d0d1f9de43c40b93e8aae8cb7e7e, type: 2}
+  expectOBJFile: {fileID: 0}
+  expectMTLFile: {fileID: 0}
+  receiveFileToLoad: {fileID: 11400000, guid: 84b363a7049a9a04db505bfc5d96eb13, type: 2}
+  startImporting: {fileID: 0}
+  cancelImporting: {fileID: 11400000, guid: cb7d6952d70e72f4882569a63e32a4c6, type: 2}
+  ReadyForImport: {fileID: 11400000, guid: 7b202226e7b004948b75d00fbea00c60, type: 2}
+  ReceivedOBJFilename: {fileID: 11400000, guid: 001c4f79866741743bc34ed92c6903fb, type: 2}
+  ReceivedMTLFilename: {fileID: 11400000, guid: 7c6703f65e9bdee41a670bc24447027c, type: 2}
+  CreatedMoveableGameObject: {fileID: 11400000, guid: 267bfc4199b835e41b4164135eccda16, type: 2}
+  CreatedImmoveableGameObject: {fileID: 0}
+  createSubMeshes: 1
+  started: {fileID: 11400000, guid: d90f39cd2e17b594c93c324c1cc14ae9, type: 2}
+  currentActivity: {fileID: 11400000, guid: 92549c24aca860a4cb218844a186b17f, type: 2}
+  currentAction: {fileID: 11400000, guid: cebd4e24386d3774f8cdc60a8b84eebe, type: 2}
+  progressPercentage: {fileID: 11400000, guid: 6bd0eabece7ace6409d1a883e891a273, type: 2}
+  alertmessage: {fileID: 11400000, guid: 11729604f9e6afe49b69d6cdd6710a6e, type: 2}
+  errormessage: {fileID: 11400000, guid: 11729604f9e6afe49b69d6cdd6710a6e, type: 2}
+--- !u!114 &7078713874569698858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7078713874569698863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d0759479c5ec34c93d9cccd9f1e88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 267bfc4199b835e41b4164135eccda16, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4093302162744430799, guid: c37f1603c25a94c4592ada611dba3cf6, type: 3}
+        m_TargetAssemblyTypeName: Netherlands3D.Interface.PlaceCustomObject, Assembly-CSharp
+        m_MethodName: ObjectPlaced
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

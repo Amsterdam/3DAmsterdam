@@ -114,6 +114,7 @@ public class FileInputIndexedDB : MonoBehaviour
 
         var files = string.Join(",", filenames);
         filesImportedEvent.started.Invoke(files);
+        Debug.Log("filenames sent from javascript");
     }
 
     public void ClearDatabase(bool succes)
