@@ -327,6 +327,7 @@ GameObject:
   - component: {fileID: 3489571761961087350}
   - component: {fileID: 6633663697091937306}
   - component: {fileID: 5605473669900006805}
+  - component: {fileID: 4279186477427787751}
   m_Layer: 5
   m_Name: AddNavisworksProjectPanel
   m_TagString: Untagged
@@ -469,6 +470,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4279186477427787751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 626227270326877561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dceef334e13a75747967c4777caf3699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEnabled: {fileID: 11400000, guid: e319b1a4214ab444593b8dd815a063f6, type: 2}
 --- !u!1 &935443008566244835
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,6 +1006,7 @@ GameObject:
   - component: {fileID: 8616025071809601175}
   - component: {fileID: 4183118855746333594}
   - component: {fileID: 5485798859494007114}
+  - component: {fileID: 2636975439208775187}
   m_Layer: 5
   m_Name: ButtonImportNavisworksCSV
   m_TagString: Untagged
@@ -1135,7 +1150,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8077940535617027007}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe1f2068ab962424e9ca6d554ee4deae, type: 3}
   m_Name: 
@@ -1143,3 +1158,20 @@ MonoBehaviour:
   fileInputName: navisworks-obj-input
   fileExtentions: .obj
   multiSelect: 0
+--- !u!114 &2636975439208775187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077940535617027007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ca2613e39e3a144a458f2a4f5ea34f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileInputName: navisworks-obj-input
+  fileExtention: obj
+  multiSelect: 0
+  eventFileLoaderFileImported: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb,
+    type: 2}
