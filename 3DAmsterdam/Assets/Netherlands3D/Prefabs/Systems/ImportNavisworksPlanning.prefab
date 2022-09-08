@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 703109997016024846}
   - component: {fileID: 892406935196162119}
   - component: {fileID: 7339516541948797531}
+  - component: {fileID: 5705469520956679770}
   m_Layer: 0
   m_Name: ImportNavisworksPlanning
   m_TagString: Untagged
@@ -100,3 +101,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5705469520956679770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892406935196162117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75b7e70441345c14ab89bfbaf4f57f18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: a389279c551baeb4ba8aef497660ba9f, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 892406935196162119}
+        m_TargetAssemblyTypeName: Netherlands3D.BIMPlanning.BimPlanningImporter,
+          Netherlands3D.Bim
+        m_MethodName: StartImport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
