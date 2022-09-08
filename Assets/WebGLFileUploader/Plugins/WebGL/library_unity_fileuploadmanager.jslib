@@ -305,7 +305,7 @@
         createRequiredHTML:function() {
             var fileUploaderElem = document.getElementById('file_uploader');
             if(fileUploaderElem == null){
-                var canvas = document.getElementById('canvas') || document.getElementById('gameContainer');
+                var canvas = document.getElementById('unity-canvas') || document.getElementById('unity-container');
                 var fileUploaderElem = document.createElement('div');
                 fileUploaderElem.id = 'file_uploader';
                 canvas.parentNode.insertBefore(fileUploaderElem, canvas.nextSibling); 
@@ -665,9 +665,10 @@
                            '</label>';
                 fileUploaderElem.innerHTML = html;
                 
+                var inputButton = document.getElementById('file_input');
                 // Setup the input listeners.
-                document.getElementById('file_input').addEventListener('change', Unity_FileUploadManager.handleFileSelect, false);
-                
+                inputButton.addEventListener('change', Unity_FileUploadManager.handleFileSelect, false);
+
                 fileUploaderElem.classList.add('isButtonInput');
             }
             fileUploaderElem.classList.remove('hidden');
@@ -680,14 +681,21 @@
             }
             
             
-            var canvasElem = document.getElementById('canvas') || document.getElementById('gameContainer');
+            var canvasElem = document.getElementById('unity-canvas') || document.getElementById('unity-container');
             if(isOverlay){
         
-                fileUploaderElem.style.setProperty("width", canvasElem.width + "px", "important");
-                fileUploaderElem.style.setProperty("height", canvasElem.height + "px", "important");
+                fileUploaderElem.style.setProperty("position", "absolute", "important");
+                fileUploaderElem.style.setProperty("top", "0px", "important");
+                fileUploaderElem.style.setProperty("left", "0px", "important");
+                
+                //fileUploaderElem.style.setProperty("width", canvasElem.width + "px", "important");
+                fileUploaderElem.style.setProperty("width", "100%", "important");
+                //fileUploaderElem.style.setProperty("height", canvasElem.height + "px", "important");
+                fileUploaderElem.style.setProperty("height", "100%", "important");
+                fileUploaderElem.style.setProperty("pointer-events", "none", "important");
             
                 fileUploaderElem.classList.add('overlay_canvas');
-            
+
                 if(Unity_FileUploadManager.isDropInput){
                     var dropAreaElem = document.getElementById('file_drop_area');
                     dropAreaElem.classList.add('overlay');
@@ -704,6 +712,11 @@
                 targetElem = document.getElementById('file_input_button');
             }
 
+            console.log("input: " + x + "\t" + y + "\t" + width + "\t" + height);
+            console.log("c: " + fileUploaderElem.clientHeight);
+            console.log("s: " + fileUploaderElem.scrollHeight);
+            console.log("o: " + fileUploaderElem.offsetHeight);
+
             if (x < 0 || y < 0 || width < 0 || height < 0) {
                 targetElem.style.top = '';
                 targetElem.style.left = '';
@@ -711,13 +724,18 @@
                 targetElem.style.height = '';
                 targetElem.style.lineHeight = '';
             } else {
-                targetElem.style.top = x + 'px';
-                targetElem.style.left = y + 'px';
+                
+                targetElem.style.setProperty("position", "absolute", "important")
+
+                targetElem.style.left = x + 'px';
+                targetElem.style.top = fileUploaderElem.clientHeight - y + 'px';
                 targetElem.style.width = width + 'px';
                 targetElem.style.height = height + 'px';
                 targetElem.style.lineHeight = height + 'px';
+                targetElem.style.setProperty("background-color", "red");
             }
-            
+            targetElem.style.setProperty("pointer-events", "all", "important");
+    
             return Unity_FileUploadManager.isInitialized;
     },
     Unity_FileUploadManager_PopupDialog: function(titleText, uploadBtnText, cancelBtnText)
@@ -763,7 +781,7 @@
             popup_dialog_warpElem.style.display = "";
             
             Unity_FileUploadManager.popupDialogCompleteFunc = function () {
-                var canvasElem = document.getElementById('canvas') || document.getElementById('gameContainer');
+                var canvasElem = document.getElementById('unity-canvas') || document.getElementById('unity-container');
                 canvasElem.style.display = "";
                 Unity_FileUploadManager.hide();
             };
@@ -807,7 +825,7 @@
     },
     Unity_FileUploadManager_HideUnityScreenIfHtmlOverlayCant: function(){
         if (navigator.userAgent.indexOf("Chrome/") < 0) {
-            var canvasElem = document.getElementById('canvas') || document.getElementById('gameContainer');
+            var canvasElem = document.getElementById('unity-canvas') || document.getElementById('unity-container');
             canvasElem.style.display = "none";
         }
     },

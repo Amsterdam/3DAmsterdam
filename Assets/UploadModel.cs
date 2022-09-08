@@ -2,6 +2,8 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using WebGLFileUploader;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -12,7 +14,7 @@ namespace WebGLFileUploaderExample
     /// <summary>
     /// File Upload example.
     /// </summary>
-    public class UploadModel : MonoBehaviour
+    public class UploadModel : MonoBehaviour, IDragHandler
     {
         // Use this for initialization
         void Start()
@@ -99,7 +101,7 @@ namespace WebGLFileUploaderExample
         public void OnBackButtonClick()
         {
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene ("WebGLFileUploaderExample");
+            SceneManager.LoadScene("WebGLFileUploaderExample");
 #else
             Application.LoadLevel("WebGLFileUploaderExample");
 #endif
@@ -110,7 +112,8 @@ namespace WebGLFileUploaderExample
         /// </summary>
         public void OnSwitchButtonOverlayStateButtonClick()
         {
-            WebGLFileUploadManager.Show(false, !WebGLFileUploadManager.IsOverlay);
+            //WebGLFileUploadManager.Show(false, !WebGLFileUploadManager.IsOverlay);
+            WebGLFileUploadManager.Show(isDropInput, true, x, y, w, h);
         }
 
         /// <summary>
@@ -127,6 +130,48 @@ namespace WebGLFileUploaderExample
         public void OnPopupDialogButtonClick()
         {
             WebGLFileUploadManager.PopupDialog(null, "Select image files (.png|.jpg|.gif)");
+        }
+
+        private static bool isDropInput;
+        private static int x, y, w, h;
+
+        public void SetIsDropInput(bool isDrop)
+        {
+            isDropInput = isDrop;
+        }
+
+        public void SetX(string input)
+        {
+            x = int.Parse(input);
+        }
+        public void SetY(string input)
+        {
+            y = int.Parse(input);
+        }
+        public void SetW(string input)
+        {
+            w = int.Parse(input);
+        }
+        public void SetH(string input)
+        {
+            h = int.Parse(input);
+        }
+
+        public bool allowDrag;
+        public InputField xField, yField, wField, hField;
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (allowDrag)
+            {
+                transform.position = Input.mousePosition;
+
+                xField.text = transform.position.x.ToString();
+                yField.text = transform.position.y.ToString();
+                SetW(wField.text);
+                SetH(hField.text);
+                var r = GetComponent<RectTransform>();
+                r.sizeDelta = new Vector2(w, h);
+            }
         }
     }
 }
