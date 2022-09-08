@@ -82,12 +82,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseMaterial: {fileID: 2100000, guid: c819d018e5b8b174d84f338b2ebb7dec, type: 2}
-  fileSelected: {fileID: 11400000, guid: afd1771d3d90d7e45bbf00debb0f3b88, type: 2}
+  objFileSelected: {fileID: 11400000, guid: cc9e8b6980247a544bf0b63aefa49ef1, type: 2}
+  mtlFileSelected: {fileID: 11400000, guid: cc9e8b6980247a544bf0b63aefa49ef1, type: 2}
+  csvFileSelected: {fileID: 11400000, guid: 473c0a4acaa8e984d9281678d3ab2008, type: 2}
   BuildMaterial: {fileID: 2100000, guid: db001c07cb110f94281a76302611ba82, type: 2}
   DestroyMaterial: {fileID: 2100000, guid: 517f02eb2d10cc3419ebb12f6d23d398, type: 2}
-  onObjSelected: {fileID: 11400000, guid: 00ef52b2e8f58454a95f7560d607852e, type: 2}
-  onMtlSelected: {fileID: 11400000, guid: 0c9d0688cbaa9c44f902e81016d1169b, type: 2}
-  onCsvSelected: {fileID: 11400000, guid: 8258d00f23b1eca48b3c5a2f4ee9cae1, type: 2}
+  onObjReady: {fileID: 11400000, guid: 00ef52b2e8f58454a95f7560d607852e, type: 2}
+  onMtlReady: {fileID: 11400000, guid: 0c9d0688cbaa9c44f902e81016d1169b, type: 2}
+  onCsvReady: {fileID: 11400000, guid: 8258d00f23b1eca48b3c5a2f4ee9cae1, type: 2}
+  onCsvVerified: {fileID: 11400000, guid: 34cf80b8a9a44594ead1913da5f592fb, type: 2}
   onReadyForImports: {fileID: 11400000, guid: d77e0855ad3c4f54c8b5f56f7299db40, type: 2}
 --- !u!114 &7339516541948797531
 MonoBehaviour:
