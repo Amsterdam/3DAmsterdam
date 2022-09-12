@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 892406935196162116}
   - component: {fileID: 703109997016024846}
   - component: {fileID: 892406935196162119}
-  - component: {fileID: 7339516541948797531}
   - component: {fileID: 5705469520956679770}
   m_Layer: 0
   m_Name: ImportNavisworksPlanning
@@ -92,18 +91,6 @@ MonoBehaviour:
   onCsvReady: {fileID: 11400000, guid: 8258d00f23b1eca48b3c5a2f4ee9cae1, type: 2}
   onCsvVerified: {fileID: 11400000, guid: 34cf80b8a9a44594ead1913da5f592fb, type: 2}
   onReadyForImports: {fileID: 11400000, guid: d77e0855ad3c4f54c8b5f56f7299db40, type: 2}
---- !u!114 &7339516541948797531
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 892406935196162117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5705469520956679770
 MonoBehaviour:
   m_ObjectHideFlags: 0
