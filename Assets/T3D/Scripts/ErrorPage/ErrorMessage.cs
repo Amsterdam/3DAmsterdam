@@ -9,4 +9,10 @@ public class ErrorMessage : MonoBehaviour
     {
         GetComponent<Text>().text = ErrorService.ErrorMessage;
     }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+            UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+    }
 }
