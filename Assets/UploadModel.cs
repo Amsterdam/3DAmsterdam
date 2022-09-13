@@ -15,7 +15,7 @@ namespace WebGLFileUploaderExample
     /// <summary>
     /// File Upload example.
     /// </summary>
-    public class UploadModel : MonoBehaviour, IDragHandler
+    public class UploadModel : MonoBehaviour
     {
         private int x, y, w, h;
         private bool isVisible;
@@ -49,8 +49,7 @@ namespace WebGLFileUploaderExample
             WebGLFileUploadManager.SetImageShrinkingSize(1280, 960);
             WebGLFileUploadManager.onFileUploaded += OnFileUploaded;
 
-            if (allowDrag)
-                ShowHTMLOverlayButton();
+            ShowHTMLOverlayButton();
         }
 
         /// <summary>
@@ -83,10 +82,10 @@ namespace WebGLFileUploaderExample
                 {
                     Debug.Log("file.filePath: " + file.filePath + " exists:" + File.Exists(file.filePath));
 
-                    Texture2D texture = new Texture2D(2, 2);
+                    //Texture2D texture = new Texture2D(2, 2);
                     byte[] byteArray = File.ReadAllBytes(file.filePath);
-                    texture.LoadImage(byteArray);
-                    gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+                    //texture.LoadImage(byteArray);
+                    //gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
                     Debug.Log("File.ReadAllBytes:byte[].Length: " + byteArray.Length);
 
@@ -151,27 +150,9 @@ namespace WebGLFileUploaderExample
             h = int.Parse(input);
         }
 
-        public bool allowDrag;
-        public InputField xField, yField, wField, hField;
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (allowDrag)
-            {
-                transform.position = Input.mousePosition;
-
-                xField.text = transform.position.x.ToString();
-                yField.text = transform.position.y.ToString();
-                SetW(wField.text);
-                SetH(hField.text);
-                var r = GetComponent<RectTransform>();
-                r.sizeDelta = new Vector2(w, h);
-            }
-            ShowHTMLOverlayButton();
-        }
-
         private void Update()
         {
-            if (isVisible && allowDrag)
+            if (isVisible)
             {
                 RecalculatePositionAndSize();
                 WebGLFileUploadManager.UpdateButtonPosition(x, y, w, h);
