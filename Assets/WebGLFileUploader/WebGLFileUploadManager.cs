@@ -66,6 +66,18 @@ namespace WebGLFileUploader
             #endif
         }
 
+
+        /// <summary>
+        /// Hides the file upload UI.
+        /// </summary>
+        public static void UpdateButtonPosition(int x, int y, int width, int height)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            WebGLFileUploadManager.Unity_FileUploadManager_UpdateButtonPosition (x, y, width, height);
+#endif
+        }
+
+
         /// <summary>
         /// Hides the file upload UI.
         /// </summary>
@@ -277,11 +289,14 @@ namespace WebGLFileUploader
                 #endif
             }
         }
-            
-        #if UNITY_WEBGL && !UNITY_EDITOR
+
+#if UNITY_WEBGL && !UNITY_EDITOR
 
         [DllImport ("__Internal")]
         private static extern bool Unity_FileUploadManager_Show (bool isDropInput, bool isOverlay, int x, int y, int width, int height);
+
+        [DllImport ("__Internal")]
+        private static extern void Unity_FileUploadManager_UpdateButtonPosition (int x, int y, int width, int height);
 
         [DllImport ("__Internal")]
         private static extern bool Unity_FileUploadManager_PopupDialog (string title, string uploadBtnText, string cancelBtnText);
@@ -361,7 +376,7 @@ namespace WebGLFileUploader
 
         [DllImport("__Internal")]
         private static extern bool Unity_FileUploadManager_IsRunningOnEdgeBrowser();
-        #endif
+#endif
 
         [Serializable]
         class FileUploadResult

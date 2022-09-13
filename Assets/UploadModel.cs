@@ -4,6 +4,7 @@ using UnityEngine;
 using WebGLFileUploader;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -16,6 +17,8 @@ namespace WebGLFileUploaderExample
     /// </summary>
     public class UploadModel : MonoBehaviour, IDragHandler
     {
+        private int x, y, w, h;
+        private bool isVisible;
         // Use this for initialization
         void Start()
         {
@@ -32,25 +35,22 @@ namespace WebGLFileUploaderExample
 #endif
             )
             {
-                WebGLFileUploadManager.Show(false);
+                isVisible = WebGLFileUploadManager.Show(false);
                 WebGLFileUploadManager.SetDescription("Select image files (.png|.jpg|.gif)");
 
             }
             else
             {
-                WebGLFileUploadManager.Show(true);
+                isVisible = WebGLFileUploadManager.Show(true);
                 WebGLFileUploadManager.SetDescription("Drop image files (.png|.jpg|.gif) here");
             }
             WebGLFileUploadManager.SetImageEncodeSetting(true);
             WebGLFileUploadManager.SetAllowedFileName("\\.(png|jpe?g|gif)$");
             WebGLFileUploadManager.SetImageShrinkingSize(1280, 960);
             WebGLFileUploadManager.onFileUploaded += OnFileUploaded;
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
-
+            if (allowDrag)
+                ShowHTMLOverlayButton();
         }
 
         /// <summary>
@@ -110,34 +110,28 @@ namespace WebGLFileUploaderExample
         /// <summary>
         /// Raises the switch button overlay state button click event.
         /// </summary>
-        public void OnSwitchButtonOverlayStateButtonClick()
+        public void ShowHTMLOverlayButton()
         {
             //WebGLFileUploadManager.Show(false, !WebGLFileUploadManager.IsOverlay);
-            WebGLFileUploadManager.Show(isDropInput, true, x, y, w, h);
+            RecalculatePositionAndSize();
+            isVisible = WebGLFileUploadManager.Show(false, true, x, y, w, h);
+            WebGLFileUploadManager.UpdateButtonPosition(x, y, w, h);
         }
 
-        /// <summary>
-        /// Raises the switch drop overlay state button click event.
-        /// </summary>
-        public void OnSwitchDropOverlayStateButtonClick()
+        private void RecalculatePositionAndSize()
         {
-            WebGLFileUploadManager.Show(true, !WebGLFileUploadManager.IsOverlay);
-        }
+            var r = GetComponent<RectTransform>();
 
-        /// <summary>
-        /// Raises the popup dialog button click event.
-        /// </summary>
-        public void OnPopupDialogButtonClick()
-        {
-            WebGLFileUploadManager.PopupDialog(null, "Select image files (.png|.jpg|.gif)");
-        }
+            //set anchor and pivot to left top, as this is where the HTML button is anchored
+            r.anchorMin = new Vector2(0, 1);
+            r.anchorMax = new Vector2(0, 1);
+            r.pivot = new Vector2(0, 1);
 
-        private static bool isDropInput;
-        private static int x, y, w, h;
+            x = (int)transform.position.x;
+            y = (int)transform.position.y;
 
-        public void SetIsDropInput(bool isDrop)
-        {
-            isDropInput = isDrop;
+            w = (int)r.sizeDelta.x;
+            h = (int)r.sizeDelta.y;
         }
 
         public void SetX(string input)
@@ -171,6 +165,16 @@ namespace WebGLFileUploaderExample
                 SetH(hField.text);
                 var r = GetComponent<RectTransform>();
                 r.sizeDelta = new Vector2(w, h);
+            }
+            ShowHTMLOverlayButton();
+        }
+
+        private void Update()
+        {
+            if (isVisible && allowDrag)
+            {
+                RecalculatePositionAndSize();
+                WebGLFileUploadManager.UpdateButtonPosition(x, y, w, h);
             }
         }
     }
