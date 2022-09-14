@@ -46,7 +46,7 @@ public class AnnotationUI : MonoBehaviour
 
     public int Id { get; private set; }
     public bool IsOpen => annotationBody.gameObject.activeInHierarchy;
-    public string Text => saveData.AnnotationText;
+    public string Text => saveData.AnnotationText == null ? string.Empty : saveData.AnnotationText; // can load as null for some reason
     public string ParentCityObject => saveData.ParentCityObject;
     public Vector3RD ConnectionPointRD => CoordConvert.UnitytoRD(saveData.ConnectionPoint);
 
