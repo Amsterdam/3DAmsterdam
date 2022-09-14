@@ -105,11 +105,19 @@ namespace T3D.Uitbouw
         private bool isMainBuilding;
         protected MeshFilter meshFilter;
 
+        private void OnEnable()
+        {
+            CityJSONFormatter.AddCityObejct(this);
+        }
+        private void OnDisable()
+        {
+            CityJSONFormatter.RemoveCityObject(this);
+        }
+
         protected virtual void Start()
         {
             meshFilter = GetComponent<MeshFilter>();
             UpdateSurfaces();
-            CityJSONFormatter.AddCityObejct(this);
             var bagId = ServiceLocator.GetService<T3DInit>().HTMLData.BagId;
             SetID(bagId);
         }
