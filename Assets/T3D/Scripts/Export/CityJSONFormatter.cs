@@ -16,6 +16,7 @@ public static class CityJSONFormatter
     private static JSONObject cityObjects;
     private static JSONArray Vertices;
     private static JSONArray RDVertices;
+
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
@@ -25,6 +26,12 @@ public static class CityJSONFormatter
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
     private static bool convertToRD = true; //convert Unity space to RD space?
+
+    public static void Reset()
+    {
+        CityObjects = new List<CityObject>();
+        extensionNodes = new Dictionary<string, JSONNode>();
+    }
 
     public static string GetJSON()
     {

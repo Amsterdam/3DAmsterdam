@@ -20,6 +20,7 @@ public class SessionUI : MonoBehaviour
 
     private void RestartScene()
     {
+        CityJSONFormatter.Reset();
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
