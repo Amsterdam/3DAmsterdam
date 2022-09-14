@@ -62,8 +62,8 @@ public class SelectOptionState : State
         var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex);
         if (ActiveState != savedState)
         {
-            if (uploadedModelToggle.isOn)
-                LoadModel();
+            //if (uploadedModelToggle.isOn)
+            //    LoadModel();
             StartCoroutine(LoadModelAndGoToNextState());
         }
     }
