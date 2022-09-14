@@ -83,7 +83,7 @@ public class ViewSubmittedRequestState : State
         }
 
         //disable text if panel is empty
-        boundaryFeaturePanel.parent.GetChild(0).gameObject.SetActive(boundaryFeaturePanel.childCount > 0);       
+        boundaryFeaturePanel.parent.gameObject.SetActive(boundaryFeaturePanel.childCount > 0);       
     }
 
     public void DisplayAnnotations()
