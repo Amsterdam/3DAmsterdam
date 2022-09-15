@@ -16,12 +16,14 @@ public struct CityObjectIdentifier
     public string Key;
     public JSONNode Node;
     public int Lod;
+    public bool FlipYZ;
 
-    public CityObjectIdentifier(string key, JSONNode node, int lod)
+    public CityObjectIdentifier(string key, JSONNode node, int lod, bool flipYZ)
     {
         Key = key;
         Lod = lod;
         Node = node;
+        FlipYZ = flipYZ;
     }
 }
 
@@ -84,16 +86,18 @@ public class CityJsonVisualiser : MonoBehaviour, IUniqueService
         var meshes = ParseCityJson(cityJsonModel, meshFilter.transform.localToWorldMatrix, false, false);
         var attributes = GetAttributes(cityJsonModel.cityjsonNode["CityObjects"]);
         AddExtensionNodes(cityJsonModel.cityjsonNode);
-        var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
+        //var combinedMesh = CombineMeshes(meshes.Values.ToList(), meshFilter.transform.localToWorldMatrix);
 
         var cityObject = meshFilter.gameObject.AddComponent<CityJSONToCityObject>();
         cityObject.SetNodes(meshes, attributes, cityJsonModel.vertices);
         uitbouw.AddCityObject(cityObject);
         uitbouw.ReparentToMainBuilding(RestrictionChecker.ActiveBuilding.GetComponent<CityObject>());
-        cityObject.SetMeshActive(2);
+        var highestLod = meshes.Keys.Max(k => k.Lod);
+        print("Enabling the highest lod: " + highestLod);
+        cityObject.SetMeshActive(highestLod);
 
-        meshFilter.mesh = combinedMesh;
-        uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
+        //meshFilter.mesh = combinedMesh;
+        //uitbouw.GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
 
         uitbouw.SetMeshFilter(uitbouw.MeshFilter);
 
