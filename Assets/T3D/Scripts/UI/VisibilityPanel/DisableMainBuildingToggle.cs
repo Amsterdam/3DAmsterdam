@@ -11,15 +11,7 @@ public class DisableMainBuildingToggle : UIToggle
 
     private void Start()
     {
-        var uploadedUitbouw = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
-        var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
-        gameObject.SetActive(uploadedUitbouw && drawChange);
-        if (!(uploadedUitbouw && drawChange))
-        {
-            var sd = transform.parent.GetComponent<RectTransform>().sizeDelta;
-            //sizeDelta is a value type so cannot directly assign it
-            transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(sd.x, sd.y - GetComponent<RectTransform>().sizeDelta.y);
-        }
+        SetVisible(false);
     }
 
     protected override void ToggleAction(bool active)

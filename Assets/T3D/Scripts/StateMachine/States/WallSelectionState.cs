@@ -20,6 +20,9 @@ public class WallSelectionState : State
     [SerializeField]
     private string unselectedText = "selecteer gevel";
 
+    [SerializeField]
+    private GameObject visibilityPanel;
+
     protected override void Awake()
     {
         base.Awake();
@@ -71,10 +74,44 @@ public class WallSelectionState : State
         building.SelectedWall.WallChanged = false;
 
         ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(false);
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+        }
     }
 
     public override void StateCompletedAction()
     {
         building.SelectedWall.AllowSelection = false;
+
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                var uploadedUitbouw = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(uploadedUitbouw && drawChange);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(drawChange);
+                continue;
+            }
+        }
     }
 }

@@ -341,7 +341,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Uitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState))); 
             Uitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
             Uitbouw.EnableGizmo(active && (State.ActiveState.GetType() == typeof(PlaceUitbouwState)));
-            DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
+            //DisableUitbouwToggle.Instance.SetIsOnWithoutNotify(true);
         }
     }
 }
