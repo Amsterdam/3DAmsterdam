@@ -68,6 +68,9 @@ namespace T3D.LoadData
 
             var vertarray = cityjsonNode["vertices"].Linq;
 
+            if (vertarray.Count() == 0)
+                ErrorService.GoToErrorPage("Geometry not found error: Vertex list is empty.\nThe downloaded CityJSON contains no vertices.");
+
             double minx, miny, minz, maxx, maxy, maxz;
 
             //var extents = cityjsonNode["metadata"]["geographicalExtent"];
