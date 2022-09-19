@@ -268,6 +268,11 @@ public class CityJSONToCityObject : CityObject
         activeLod = lod;
         meshFilter.mesh = pair.Value;
         meshFilter.mesh.RecalculateBounds();
+
+        var col = GetComponent<MeshCollider>();
+        if (col)
+            col.sharedMesh = pair.Value;
+
         var uploadedUitbouw = GetComponentInParent<UploadedUitbouw>();
         if (uploadedUitbouw)
             uploadedUitbouw.SetMeshFilter(meshFilter);
