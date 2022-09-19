@@ -7,7 +7,6 @@ using System.Linq;
 using T3D.LoadData;
 using UnityEngine;
 
-
 public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 {
     void OnEnable()
@@ -40,5 +39,6 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
         var combinedMesh = CityJsonVisualiser.CombineMeshes(buildingMeshes.Values.ToList(), transform.localToWorldMatrix);
         GetComponent<MeshFilter>().sharedMesh = combinedMesh;
+        GetComponent<MeshCollider>().sharedMesh = combinedMesh;
     }
 }
