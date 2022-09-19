@@ -21,6 +21,7 @@ public class DisableMainBuildingToggle : UIToggle
         if (active)
         {
             building.SetMeshActive(activeLod);
+            building.GetComponentInChildren<WallSelector>(true).gameObject.SetActive(true);
             CityJSONFormatter.AddCityObejct(building);
             //uitbouw.Type = uitbouwType;
             uitbouw.ReparentToMainBuilding(building);
@@ -32,6 +33,7 @@ public class DisableMainBuildingToggle : UIToggle
             //uitbouwType = uitbouw.Type;
 
             building.SetMeshActive(-1);
+            building.GetComponentInChildren<WallSelector>(true).gameObject.SetActive(false);
             CityJSONFormatter.RemoveCityObject(building);
             //uitbouw.Type = CityObjectType.Building;
             uitbouw.UnparentFromMainBuilding();
