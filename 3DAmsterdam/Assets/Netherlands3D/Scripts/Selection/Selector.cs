@@ -68,6 +68,7 @@ namespace Netherlands3D.Interface
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
 		public UnityEvent registeredSecondaryClickInput;
+		public UnityEvent globalEscape;
 
 		private bool allowDelayedInteractables = true;
 		public bool AllowDelayedSubObjectSelections { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
@@ -241,7 +242,8 @@ namespace Netherlands3D.Interface
 
 		private void Escape(IAction action)
 		{
-			if(activeInteractable)
+			globalEscape.Invoke();
+			if (activeInteractable)
 			{
 				activeInteractable.Escape();
 			}

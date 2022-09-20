@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1053923494472648387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1053923494472648389}
+  - component: {fileID: 1053923494472648388}
+  - component: {fileID: 6146440338853367613}
+  m_Layer: 0
+  m_Name: MeshesProfileCutterDXF
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1053923494472648389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053923494472648387}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1053923494472648388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053923494472648387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3c262506463e44e96a12cf3fec6674, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCutMeshes: {fileID: 11400000, guid: ff5a9a44aa735b74fbf458203d8b9d8d, type: 2}
+  onReceiveCuttingLine: {fileID: 11400000, guid: 777e7bc0e0d3e4c4496e3278d9b50a7c,
+    type: 2}
+  outputProgress: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303, type: 2}
+  outputProfilePolyline: {fileID: 11400000, guid: b9e8579c8e444ae40a23574a9f4e21b9,
+    type: 2}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 960
+  drawInEditorGizmos: 1
+  maxTrianglesPerFrame: 1000
+--- !u!114 &6146440338853367613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053923494472648387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bb4016c2c054c4bbe06344c2783c76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onReceiveLines: {fileID: 11400000, guid: b9e8579c8e444ae40a23574a9f4e21b9, type: 2}
+  outputProgress: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303, type: 2}
+  binary: 1
+  addLinesPerFrame: 1000
+  outputFileName: Profile.dxf

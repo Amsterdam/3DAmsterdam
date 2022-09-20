@@ -74,7 +74,6 @@ public class DxfFile
         Insert blokInsert = new Insert(block);
         blokInsert.Layer = dxfLayer;
         dxfDocument.AddEntity(blokInsert);
-
     }
 
     private void AddMesh(List<Vector3RD> triangleVertices, string layerName)
