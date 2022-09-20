@@ -7,7 +7,6 @@ using System.Linq;
 using T3D.LoadData;
 using UnityEngine;
 
-
 public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 {
     void OnEnable()
@@ -22,12 +21,12 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
     private void OnCityJsonBagBoundingBoxReceived(string cityJson, string excludeBagId)
     {
-        StartCoroutine( ParseCityJson(cityJson, excludeBagId, false));
+        StartCoroutine(ParseCityJson(cityJson, excludeBagId, false));
     }
 
     private IEnumerator ParseCityJson(string cityjson, string excludeBagId, bool checkDistanceFromCenter)
     {
-        yield return new WaitUntil(()=>RestrictionChecker.ActivePerceel.IsLoaded); //needed because perceelRadius is needed
+        yield return new WaitUntil(() => RestrictionChecker.ActivePerceel.IsLoaded); //needed because perceelRadius is needed
         var buildingMeshes = CityJsonVisualiser.ParseCityJson(cityjson, transform.localToWorldMatrix, true, false);
 
         foreach (var pair in buildingMeshes.ToList()) //go to list to avoid Collection was modiefied errors
@@ -40,5 +39,6 @@ public class CityJsonBagBoundingBoxVisualizer : MonoBehaviour
 
         var combinedMesh = CityJsonVisualiser.CombineMeshes(buildingMeshes.Values.ToList(), transform.localToWorldMatrix);
         GetComponent<MeshFilter>().sharedMesh = combinedMesh;
+        GetComponent<MeshCollider>().sharedMesh = combinedMesh;
     }
 }

@@ -41,7 +41,7 @@ public class CityJsonMeshUtility
             mesh.RecalculateNormals();
 
             var lod = cityObject["geometry"][i]["lod"].AsInt;
-            var identifier = new CityObjectIdentifier(cityObjectKey, cityObject["geometry"][i], lod);
+            var identifier = new CityObjectIdentifier(cityObjectKey, cityObject["geometry"][i], lod, flipYZ);
             meshes.Add(identifier, mesh);
         }
         //mesh.RecalculateBounds();

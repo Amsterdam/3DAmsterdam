@@ -81,7 +81,7 @@ public class AnnotationState : State
         if (AllowSelection && ObjectClickHandler.GetClickOnObject(false, out var hit, maskPlacementPoint, true))
         {
             var parentCityObject = hit.collider.GetComponentInParent<CityObject>();
-            CreateAnnotation(parentCityObject.Id, hit.point);
+            CreateAnnotation(parentCityObject.Id, hit.point + hit.normal * 0.01f); //offset to allow correct raycasting
         }
         else if (ObjectClickHandler.GetClickOnObject(false, out hit, maskMarker, false))
         {

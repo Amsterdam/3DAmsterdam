@@ -42,6 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh = meshFilter.mesh;
             transformedExtents = Multiply(meshFilter.transform.lossyScale, mesh.bounds.extents);
             UpdateDimensions();
+            GetComponentInChildren<MeshCollider>().sharedMesh = meshFilter.mesh;
         }
 
         public static Vector3 Multiply(Vector3 a, Vector3 b)

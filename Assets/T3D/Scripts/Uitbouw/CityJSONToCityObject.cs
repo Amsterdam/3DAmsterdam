@@ -30,7 +30,6 @@ public class CityJSONToCityObject : CityObject
     public override CitySurface[] GetSurfaces()
     {
         List<CitySurface> citySurfaces = new List<CitySurface>();
-
         foreach (var surfaceNode in sourceSurfaces) //multiple geometry objects represent different LODs
         {
             var surfaceArray = surfaceNode.Value.AsArray;
@@ -47,7 +46,13 @@ public class CityJSONToCityObject : CityObject
                 {
                     var oldIndex = surfaceArray[i][j];
                     var oldVert = combinedVertices[oldIndex.AsInt]; //combinedVertices are in unity space
-                    var newVertUnity = transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.z, (float)oldVert.y) + transform.position;
+
+                    var flipYZ = geometryNodes.FirstOrDefault(g => g.Key.Lod == activeLod).Key.FlipYZ;
+                    Vector3 newVertUnity;
+                    if (flipYZ)
+                        newVertUnity = meshFilter.transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.z, (float)oldVert.y) + meshFilter.transform.position;
+                    else
+                        newVertUnity = meshFilter.transform.rotation * new Vector3((float)oldVert.x, (float)oldVert.y, (float)oldVert.z) + meshFilter.transform.position;
 
                     localIndices[i] = j;
                     polygonVerts[j] = newVertUnity;
@@ -260,9 +265,18 @@ public class CityJSONToCityObject : CityObject
     public Mesh SetMeshActive(int lod)
     {
         var pair = geometryNodes.FirstOrDefault(i => i.Key.Lod == lod);
-
         activeLod = lod;
         meshFilter.mesh = pair.Value;
+        meshFilter.mesh.RecalculateBounds();
+
+        var col = GetComponent<MeshCollider>();
+        if (col)
+            col.sharedMesh = pair.Value;
+
+        var uploadedUitbouw = GetComponentInParent<UploadedUitbouw>();
+        if (uploadedUitbouw)
+            uploadedUitbouw.SetMeshFilter(meshFilter);
+
         return pair.Value;
     }
 }

@@ -25,6 +25,9 @@ public class SelectStartLocationState : State
     private WorldPointFollower instructionsTag;
     private float orthographicCameraDefaultSize;
 
+    [SerializeField]
+    private GameObject visibilityPanel;
+
     protected override void Awake()
     {
         base.Awake();
@@ -73,7 +76,7 @@ public class SelectStartLocationState : State
     {
         //if (!RestrictionChecker.ActiveUitbouw)
         //{
-            ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(placeLocation);
+        ServiceLocator.GetService<MetadataLoader>().PlaatsUitbouw(placeLocation);
         //}
 
         ServiceLocator.GetService<CameraModeChanger>().SetCameraMode(CameraMode.TopDown);
@@ -89,6 +92,23 @@ public class SelectStartLocationState : State
 
         //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
         instructionsTag = ServiceLocator.GetService<CoordinateNumbers>().CreateGenericWorldPointFollower(instructionsTagPrefab);
+
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+        }
     }
 
     public override void StateCompletedAction()
@@ -100,5 +120,24 @@ public class SelectStartLocationState : State
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
         RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = false;
         Destroy(instructionsTag.gameObject);
+
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            print(uiToggle);
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                var uploadedUitbouw = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(uploadedUitbouw && drawChange);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(drawChange);
+                continue;
+            }
+        }
     }
 }

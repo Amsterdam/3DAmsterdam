@@ -15,6 +15,8 @@ public class SelectOptionState : State
     [SerializeField]
     private Button nextButton;
     private CityJsonVisualiser visualiser;
+    [SerializeField]
+    private GameObject visibilityPanel;
 
     protected override void Awake()
     {
@@ -62,8 +64,8 @@ public class SelectOptionState : State
         var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex);
         if (ActiveState != savedState)
         {
-            if (uploadedModelToggle.isOn)
-                LoadModel();
+            //if (uploadedModelToggle.isOn)
+            //    LoadModel();
             StartCoroutine(LoadModelAndGoToNextState());
         }
     }
@@ -118,5 +120,44 @@ public class SelectOptionState : State
         base.StateEnteredAction();
         RestrictionChecker.ActiveBuilding.SelectedWall.gameObject.SetActive(false);
         ServiceLocator.GetService<MetadataLoader>().EnableActiveuitbouw(false);
+
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                uiToggle.SetIsOn(true);
+                uiToggle.SetVisible(false);
+                continue;
+            }
+        }
+    }
+
+    public override void StateCompletedAction()
+    {
+        base.StateCompletedAction();
+        foreach (var uiToggle in visibilityPanel.GetComponentsInChildren<UIToggle>(true))
+        {
+            if (uiToggle as DisableMainBuildingToggle)
+            {
+                var uploadedUitbouw = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(uploadedUitbouw && drawChange);
+                continue;
+            }
+
+            if (uiToggle as DisableUitbouwToggle)
+            {
+                var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
+                uiToggle.SetVisible(drawChange);
+                continue;
+            }
+        }
     }
 }

@@ -61,7 +61,7 @@ public class MeasurePoint : MonoBehaviour
 		pointIndicator.layer = layer;
 	}
 
-    private void Update()
+    protected virtual void Update()
     {
 		AutoScalePointByDistance();
     }

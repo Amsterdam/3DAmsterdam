@@ -11,15 +11,7 @@ public class DisableMainBuildingToggle : UIToggle
 
     private void Start()
     {
-        var uploadedUitbouw = ServiceLocator.GetService<T3DInit>().HTMLData.HasFile;
-        var drawChange = ServiceLocator.GetService<T3DInit>().HTMLData.Add3DModel;
-        gameObject.SetActive(uploadedUitbouw && drawChange);
-        if (!(uploadedUitbouw && drawChange))
-        {
-            var sd = transform.parent.GetComponent<RectTransform>().sizeDelta;
-            //sizeDelta is a value type so cannot directly assign it
-            transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(sd.x, sd.y - GetComponent<RectTransform>().sizeDelta.y);
-        }
+        SetVisible(false);
     }
 
     protected override void ToggleAction(bool active)
@@ -29,6 +21,7 @@ public class DisableMainBuildingToggle : UIToggle
         if (active)
         {
             building.SetMeshActive(activeLod);
+            building.GetComponentInChildren<WallSelector>(true).gameObject.SetActive(true);
             CityJSONFormatter.AddCityObejct(building);
             //uitbouw.Type = uitbouwType;
             uitbouw.ReparentToMainBuilding(building);
@@ -40,6 +33,7 @@ public class DisableMainBuildingToggle : UIToggle
             //uitbouwType = uitbouw.Type;
 
             building.SetMeshActive(-1);
+            building.GetComponentInChildren<WallSelector>(true).gameObject.SetActive(false);
             CityJSONFormatter.RemoveCityObject(building);
             //uitbouw.Type = CityObjectType.Building;
             uitbouw.UnparentFromMainBuilding();

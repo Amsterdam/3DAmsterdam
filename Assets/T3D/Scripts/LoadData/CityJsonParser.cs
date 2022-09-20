@@ -68,6 +68,9 @@ namespace T3D.LoadData
 
             var vertarray = cityjsonNode["vertices"].Linq;
 
+            if (vertarray.Count() == 0)
+                ErrorService.GoToErrorPage("Geometry not found error: Vertex list is empty.\nThe downloaded CityJSON contains no vertices.");
+
             double minx, miny, minz, maxx, maxy, maxz;
 
             //var extents = cityjsonNode["metadata"]["geographicalExtent"];
@@ -82,13 +85,13 @@ namespace T3D.LoadData
             //}
             //else
             //{
-                minx = vertarray.Min(o => o.Value[0].AsDouble * transformScale.x);
-                miny = vertarray.Min(o => o.Value[1].AsDouble * transformScale.y);
-                minz = vertarray.Min(o => o.Value[2].AsDouble * transformScale.z);
+            minx = vertarray.Min(o => o.Value[0].AsDouble * transformScale.x);
+            miny = vertarray.Min(o => o.Value[1].AsDouble * transformScale.y);
+            minz = vertarray.Min(o => o.Value[2].AsDouble * transformScale.z);
 
-                maxx = vertarray.Max(o => o.Value[0].AsDouble * transformScale.x);
-                maxy = vertarray.Max(o => o.Value[1].AsDouble * transformScale.y);
-                maxz = vertarray.Max(o => o.Value[2].AsDouble * transformScale.z);
+            maxx = vertarray.Max(o => o.Value[0].AsDouble * transformScale.x);
+            maxy = vertarray.Max(o => o.Value[1].AsDouble * transformScale.y);
+            maxz = vertarray.Max(o => o.Value[2].AsDouble * transformScale.z);
             //}
 
             if ((maxx - minx > 500) || (maxy - miny > 500))
@@ -109,7 +112,6 @@ namespace T3D.LoadData
 
                 if (IsValidRD(rd))
                 {
-
                     if (checkDistanceFromCenter)
                     {
                         var center = Netherlands3D.Config.activeConfiguration.RelativeCenterRD;
