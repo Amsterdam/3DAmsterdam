@@ -56,7 +56,7 @@ namespace Netherlands3D.Interface
 		{
 			progressBar.Percentage(value);
 
-			if(value != 0)
+			if(value > 0)
             {
 				Show();
 			}
