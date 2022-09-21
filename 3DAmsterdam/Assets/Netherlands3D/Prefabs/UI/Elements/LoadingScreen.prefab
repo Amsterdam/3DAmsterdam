@@ -28,6 +28,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4008264157967721105}
   m_RootOrder: 1
@@ -111,6 +112,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4008264158185257893}
   - {fileID: 3042115912068678942}
@@ -175,6 +177,8 @@ MonoBehaviour:
   textMessage: {fileID: 4008264158185257892}
   progressBar: {fileID: 6274022555459528163}
   onProgressBarPercentage: {fileID: 11400000, guid: f11ff75ed2871bf41baac34b89813b7a,
+    type: 2}
+  onProgressBarNormalisedValue: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303,
     type: 2}
   onProgressBarMessage: {fileID: 11400000, guid: afffc457724b26b49a907469fc10d70e,
     type: 2}
@@ -286,6 +290,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5732892342871051035}
   m_Father: {fileID: 4008264157967721105}
