@@ -54,8 +54,6 @@ namespace Netherlands3D.Interface
 		}
 		public void SetProgressBarNormalisedValue(float value)
 		{
-			Debug.Log($"<color=#00FFF>ProgressBar:{value}</color>");
-
 			progressBar.Percentage(value);
 
 			if(value > 0 && value != 1)

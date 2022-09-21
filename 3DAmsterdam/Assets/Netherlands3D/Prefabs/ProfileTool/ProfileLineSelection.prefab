@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 7587860457462740649}
   - component: {fileID: 6713585378354945268}
   - component: {fileID: 8449224636850713184}
+  - component: {fileID: 1110147764003570565}
   m_Layer: 0
   m_Name: ProfileLineSelection
   m_TagString: Untagged
@@ -410,6 +411,48 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1110147764003570565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6195754652070294141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf98215fa0c70e0418001b0197b26bab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEnable:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7a0cc17db20a57a4a8481ac0fe6f68ad, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDisable:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7a0cc17db20a57a4a8481ac0fe6f68ad, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
+        m_MethodName: Invoke
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &8454135686281396574
 GameObject:
