@@ -68,7 +68,6 @@ namespace Netherlands3D.Interface
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
 		public UnityEvent registeredSecondaryClickInput;
-		public UnityEvent globalEscape;
 
 		private bool allowDelayedInteractables = true;
 		public bool AllowDelayedSubObjectSelections { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
@@ -79,10 +78,6 @@ namespace Netherlands3D.Interface
 			{
 				Instance = this;
 			}
-
-			//Temporary fix regaring new feature that breaks WASD/Arrow keys in Input System 1.4.1
-			//Regarding: https://forum.unity.com/threads/input-system-1-4-1-released.1306062/
-			InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
 		}
 
 		void Start()
@@ -242,8 +237,7 @@ namespace Netherlands3D.Interface
 
 		private void Escape(IAction action)
 		{
-			globalEscape.Invoke();
-			if (activeInteractable)
+			if(activeInteractable)
 			{
 				activeInteractable.Escape();
 			}
