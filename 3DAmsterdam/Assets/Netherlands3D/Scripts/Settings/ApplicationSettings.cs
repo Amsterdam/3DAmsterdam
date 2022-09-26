@@ -71,6 +71,13 @@ namespace Netherlands3D.Settings {
 #if !UNITY_EDITOR && UNITY_WEBGL
 			IsMobileDevice = IsMobile();
 #endif
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Debug.unityLogger.logEnabled = enableDebugLogsOnWebGL;
+#else
+			Debug.unityLogger.logEnabled = true;
+#endif
+
 		}
 
 		void Start()
