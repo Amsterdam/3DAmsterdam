@@ -24,7 +24,6 @@ namespace Netherlands3D.Settings {
 
 		[SerializeField]
 		private int benchmarkFrames = 30;
-		private float frameTimeThreshold = 1f/30f;
 
 		[SerializeField]
 		private Transform mobileCameraStartPosition;
@@ -135,6 +134,15 @@ namespace Netherlands3D.Settings {
 			}
 			var benchmarkFramesRenderTime = Time.timeSinceLevelLoad - currentTime;
 
+			if(benchmarkFramesRenderTime>1)
+            {
+				settings.antiAliasing = false;
+            }
+            else
+            {
+				settings.antiAliasing = true;
+			}
+			ApplySettings();
 		}
 
 		private void ApplyMobileSpecificSettings()
