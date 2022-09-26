@@ -110,5 +110,10 @@ namespace Netherlands3D.Rendering
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
             urp.renderScale = renderScale;
         }
+
+        public void ChangeCameraFOV(float cameraFov)
+        {
+            CameraModeChanger.Instance.ActiveCamera.fieldOfView = cameraFov;
+        }
     }
 }

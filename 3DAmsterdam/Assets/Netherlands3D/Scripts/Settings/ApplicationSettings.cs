@@ -226,6 +226,11 @@ namespace Netherlands3D.Settings {
 				settings.antiAliasing = toggle;
 				ApplySettings();
 			});
+			PropertiesPanel.Instance.AddLabel("Camera FOV(Gezichtsveld):");
+			PropertiesPanel.Instance.AddActionSlider("20", "60", 20.0f, 60.0f, settings.cameraFov, (value) => {
+				settings.cameraFov = value;
+				ApplySettings();
+			}, false, "FOV");
 			PropertiesPanel.Instance.AddLabel("Render resolutie:");
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
@@ -322,6 +327,7 @@ namespace Netherlands3D.Settings {
 
 			canvasSettings.ChangeCanvasScale(settings.canvasScale * 0.01f);
 
+            renderSettings.ChangeCameraFOV(settings.cameraFov);
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);

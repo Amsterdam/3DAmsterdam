@@ -20,6 +20,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public bool showExperimentalFeatures = false;
 
     //Quality
+    public float cameraFov = 40.0f;
     public float renderResolution = 1.0f;
     public float reflectionsRenderResolution = 0.2f;
     public float lodDistanceMultiplier = 1;
