@@ -72,8 +72,8 @@ namespace Netherlands3D.Utilities
         {
             var gitHeadName = ReadGitHead();
             var headNameWithoutControlCharacters = new string(gitHeadName.Where(c => !char.IsControl(c)).ToArray());
-
-            var buildMainName = $"{headNameWithoutControlCharacters}_{DateTime.Now.Ticks}";
+            var timeSuffix = DateTime.Now.ToString("dd-MM_HHmm");
+            var buildMainName = $"{headNameWithoutControlCharacters}_{timeSuffix}";
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {

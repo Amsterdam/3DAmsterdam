@@ -23,11 +23,17 @@ namespace Netherlands3D.Settings {
 		private bool isMobileDevice = false;
 
 		[SerializeField]
+		private int benchmarkFrames = 30;
+
+		[SerializeField]
 		private Transform mobileCameraStartPosition;
 
 		public static ApplicationSettingsProfile settings;
 
-        [SerializeField]
+		[SerializeField]
+		private bool enableDebugLogsOnWebGL = false;
+
+		[SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
 		private int selectedTemplate = 0;
 
@@ -71,6 +77,13 @@ namespace Netherlands3D.Settings {
 #if !UNITY_EDITOR && UNITY_WEBGL
 			IsMobileDevice = IsMobile();
 #endif
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Debug.unityLogger.logEnabled = enableDebugLogsOnWebGL;
+#else
+			Debug.unityLogger.logEnabled = true;
+#endif
+
 		}
 
 		void Start()
@@ -94,12 +107,42 @@ namespace Netherlands3D.Settings {
 				Debug.Log("Mobile application settings");
 				ApplyMobileSpecificSettings();
 			}
+            else
+            {
+				Debug.Log("Optimising settings based on performance");
+				RunBenchmark();
+            }
 
 			//Load up our enviroment, optimised for a mobile device
 			EnviromentSettings.Instance.ApplyEnviroment(isMobileDevice);
 
 			//Apply but do not save
 			ApplySettings(false); 
+		}
+
+        private void RunBenchmark()
+        {
+			StartCoroutine(PerformanceBenchmark());
+        }
+
+		private IEnumerator PerformanceBenchmark()
+        {
+			var currentTime = Time.timeSinceLevelLoad;
+            for (int i = 0; i < benchmarkFrames; i++)
+            {
+				yield return new WaitForEndOfFrame();
+			}
+			var benchmarkFramesRenderTime = Time.timeSinceLevelLoad - currentTime;
+
+			if(benchmarkFramesRenderTime>1)
+            {
+				settings.antiAliasing = false;
+            }
+            else
+            {
+				settings.antiAliasing = true;
+			}
+			ApplySettings();
 		}
 
 		private void ApplyMobileSpecificSettings()
@@ -152,10 +195,10 @@ namespace Netherlands3D.Settings {
 
 
 			PropertiesPanel.Instance.AddLabel("Interface schaal");
-			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 75, 200, settings.canvasScale, (value) => {
-				settings.canvasScale = value;
+			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 0.75f, 2.00f, settings.canvasScale, (value) => {
+				settings.canvasScale = value * 100.0f;
 				ApplySettings();
-			}, true, "Interface schaal");
+			}, false, "Interface schaal");
 
 			//Graphic options
 			PropertiesPanel.Instance.AddTitle("Grafisch");
@@ -183,9 +226,14 @@ namespace Netherlands3D.Settings {
 				settings.antiAliasing = toggle;
 				ApplySettings();
 			});
+			PropertiesPanel.Instance.AddLabel("Camera FOV(Gezichtsveld):");
+			PropertiesPanel.Instance.AddActionSlider("20", "60", 20.0f, 60.0f, settings.cameraFov, (value) => {
+				settings.cameraFov = value;
+				ApplySettings();
+			}, false, "FOV");
 			PropertiesPanel.Instance.AddLabel("Render resolutie:");
-			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
-				settings.renderResolution = value;
+			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 25f, 100f, settings.renderResolution, (value) => {
+				settings.renderResolution = value * 0.01f;
 				ApplySettings();
 			}, false, "Render resolutie");
 			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
@@ -235,9 +283,9 @@ namespace Netherlands3D.Settings {
 			if (settings.realtimeReflections)
 			{
 				PropertiesPanel.Instance.AddLabel("Live reflectie resolutie:");
-				PropertiesPanel.Instance.AddActionSlider("5%", "100%", 0.05f, 1f, settings.reflectionsRenderResolution, (value) =>
+				PropertiesPanel.Instance.AddActionSlider("5%", "100%", 5f, 100f, settings.reflectionsRenderResolution, (value) =>
 				{
-					settings.reflectionsRenderResolution = value;
+					settings.reflectionsRenderResolution = value * 0.01f;
 					ApplySettings();
 				}, false, "Render resolutie van reflecties");
 			}
@@ -278,7 +326,7 @@ namespace Netherlands3D.Settings {
 			toggleBetaFeatures.started.Invoke(settings.showExperimentalFeatures);
 
 			canvasSettings.ChangeCanvasScale(settings.canvasScale * 0.01f);
-
+            renderSettings.ChangeCameraFOV(settings.cameraFov);
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
