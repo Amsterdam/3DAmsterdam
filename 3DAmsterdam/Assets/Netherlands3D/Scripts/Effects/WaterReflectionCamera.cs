@@ -75,6 +75,8 @@ public class WaterReflectionCamera : MonoBehaviour
     {
         followCamera = Camera.main;
 
+        camera.fieldOfView = followCamera.fieldOfView;
+
         if(Screen.width != followCamera.pixelHeight || screenHeightOnInit != followCamera.pixelHeight)
         {
             ScaleOrViewChanged();
