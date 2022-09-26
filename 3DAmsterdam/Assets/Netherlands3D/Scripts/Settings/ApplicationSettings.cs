@@ -23,11 +23,18 @@ namespace Netherlands3D.Settings {
 		private bool isMobileDevice = false;
 
 		[SerializeField]
+		private int benchmarkFrames = 30;
+		private float frameTimeThreshold = 1f/30f;
+
+		[SerializeField]
 		private Transform mobileCameraStartPosition;
 
 		public static ApplicationSettingsProfile settings;
 
-        [SerializeField]
+		[SerializeField]
+		private bool enableDebugLogsOnWebGL = false;
+
+		[SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
 		private int selectedTemplate = 0;
 
@@ -101,12 +108,33 @@ namespace Netherlands3D.Settings {
 				Debug.Log("Mobile application settings");
 				ApplyMobileSpecificSettings();
 			}
+            else
+            {
+				Debug.Log("Optimising settings based on performance");
+				RunBenchmark();
+            }
 
 			//Load up our enviroment, optimised for a mobile device
 			EnviromentSettings.Instance.ApplyEnviroment(isMobileDevice);
 
 			//Apply but do not save
 			ApplySettings(false); 
+		}
+
+        private void RunBenchmark()
+        {
+			StartCoroutine(PerformanceBenchmark());
+        }
+
+		private IEnumerator PerformanceBenchmark()
+        {
+			var currentTime = Time.timeSinceLevelLoad;
+            for (int i = 0; i < benchmarkFrames; i++)
+            {
+				yield return new WaitForEndOfFrame();
+			}
+			var benchmarkFramesRenderTime = Time.timeSinceLevelLoad - currentTime;
+
 		}
 
 		private void ApplyMobileSpecificSettings()
