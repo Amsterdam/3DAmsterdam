@@ -226,11 +226,11 @@ namespace Netherlands3D.Settings {
 				settings.antiAliasing = toggle;
 				ApplySettings();
 			});
-			PropertiesPanel.Instance.AddLabel("Camera FOV(Gezichtsveld):");
-			PropertiesPanel.Instance.AddActionSlider("20", "60", 20.0f, 60.0f, settings.cameraFov, (value) => {
-				settings.cameraFov = value;
+			PropertiesPanel.Instance.AddLabel("Camera zoom factor:");
+			PropertiesPanel.Instance.AddActionSlider("1x", "3x", 1.0f, 3.0f, settings.cameraFov, (value) => {
+				settings.cameraFov = Mathf.Lerp(60.0f,20.0f,Mathf.InverseLerp(1.0f,3.0f,value));
 				ApplySettings();
-			}, false, "FOV");
+			}, false, "Camera zoom factor");
 			PropertiesPanel.Instance.AddLabel("Render resolutie:");
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 25f, 100f, settings.renderResolution, (value) => {
 				settings.renderResolution = value * 0.01f;
