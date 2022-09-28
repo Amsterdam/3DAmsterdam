@@ -49,13 +49,21 @@ MonoBehaviour:
   onReceiveCuttingLine: {fileID: 11400000, guid: 777e7bc0e0d3e4c4496e3278d9b50a7c,
     type: 2}
   outputProgress: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303, type: 2}
+  outputProfileMaterialName: {fileID: 11400000, guid: b1b6f53691c92a34ab9f8e375560080c,
+    type: 2}
+  outputMaterialColor: {fileID: 11400000, guid: 000f053d1ef0a3c4e8ef195e0e565549,
+    type: 2}
   outputProfilePolyline: {fileID: 11400000, guid: b9e8579c8e444ae40a23574a9f4e21b9,
     type: 2}
+  outputProfileDone: {fileID: 11400000, guid: bcdfe65dcd77cbd4ebacb3ea46a478b4, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 960
   drawInEditorGizmos: 1
   maxTrianglesPerFrame: 10000
+  materialColorShaderProperty: _BaseColor
+  materialNameRegex: \[.*$
+  materialNameRegexReplacement: 
 --- !u!114 &6146440338853367613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,8 +76,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66bb4016c2c054c4bbe06344c2783c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onReceiveLines: {fileID: 11400000, guid: b9e8579c8e444ae40a23574a9f4e21b9, type: 2}
+  onReceiveLayerName: {fileID: 11400000, guid: b1b6f53691c92a34ab9f8e375560080c, type: 2}
+  onReceiveLayerColor: {fileID: 0}
+  onReceiveLayerLines: {fileID: 11400000, guid: b9e8579c8e444ae40a23574a9f4e21b9,
+    type: 2}
+  onReadyForExport: {fileID: 11400000, guid: bcdfe65dcd77cbd4ebacb3ea46a478b4, type: 2}
   outputProgress: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303, type: 2}
   binary: 1
-  addLinesPerFrame: 1000
   outputFileName: Profile.dxf
