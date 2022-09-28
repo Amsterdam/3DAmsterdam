@@ -152,7 +152,7 @@ namespace RuntimeHandle
 		{
             if (autoScale)
                 transform.localScale =
-                    Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
+                    Vector3.one * ((Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15) * (CameraModeChanger.Instance.ActiveCamera.fieldOfView / 60);
         }
 
 		void HandleOverEffect(HandleBase p_axis)
