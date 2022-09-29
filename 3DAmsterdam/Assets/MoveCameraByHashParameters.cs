@@ -85,7 +85,7 @@ public class MoveCameraByHashParameters : MonoBehaviour
             if (float.TryParse(numbers[2], out float height))
             {
                 Debug.Log($"Moving camera to height: {height}");
-                Camera.main.transform.Translate(0, height, 0);
+                Camera.main.transform.Translate(0, height, 0,Space.World);
             }
         }
 
