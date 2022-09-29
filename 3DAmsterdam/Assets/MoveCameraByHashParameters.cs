@@ -3,9 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Core;
+using System.Runtime.InteropServices;
 
 public class MoveCameraByHashParameters : MonoBehaviour
 {
+    #if !UNITY_EDITOR && UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern void SetHash(string newHash);
+    #endif
     [SerializeField] private StringEvent moveCameraEvent;
     [SerializeField] private bool reportCameraLocationBack = true;
     [SerializeField] private float maxUrlUpdateRate = 1.0f;
@@ -14,32 +19,42 @@ public class MoveCameraByHashParameters : MonoBehaviour
     private Vector3 lastCameraPosition;
     private Vector3 lastCameraRotation;
 
-    void Start()
+    void Awake()
     {
         moveCameraEvent.started.AddListener(MoveCamera);
-        if (reportCameraLocationBack) StartCoroutine(ReportBack());
-    }
 
+#if !UNITY_EDITOR && UNITY_WEBGL
+        if (reportCameraLocationBack) StartCoroutine(ReportBack());
+#endif
+    }
+#if !UNITY_EDITOR && UNITY_WEBGL
     private IEnumerator ReportBack()
     {
         while(reportCameraLocationBack)
         {
-            var currentMainCamera = Camera.main;
-            if (currentMainCamera.transform.position != lastCameraPosition || currentMainCamera.transform.eulerAngles != lastCameraRotation)
-            {
-                var rdCoordinates = CoordConvert.UnitytoRD(currentMainCamera.transform.position);
+            GetCameraArray();
+            SetHash($"{coordinates[0]:F2},{coordinates[1]:F2},{coordinates[2]:F2},{coordinates[3]:F2},{coordinates[4]:F2},{coordinates[5]:F2}");
 
-                coordinates[0] = rdCoordinates.x;
-                coordinates[1] = rdCoordinates.y;
-                coordinates[2] = rdCoordinates.z;
-                coordinates[3] = currentMainCamera.transform.eulerAngles.x;
-                coordinates[4] = currentMainCamera.transform.eulerAngles.y;
-                coordinates[5] = currentMainCamera.transform.eulerAngles.z;
-            }
             yield return new WaitForSeconds(maxUrlUpdateRate);
         }
     }
+#endif
 
+    private void GetCameraArray()
+    {
+        var currentMainCamera = Camera.main;
+        if (currentMainCamera.transform.position != lastCameraPosition || currentMainCamera.transform.eulerAngles != lastCameraRotation)
+        {
+            var rdCoordinates = CoordConvert.UnitytoRD(currentMainCamera.transform.position);
+
+            coordinates[0] = rdCoordinates.x;
+            coordinates[1] = rdCoordinates.y;
+            coordinates[2] = rdCoordinates.z;
+            coordinates[3] = currentMainCamera.transform.eulerAngles.x;
+            coordinates[4] = currentMainCamera.transform.eulerAngles.y;
+            coordinates[5] = currentMainCamera.transform.eulerAngles.z;
+        }
+    }
 
     public void MoveCamera(string hashStringParameter)
     {
