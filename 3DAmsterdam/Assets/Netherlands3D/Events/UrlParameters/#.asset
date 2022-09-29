@@ -10,10 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6319a1c876ebd247a42bdca122ae5c3, type: 3}
-  m_Name: URLParameterTrigger_Center
-  m_EditorClassIdentifier: Assembly-CSharp::URLParameterTrigger
-  eventName: C
-  description: Center point in comma seperated lat long coordinates read from url
-  unityEvent:
+  m_Name: '#'
+  m_EditorClassIdentifier: 
+  eventName: 
+  description: 
+  started:
+    m_PersistentCalls:
+      m_Calls: []
+  received:
+    m_PersistentCalls:
+      m_Calls: []
+  cancelled:
     m_PersistentCalls:
       m_Calls: []
