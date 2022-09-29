@@ -31,7 +31,7 @@ namespace Netherlands3D.WebGL
         {
             foreach (var paramAndValue in parametersAndValues)
             {
-                var trigger = urlParameterEvents.Where(parameterEventTrigger => parameterEventTrigger.eventName == paramAndValue.Key);
+                var trigger = urlParameterEvents.Where(parameterEventTrigger => parameterEventTrigger.name == paramAndValue.Key);
                 if (trigger.Any())
                 {
                     var targetElement = trigger.First();
