@@ -18,6 +18,11 @@ namespace Netherlands3D.WebGL
 
         void Start()
         {
+            ReadURLAndTrigger();
+        }
+
+        public void ReadURLAndTrigger()
+        {
             ParameterNameAndValues = ReadURLParameters();
             TriggerEventsWithParameterName(ParameterNameAndValues);
         }
