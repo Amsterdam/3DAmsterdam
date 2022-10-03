@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library, {
     SetUniqueShareURL: function (uniqueToken) {
-        sharedUrlText = window.location.href.split('?')[0] + "?view=" + Pointer_stringify(uniqueToken);
+        sharedUrlText = window.location.href.split('?')[0] + "?view=" + UTF8ToString(uniqueToken);
 
         //inject copy button if we do not have it yet
         if (!window.copySharedURLButton) {

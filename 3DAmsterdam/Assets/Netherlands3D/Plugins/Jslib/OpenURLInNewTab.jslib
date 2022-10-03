@@ -8,7 +8,7 @@ mergeInto(LibraryManager.library, {
     button is released, the legitimate event will open a new window/tab
      */
     OpenURLInNewWindow: function (openUrl) {
-        var url = Pointer_stringify(openUrl);
+        var url = UTF8ToString(openUrl);
         document.onmouseup = function () {
             window.open(url);
             //Clear the event, so it can only happen once
