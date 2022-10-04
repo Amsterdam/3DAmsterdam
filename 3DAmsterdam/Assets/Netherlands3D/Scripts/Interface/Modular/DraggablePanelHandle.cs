@@ -31,8 +31,13 @@ namespace Netherlands3D.Interface
 
         private bool panelHasContentSizeFitter = false;
 
+        private Animator animator;
+
         void Awake()
         {
+            animator = GetComponent<Animator>();
+            if (animator) animator.enabled = false;
+
             changePointerStyle = this.GetComponent<ChangePointerStyleHandler>();
             changePointerStyle.StyleOnHover = ChangePointerStyleHandler.Style.GRAB;
             rectTransform = transform.parent.GetComponent<RectTransform>();
@@ -46,52 +51,65 @@ namespace Netherlands3D.Interface
 		private void Start()
 		{
             panelHasContentSizeFitter = (rectTransform.GetComponent<ContentSizeFitter>());
-            ClampInScreenBounds();
+            StartCoroutine(ClampInScreenBounds());
         }
 
-		private void LateUpdate()
+        private void OnEnable()
+        {
+            StartCoroutine(ClampInScreenBounds());
+        }
+
+        private void LateUpdate()
 		{
 			if(Screen.width != lastScreenWidth || Screen.height != lastScreenHeight)
             {
                 lastScreenWidth = Screen.width;
                 lastScreenHeight = Screen.height;
 
-                ClampInScreenBounds();
+                StartCoroutine(ClampInScreenBounds());
             }
-		}
+        }
 
 		public void OnDrag(PointerEventData eventData)
 		{
 			rectTransform.position += new Vector3(eventData.delta.x, eventData.delta.y);
 
-			ClampInScreenBounds();
+            Clamp();
 
-			if (rememberPosition)
+            if (rememberPosition)
 			{
 				SavePosition();
 			}
 		}
 
-		private void ClampInScreenBounds()
-		{
-			if (!allowOutsideOfScreen)
-			{
+		private IEnumerator ClampInScreenBounds()
+        {
+            //Delay one frame to make sure canvas item is up to date.
+            yield return new WaitForEndOfFrame();
+            Clamp();
+        }
+
+        private void Clamp()
+        {
+            if (!allowOutsideOfScreen)
+            {
                 //Make sure this panel is small enought to fit in current screen in height if it does not have a contentsizefitter overruling it.
-                if(!panelHasContentSizeFitter){ 
+                if (!panelHasContentSizeFitter)
+                {
                     Vector2 currentSize = rectTransform.sizeDelta;
-                    currentSize.y = Math.Min(Screen.height-(marginPixels*2), preferedSize.y);
+                    currentSize.y = Math.Min(Screen.height - (marginPixels * 2), preferedSize.y);
                     rectTransform.sizeDelta = currentSize;
                 }
 
                 //Clamp position (based on centered anchor)
                 rectTransform.position = new Vector2(
-					Mathf.Clamp(rectTransform.position.x, (rectTransform.rect.width * CanvasSettings.canvasScale) / 2, Screen.width - ((rectTransform.rect.width * CanvasSettings.canvasScale) / 2.0f)),
-					Mathf.Clamp(rectTransform.position.y, (rectTransform.rect.height * CanvasSettings.canvasScale) / 2, Screen.height - ((rectTransform.rect.height * CanvasSettings.canvasScale) / 2.0f))
-				);
-			}
-		}
+                    Mathf.Clamp(rectTransform.position.x, (rectTransform.rect.width * CanvasSettings.canvasScale) / 2, Screen.width - ((rectTransform.rect.width * CanvasSettings.canvasScale) / 2.0f)),
+                    Mathf.Clamp(rectTransform.position.y, (rectTransform.rect.height * CanvasSettings.canvasScale) / 2, Screen.height - ((rectTransform.rect.height * CanvasSettings.canvasScale) / 2.0f))
+                );
+            }
+        }
 
-		private void LoadPosition()
+        private void LoadPosition()
         {
             if (!PlayerPrefs.HasKey($"{saveName}{rectTransform.gameObject.name}"))
                 return;
@@ -106,6 +124,8 @@ namespace Netherlands3D.Interface
                 yPosition,
                 0
             );
+
+            ClampInScreenBounds();
         }
         private void SavePosition()
 		{

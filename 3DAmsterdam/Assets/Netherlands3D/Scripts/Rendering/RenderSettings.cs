@@ -102,13 +102,18 @@ namespace Netherlands3D.Rendering
         public void ToggleAO(bool enabled)
         {
             aoRenderFeature.SetActive(enabled);
-            //forwardRendererData.opaqueLayerMask = (enabled) ? aoEnabledLayerMask : aoDisabledLayerMask;
+            forwardRendererData.opaqueLayerMask = (enabled) ? aoEnabledLayerMask : aoDisabledLayerMask;
         }
 
         public void SetRenderScale(float renderScale)
         {
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
             urp.renderScale = renderScale;
+        }
+
+        public void ChangeCameraFOV(float cameraFov)
+        {
+            CameraModeChanger.Instance.ActiveCamera.fieldOfView = cameraFov;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private FloatEvent onProgressBarPercentage;
 		[SerializeField]
+		private FloatEvent onProgressBarNormalisedValue;
+		[SerializeField]
 		private StringEvent onProgressBarMessage;
 		[SerializeField]
 		private StringEvent onProgressBarDetailedMessage;
@@ -30,9 +32,10 @@ namespace Netherlands3D.Interface
 		{
 			Instance = this;
 
-			onProgressBarMessage.started.AddListener(SetProgressBarMessage);
-			onProgressBarPercentage.started.AddListener(SetProgressBarPercentage);
-			onProgressBarDetailedMessage.started.AddListener(SetProgressBarDetailedMessage);
+			if(onProgressBarMessage) onProgressBarMessage.started.AddListener(SetProgressBarMessage);
+			if(onProgressBarPercentage) onProgressBarPercentage.started.AddListener(SetProgressBarPercentage);
+			if(onProgressBarNormalisedValue) onProgressBarNormalisedValue.started.AddListener(SetProgressBarNormalisedValue);
+			if(onProgressBarDetailedMessage) onProgressBarDetailedMessage.started.AddListener(SetProgressBarDetailedMessage);
 		}
 
 		private void SetProgressBarDetailedMessage(string message)
@@ -47,12 +50,18 @@ namespace Netherlands3D.Interface
 
 		public void SetProgressBarPercentage(float percentage)
 		{
-			progressBar.Percentage(percentage / 100.0f);
-			if (percentage < 100)
-			{
+			SetProgressBarPercentage(percentage / 100.0f);
+		}
+		public void SetProgressBarNormalisedValue(float value)
+		{
+			progressBar.Percentage(value);
+
+			if(value > 0 && value != 1)
+            {
 				Show();
 			}
-			else{
+            else
+            {
 				Hide();
 			}
 		}
