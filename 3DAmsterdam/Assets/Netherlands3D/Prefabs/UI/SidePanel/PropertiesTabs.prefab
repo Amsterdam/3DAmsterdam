@@ -2440,7 +2440,7 @@ PrefabInstance:
     - target: {fileID: 7275359156166519847, guid: 663a729beaa16af4fbc1a0701473b390,
         type: 3}
       propertyPath: tabPaneTitle
-      value: Experimentele functie
+      value: Verkeer en VISSIM
       objectReference: {fileID: 0}
     - target: {fileID: 8024371915375094396, guid: 663a729beaa16af4fbc1a0701473b390,
         type: 3}
@@ -2466,7 +2466,7 @@ PrefabInstance:
     - target: {fileID: 8228677906642650527, guid: 663a729beaa16af4fbc1a0701473b390,
         type: 3}
       propertyPath: tooltipText
-      value: VISSIM bestand importeren
+      value: VISSIM bestand importeren en toon verkeer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 663a729beaa16af4fbc1a0701473b390, type: 3}
@@ -2516,37 +2516,6 @@ MonoBehaviour:
   onFalse:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7933201824346763031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5438287286065844318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2edb5125db50ed4428142d3a764e40e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 23851713853530217, guid: 7b905acf3f6aee14eacb6419c884ba53, type: 3}
-  GeneratedFieldsContainer: {fileID: 0}
-  UIClearIgnoreObject: {fileID: 0}
-  onSelectCSVContentType: {fileID: 0}
-  onClearData: {fileID: 0}
-  onFilesImported: {fileID: 0}
-  showColorsBasedOnIds: {fileID: 0}
-  showColorGradientBasedOnIds: {fileID: 0}
-  setGradientValueMin: {fileID: 0}
-  setGradientValueMax: {fileID: 0}
-  setGradient: {fileID: 0}
-  setProgressBarPercentage: {fileID: 0}
-  setProgressBarMessage: {fileID: 0}
-  setProgressBarDetailedMessage: {fileID: 0}
-  setEnableDrawingColors: {fileID: 0}
-  activateCSVLayer: {fileID: 0}
-  Columns: []
-  gradientsGroup: {fileID: 0}
-  currentContentFinderType: 0
 --- !u!1001 &1013463074655585164
 PrefabInstance:
   m_ObjectHideFlags: 0
