@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c342922c018cd5a47a21e82e5926dced, type: 3}
+  m_Name: Simulation Speed
+  m_EditorClassIdentifier: 
+  value: 1
+  description: 'The speed at which the simulation is running.
+
+    1 = normal realtime
+    speed.
+
+
+    ! Make sure that this value does not go below or equal to 0 !'
+  onValueChanged: {fileID: 11400000, guid: 221a2b2e7995a9940a2b93b76f04d386, type: 2}

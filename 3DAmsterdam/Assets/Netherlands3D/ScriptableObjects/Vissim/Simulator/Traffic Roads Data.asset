@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b3a53a6e5d5c3408cfbaca4734bc95, type: 3}
+  m_Name: Traffic Roads Data
+  m_EditorClassIdentifier: 
+  resetOnRuntime: 1
+  <Roads>k__BackingField:
+  - name: Domplein
+    coordinate: {x: -733461.4, y: 0, z: -6149344}
+    points:
+    - coordinate: {x: 5.1219177, y: 0, z: 52.090027}
+      coordinateUnity: {x: 42.9375, y: 0, z: -93.84375}
+    - coordinate: {x: 5.12186, y: 0, z: 52.09014}
+      coordinateUnity: {x: 39.03125, y: 0, z: -81.28125}
+    - coordinate: {x: 5.121772, y: 0, z: 52.090305}
+      coordinateUnity: {x: 33.03125, y: 0, z: -63.0625}
+    - coordinate: {x: 5.1216516, y: 0, z: 52.090527}
+      coordinateUnity: {x: 24.890625, y: 0, z: -38.28125}
+    - coordinate: {x: 5.121557, y: 0, z: 52.090706}
+      coordinateUnity: {x: 18.515625, y: 0, z: -18.40625}
+  - name: Korte Nieuwstraat
+    coordinate: {x: -733461.4, y: 0, z: -6149344}
+    points:
+    - coordinate: {x: 5.122042, y: 0, z: 52.089764}
+      coordinateUnity: {x: 51.34375, y: 0, z: -123.34375}
+    - coordinate: {x: 5.121961, y: 0, z: 52.089935}
+      coordinateUnity: {x: 45.875, y: 0, z: -104.15625}
+    - coordinate: {x: 5.1219177, y: 0, z: 52.090027}
+      coordinateUnity: {x: 42.9375, y: 0, z: -93.84375}
+  - name: Wed
+    coordinate: {x: -733461.4, y: 0, z: -6149344}
+    points:
+    - coordinate: {x: 5.121155, y: 0, z: 52.089756}
+      coordinateUnity: {x: -9.453125, y: 0, z: -123.875}
+    - coordinate: {x: 5.121525, y: 0, z: 52.0899}
+      coordinateUnity: {x: 15.953125, y: 0, z: -107.90625}
+    - coordinate: {x: 5.1219177, y: 0, z: 52.090027}
+      coordinateUnity: {x: 42.9375, y: 0, z: -93.84375}
+  - name: Domplein
+    coordinate: {x: -733461.4, y: 0, z: -6149344}
+    points:
+    - coordinate: {x: 5.121557, y: 0, z: 52.090706}
+      coordinateUnity: {x: 18.515625, y: 0, z: -18.40625}
+    - coordinate: {x: 5.1214385, y: 0, z: 52.09093}
+      coordinateUnity: {x: 10.46875, y: 0, z: 6.65625}
