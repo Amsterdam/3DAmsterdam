@@ -2532,7 +2532,6 @@ MonoBehaviour:
   GeneratedFieldsContainer: {fileID: 0}
   UIClearIgnoreObject: {fileID: 0}
   onSelectCSVContentType: {fileID: 0}
-  onToggleBetaFeatures: {fileID: 0}
   onClearData: {fileID: 0}
   onFilesImported: {fileID: 0}
   showColorsBasedOnIds: {fileID: 0}
@@ -3369,7 +3368,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: VissimPanel
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5651224866313297651, guid: 62e267aeb9c77b54182067485ad3ceff, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 62e267aeb9c77b54182067485ad3ceff, type: 3}
 --- !u!224 &2298320042650586455 stripped
 RectTransform:
@@ -4848,6 +4848,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3107603108120225264, guid: 3dc7d6565028ae74d8b838a385f795d1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262113668179466808, guid: 3dc7d6565028ae74d8b838a385f795d1,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262113668179466808, guid: 3dc7d6565028ae74d8b838a385f795d1,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262113668179466808, guid: 3dc7d6565028ae74d8b838a385f795d1,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
