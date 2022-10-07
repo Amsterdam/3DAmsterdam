@@ -18,10 +18,11 @@ namespace Netherlands3D.Traffic
     {
         [Header("Listen to events")]
         [SerializeField] private TriggerEvent startTrafficAreaSelection;
-        [SerializeField] private TriggerEvent abortSelection;
         [SerializeField] private ObjectEvent receivedBounds;
+        [SerializeField] private TriggerEvent clearTraffic;
 
         [Header("Trigger events")]
+        [SerializeField] private BoolEvent simulationRunning;
         [SerializeField] private ObjectEvent changeGridSelectionColor;
         [SerializeField] private TriggerEvent requestGridSelection;
 
@@ -38,8 +39,6 @@ namespace Netherlands3D.Traffic
         private Vector3WGS bottomLeftWGS;
         private Vector3WGS topRightWGS;
 
-        public GameObject stopButton;
-
         [SerializeField]
         private Color selectionColor;
 
@@ -51,13 +50,7 @@ namespace Netherlands3D.Traffic
             }
 
             startTrafficAreaSelection.started.AddListener(StartSelectingArea);
-            abortSelection.started.AddListener(Abort);
-        }
-
-        private void Abort()
-        {
-            //Keep traffic active after placing
-            //gameObject.SetActive(false);
+            clearTraffic.started.AddListener(StopSimulation);
         }
 
         private void StartSelectingArea()
@@ -79,11 +72,26 @@ namespace Netherlands3D.Traffic
 
         public void StartSimulation()
         {
+            StopAllCoroutines();
             gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
-            stopButton.SetActive(true);
+
+            simulationRunning.started.Invoke(true);
+
             allLoadedRoads.Clear();
             gameObject.GetComponent<TrafficSimulator>().StartSimulation(true);
             StartCoroutine(GetRoadsJson());
+        }
+
+        public void StopSimulation()
+        {
+            StopAllCoroutines();
+            gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
+            allLoadedRoads.Clear();
+
+            foreach (Transform child in transform)
+                Destroy(child.gameObject);
+
+            simulationRunning.started.Invoke(false);
         }
 
         private void Update()

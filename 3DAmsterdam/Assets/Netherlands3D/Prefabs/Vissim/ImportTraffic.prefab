@@ -1,52 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4902563669029383420
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3288596970213625349}
-  - component: {fileID: 4952100163517918267}
-  m_Layer: 0
-  m_Name: Global RD Origin
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3288596970213625349
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4902563669029383420}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8334449571815547990}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4952100163517918267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4902563669029383420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e06437edc560e47accfb817d45a047, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zeroGroundLevelY: 0
-  relativeCenterRD:
-    x: 136776
-    y: 455879
 --- !u!1 &8334449570704879009
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8334449571815547990}
   m_RootOrder: 0
@@ -95,7 +49,7 @@ MonoBehaviour:
   updateEntitiesRealtime: 1
   layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 512
   binaryMeshLayer: {fileID: 0}
   database: {fileID: 11400000, guid: 0c7b59f8d6cc82046a448b240c6183d3, type: 2}
   entitiesDatas:
@@ -107,7 +61,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2968661f991c8e548acf22059160d266, type: 2}
   - {fileID: 11400000, guid: e292eb682656a7e4ab4cd8a41ad30936, type: 2}
   sso: {fileID: 11400000, guid: 7facedd1a939204449f0ee823caeab73, type: 2}
-  prefabSignalHead: {fileID: 8201467708962993325, guid: 09f1af4904d99024aa7f1ea18f66f7bd, type: 3}
+  prefabSignalHead: {fileID: 8201467708962993325, guid: 09f1af4904d99024aa7f1ea18f66f7bd,
+    type: 3}
 --- !u!1 &8334449571815547988
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +74,7 @@ GameObject:
   - component: {fileID: 8334449571815547990}
   - component: {fileID: 5941371805176876669}
   m_Layer: 0
-  m_Name: Traffic
+  m_Name: ImportTraffic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,9 +90,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8334449570704879010}
-  - {fileID: 3288596970213625349}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -155,7 +110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showDebugLog: 0
   maxDataCount: 200
-  eventFilesImported: {fileID: 11400000, guid: af14ecb9eb6b095409154e48f8d7d19a, type: 2}
-  eventClearDatabase: {fileID: 11400000, guid: dd396699afa8e64408c9a3cf504659bb, type: 2}
-  eventLoadingProgress: {fileID: 11400000, guid: 73da9d89a9b04454bb65e1b7a04cdf68, type: 2}
+  eventFilesImported: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb, type: 2}
+  eventClearDatabase: {fileID: 11400000, guid: 9575250af824c5c4892b2a382746c005, type: 2}
+  eventLoadingProgress: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303,
+    type: 2}
   dataBase: {fileID: 11400000, guid: 0c7b59f8d6cc82046a448b240c6183d3, type: 2}
