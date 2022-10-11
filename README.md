@@ -11,7 +11,7 @@ More and more information and data is embedded, allowing future features like ru
 
 ## Unity 2021.3 (LTS)
 The project is using the latest LTS (long-term support) release of Unity: 2021.3.*<br/>
-We will stick to this version untill new engine feature updates are required for the sake of maximum stability.
+We will upgrade the minor updates for the same LTS often due to stability improvements of the WebGL platform.
 ## WebGL/Universal Render Pipeline
 Currently the main target platform is a WebGL(2.0) application.<br/>
 The project is set up to use the [Universal Render Pipeline](https://unity.com/srp/universal-render-pipeline), focussing on high performance for lower end machines. Please note that shaders/materials have specific requirements in order to work in this render pipeline.
