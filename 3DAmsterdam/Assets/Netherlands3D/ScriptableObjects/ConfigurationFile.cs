@@ -46,8 +46,8 @@ namespace Netherlands3D
         [Header("External URLs")]
         public string LocationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
         public string LookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
-        public string T3DSandboxEnvironment = "https://t3dstorage.z6.web.core.windows.net/";
-        public string T3DAzureFunctionURL = "https://t3dbackend.azurewebsites.net/";
+        public string T3DSandboxEnvironment = "https://t3d-o-cdn.azureedge.net/";
+        public string T3DAzureFunctionURL = "https://t3d-o-functions.azurewebsites.net/";
 
         [Header("Sewerage Api URLs")]
         public SewerageApiType sewerageApiType;

@@ -34,7 +34,11 @@ public static class SessionSaver
         //SessionId = "feacd4b0-9bb8-11ec-89dd-6536bf8ad53b";
         //}
         //SessionId = "17b6cfc0-a531-11ec-b88b-cff3a4fba0f3";
-        SessionId = "7e184780-a9c3-11ec-ac3e-5b3e00f4b66e";
+       // SessionId = "2cd70d90-4c96-11ed-96a2-df7508d89588"; //Uitbouw -  in lengte.ifc
+        SessionId = "34070420-4cb5-11ed-abf8-11bad6c221dc"; //kubus sketchup
+
+
+
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif

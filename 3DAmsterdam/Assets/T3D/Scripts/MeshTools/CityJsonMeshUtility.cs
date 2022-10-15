@@ -50,7 +50,7 @@ public class CityJsonMeshUtility
         Vector3[] vertices = mesh.vertices;
         Matrix4x4 matrix = Matrix4x4.TRS(translaton, rotation, scale);
         for (int i = 0; i < vertices.Length; i++)
-        {
+        {         
             vertices[i] = matrix.MultiplyPoint(vertices[i]);
         }
         return vertices;
@@ -58,7 +58,18 @@ public class CityJsonMeshUtility
 
     private List<Vector3> GetVerts(CityJsonModel cityModel)
     {
-        return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
+        var avgy = cityModel.vertices.Average(o => o.y);
+        var avgz = cityModel.vertices.Average(o => o.z);
+        
+        if (avgz > avgy)
+            {
+            return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.z, (float)o.y)).ToList();
+        }
+        else
+        {
+            return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
+        }
+
     }
 
     private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)
