@@ -43,7 +43,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		[System.Serializable]
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
-		public ObjectPlacedEvent placedTransformable;
+		public ObjectPlacedEvent placedTransformable = new ObjectPlacedEvent();
 
 		private Vector3 startScale;
         public Vector3 StartScale { get => startScale; set => startScale = value; }
