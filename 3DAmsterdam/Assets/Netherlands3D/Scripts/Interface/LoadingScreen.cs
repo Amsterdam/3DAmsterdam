@@ -50,7 +50,7 @@ namespace Netherlands3D.Interface
 
 		public void SetProgressBarPercentage(float percentage)
 		{
-			SetProgressBarPercentage((percentage>0) ? (percentage / 100.0f) : 0);
+			SetProgressBarNormalisedValue((percentage>0) ? (percentage / 100.0f) : 0);
 		}
 		public void SetProgressBarNormalisedValue(float value)
 		{
