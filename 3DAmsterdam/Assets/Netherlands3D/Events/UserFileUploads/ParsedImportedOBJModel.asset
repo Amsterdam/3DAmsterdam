@@ -9,11 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4c4cacc82528bf47be27fa839d69d1e, type: 3}
-  m_Name: DrawBuildingPlanArea_Principal
+  m_Script: {fileID: 11500000, guid: eaf823e95f3e4a348bf8fc94aefb348f, type: 3}
+  m_Name: ParsedImportedOBJModel
   m_EditorClassIdentifier: 
-  eventName: Principebesluit genomen
-  description: Principebesluit genomen
-  unityEvent:
+  eventName: 
+  description: 
+  started:
+    m_PersistentCalls:
+      m_Calls: []
+  received:
+    m_PersistentCalls:
+      m_Calls: []
+  cancelled:
     m_PersistentCalls:
       m_Calls: []
