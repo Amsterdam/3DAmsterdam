@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3925316657320263143}
   - component: {fileID: 1304714978979607671}
+  - component: {fileID: 6546092892042087715}
   m_Layer: 0
   m_Name: UrlParameterReader
   m_TagString: Untagged
@@ -27,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -44,7 +46,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   urlParameterEvents:
-  - {fileID: 11400000, guid: 2f527e7b72c83cb4faba365aa0f724ec, type: 2}
-  - {fileID: 11400000, guid: d6b9921b1dc63f14eab598c7d5996905, type: 2}
-  - {fileID: 11400000, guid: ec641a48395f5104480442f668b4c7f2, type: 2}
-  - {fileID: 11400000, guid: 49ac545fff1146d49a7d1ed7b4964096, type: 2}
+  - {fileID: 11400000, guid: 410a655218e563b41b1491b278e8dbf8, type: 2}
+--- !u!114 &6546092892042087715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375400878048034476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa70af08c65168744823620d3e29ed52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveCameraEvent: {fileID: 11400000, guid: 410a655218e563b41b1491b278e8dbf8, type: 2}
+  reportCameraLocationBack: 1
+  maxUrlUpdateRate: 1
