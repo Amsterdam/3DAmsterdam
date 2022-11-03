@@ -32,10 +32,13 @@ namespace Netherlands3D.Interface
 		{
 			Instance = this;
 
-			if(onProgressBarMessage) onProgressBarMessage.started.AddListener(SetProgressBarMessage);
+			if (onProgressBarMessage) onProgressBarMessage.started.AddListener(SetProgressBarMessage);
+			if(onProgressBarDetailedMessage) onProgressBarDetailedMessage.started.AddListener(SetProgressBarDetailedMessage);
+			SetProgressBarMessage("");
+			SetProgressBarDetailedMessage("");
+
 			if(onProgressBarPercentage) onProgressBarPercentage.started.AddListener(SetProgressBarPercentage);
 			if(onProgressBarNormalisedValue) onProgressBarNormalisedValue.started.AddListener(SetProgressBarNormalisedValue);
-			if(onProgressBarDetailedMessage) onProgressBarDetailedMessage.started.AddListener(SetProgressBarDetailedMessage);
 		}
 
 		private void SetProgressBarDetailedMessage(string message)
@@ -50,7 +53,7 @@ namespace Netherlands3D.Interface
 
 		public void SetProgressBarPercentage(float percentage)
 		{
-			SetProgressBarPercentage(percentage / 100.0f);
+			SetProgressBarNormalisedValue((percentage>0) ? (percentage / 100.0f) : 0);
 		}
 		public void SetProgressBarNormalisedValue(float value)
 		{
