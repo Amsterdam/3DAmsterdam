@@ -30,8 +30,8 @@ MonoBehaviour:
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
-  sewerPipesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=
-  sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=
+  sewerPipesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolleidingen&OUTPUTFORMAT=geojson&bbox=
+  sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolknopen&OUTPUTFORMAT=geojson&bbox=
   BagApiType: 0
   buildingUrl: https://api.data.amsterdam.nl/bag/v1.1/pand/
   numberIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand=

@@ -66,7 +66,7 @@ namespace Amsterdam3D.Sewerage
 		public string PutdekselhoogteString { get {
                 if (putdekselhoogteString == null)
                 {
-					putdekselhoogteString=  Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "putdekselhoogte" : "Maaiveldhoogte";
+					putdekselhoogteString=  Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "maaiveldniveau" : "Maaiveldhoogte";
 				}
 				return putdekselhoogteString;
 			}}
@@ -167,17 +167,20 @@ namespace Amsterdam3D.Sewerage
 					parseCounter++;
 					if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
 					double diameter = customJsonHandler.GetPropertyFloatValue(DiameterString);
+                    if (diameter==0)
+                    {
+						continue;
+                    }
 					double bobBeginPunt = customJsonHandler.GetPropertyFloatValue(BobBeginPuntString);
 
 					List<GeoJSONPoint> coordinates = customJsonHandler.GetGeometryLineString();
-					endpoint = GetUnityPoint(coordinates[0].x, coordinates[0].y, bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY);
-
+					endpoint = GetUnityPoint(coordinates[0].x, coordinates[0].y, bobBeginPunt);
 					for (int i = 1; i < coordinates.Count; i ++)
 					{
 						startpoint = endpoint;
 						double bobEindPunt = customJsonHandler.GetPropertyFloatValue(BobEindPuntString);
 
-						endpoint = GetUnityPoint(coordinates[i].x, coordinates[i].y, bobEindPunt + Config.activeConfiguration.zeroGroundLevelY);
+						endpoint = GetUnityPoint(coordinates[i].x, coordinates[i].y, bobEindPunt);
 						sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
 					}
 
@@ -217,6 +220,7 @@ namespace Amsterdam3D.Sewerage
             }
             else
             {
+				Debug.Log("couldn't download manhole-data");
 				callback(tileChange);
 			}
 			yield return null;
@@ -236,12 +240,12 @@ namespace Amsterdam3D.Sewerage
 				parseCounter++;
 				if ((parseCounter % maxParsesPerFrame) == 0) yield return new WaitForEndOfFrame();
                 
-				if (customJsonHandler.PropertyValueStringEquals("objectsoort", "Knikpunt") == false)
+				if (customJsonHandler.PropertyValueStringEquals("soort", "Hulppunt") == false)
                 {
 					point2D = customJsonHandler.GetGeometryPoint2DDouble();
 
 					double putdekselhoogte = customJsonHandler.GetPropertyFloatValue(PutdekselhoogteString);
-					point = GetUnityPoint(point2D[0], point2D[1], putdekselhoogte + Config.activeConfiguration.zeroGroundLevelY);
+					point = GetUnityPoint(point2D[0], point2D[1], putdekselhoogte);
 
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
@@ -271,7 +275,7 @@ namespace Amsterdam3D.Sewerage
 
 				i++;
 			}
-
+			Debug.Log(i + " of " + meshFilters.Length + " combined");
 			//Own combined mesh
 			GameObject newCombinedTile = new GameObject();
 			newCombinedTile.name = "CombinedTile";
@@ -361,7 +365,7 @@ namespace Amsterdam3D.Sewerage
 		{
 			if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
 			{
-				return CoordConvert.WGS84toUnity(new Vector3WGS(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+				return CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
 			}
 			else
 			{

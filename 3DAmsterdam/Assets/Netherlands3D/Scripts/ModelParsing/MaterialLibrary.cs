@@ -16,6 +16,9 @@ namespace Netherlands3D.Rendering
         private Material[] materialLibrary;
 
         [SerializeField]
+        private bool runtimeCompressLoadedTextures = false;
+
+        [SerializeField]
         private float materialColorMatchingThreshold = 0.01f;
 
         public static MaterialLibrary Instance;
@@ -88,6 +91,7 @@ namespace Netherlands3D.Rendering
                                 // Copy the pixels over to mipmap 0
                                 mipTexture.SetPixels(loadedTexture.GetPixels());
                                 mipTexture.Apply(); //Apply now generates our mipmap steps
+                                if(runtimeCompressLoadedTextures) mipTexture.Compress(false);
 
                                 Destroy(loadedTexture);
 

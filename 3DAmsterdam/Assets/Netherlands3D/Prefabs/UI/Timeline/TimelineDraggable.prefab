@@ -450,7 +450,6 @@ GameObject:
   - component: {fileID: 1866913595424472927}
   - component: {fileID: 1866913595424472924}
   - component: {fileID: 1866913595424472925}
-  - component: {fileID: 1866913595424472926}
   m_Layer: 5
   m_Name: Import Data Button
   m_TagString: Untagged
@@ -561,23 +560,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1866913595424472926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866913595424472923}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15ca2613e39e3a144a458f2a4f5ea34f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileInputName: fileInput
-  fileExtention: csv
-  multiSelect: 1
-  eventFileLoaderFileImported: {fileID: 11400000, guid: 74ab71ebdcac8c647984f0fc2282cee4,
-    type: 2}
 --- !u!1 &1866913595429300713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2316,6 +2298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df197e6a594a53947bd11be2a1e5cb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeBarScrollSpeed: 5
   rt: {fileID: 8932172318193593409}
   slider: {fileID: 8932172318826771939}
   timelineUI: {fileID: 8932172319734456393}
@@ -4789,7 +4772,6 @@ GameObject:
   - component: {fileID: 8932172319734456438}
   - component: {fileID: 8932172319734456393}
   - component: {fileID: 5194563675167288285}
-  - component: {fileID: 1634098619779470101}
   - component: {fileID: 8154794360175893990}
   m_Layer: 5
   m_Name: TimelineDraggable
@@ -4874,19 +4856,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileImported: {fileID: 11400000, guid: 74ab71ebdcac8c647984f0fc2282cee4, type: 2}
   timelineData: {fileID: 11400000, guid: 45c461b5fcd30484fb4e50bba7c6a8f8, type: 2}
---- !u!114 &1634098619779470101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8932172319734456439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cea0a931b2c8de84c86f4af29634f69c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventImportFiles: {fileID: 11400000, guid: 74ab71ebdcac8c647984f0fc2282cee4, type: 2}
 --- !u!114 &8154794360175893990
 MonoBehaviour:
   m_ObjectHideFlags: 0
