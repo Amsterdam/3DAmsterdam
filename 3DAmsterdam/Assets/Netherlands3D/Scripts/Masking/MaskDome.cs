@@ -53,7 +53,7 @@ namespace Netherlands3D.Masking
             }
 
             transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
-            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight();
+            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight() * (((CameraModeChanger.Instance.ActiveCamera.orthographic) ? 1.0f : (CameraModeChanger.Instance.ActiveCamera.fieldOfView/60)));
         }
     }
 }
