@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface {
     public class ColorLegend : MonoBehaviour
@@ -31,7 +32,7 @@ namespace Netherlands3D.Interface {
         private GameObject paletteColorPrefab;
 
         [SerializeField]
-        private Text titleText;
+        private TextMeshProUGUI titleText;
 
 		private Texture2D legendTexture;
 		private RawImage legendRawImage;
