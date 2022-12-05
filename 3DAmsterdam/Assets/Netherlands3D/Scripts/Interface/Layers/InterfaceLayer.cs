@@ -3,6 +3,7 @@ using Netherlands3D.JavascriptConnection;
 using Netherlands3D.TileSystem;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +28,7 @@ namespace Netherlands3D.Interface.Layers
 		private GameObjectEvent openTransformOptions;
 
 		[SerializeField]
-		private Text layerNameText;
+		private TextMeshProUGUI layerNameText;
 		public string GetName => layerNameText.text;
 
 		[SerializeField]
