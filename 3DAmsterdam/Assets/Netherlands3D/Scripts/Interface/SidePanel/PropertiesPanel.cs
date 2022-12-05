@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,7 +48,7 @@ namespace Netherlands3D.Interface.SidePanel
         public static PropertiesPanel Instance = null;
 
         [SerializeField]
-        private Text titleText;
+        private TextMeshProUGUI titleText;
 
 		[Header("Generated field prefabs:")]
         [SerializeField]

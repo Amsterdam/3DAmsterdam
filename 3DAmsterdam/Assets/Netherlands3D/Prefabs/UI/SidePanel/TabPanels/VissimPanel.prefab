@@ -183,7 +183,6 @@ GameObject:
   - component: {fileID: 8013445305849791531}
   - component: {fileID: 1000964612982704440}
   - component: {fileID: 6463779941598388509}
-  - component: {fileID: 1273567112815349326}
   m_Layer: 5
   m_Name: ButtonGoToVissim
   m_TagString: Untagged
@@ -320,20 +319,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &1273567112815349326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 715087260502584546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  htmlObjectID: fzpUploadClickRegisterArea
-  alignEveryUpdate: 1
 --- !u!1 &751200820628884625
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +408,6 @@ GameObject:
   - component: {fileID: 8149960408808357247}
   - component: {fileID: 1206114786578717554}
   - component: {fileID: 6020762331714626308}
-  - component: {fileID: 5651224866313297651}
   m_Layer: 5
   m_Name: ButtonImportFZP
   m_TagString: Untagged
@@ -548,21 +532,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &5651224866313297651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1029521013949296668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe1f2068ab962424e9ca6d554ee4deae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileInputName: fzp-input
-  fileExtentions: .fzp
-  multiSelect: 0
 --- !u!1 &1939817950240579793
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +625,6 @@ GameObject:
   - component: {fileID: 6706714091384900693}
   - component: {fileID: 1975599629851849317}
   - component: {fileID: 3361747478787918368}
-  - component: {fileID: 537924965149337654}
   m_Layer: 5
   m_Name: ButtonGoBack
   m_TagString: Untagged
@@ -793,20 +761,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &537924965149337654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2430134259353789183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  htmlObjectID: fzpUploadClickRegisterArea
-  alignEveryUpdate: 1
 --- !u!1 &3209465586019282388
 GameObject:
   m_ObjectHideFlags: 0
