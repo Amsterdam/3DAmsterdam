@@ -5,13 +5,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-
+using TMPro;
 namespace Netherlands3D.Interface
 {
     public class TooltipDialog : MonoBehaviour
     {
         private Animator animator;
-        private Text tooltiptext;
+        private TextMeshProUGUI tooltiptext;
         private RectTransform rectTransform;
         private ContentSizeFitter contentSizeFitter;
 
@@ -38,7 +38,7 @@ namespace Netherlands3D.Interface
             instance = this;
 
             contentSizeFitter = GetComponent<ContentSizeFitter>();
-            tooltiptext = GetComponentInChildren<Text>();
+            tooltiptext = GetComponentInChildren<TextMeshProUGUI>();
             rectTransform = GetComponent<RectTransform>();
             Hide();
         }
