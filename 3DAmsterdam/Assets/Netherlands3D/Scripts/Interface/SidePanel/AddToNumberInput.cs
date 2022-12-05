@@ -5,13 +5,14 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
 	public class AddToNumberInput : MonoBehaviour, IScrollHandler
 	{
 		[SerializeField]
-		private InputField inputField;
+		private TMP_InputField inputField;
 
 		[SerializeField]
 		private float addAmount = 1.0f;

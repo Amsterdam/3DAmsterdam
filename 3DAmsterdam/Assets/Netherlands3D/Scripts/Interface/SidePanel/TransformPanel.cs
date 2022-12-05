@@ -5,6 +5,7 @@ using RuntimeHandle;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,36 +15,36 @@ namespace Netherlands3D.Interface.SidePanel
     public class TransformPanel : MonoBehaviour
     {
         [SerializeField]
-        private Text transformTitle;
+        private TextMeshProUGUI transformTitle;
 
         [Header("Input field references")]
         [SerializeField]
-        private InputField translateX;
+        private TMP_InputField translateX;
         [SerializeField]
-        private InputField translateY;
+        private TMP_InputField translateY;
         [SerializeField]
-        private InputField translateZ;
+        private TMP_InputField translateZ;
 
         [SerializeField]
-        private InputField rotateX;
+        private TMP_InputField rotateX;
         [SerializeField]
-        private InputField rotateY;
+        private TMP_InputField rotateY;
         [SerializeField]
-        private InputField rotateZ;
+        private TMP_InputField rotateZ;
 
         [SerializeField]
-        private InputField scaleX;
+        private TMP_InputField scaleX;
         [SerializeField]
-        private InputField scaleY;
+        private TMP_InputField scaleY;
         [SerializeField]
-        private InputField scaleZ;
+        private TMP_InputField scaleZ;
 
         [SerializeField]
-        private InputField rdX;
+        private TMP_InputField rdX;
         [SerializeField]
-        private InputField rdY;
+        private TMP_InputField rdY;
         [SerializeField]
-        private InputField napZ;
+        private TMP_InputField napZ;
 
         private Transformable transformableTarget;
         private Vector3RD rdCoordinates;
@@ -55,7 +56,6 @@ namespace Netherlands3D.Interface.SidePanel
 
         private const string stringDecimal = "F2";
         private const string emptyStringDefault = "0";
-        private const string scaleSuffix = "%";
 
         private static RuntimeTransformHandle gizmoHandles;
 
@@ -214,9 +214,9 @@ namespace Netherlands3D.Interface.SidePanel
             rotateY.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
             rotateZ.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
 
-            scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
-            scaleY.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
-            scaleZ.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            scaleY.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            scaleZ.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

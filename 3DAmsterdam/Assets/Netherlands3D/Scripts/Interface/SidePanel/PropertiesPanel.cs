@@ -94,7 +94,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         private TransformPanel transformPanel;
         [SerializeField]
-        private InputField selectableText;
+        private TMP_InputField selectableText;
 
         [Header("Thumbnail rendering")]
         [SerializeField]
@@ -413,7 +413,7 @@ namespace Netherlands3D.Interface.SidePanel
         public void AddTitle(string titleText, bool selectable = false)
         {
             var newTitleField = Instantiate(titlePrefab, targetFieldsContainer);
-            newTitleField.GetComponent<Text>().text = titleText;
+            newTitleField.GetComponent<TextMeshProUGUI>().text = titleText;
 
             if(selectable)
 			{

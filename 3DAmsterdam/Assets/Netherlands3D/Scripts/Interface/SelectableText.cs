@@ -6,17 +6,18 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface
 {
 	public class SelectableText : MonoBehaviour, IPointerEnterHandler
 	{
 		[SerializeField]
-		private InputField inputFieldSource;
-		private InputField inputField;
+		private TMP_InputField inputFieldSource;
+		private TMP_InputField inputField;
 
-		private Text text;
-		private Text inputFieldText;
+		private TextMeshProUGUI text;
+		private TextMeshProUGUI inputFieldText;
 
 		[SerializeField]
 		private bool readOnly = true;
@@ -28,11 +29,11 @@ namespace Netherlands3D.Interface
 
 		void Awake()
 		{
-			text = this.GetComponent<Text>();
+			text = this.GetComponent<TextMeshProUGUI>();
 			text.raycastTarget = true;
 		}
 
-		public void SetFieldPrefab(InputField inputFieldPrefab)
+		public void SetFieldPrefab(TMP_InputField inputFieldPrefab)
 		{
 			inputFieldSource = inputFieldPrefab;
 			//Make sure our mouse pointer turns into a text pointer when hovering, letting the user know its selectable
@@ -84,7 +85,7 @@ namespace Netherlands3D.Interface
 		private void CreateInputFieldCopy()
 		{
 			inputField = Instantiate(inputFieldSource, this.transform);
-			inputFieldText = inputField.GetComponentInChildren<Text>();
+			inputFieldText = inputField.GetComponentInChildren<TextMeshProUGUI>();
 
 			//Match visuals of textfield
 			inputFieldText.font = text.font;

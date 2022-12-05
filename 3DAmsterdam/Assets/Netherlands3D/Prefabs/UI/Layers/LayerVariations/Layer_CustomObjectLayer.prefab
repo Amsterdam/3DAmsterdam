@@ -376,6 +376,48 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1551344271662849246}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8778083341583675047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2661828949455826290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba66686873f93ce4994d1549d25cbd5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
+  openColorOptions: {fileID: 11400000, guid: 7fbe6f04f8f30ae4b82bdc4761ffa528, type: 2}
+  openTransformOptions: {fileID: 11400000, guid: 654d6a98cf8c13e49a316bad1095cd0b,
+    type: 2}
+  layerNameText: {fileID: 7190425948653878682}
+  layerType: 0
+  linkedObject: {fileID: 0}
+  opaqueShaderSourceOverride: {fileID: 2100000, guid: 1fe8f06ed37452e4f81e807883c905ec,
+    type: 2}
+  transparentShaderSourceOverride: {fileID: 2100000, guid: 3b7aa421b5f299048a9abe0ca9ef6efa,
+    type: 2}
+  uniqueLinkedObjectMaterials: []
+  usingRuntimeInstancedMaterials: 0
+  toggleActiveLayer: {fileID: 3150839955489429213}
+  parentInterfaceLayers: {fileID: 0}
+  layerLabelColor: {fileID: 6127638215869061687}
+  swapTransparentMaterialSources: 1
+  removeButton: {fileID: 9167334700763667975}
+--- !u!114 &3150839955489429213 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6127638215869061687 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4651872174879459049, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
@@ -394,66 +436,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1551344271662849246}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &9167334700763667975 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7692026339836838617, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1551344271662849246}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3150839955489429213 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1551344271662849246}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3120468878744700904 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4524246861349935926, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1551344271662849246}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8778083341583675047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2661828949455826290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba66686873f93ce4994d1549d25cbd5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  styleOnHover: 1
-  openColorOptions: {fileID: 11400000, guid: 7fbe6f04f8f30ae4b82bdc4761ffa528, type: 2}
-  openTransformOptions: {fileID: 11400000, guid: 654d6a98cf8c13e49a316bad1095cd0b,
-    type: 2}
-  layerNameText: {fileID: 3120468878744700904}
-  layerType: 0
-  linkedObject: {fileID: 0}
-  opaqueShaderSourceOverride: {fileID: 2100000, guid: 1fe8f06ed37452e4f81e807883c905ec,
-    type: 2}
-  transparentShaderSourceOverride: {fileID: 2100000, guid: 3b7aa421b5f299048a9abe0ca9ef6efa,
-    type: 2}
-  uniqueLinkedObjectMaterials: []
-  usingRuntimeInstancedMaterials: 0
-  toggleActiveLayer: {fileID: 3150839955489429213}
-  parentInterfaceLayers: {fileID: 0}
-  layerLabelColor: {fileID: 6127638215869061687}
-  swapTransparentMaterialSources: 1
-  removeButton: {fileID: 9167334700763667975}
 --- !u!114 &7682295233410953799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,3 +449,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: Transformatie opties
+--- !u!114 &7190425948653878682 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8525029495207289156, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &9167334700763667975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7692026339836838617, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
