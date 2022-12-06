@@ -1,21 +1,21 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
 	public class NameAndURL : OpenURL
 	{
 		[SerializeField]
-		private Text titleText;
+		private TextMeshProUGUI titleText;
 
 		void Awake()
 		{
-			titleText.GetComponent<Text>();
+			titleText.GetComponent<TextMeshProUGUI>();
 		}
 
 		public void SetURL(string urlName, string urlPath)

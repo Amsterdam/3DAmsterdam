@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
 	public class ActionDropDown : MonoBehaviour
 	{
 		[SerializeField]
-		private Dropdown dropdown;
+		private TMP_Dropdown dropdown;
 		private Action<string> optionAction;
 
 		private string currentValue = "";
@@ -49,7 +50,7 @@ namespace Netherlands3D.Interface.SidePanel
 			dropdown.value = 0;
 			dropdown.options.Clear();
 			foreach (var option in dropdownOptions)
-				dropdown.options.Add(new Dropdown.OptionData() { text = option });
+				dropdown.options.Add(new TMP_Dropdown.OptionData() { text = option });
 			
 		}
 

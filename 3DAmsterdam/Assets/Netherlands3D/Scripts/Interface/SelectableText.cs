@@ -27,7 +27,7 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private ChangedTextEvent changedTextEvent;
 
-		void Awake()
+		void Start()
 		{
 			text = this.GetComponent<TextMeshProUGUI>();
 			text.raycastTarget = true;
@@ -86,7 +86,7 @@ namespace Netherlands3D.Interface
 		{
 			inputField = Instantiate(inputFieldSource, this.transform);
 			inputFieldText = inputField.GetComponentInChildren<TextMeshProUGUI>();
-
+			if(!inputFieldText) inputFieldText = inputField.GetComponent<TextMeshProUGUI>();
 			//Match visuals of textfield
 			inputFieldText.font = text.font;
 			inputFieldText.fontSize = text.fontSize;

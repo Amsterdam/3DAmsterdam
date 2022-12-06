@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -12,13 +13,9 @@ namespace Netherlands3D.Interface.SidePanel
         private Action<float> changeAction;
 
         [SerializeField] private Slider slider;
-
-        [SerializeField] private Text sliderTextMin;
-
-        [SerializeField]
-        private Text sliderTextMax;
-
-        [SerializeField] private Text valueText;
+        [SerializeField] private TextMeshProUGUI sliderTextMin;
+        [SerializeField] private TextMeshProUGUI sliderTextMax;
+        [SerializeField] private TextMeshProUGUI valueText;
 
         private bool fadingValueText = false;
         [SerializeField] private CanvasGroup valueTextGroup;

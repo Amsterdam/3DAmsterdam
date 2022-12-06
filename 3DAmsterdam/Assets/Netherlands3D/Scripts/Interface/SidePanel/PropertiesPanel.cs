@@ -426,13 +426,13 @@ namespace Netherlands3D.Interface.SidePanel
             textGameObject.AddComponent<SelectableText>().SetFieldPrefab(selectableText);
 		}
 
-        public InputField AddNumberInput(string label, double defaultValue)
+        public TMP_InputField AddNumberInput(string label, double defaultValue)
         {
             var newNumberInputField = Instantiate(numberInputPrefab, targetFieldsContainer);
-            InputField inputField = newNumberInputField.GetComponent<InputField>();
+            TMP_InputField inputField = newNumberInputField.GetComponent<TMP_InputField>();
             inputField.SetTextWithoutNotify(defaultValue.ToString());
 
-            var allTexts = inputField.GetComponentsInChildren<Text>();
+            var allTexts = inputField.GetComponentsInChildren<TextMeshProUGUI>();
             foreach(var text in allTexts)
                 if (text != inputField.textComponent) text.text = label;
 
@@ -451,7 +451,7 @@ namespace Netherlands3D.Interface.SidePanel
         public void AddTextfield(string content, bool selectable = false)
         {
             var newTextField = Instantiate(textfieldPrefab, targetFieldsContainer);
-            newTextField.GetComponent<Text>().text = content;
+            newTextField.GetComponent<TextMeshProUGUI>().text = content;
 
             if (selectable)
             {
@@ -460,22 +460,22 @@ namespace Netherlands3D.Interface.SidePanel
         }
         public void AddLabel(string labelText)
         {
-            Instantiate(labelPrefab, targetFieldsContainer).GetComponent<Text>().text = labelText;
+            Instantiate(labelPrefab, targetFieldsContainer).GetComponent<TextMeshProUGUI>().text = labelText;
         }
 
-        public void AddLabelColor(string text, Color color, FontStyle style)
+        public void AddLabelColor(string text, Color color, TMPro.FontStyles style)
         {
             var gam = Instantiate(labelPrefabColor, targetFieldsContainer);
-            var textComponent = gam.GetComponent<Text>();
+            var textComponent = gam.GetComponent<TextMeshProUGUI>();
             textComponent.text = text;
             textComponent.color = color;
             textComponent.fontStyle = style;
         }
 
-        public void AddTextfieldColor(string text, Color color, FontStyle style)
+        public void AddTextfieldColor(string text, Color color, TMPro.FontStyles style)
         {
             var gam = Instantiate(textfieldPrefabColor, targetFieldsContainer);
-            var textComponent = gam.GetComponent<Text>();
+            var textComponent = gam.GetComponent<TextMeshProUGUI>();
             textComponent.text = text;
             textComponent.color = color;
             textComponent.fontStyle = style;

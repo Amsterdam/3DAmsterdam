@@ -154,7 +154,7 @@ namespace Netherlands3D.Interface
 				}
 			}).ToggleButtonInteraction(acceptedTerms);
 
-			if(acceptedTerms) PropertiesPanel.Instance.AddTextfieldColor("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht", Color.red, FontStyle.Normal);
+			if(acceptedTerms) PropertiesPanel.Instance.AddTextfieldColor("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht", Color.red, TMPro.FontStyles.Normal);
 		}
 
 		private void RenderToThumbnail()
