@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class SharedURL : MonoBehaviour
 {
     [SerializeField]
-    private InputField inputField;
+    private TMP_InputField inputField;
 
     [SerializeField]
     private RectTransform copiedText;
