@@ -581,6 +581,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8932172318411596337, guid: 316d2787b0724444a93f6337435cb6b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000061035156
+      objectReference: {fileID: 0}
+    - target: {fileID: 8932172318411596337, guid: 316d2787b0724444a93f6337435cb6b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00001335144
+      objectReference: {fileID: 0}
     - target: {fileID: 8932172318424770807, guid: 316d2787b0724444a93f6337435cb6b0,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -764,6 +774,11 @@ PrefabInstance:
     - target: {fileID: 8932172319623498344, guid: 316d2787b0724444a93f6337435cb6b0,
         type: 3}
       propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8932172319623498344, guid: 316d2787b0724444a93f6337435cb6b0,
+        type: 3}
+      propertyPath: m_Value
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8932172319623498345, guid: 316d2787b0724444a93f6337435cb6b0,
@@ -986,6 +1001,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8932172319955739250, guid: 316d2787b0724444a93f6337435cb6b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00001335144
+      objectReference: {fileID: 0}
     - target: {fileID: 8932172319991544489, guid: 316d2787b0724444a93f6337435cb6b0,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -1190,19 +1210,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4692837017921439990}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3988843775779102486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3529787614725169704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  styleOnHover: 1
 --- !u!114 &1098294948057703543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1217,6 +1224,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowOutsideOfScreen: 0
   rememberPosition: 1
+--- !u!114 &3988843775779102486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3529787614725169704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!114 &7375787865735034165
 MonoBehaviour:
   m_ObjectHideFlags: 0

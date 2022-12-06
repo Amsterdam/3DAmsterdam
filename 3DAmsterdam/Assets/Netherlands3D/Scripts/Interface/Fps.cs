@@ -3,13 +3,13 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Netherlands3D.Logging;
-
+using TMPro;
 namespace Netherlands3D.Interface
 {
 	public class Fps : MonoBehaviour
 	{
 		[SerializeField]
-		private Text fpsCounter;
+		private TextMeshProUGUI fpsCounter;
 
 		[SerializeField]
 		private Image fpsBackground;
