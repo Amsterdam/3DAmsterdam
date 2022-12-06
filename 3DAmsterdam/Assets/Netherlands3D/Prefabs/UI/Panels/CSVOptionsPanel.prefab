@@ -1507,8 +1507,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.0000014, y: -20.5}
-  m_SizeDelta: {x: -7.999997, y: -59}
+  m_AnchoredPosition: {x: -1.9999695, y: -20.5}
+  m_SizeDelta: {x: -11.99995, y: -59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3639691594865857591
 MonoBehaviour:
@@ -3685,7 +3685,7 @@ PrefabInstance:
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -10
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
@@ -3730,7 +3730,7 @@ PrefabInstance:
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5
+      value: 12.5
       objectReference: {fileID: 0}
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
@@ -3751,6 +3751,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3847916989230795454, guid: 44a303078c0f68e4eb64f0a01b440f08,
+        type: 3}
+      propertyPath: m_text
+      value: CSV importeer opties
       objectReference: {fileID: 0}
     - target: {fileID: 8204464804396968670, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
