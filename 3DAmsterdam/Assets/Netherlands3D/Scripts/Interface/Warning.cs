@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Interface
 {
     public class Warning : MonoBehaviour
     {
         [SerializeField]
-        private Text bodyText;
+        private TextMeshProUGUI bodyText;
 
         /// <summary>
         /// Leave empty to show the default message
