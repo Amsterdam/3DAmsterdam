@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Interface.Coloring
 {
-    [RequireComponent(typeof(InputField))]
     public class HexColorField : ColorSelector
     {
         [SerializeField]
-        private InputField inputTextField;
+        private TMP_InputField inputTextField;
 
         public void ChangedHexInput(string currentInputText)
         {
@@ -35,7 +34,7 @@ namespace Netherlands3D.Interface.Coloring
         {
             if (!inputTextField.isFocused) return;
 
-            if (hexColor.Length == inputTextField.characterLimit && ColorUtility.TryParseHtmlString(hexColor, out Color convertedColor))
+            if (ColorUtility.TryParseHtmlString(hexColor, out Color convertedColor))
             {
                 selectedNewColor.Invoke(convertedColor, this);
                 return;
