@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D
 {
     public class Snapshot : MonoBehaviour
@@ -36,9 +36,9 @@ namespace Netherlands3D
         public Toggle snapshotMainMenu;
         private bool snapshotPreferenceMainMenu;
 
-        public Text snapshotResolution;
-        public Text snapshotFileType;
-        public Text snapshotName;
+        public TextMeshProUGUI snapshotResolution;
+        public TextMeshProUGUI snapshotFileType;
+        public TextMeshProUGUI snapshotName;
 
         private bool takeScreenshotOnNextFrame;
         private IEnumerator screenshotCoroutine;

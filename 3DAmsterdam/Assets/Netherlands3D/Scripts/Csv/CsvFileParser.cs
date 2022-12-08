@@ -595,7 +595,7 @@ public class CsvFileParser : MonoBehaviour
 
             if (selectedColumnsToDisplay.ContainsKey(column) &&  selectedColumnsToDisplay[column])
             {
-                PropertiesPanel.Instance.AddLabelColor(column, new Color(0,0.2705f,0.6f,1), FontStyle.Bold);
+                PropertiesPanel.Instance.AddLabelColor(column, new Color(0,0.2705f,0.6f,1), TMPro.FontStyles.Bold);
 
                 if (text.StartsWith("http"))
                 {
@@ -603,7 +603,7 @@ public class CsvFileParser : MonoBehaviour
                 }
                 else
                 {                    
-                    PropertiesPanel.Instance.AddTextfieldColor(text,Color.black, FontStyle.Italic);
+                    PropertiesPanel.Instance.AddTextfieldColor(text,Color.black, TMPro.FontStyles.Italic);
                 }
                 PropertiesPanel.Instance.AddSeperatorLine();
             }

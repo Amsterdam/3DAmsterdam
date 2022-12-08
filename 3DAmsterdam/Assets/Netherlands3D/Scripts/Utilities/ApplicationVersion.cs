@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class ApplicationVersion : MonoBehaviour
 {
     void Start()
     {
-        GetComponent<Text>().text = Application.version;
+        GetComponent<TextMeshProUGUI>().text = Application.version;
     }
 }

@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Help
 {
     public class HelpMessage : MonoBehaviour
     {
         public static HelpMessage Instance;
-        [SerializeField]
-        private Text textMessageField;
+        [SerializeField] private TextMeshProUGUI textMessageField;
+        [SerializeField] private TextMeshProUGUI textMessageFieldFront;
 
         [SerializeField]
         private float messageTime = 10.0f;
@@ -31,7 +31,6 @@ namespace Netherlands3D.Help
         void Awake()
         {
             Instance = this;
-            gameObject.SetActive(false);
 
             onShowHelpMessage.started.AddListener(Show);
         }
@@ -43,6 +42,8 @@ namespace Netherlands3D.Help
             Instance.allowHideViaInteraction = false;
             Instance.oneFrameHasPassed = false; 
             Instance.textMessageField.text = textMessage;
+            Instance.textMessageFieldFront.text = textMessage;
+
             Instance.gameObject.SetActive(true);
             Instance.StopAllCoroutines(); //Stop any running fade counters
             Instance.StartCoroutine(Instance.StartWaitForAllowHide());
@@ -66,6 +67,7 @@ namespace Netherlands3D.Help
         public IEnumerator FadeOut()
         {
             textMessageField.CrossFadeAlpha(0, fadeOutTime, false);
+            textMessageFieldFront.CrossFadeAlpha(0, fadeOutTime, false);
             yield return new WaitForSeconds(fadeOutTime);
             gameObject.SetActive(false);
         }

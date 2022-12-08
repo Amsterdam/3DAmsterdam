@@ -245,6 +245,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
         type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Interface.Layers.CustomLayer, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+        type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -377,7 +382,7 @@ MonoBehaviour:
   styleOnHover: 1
   openColorOptions: {fileID: 0}
   openTransformOptions: {fileID: 0}
-  layerNameText: {fileID: 3120468878744700904}
+  layerNameText: {fileID: 7190425948653878682}
   layerType: 3
   linkedObject: {fileID: 0}
   opaqueShaderSourceOverride: {fileID: 0}
@@ -389,18 +394,6 @@ MonoBehaviour:
   layerLabelColor: {fileID: 6127638215869061687}
   swapTransparentMaterialSources: 0
   removeButton: {fileID: 9167334700763667975}
---- !u!114 &3120468878744700904 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4524246861349935926, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1551344271662849246}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3150839955489429213 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
@@ -423,6 +416,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7190425948653878682 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8525029495207289156, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &9167334700763667975 stripped

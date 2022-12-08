@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Interface
 {
     public class ProgressBar : MonoBehaviour
@@ -10,7 +10,7 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private Image progressBar;
         [SerializeField]
-        private Text progressStepText;
+        private TextMeshProUGUI progressStepText;
 
         /// <summary>
         /// Sets the accompanying message to explain the progress bar status

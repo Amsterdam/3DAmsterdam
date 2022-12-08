@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
     public class DataKeyAndValue : MonoBehaviour
     {
         [SerializeField]
-        private Text keyText;
+        private TextMeshProUGUI keyText;
 
         [SerializeField]
-        private Text valueText;
+        private TextMeshProUGUI valueText;
 
-		public Text ValueText { get => valueText; }
+		public TextMeshProUGUI ValueText { get => valueText; }
 
 		public void SetTexts(string key, string value)
         {
