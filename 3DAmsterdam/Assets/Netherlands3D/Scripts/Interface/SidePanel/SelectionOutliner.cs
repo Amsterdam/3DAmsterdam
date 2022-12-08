@@ -4,6 +4,7 @@ using Netherlands3D.TileSystem;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Events;
 using System.Collections.Generic;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -13,7 +14,7 @@ namespace Netherlands3D.Interface.SidePanel
 		private string title = "";
 
 		[SerializeField]
-		private Text titleText;
+		private TextMeshProUGUI titleText;
 
 		private GameObject linkedGameObject;
 

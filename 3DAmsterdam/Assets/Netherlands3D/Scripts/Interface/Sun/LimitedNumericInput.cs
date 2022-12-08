@@ -3,14 +3,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
+using TMPro;
 public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField]
 	private float scrollWheelSensitivity = 1.0f;
 
-	[SerializeField]
-	private InputField inputField;
+	[SerializeField] private TMP_InputField inputField;
 
 	public delegate void AddedOffset(int addedOffset);
 	public AddedOffset addedOffset;

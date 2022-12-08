@@ -289,7 +289,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3309684902446659486}
+  - {fileID: 3050356867973942314}
   m_Father: {fileID: 60287803560479749}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2638065904487420343
+--- !u!1 &2199995803539419730
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -344,23 +344,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3309684902446659486}
-  - component: {fileID: 7404835378095042701}
-  - component: {fileID: 7228262355441687488}
+  - component: {fileID: 3050356867973942314}
+  - component: {fileID: 5782750908554354344}
+  - component: {fileID: 2485810614081500204}
   m_Layer: 5
-  m_Name: ExplanationText
+  m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &3309684902446659486
+--- !u!224 &3050356867973942314
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2638065904487420343}
+  m_GameObject: {fileID: 2199995803539419730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -374,21 +374,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -8.095001}
   m_SizeDelta: {x: 0, y: -16.190027}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7404835378095042701
+--- !u!222 &5782750908554354344
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2638065904487420343}
+  m_GameObject: {fileID: 2199995803539419730}
   m_CullTransparentMesh: 1
---- !u!114 &7228262355441687488
+--- !u!114 &2485810614081500204
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2638065904487420343}
+  m_GameObject: {fileID: 2199995803539419730}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -404,8 +404,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Teken een lijn in de scene
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d1aaa692001149048b71b5b5c5bf4392, type: 2}
+  m_sharedMaterial: {fileID: -5256588669169998648, guid: d1aaa692001149048b71b5b5c5bf4392,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1194,6 +1195,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2036293875754909147, guid: 82f9dd34c906379468ecf61680928c92,
+        type: 3}
+      propertyPath: m_text
+      value: Profiel opslaan als DXF
+      objectReference: {fileID: 0}
     - target: {fileID: 3241546036748975101, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
       propertyPath: m_Text
@@ -1223,7 +1229,7 @@ PrefabInstance:
     - target: {fileID: 447551660604098213, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 447551660604098213, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
@@ -1381,6 +1387,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2036293875754909147, guid: 82f9dd34c906379468ecf61680928c92,
+        type: 3}
+      propertyPath: m_text
+      value: Voorbeeld opslaan als PNG
+      objectReference: {fileID: 0}
     - target: {fileID: 3241546036748975101, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
       propertyPath: m_Text
@@ -1429,7 +1440,7 @@ PrefabInstance:
     - target: {fileID: 447551660604098213, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 447551660604098213, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
@@ -1623,6 +1634,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2036293875754909147, guid: 82f9dd34c906379468ecf61680928c92,
+        type: 3}
+      propertyPath: m_text
+      value: Profiel opslaan als SVG
       objectReference: {fileID: 0}
     - target: {fileID: 3241546036748975101, guid: 82f9dd34c906379468ecf61680928c92,
         type: 3}
@@ -1823,7 +1839,7 @@ PrefabInstance:
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -10
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
@@ -1868,7 +1884,7 @@ PrefabInstance:
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
@@ -1889,6 +1905,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3847916989230795454, guid: 44a303078c0f68e4eb64f0a01b440f08,
+        type: 3}
+      propertyPath: m_text
+      value: Profiel
       objectReference: {fileID: 0}
     - target: {fileID: 8204464804396968670, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}

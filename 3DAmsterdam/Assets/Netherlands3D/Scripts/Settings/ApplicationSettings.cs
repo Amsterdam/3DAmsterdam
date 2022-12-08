@@ -194,7 +194,7 @@ namespace Netherlands3D.Settings {
 			});
 
 
-			PropertiesPanel.Instance.AddLabel("Interface schaal");
+			PropertiesPanel.Instance.AddLabel("Interface schaal:");
 			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 0.75f, 2.00f, settings.canvasScale, (value) => {
 				settings.canvasScale = value * 100.0f;
 				ApplySettings();

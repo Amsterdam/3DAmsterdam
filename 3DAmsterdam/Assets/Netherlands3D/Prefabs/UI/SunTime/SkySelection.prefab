@@ -29,6 +29,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2333784430147552581}
   - {fileID: 7510560353143316762}
@@ -74,6 +75,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!114 &137785448798729868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +116,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Clear
+      objectReference: {fileID: 0}
+    - target: {fileID: 4100838990344705733, guid: 3266c2f9e02f58348ae840a76f800c13,
+        type: 3}
+      propertyPath: m_text
+      value: Helder
       objectReference: {fileID: 0}
     - target: {fileID: 6359728627858248890, guid: 3266c2f9e02f58348ae840a76f800c13,
         type: 3}
@@ -265,6 +272,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grey
+      objectReference: {fileID: 0}
+    - target: {fileID: 4100838990344705733, guid: 3266c2f9e02f58348ae840a76f800c13,
+        type: 3}
+      propertyPath: m_text
+      value: Grijs
       objectReference: {fileID: 0}
     - target: {fileID: 6359728627858248890, guid: 3266c2f9e02f58348ae840a76f800c13,
         type: 3}

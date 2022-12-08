@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Interface
 {
 	public class Memory : MonoBehaviour
 	{
-		private Text memoryOutput;
+		private TextMeshProUGUI memoryOutput;
 
 		private void Awake()
 		{
-			memoryOutput = GetComponent<Text>();
+			memoryOutput = GetComponent<TextMeshProUGUI>();
 		}
 
 		private void OnEnable()

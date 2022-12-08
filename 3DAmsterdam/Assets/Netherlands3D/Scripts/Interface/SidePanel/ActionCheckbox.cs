@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -15,7 +16,7 @@ namespace Netherlands3D.Interface.SidePanel
         private Action<bool> checkAction;
 
         [SerializeField]
-        private Text checkboxText;
+        private TextMeshProUGUI checkboxText;
 
         private void Start()
         {

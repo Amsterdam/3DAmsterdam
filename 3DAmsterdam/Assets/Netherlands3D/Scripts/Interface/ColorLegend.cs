@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface {
     public class ColorLegend : MonoBehaviour
@@ -31,7 +32,7 @@ namespace Netherlands3D.Interface {
         private GameObject paletteColorPrefab;
 
         [SerializeField]
-        private Text titleText;
+        private TextMeshProUGUI titleText;
 
 		private Texture2D legendTexture;
 		private RawImage legendRawImage;
@@ -139,7 +140,7 @@ namespace Netherlands3D.Interface {
 				var newNamedColor = Instantiate(paletteColorPrefab, container);
 				newNamedColor.name = namedColor.name;
 				newNamedColor.GetComponentInChildren<Image>(true).color = namedColor.color;
-				newNamedColor.GetComponentInChildren<Text>(true).text = namedColor.name;
+				newNamedColor.GetComponentInChildren<TextMeshProUGUI>(true).text = namedColor.name;
 				newNamedColor.AddComponent<TooltipTrigger>().TooltipText = namedColor.name;
 			}
 		}

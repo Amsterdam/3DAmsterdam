@@ -5,13 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface
 {
 	public class LoadingScreen : MonoBehaviour
 	{
 		[SerializeField]
-		private Text textMessage;
+		private TextMeshProUGUI textMessage;
 
 		[SerializeField]
 		private ProgressBar progressBar;

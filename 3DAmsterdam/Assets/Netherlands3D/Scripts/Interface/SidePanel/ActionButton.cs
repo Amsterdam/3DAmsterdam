@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -12,7 +13,7 @@ namespace Netherlands3D.Interface.SidePanel
         private Action<string> clickAction;
 
         [SerializeField]
-        private Text buttonText;
+        private TextMeshProUGUI buttonText;
 
         [SerializeField]
         private Button button;

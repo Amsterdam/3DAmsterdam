@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using TMPro;
 namespace Netherlands3D.Interface.Layers
 {
 	public class MaterialSlot : ChangePointerStyleHandler, IPointerClickHandler
@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface.Layers
 		[SerializeField]
 		private Material opaqueMaterialSource;
 		[SerializeField]
-		private Text materialTitle;
+		private TextMeshProUGUI materialTitle;
 
 		private Color resetMaterialColor;
 

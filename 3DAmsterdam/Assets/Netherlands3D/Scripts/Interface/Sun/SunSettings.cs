@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Netherlands3D.Interface;
+using TMPro;
 
 public class SunSettings : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class SunSettings : MonoBehaviour
     private int maxYearInput = 2100;
 
     [SerializeField]
-    private Text speedMultiplierText;
+    private TextMeshProUGUI speedMultiplierText;
     private int speedMultiplier = 1;
     public int SpeedMultiplier
     {
