@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8820066701217643594}
   - component: {fileID: 1114674937364584811}
   - component: {fileID: 5319996228665349454}
+  - component: {fileID: 1673200014238627724}
   m_Layer: 5
   m_Name: TimelinePanel
   m_TagString: Untagged
@@ -144,6 +145,62 @@ MonoBehaviour:
   trigger:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 9128350152673909889}
+        m_TargetAssemblyTypeName: Netherlands3D.Timeline.TimelineUI, Netherlands3D.Timeline
+        m_MethodName: SetData
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8b284de99c330e24c944962fed7e45ef,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: Netherlands3D.Timeline.TimelineData,
+            Netherlands3D.Timeline
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2642371138538196583}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+--- !u!114 &1673200014238627724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2642371138538196583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75b7e70441345c14ab89bfbaf4f57f18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 67e13d6a82d9dab4e8cc1f6275b8c056, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9128350152673909889}
+        m_TargetAssemblyTypeName: Netherlands3D.Timeline.TimelineUI, Netherlands3D.Timeline
+        m_MethodName: SetData
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 0f9d10a7654569343badb43d2061b7f5,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: Netherlands3D.Timeline.TimelineData,
+            Netherlands3D.Timeline
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 2642371138538196583}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -1072,6 +1129,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 655fcb8c42ed3d543bb51218680336ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9128350152673909889 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8932172319734456393, guid: 316d2787b0724444a93f6337435cb6b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 385930230178233544}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6d6ec9b07a823247867c3757d4509a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &9128350152673909950 stripped
