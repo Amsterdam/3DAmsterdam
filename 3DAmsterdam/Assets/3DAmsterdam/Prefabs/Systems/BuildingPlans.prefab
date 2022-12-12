@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5253939595224302148}
   - component: {fileID: 5253939595224302149}
   - component: {fileID: 5253939595224302150}
+  - component: {fileID: 3809527613643753426}
   m_Layer: 14
   m_Name: BuildingPlans
   m_TagString: Untagged
@@ -44,20 +45,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5253939595224302153}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Script: {fileID: 11500000, guid: f95015af8be5f7948aa24eb1bc310981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   drawPolygonEvent: {fileID: 0}
+  drawSinglePolygonEvent: {fileID: 0}
   setDrawingObjectName: {fileID: 0}
   setExtrusionHeightEvent: {fileID: 0}
   defaultMaterial: {fileID: 2100000, guid: 2a0670960cdab8f4889c16c4d2d2a57a, type: 2}
   extrusionHeight: 100
+  newDrawingObjectName: Zone
+  addBottom: 0
+  receiveShadows: 0
   setUVCoordinates: 0
   uvCoordinate: {x: 0, y: 0}
   reverseWindingOrder: 1
   addColliders: 0
-  createdPolygonGameObject: {fileID: 11400000, guid: eb123526ec7badb4fbd3d353533275e5,
-    type: 2}
+  createdPolygonGameObject: {fileID: 0}
 --- !u!114 &5253939595224302148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +91,6 @@ MonoBehaviour:
     colorPaletteIndex: 2
   - propertyValue: 5
     colorPaletteIndex: 3
-  indexOffset: -2
   defaultOpacity: 1
   beforeTimeOpacity: 0.2
   afterTimeOpacity: 1
@@ -154,3 +157,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3809527613643753426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5253939595224302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f95015af8be5f7948aa24eb1bc310981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 0}
+  drawSinglePolygonEvent: {fileID: 0}
+  setDrawingObjectName: {fileID: 0}
+  setExtrusionHeightEvent: {fileID: 0}
+  defaultMaterial: {fileID: 0}
+  extrusionHeight: 100
+  newDrawingObjectName: 
+  addBottom: 0
+  receiveShadows: 0
+  setUVCoordinates: 0
+  uvCoordinate: {x: 0, y: 0}
+  reverseWindingOrder: 1
+  addColliders: 0
+  createdPolygonGameObject: {fileID: 0}
