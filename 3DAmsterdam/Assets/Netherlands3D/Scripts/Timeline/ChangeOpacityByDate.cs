@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class ChangeOpacityByDate : MonoBehaviour
 {
-    private DateTime objectDateTime = new DateTime(2000,1,1);
-    public DateTime ObjectDateTime { get => objectDateTime; set => objectDateTime = value; }
+    private DateTime appearDateTime = new DateTime(2000,1,1);
+    private DateTime disappearDateTime = new DateTime(2000,1,1);
+    public DateTime AppearDateTime { get => appearDateTime; set => appearDateTime = value; }
+    public DateTime DisappearDateTime { get => disappearDateTime; set => disappearDateTime = value; }
     public Color BaseColor { get => baseColor; set => baseColor = value; }
 
     private float opacityDefault = 1.0f;
@@ -26,7 +28,7 @@ public class ChangeOpacityByDate : MonoBehaviour
     public void TimeChanged(DateTime newTime)
     {
         Color color = material.color;
-        color.a = (newTime > ObjectDateTime) ? opacityAfter : opacityBefore;
+        color.a = ((newTime > AppearDateTime) && (newTime < DisappearDateTime)) ? opacityAfter : opacityBefore;
         material.color = color;
     }
 
