@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5253939595224302153
+--- !u!1 &147119019509872018
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5253939595224302154}
-  - component: {fileID: 5253939595224302155}
-  - component: {fileID: 5253939595224302148}
-  - component: {fileID: 5253939595224302149}
-  - component: {fileID: 5253939595224302150}
-  - component: {fileID: 3809527613643753426}
+  - component: {fileID: 147119019509872017}
+  - component: {fileID: 147119019509872016}
+  - component: {fileID: 147119019509872031}
+  - component: {fileID: 147119019509872030}
+  - component: {fileID: 147119019509872029}
+  - component: {fileID: 3016370096300417465}
   m_Layer: 14
-  m_Name: BuildingPlans
+  m_Name: WIOR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5253939595224302154
+--- !u!4 &147119019509872017
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
-  m_LocalRotation: {x: -1, y: 0, z: 0, w: 0}
+  m_GameObject: {fileID: 147119019509872018}
+  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0.0000000754979}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -180, y: 0, z: 0}
---- !u!114 &5253939595224302155
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &147119019509872016
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
+  m_GameObject: {fileID: 147119019509872018}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95015af8be5f7948aa24eb1bc310981, type: 3}
@@ -62,60 +62,58 @@ MonoBehaviour:
   reverseWindingOrder: 1
   addColliders: 0
   createdPolygonGameObject: {fileID: 0}
---- !u!114 &5253939595224302148
+--- !u!114 &147119019509872031
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
+  m_GameObject: {fileID: 147119019509872018}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8fe00ba1e03a4d498e46ea487459ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: Load building plans  GeoJSON
-  urlWithGeoJsonData: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen
-  objectNameProperty: Projectnaam
-  startTimeProperty: Start_bouw
-  endTimeProperty: 
-  colorProperty: Fase_ID
-  coordinateType: 1
-  colorPalette: {fileID: 11400000, guid: 08ea5af7ee1f9ec4e823da6367a255fc, type: 2}
+  description: Load WIOR GeoJSON
+  urlWithGeoJsonData: https://api.data.amsterdam.nl/v1/wfs/wior/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=wior&OUTPUTFORMAT=geojson
+  objectNameProperty: projectnaam
+  startTimeProperty: datum_start_uitvoering
+  endTimeProperty: datum_einde_uitvoering
+  colorProperty: hoofdstatus
+  coordinateType: 0
+  colorPalette: {fileID: 11400000, guid: 542cfc752a0802740b3d95f362f7a5e2, type: 2}
   colorPropertyValues:
-  - propertyValue: 2
+  - propertyValue: Aansluiten
     colorPaletteIndex: 0
-  - propertyValue: 3
+  - propertyValue: Projectaanpak
     colorPaletteIndex: 1
-  - propertyValue: 4
+  - propertyValue: Uitvoering
     colorPaletteIndex: 2
-  - propertyValue: 5
-    colorPaletteIndex: 3
   defaultOpacity: 1
   beforeTimeOpacity: 0.2
   afterTimeOpacity: 1
-  featuresBeforeDraw: 50
+  featuresBeforeDraw: 100
   onCurrentDateChange: {fileID: 11400000, guid: c282bb5754753d04b9f025ba694f5e44,
     type: 2}
   openLegendWithColorPalette: {fileID: 11400000, guid: 6b4f9076546a0404d9a2706da04b76ae,
     type: 2}
---- !u!114 &5253939595224302149
+--- !u!114 &147119019509872030
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
+  m_GameObject: {fileID: 147119019509872018}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onEvent: {fileID: 11400000, guid: 18f58b565d425da4399cdfcc4a44c088, type: 2}
+  onEvent: {fileID: 11400000, guid: 7b2632db414108b49b7dfe6afed75b33, type: 2}
   onTriggered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5253939595224302153}
+      - m_Target: {fileID: 147119019509872018}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 0
@@ -130,7 +128,7 @@ MonoBehaviour:
   onTrue:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: 7b2632db414108b49b7dfe6afed75b33, type: 2}
+      - m_Target: {fileID: 11400000, guid: 18f58b565d425da4399cdfcc4a44c088, type: 2}
         m_TargetAssemblyTypeName: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
         m_MethodName: Invoke
         m_Mode: 6
@@ -145,25 +143,25 @@ MonoBehaviour:
   onFalse:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5253939595224302150
+--- !u!114 &147119019509872029
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
+  m_GameObject: {fileID: 147119019509872018}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3809527613643753426
+--- !u!114 &3016370096300417465
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5253939595224302153}
+  m_GameObject: {fileID: 147119019509872018}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95015af8be5f7948aa24eb1bc310981, type: 3}

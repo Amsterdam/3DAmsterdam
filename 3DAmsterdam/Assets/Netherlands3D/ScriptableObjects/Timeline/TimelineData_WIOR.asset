@@ -9,17 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21306cf2d8483fa448fa56e2ff2c41d5, type: 3}
-  m_Name: BuildingPlanRange
+  m_Script: {fileID: 11500000, guid: 8c07847de6314724a869d6221c9ffab7, type: 3}
+  m_Name: TimelineData_WIOR
   m_EditorClassIdentifier: 
-  timePeriod:
-    name: 
+  timePeriodsSO:
+  - {fileID: 11400000, guid: 7ca7d3ab8fc8817469580e73bafd3f47, type: 2}
+  timePeriods: []
+  allTimePeriods:
+  - name: 
     description: 
     startDate:
       dateTimeString: 2014/01/01
     endDate:
       dateTimeString: 2046/01/01
-    layer: Woningbouwplannen
+    layer: WIOR
     eventPressed:
       m_PersistentCalls:
         m_Calls: []
@@ -41,3 +44,6 @@ MonoBehaviour:
     eventLayerHide:
       m_PersistentCalls:
         m_Calls: []
+  OnOrderTimePeriods:
+    m_PersistentCalls:
+      m_Calls: []

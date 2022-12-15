@@ -23,13 +23,16 @@ public class UnitTests
     public void TestReplacePlaceholders()
     {
         string template = "test_{x}_{y}_{z}";
-        object d = new
+
+
+        List<KeyValuePair<string, object>> keyvals = new List<KeyValuePair<string, object>>()
         {
-            x = 1,
-            y = 2,
-            z = 3
+            new KeyValuePair<string, object>("x", 1),
+            new KeyValuePair<string, object>("y", 2),
+            new KeyValuePair<string, object>("z", 3),
         };
-        var test = template.ReplacePlaceholders(d);
+
+        var test = template.ReplacePlaceholders(keyvals);
         Assert.AreEqual("test_1_2_3", test);
     }
 

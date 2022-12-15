@@ -98,12 +98,13 @@ namespace Netherlands3D.BAG
                             CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
                         }
 
-                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
+                        List<KeyValuePair<string, object>> keyvals = new List<KeyValuePair<string, object>>()
                         {
-                            x = geometry.coordinates[0],
-                            y = geometry.coordinates[1],
-                            id = bagId
-                        }));
+                            new KeyValuePair<string, object>("x", geometry.coordinates[0]),
+                            new KeyValuePair<string, object>("y", geometry.coordinates[1]),
+                            new KeyValuePair<string, object>("id", bagId),
+                        };
+                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(keyvals));
                         PropertiesPanel.Instance.AddSpacer(20);
                     }));
                 }

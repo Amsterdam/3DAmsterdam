@@ -79,7 +79,7 @@ namespace Netherlands3D.Utilities
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = $"../../{branchBuildsFolder}/{buildMainName}/{consistentBuildFolderName}/"
+                locationPathName = $"../../{branchBuildsFolder}/{buildMainName}/{consistentBuildFolderName}/",                
             };
 
             Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
