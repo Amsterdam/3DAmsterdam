@@ -122,7 +122,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 colorIndex = 0;
 
                 var type = geoJSON.GetGeometryType();
-                var startTimeString = "";
                 DateTime startDateTime = new DateTime();
                 DateTime endDateTime = DateTime.MaxValue;
 
@@ -135,6 +134,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 else
                 {
                     //Otherwise parse as a date
+                    var startTimeString = geoJSON.GetPropertyStringValue(startTimeProperty);
                     DateTime.TryParse(startTimeString, out startDateTime);
                 }
 
