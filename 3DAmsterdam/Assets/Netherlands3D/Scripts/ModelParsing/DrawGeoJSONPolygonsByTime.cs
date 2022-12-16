@@ -15,19 +15,22 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField] private string description = "";
     [SerializeField] private string urlWithGeoJsonData = "https://";
 
+    [Header("Property filter")]
     [SerializeField] private string objectNameProperty = "Projectnaam";
     [SerializeField] private string startTimeProperty = "Start_bouw";
     [SerializeField] private string endTimeProperty = "";
 
     [SerializeField] private string colorProperty = "Fase_ID";
+    [SerializeField] private bool colorPropertyIsNumber = true;
+    [SerializeField] private bool timePropertyIsNumber = true;
     [SerializeField] private CoordinateType coordinateType = CoordinateType.WGS84;
 
     private int colorIndex = 0;
     private string objectName = "";
 
+    [Header("Color mapping")]
     [SerializeField] private ColorPalette colorPalette;
     [SerializeField] private ColorPropertyValue[] colorPropertyValues;
-
     [SerializeField] private float defaultOpacity = 1.0f;
     [SerializeField] private float beforeTimeOpacity = 0.1f;
     [SerializeField] private float afterTimeOpacity = 0.1f;
@@ -119,12 +122,22 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 colorIndex = 0;
 
                 var type = geoJSON.GetGeometryType();
-                var startTimeString = geoJSON.GetPropertyStringValue(startTimeProperty);
+                var startTimeString = "";
                 DateTime startDateTime = new DateTime();
                 DateTime endDateTime = DateTime.MaxValue;
 
                 //Start time is mandatory
-                DateTime.TryParse(startTimeString, out startDateTime);
+                if (timePropertyIsNumber)
+                {
+                    var year = geoJSON.GetPropertyFloatValue(startTimeProperty);
+                    startDateTime = new DateTime((int)year, 1, 1);
+                }
+                else
+                {
+                    //Otherwise parse as a date
+                    DateTime.TryParse(startTimeString, out startDateTime);
+                }
+
                 //Optional retrieval of endtime 
                 if (endTimeProperty.Length > 0)
                 {
@@ -132,7 +145,15 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                     DateTime.TryParse(endTimeString, out endDateTime);
                 }
 
-                var colorPropertyValue = geoJSON.GetPropertyStringValue(colorProperty);
+                string colorPropertyValue = "";
+                if(colorPropertyIsNumber)
+                {
+                    colorPropertyValue = geoJSON.GetPropertyFloatValue(colorProperty).ToString();
+                }
+                else
+                {
+                    colorPropertyValue = geoJSON.GetPropertyStringValue(colorProperty);
+                }
                 types[colorPropertyValue] = colorPropertyValue;
 
                 foreach (var targetColorProperty in colorPropertyValues)
