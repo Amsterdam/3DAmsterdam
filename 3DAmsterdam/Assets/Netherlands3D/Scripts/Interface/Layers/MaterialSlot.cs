@@ -84,7 +84,7 @@ namespace Netherlands3D.Interface.Layers
 			if (materialName.Contains("[texture="))
 				materialName = materialName.Split('[')[0].Trim();
 
-			//GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
+			GetComponent<TooltipTrigger>().TooltipText = materialName;
 			materialTitle.text = materialName;
 
 			var materialColor = GetMaterialColor;
