@@ -8,6 +8,7 @@ using System;
 using UnityEngine.EventSystems;
 using System.Text.RegularExpressions;
 using UnityEngine.UIElements;
+using TMPro;
 
 namespace Netherlands3D.Interface.Search
 {
@@ -20,7 +21,7 @@ namespace Netherlands3D.Interface.Search
 		private int charactersNeededBeforeSearch = 2;
 
 		[SerializeField]
-		private InputField searchInputField;
+		private TMP_InputField searchInputField;
 		/// <summary>
 		/// Searchinput makes sure any rich markup (bold, italic etc.) is stripped from the input, when we set the value.
 		/// </summary>
