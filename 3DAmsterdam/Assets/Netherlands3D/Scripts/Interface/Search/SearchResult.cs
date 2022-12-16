@@ -6,6 +6,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Netherlands3D.Interface.Search
 {
@@ -17,7 +18,7 @@ namespace Netherlands3D.Interface.Search
         public SearchResults ParentList { get => parentList; set => parentList = value; }
 
         [SerializeField]
-        private Text textField;
+        private TextMeshProUGUI textField;
 
         private string resultText;
         private string id;
