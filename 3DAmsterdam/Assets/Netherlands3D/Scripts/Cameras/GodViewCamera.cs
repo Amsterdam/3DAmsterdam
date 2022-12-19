@@ -573,11 +573,7 @@ namespace Netherlands3D.Cameras
             var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
 
             //Determine the point we will spin around
-            if (Transformable.lastSelectedTransformable != null)
-            {
-                rotatePoint = Transformable.lastSelectedTransformable.transform.position;
-            }
-            else if (Physics.Raycast(screenRay, out hit))
+            if (Physics.Raycast(screenRay, out hit))
             {
                 rotatePoint = hit.point;
                 focusingOnTargetPoint(rotatePoint);
