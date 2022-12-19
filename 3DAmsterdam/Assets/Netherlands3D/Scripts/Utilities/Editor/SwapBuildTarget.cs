@@ -12,28 +12,24 @@ namespace Netherlands3D.Utilities
     {
         public static void DataTarget() { }
 
-        private const string webGlBuildPrefix = "BuildWebGL_";
-        private const string desktopBuildPrefix = "BuildDesktop_";
-
         private const string branchBuildsFolder = "BranchBuilds";
-
         private const string consistentBuildFolderName = "3D Amsterdam WebGL";
 
-        [MenuItem("Netherlands 3D/Set data target/Production")]
+        [MenuItem("Builds/Set data target/Production")]
         public static void SwitchBranchMaster()
         {
             PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
-        [MenuItem("Netherlands 3D/Set data target/Development")]
+        [MenuItem("Builds/Set data target/Development")]
         public static void SwitchBranchDevelop()
         {
             PlayerSettings.bundleVersion = "develop";
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
-        [MenuItem("Netherlands 3D/Set data target/Specific feature")]
+        [MenuItem("Builds/Set data target/Specific feature")]
         public static void SwitchBranchFeature()
         {
             PlayerSettings.bundleVersion = ReadGitHead();
@@ -61,14 +57,19 @@ namespace Netherlands3D.Utilities
             return headName;
         }
 
-        [MenuItem("Netherlands 3D/Build by feature name")]
+        [MenuItem("Builds/Build/As feature")]
         public static void BuildWebGL()
         {
             TargetedBuild(BuildTarget.WebGL);
         }
 
+        [MenuItem("Builds/Build/As new release")]
+        public static void BuildWebGLRelease()
+        {
+            TargetedBuild(BuildTarget.WebGL,true);
+        }
 
-        public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL)
+        public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL, bool release = false)
         {
             var gitHeadName = ReadGitHead();
             var headNameWithoutControlCharacters = new string(gitHeadName.Where(c => !char.IsControl(c)).ToArray());
@@ -89,7 +90,7 @@ namespace Netherlands3D.Utilities
             if (buildSummary.result == BuildResult.Succeeded)
             {
                 Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-                ZipAndDeploy(buildMainName, buildSummary);
+                ZipAndDeploy(buildMainName, buildSummary, release);
             }
 
             if (buildSummary.result == BuildResult.Failed)
@@ -98,7 +99,7 @@ namespace Netherlands3D.Utilities
             }
         }
 
-        private static void ZipAndDeploy(string mainName, BuildSummary buildSummary)
+        private static void ZipAndDeploy(string mainName, BuildSummary buildSummary,bool release = false)
         {
             var zipFilePath = $"{buildSummary.outputPath}../{mainName}.zip";
 
@@ -109,9 +110,9 @@ namespace Netherlands3D.Utilities
             DeployZipFile(zipFilePath);
         }
 
-        private static void DeployZipFile(string zipFilePath)
+        private static void DeployZipFile(string zipFilePath, bool release = false)
         {
-            var autodeployBatchFile = Path.GetDirectoryName(zipFilePath) + "/../../deploy.bat";
+            var autodeployBatchFile = Path.GetDirectoryName(zipFilePath) + $"/../../deploy{((release) ? "_release" : "")}.bat";
             Debug.Log($"Checking if we have an autodeploy file at: {autodeployBatchFile}");
 
             if (File.Exists(autodeployBatchFile))
