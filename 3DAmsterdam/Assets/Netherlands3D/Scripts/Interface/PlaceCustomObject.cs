@@ -52,11 +52,11 @@ namespace Netherlands3D.Interface
 
             if(!transformable.stickToMouse && moveCameraToRenderer)
             {
-                MoveCameraToObject(placedObjectForLayer);
+                MoveCameraToObjectBounds(placedObjectForLayer, cameraOffsetDirection);
             }
         }
 
-        private void MoveCameraToObject(GameObject placedObjectForLayer)
+        public static void MoveCameraToObjectBounds(GameObject placedObjectForLayer, Vector3 cameraOffsetDirection)
         {
             var targetPosition = placedObjectForLayer.transform.position + cameraOffsetDirection;
             var targetLookat = placedObjectForLayer.transform.position;
