@@ -83,7 +83,7 @@ namespace Netherlands3D.Utilities
                 locationPathName = $"../../{branchBuildsFolder}/{buildMainName}/{consistentBuildFolderName}/",                
             };
 
-            Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
+            Debug.Log($"Building {((release) ? "release" : "feature")} to: " + buildPlayerOptions.locationPathName);
 
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
@@ -107,7 +107,7 @@ namespace Netherlands3D.Utilities
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
             Debug.Log("Zipped build in: " + zipFilePath);
 
-            DeployZipFile(zipFilePath);
+            DeployZipFile(zipFilePath,release);
         }
 
         private static void DeployZipFile(string zipFilePath, bool release = false)
