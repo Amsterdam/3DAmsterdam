@@ -27,7 +27,7 @@ public class TileBakeToolEditor : EditorWindow
 
     private static string windowTitle = "Tile Bake Tool";
 
-    [MenuItem("Netherlands 3D/Tile Bake Tool")]
+    //[MenuItem("Netherlands3D/Tile Bake Tool")]
     static void Init()
     {
         TileBakeToolEditor window = (TileBakeToolEditor)EditorWindow.GetWindow(typeof(TileBakeToolEditor), false, windowTitle);
