@@ -26,10 +26,10 @@ namespace Netherlands3D.Interface
         [Tooltip("Leave empty to place object in root")]
         private Transform targetParent;
 
-        [SerializeField]
-        private bool makeTransformable = false;
-        [SerializeField]
-        private bool startStuckToMouse = false;
+        [SerializeField] private bool makeTransformable = false;
+        [SerializeField] private bool startStuckToMouse = false;
+        [SerializeField] private bool moveCameraToRenderer = true;
+        [SerializeField] private Vector3 cameraOffsetDirection = new Vector3(0, 1, -1);
 
         public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
 
@@ -49,13 +49,44 @@ namespace Netherlands3D.Interface
 
             var transformable = placedObjectForLayer.AddComponent<Transformable>();
             transformable.stickToMouse = startStuckToMouse;
+
+            if(!transformable.stickToMouse && moveCameraToRenderer)
+            {
+                MoveCameraToObject(placedObjectForLayer);
+            }
         }
 
-		/// <summary>
-		/// Move existing GameObject to the pointer and create a linked interface layer
-		/// </summary>
-		/// <param name="existingGameobject">Reference to existing GameObject</param>
-		public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
+        private void MoveCameraToObject(GameObject placedObjectForLayer)
+        {
+            var targetPosition = placedObjectForLayer.transform.position + cameraOffsetDirection;
+            var targetLookat = placedObjectForLayer.transform.position;
+            //If the object has renderers, use the bounds to determine camera focus position and distance
+            MeshRenderer[] renderers = placedObjectForLayer.GetComponentsInChildren<MeshRenderer>();
+            Debug.Log("Renderers: " + renderers.Length);
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                if(renderers.Length > 1)
+                {
+                    for (int i = 1; i < renderers.Length; i++)
+                    {
+                        bounds.Encapsulate(renderers[i].bounds);
+                    }
+                }
+
+                targetLookat = bounds.center;
+                targetPosition = targetLookat + (cameraOffsetDirection * bounds.size.magnitude);
+            }
+
+            Camera.main.transform.position = targetPosition;
+            Camera.main.transform.LookAt(targetLookat);
+        }
+
+        /// <summary>
+        /// Move existing GameObject to the pointer and create a linked interface layer
+        /// </summary>
+        /// <param name="existingGameobject">Reference to existing GameObject</param>
+        public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
             existingGameobject.transform.position = pointer.WorldPosition;
             layers.AddNewCustomObjectLayer(existingGameobject, layerType);
         }
