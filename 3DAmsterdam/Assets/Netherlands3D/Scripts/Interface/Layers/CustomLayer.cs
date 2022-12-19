@@ -44,6 +44,8 @@ namespace Netherlands3D.Interface.Layers
                 {
                     transformable.Select();
                 }
+
+                PlaceCustomObject.MoveCameraToObjectBounds(LinkedObject, new Vector3(0,1,-1));
             }
         }
 
