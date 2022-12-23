@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ namespace Netherlands3D.Interface
     public class Distance : WorldPointFollower
     {
         [SerializeField]
-        private Text distanceText;
+        private TextMeshProUGUI distanceText;
 
         public void DrawDistance(float distance, string suffix)
         {
@@ -19,7 +20,7 @@ namespace Netherlands3D.Interface
 
 		public void ResetInput()
 		{
-            var input = GetComponentInChildren<InputField>();
+            var input = GetComponentInChildren<TMP_InputField>();
             if(input) input.text = distanceText.text;
         }
 	}
