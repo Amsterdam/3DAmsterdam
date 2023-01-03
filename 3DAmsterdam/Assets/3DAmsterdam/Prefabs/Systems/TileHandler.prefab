@@ -1033,6 +1033,12 @@ MonoBehaviour:
   Datasets:
   - Description: 
     lod: 0
+    path: /data/other1.0/Other-{x}_{y}.1.bin
+    maximumDistance: 6000
+    maximumDistanceSquared: 0
+    enabled: 1
+  - Description: 
+    lod: 1
     path: /data/other1.0/Other-{x}_{y}.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
