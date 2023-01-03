@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2225582094044424291
 MonoBehaviour:
@@ -110,7 +110,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2414556347840939527
 MeshFilter:
@@ -238,7 +238,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7981405137232490983
 MonoBehaviour:
@@ -318,7 +318,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2563834892029269
 MonoBehaviour:
@@ -543,7 +543,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   createMeshcollider: 0
   tileShadowCastingMode: 1
-  brotliCompressedExtention: .unityweb
+  brotliCompressedExtention: .br
 --- !u!1 &6735491049249484867
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,6 +577,7 @@ Transform:
   m_Children:
   - {fileID: 6735491049897729529}
   - {fileID: 6735491048409549750}
+  - {fileID: 6000801068222359986}
   - {fileID: 3505991015010181756}
   - {fileID: 7139907241435937826}
   - {fileID: 850679887555173406}
@@ -808,7 +809,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8613057891838618557
 MonoBehaviour:
@@ -860,7 +861,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0bd1798a77e07d6448a16df4b2052aaf, type: 2}
   createMeshcollider: 0
   tileShadowCastingMode: 1
-  brotliCompressedExtention: .unityweb
+  brotliCompressedExtention: .br
 --- !u!1 &8708070488555238395
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,7 +898,7 @@ Transform:
   - {fileID: 2539255928781844701}
   - {fileID: 5441485394220023273}
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &157211687204711347
 MonoBehaviour:
@@ -982,6 +983,72 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectPool: {fileID: 8460642000037265059}
+--- !u!1 &8775616856006132822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6000801068222359986}
+  - component: {fileID: 1504032226909871150}
+  m_Layer: 0
+  m_Name: Other
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6000801068222359986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8775616856006132822}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6735491049249484866}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1504032226909871150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8775616856006132822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56e8526a6fa4154ab343f890f9340b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 1
+  tileSize: 1000
+  layerPriority: 1
+  Datasets:
+  - Description: 
+    lod: 0
+    path: /data/other1.0/Other-{x}_{y}.2.bin
+    maximumDistance: 3000
+    maximumDistanceSquared: 0
+    enabled: 1
+  pauseLoading: 0
+  onLayerEnabled:
+    m_PersistentCalls:
+      m_Calls: []
+  onLayerDisabled:
+    m_PersistentCalls:
+      m_Calls: []
+  DefaultMaterialList:
+  - {fileID: 2100000, guid: d730a249ce87668479dc617b26454e6e, type: 2}
+  createMeshcollider: 0
+  tileShadowCastingMode: 1
+  brotliCompressedExtention: .br
 --- !u!1 &8897654862082139398
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,7 +1079,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &261412772941551813
 MonoBehaviour:
