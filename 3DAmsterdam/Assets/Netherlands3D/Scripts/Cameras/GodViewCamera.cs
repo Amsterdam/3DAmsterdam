@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Netherlands3D.Interface;
 using Netherlands3D.Settings;
 using System.Collections;
+using TMPro;
 
 namespace Netherlands3D.Cameras
 {
@@ -352,7 +353,8 @@ namespace Netherlands3D.Cameras
         }
 
         private bool BlockedByTextInput() {
-            return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
+            var currentSelected = EventSystem.current.currentSelectedGameObject;
+            return currentSelected != null && (currentSelected.GetComponent<InputField>() || currentSelected.GetComponent<TMP_InputField>());
         }
 
         public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
