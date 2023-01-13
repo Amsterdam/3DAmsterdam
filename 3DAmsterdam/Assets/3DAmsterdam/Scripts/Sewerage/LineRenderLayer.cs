@@ -44,7 +44,7 @@ namespace Amsterdam3D.Sewerage
 		private Tile CreateNewTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			Tile tile = new Tile();
-			tile.LOD = 0;
+			tile.unityLOD = 0;
 			tile.tileKey = new Vector2Int(tileChange.X, tileChange.Y);
 			tile.layer = transform.gameObject.GetComponent<Layer>();
 			tile.gameObject = new GameObject("cablesAndPipes-"+tileChange.X + "_" + tileChange.Y);
