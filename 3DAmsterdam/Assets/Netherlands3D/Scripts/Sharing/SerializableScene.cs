@@ -37,6 +37,7 @@
             public bool active;
             public Material[] materials;
             public int textureID;
+            public string[] hiddenIds;
         }
 
         [System.Serializable]

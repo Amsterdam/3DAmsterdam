@@ -3,6 +3,7 @@ using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.TileSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -127,6 +128,17 @@ namespace Netherlands3D.Sharing
             sunSettings.SetDateTimeFromString(scene.sunTimeStamp);
 
             //Fixed layer settings
+            var buildingsSelectSubObjects = FindObjectOfType<SelectSubObjects>();
+            if(buildingsSelectSubObjects)
+            {
+                buildingsSelectSubObjects.HiddenIDs = scene.fixedLayers.buildings.hiddenIds.ToList<string>();
+                buildingsSelectSubObjects.UpdateHiddenListToChildren(true);
+            }
+            else
+            {
+                Debug.LogWarning("Cant find buildingsSelectSubObjects");
+            }
+
             buildingsLayer.Active = scene.fixedLayers.buildings.active;
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
@@ -325,26 +337,40 @@ namespace Netherlands3D.Sharing
             var cameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
             var cameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
+            var buildingsSubObjects = FindObjectOfType<SelectSubObjects>();
+            string[] hiddenBuildings = { };
+            if(buildingsSubObjects)
+            {
+                hiddenBuildings = buildingsSubObjects.HiddenIDs.ToArray();
+                Debug.Log("Hidden ids " + hiddenBuildings);
+            }
+            else
+            {
+                Debug.LogWarning("Cant find buildingsSubObjects");
+            }
+
             var dataStructure = new SerializableScene
             {
                 appVersion = Application.version, //Set in SceneSerializer
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
                 sunTimeStamp = sunSettings.GetDateTimeAsString(), //Will be our virtual world time, linked to the Sun
-                allowSceneEdit = allowSceneEditAfterSharing,                
+                allowSceneEdit = allowSceneEditAfterSharing,
                 postProcessing = new SerializableScene.PostProcessing { },
                 camera = new SerializableScene.Camera
                 {
                     position = new SerializableScene.Vector3 { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
                     rotation = new SerializableScene.Quaternion { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
-                annotations  = GetAnnotations(),
+                annotations = GetAnnotations(),
                 customLayers = GetCustomMeshLayers(),
                 cameraPoints = GetCameras(),
+
                 fixedLayers = new SerializableScene.FixedLayers {
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
-                        materials = GetMaterialsAsData(buildingsLayer.UniqueLinkedObjectMaterials)
+                        materials = GetMaterialsAsData(buildingsLayer.UniqueLinkedObjectMaterials),
+                        hiddenIds = hiddenBuildings
                     },
                     trees = new SerializableScene.FixedLayer
                     {
