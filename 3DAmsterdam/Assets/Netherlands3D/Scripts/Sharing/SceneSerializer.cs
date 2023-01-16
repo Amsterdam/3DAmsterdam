@@ -132,6 +132,7 @@ namespace Netherlands3D.Sharing
             if(buildingsSelectSubObjects)
             {
                 buildingsSelectSubObjects.HiddenIDs = scene.fixedLayers.buildings.hiddenIds.ToList<string>();
+                buildingsSelectSubObjects.TilesWithInteractedSubObjects = scene.fixedLayers.buildings.interactedTiles.ToList<string>();
                 buildingsSelectSubObjects.UpdateHiddenListToChildren(true);
             }
             else
@@ -339,9 +340,11 @@ namespace Netherlands3D.Sharing
 
             var buildingsSubObjects = FindObjectOfType<SelectSubObjects>();
             string[] hiddenBuildings = { };
-            if(buildingsSubObjects)
+            string[] interactedTiles = { };
+            if (buildingsSubObjects)
             {
                 hiddenBuildings = buildingsSubObjects.HiddenIDs.ToArray();
+                interactedTiles = buildingsSubObjects.TilesWithInteractedSubObjects.ToArray();
                 Debug.Log("Hidden ids " + hiddenBuildings);
             }
             else
@@ -370,7 +373,8 @@ namespace Netherlands3D.Sharing
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
                         materials = GetMaterialsAsData(buildingsLayer.UniqueLinkedObjectMaterials),
-                        hiddenIds = hiddenBuildings
+                        hiddenIds = hiddenBuildings,
+                        interactedTiles = interactedTiles
                     },
                     trees = new SerializableScene.FixedLayer
                     {

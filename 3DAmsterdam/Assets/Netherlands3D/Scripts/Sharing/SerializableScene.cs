@@ -36,8 +36,9 @@
         public struct FixedLayer{
             public bool active;
             public Material[] materials;
-            public int textureID;
             public string[] hiddenIds;
+            public string[] interactedTiles;
+            public int textureID;
         }
 
         [System.Serializable]
