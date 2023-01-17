@@ -49,7 +49,7 @@ MonoBehaviour:
   layerPriority: 1
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: 
     maximumDistance: 2000
     maximumDistanceSquared: 0
@@ -257,7 +257,7 @@ MonoBehaviour:
   layerPriority: 1
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: 
     maximumDistance: 10000
     maximumDistanceSquared: 0
@@ -337,7 +337,7 @@ MonoBehaviour:
   layerPriority: 4
   Datasets:
   - Description: LOD0
-    lod: 0
+    geoLOD: 
     path: hardcoded
     maximumDistance: 2000
     maximumDistanceSquared: 0
@@ -527,7 +527,7 @@ MonoBehaviour:
   layerPriority: 3
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: /data/trees1.1/trees_{x}-{y}-lod1.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
@@ -689,13 +689,13 @@ MonoBehaviour:
   layerPriority: 2
   Datasets:
   - Description: LOD1.2
-    lod: 0
+    geoLOD: 
     path: /data/buildings1.1/buildings_{x}_{y}.1.2.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: LOD2.2
-    lod: 1
+    geoLOD: 
     path: /data/buildings1.1/buildings_{x}_{y}.2.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
@@ -725,10 +725,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   removeFromID: NL.IMBAG.Pand.
+  brotliExtention: .br
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256
   submeshIndex: 0
+  applyHideOnReload: 1
   maxSelectDistance: 8000
   selectionVertexColor: {r: 0, g: 1.0870034, b: 2.1185474, a: 1}
   clickedOnObject: {fileID: 11400000, guid: c449128a54e1de445b8b7bce6ce3da26, type: 2}
@@ -828,13 +830,13 @@ MonoBehaviour:
   layerPriority: 4
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: /data/terrain1.1/terrain_{x}-{y}-lod0.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: 
-    lod: 1
+    geoLOD: 
     path: /data/terrain1.1/terrain_{x}-{y}-lod1.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
@@ -917,7 +919,7 @@ MonoBehaviour:
   layerPriority: 4
   Datasets:
   - Description: LOD0
-    lod: 0
+    geoLOD: 
     path: hardcoded
     maximumDistance: 2000
     maximumDistanceSquared: 0
@@ -1032,13 +1034,13 @@ MonoBehaviour:
   layerPriority: 1
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: /data/other1.0/Other-{x}_{y}.1.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: 
-    lod: 1
+    geoLOD: 
     path: /data/other1.0/Other-{x}_{y}.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
@@ -1104,7 +1106,7 @@ MonoBehaviour:
   layerPriority: 1
   Datasets:
   - Description: 
-    lod: 0
+    geoLOD: 
     path: 
     maximumDistance: 10000
     maximumDistanceSquared: 0
