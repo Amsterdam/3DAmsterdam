@@ -27,10 +27,10 @@ namespace Netherlands3D.Interface.Sharing
 		/// JS plugins are the *.jslib files found in the project.
 		/// </summary>
 		[DllImport("__Internal")]
-		private static extern void UploadFromIndexedDB(string fileName, string targetURL);
+		private static extern void UploadFromIndexedDB(string fileName, string targetURL, string callbackObject, string callbackMethodSuccess, string callbackMethodFailed);
 
 		[DllImport("__Internal")]
-		private static extern void SyncFilesToIndexedDB();
+		private static extern void SyncFilesToIndexedDB(string callbackObject, string callbackMethodSuccess);
 
 		[DllImport("__Internal")]
 		private static extern string SetUniqueShareURL(string token);
@@ -132,11 +132,11 @@ namespace Netherlands3D.Interface.Sharing
 						Debug.Log("to url: " + putPath);
 
 						waitingForIndexedDBSync = true;
-						SyncFilesToIndexedDB();
+						SyncFilesToIndexedDB(this.gameObject.name, "IndexedDBSyncCompleted");
 						yield return new WaitWhile(() => waitingForIndexedDBSync); 
 
 						waitingForIndexedDBUpload = true;
-						UploadFromIndexedDB(Path.GetFileName(pathToLocalBinaryFile), putPath);
+						UploadFromIndexedDB(Path.GetFileName(pathToLocalBinaryFile), putPath, this.gameObject.name, "IndexedDBUploadCompleted", "IndexedDBUploadFailed");
 						yield return new WaitWhile(() => waitingForIndexedDBUpload);
 						
 						NextModelUpload();
