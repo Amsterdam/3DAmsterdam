@@ -345,7 +345,8 @@ namespace Netherlands3D.Sharing
             {
                 hiddenBuildings = buildingsSubObjects.HiddenIDs.ToArray();
                 interactedTiles = buildingsSubObjects.TilesWithInteractedSubObjects.ToArray();
-                Debug.Log("Hidden ids " + hiddenBuildings);
+                Debug.Log("Hidden ids " + hiddenBuildings.Length);
+                Debug.Log("Tiles with hidden ids " + interactedTiles.Length);
             }
             else
             {
