@@ -51,7 +51,7 @@ public class CsvColorsFinder : CsvContentFinder
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
         }
-        else if (ColorColumnIndices.Count < 2)
+        else if (ColorColumnIndices.Count < 1)
         {
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen met kleuren gevonden. Zorg dat de kleurkolommen een HTML kleurcode hebben zoals: #FF0000");
@@ -64,6 +64,8 @@ public class CsvColorsFinder : CsvContentFinder
 
 	void FindColors()
     {
+        IDColumnName = "";
+
         //finding colors
         var row1 = Rows.First();
         Color color;
@@ -99,7 +101,8 @@ public class CsvColorsFinder : CsvContentFinder
 
             Color color = Color.white;
             ColorUtility.TryParseHtmlString(colorText, out color);
-            idsAndColors.Add(id, color);
+            if(!idsAndColors.ContainsKey(id))
+                idsAndColors.Add(id, color);
         }
 
         return idsAndColors;
@@ -107,7 +110,10 @@ public class CsvColorsFinder : CsvContentFinder
 
     private bool IsColor(string content, out Color color)
     {
-        return ColorUtility.TryParseHtmlString(content, out color);
+        Debug.Log("FIND COLOR " + content);
+        bool isAColor = ColorUtility.TryParseHtmlString(content, out color);
+        Debug.Log(content + " is Color " + isAColor);
+        return isAColor;
 	}
 }
 

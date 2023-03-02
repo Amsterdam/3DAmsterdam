@@ -18,14 +18,9 @@ using Netherlands3D.Core.Colors;
 
 public class CsvFileParser : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject marker;
-
-    [SerializeField]
-    private Transform GeneratedFieldsContainer;
-
-    [SerializeField]
-    private GameObject UIClearIgnoreObject;
+    [SerializeField] private GameObject marker;
+    [SerializeField] private Transform GeneratedFieldsContainer;
+    [SerializeField] private GameObject UIClearIgnoreObject;
 
     private Dictionary<string,bool> selectedColumnsToDisplay = new Dictionary<string,bool>();
 
@@ -38,38 +33,25 @@ public class CsvFileParser : MonoBehaviour
     private ActionDropDown currentFilterDropdown;
 
     [Header("Listeners")]
-    [SerializeField]
-    private IntEvent onSelectCSVContentType;
-    [SerializeField]
-    private TriggerEvent onClearData;
+    [SerializeField] private IntEvent onSelectCSVContentType;
+    [SerializeField] private TriggerEvent onClearData;
 
     [SerializeField]
     private StringEvent onFilesImported;
 
     [Header("Triggers")]
-    [SerializeField]
-    private ObjectEvent showColorsBasedOnIds;
-    [SerializeField]
-    private ObjectEvent showColorGradientBasedOnIds;
-    [SerializeField]
-    private FloatEvent setGradientValueMin;
-    [SerializeField]
-    private FloatEvent setGradientValueMax;
-    [SerializeField]
-    private GradientContainerEvent setGradient;
+    [SerializeField] private ObjectEvent showColorsBasedOnIds;
+    [SerializeField] private ObjectEvent showColorGradientBasedOnIds;
+    [SerializeField] private FloatEvent setGradientValueMin;
+    [SerializeField] private FloatEvent setGradientValueMax;
+    [SerializeField] private GradientContainerEvent setGradient;
 
 
-    [SerializeField]
-    private FloatEvent setProgressBarPercentage;
-    [SerializeField]
-    private StringEvent setProgressBarMessage;
-    [SerializeField]
-    private StringEvent setProgressBarDetailedMessage;
-    [SerializeField]
-    private BoolEvent setEnableDrawingColors;
-
-    [SerializeField]
-    private BoolEvent activateCSVLayer;
+    [SerializeField] private FloatEvent setProgressBarPercentage;
+    [SerializeField] private StringEvent setProgressBarMessage;
+    [SerializeField] private StringEvent setProgressBarDetailedMessage;
+    [SerializeField] private BoolEvent setEnableDrawingColors;
+    [SerializeField] private BoolEvent activateCSVLayer;
 
     public string[] Columns;
     public List<string[]> Rows;
