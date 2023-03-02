@@ -50,8 +50,8 @@ namespace Netherlands3D.Traffic
                 Instance = this;
             }
 
-            startTrafficAreaSelection.started.AddListener(StartSelectingArea);
-            abortSelection.started.AddListener(Abort);
+            startTrafficAreaSelection.AddListenerStarted(StartSelectingArea);
+            abortSelection.AddListenerStarted(Abort);
         }
 
         private void Abort()
@@ -64,10 +64,10 @@ namespace Netherlands3D.Traffic
         {
             this.gameObject.SetActive(true);
 
-            receivedBounds.started.RemoveAllListeners();
-            receivedBounds.started.AddListener((bounds) => { ShowTraffic((Bounds)bounds); });
-            changeGridSelectionColor.started.Invoke(selectionColor);
-            requestGridSelection.started.Invoke();
+            receivedBounds.RemoveAllListenersStarted();
+            receivedBounds.AddListenerStarted((bounds) => { ShowTraffic((Bounds)bounds); });
+            changeGridSelectionColor.InvokeStarted(selectionColor);
+            requestGridSelection.InvokeStarted();
         }
 
         public void ShowTraffic(Bounds bounds)

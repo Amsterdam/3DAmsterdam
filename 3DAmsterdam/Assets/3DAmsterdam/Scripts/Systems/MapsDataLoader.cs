@@ -56,7 +56,7 @@ namespace Amsterdam3D.Maps
 
         void Awake()
         {
-            tableNameReceiveEvent.started.AddListener(LoadAllDataURLs);
+            tableNameReceiveEvent.AddListenerStarted(LoadAllDataURLs);
         }
 
         void LoadAllDataURLs(string tableNames)
@@ -108,7 +108,7 @@ namespace Amsterdam3D.Maps
                             double[] location = geoJSON.GetGeometryPoint2DDouble();
                             var unityCoordinates = CoordConvert.WGS84toUnity(location[0], location[1]);
 
-                            geoJsonURLData.drawPointEvent.started?.Invoke(unityCoordinates);
+                            geoJsonURLData.drawPointEvent.InvokeStarted(unityCoordinates);
                             break;
                         case GeoJSON.GeoJSONGeometryType.LineString:
                             if (!geoJsonURLData.drawLineEvent) continue;
@@ -119,7 +119,7 @@ namespace Amsterdam3D.Maps
                             {
                                 unityLine.Add(CoordConvert.WGS84toUnity(line[i].x, line[i].y));
                             }
-                            geoJsonURLData.drawLineEvent.started?.Invoke(unityLine);
+                            geoJsonURLData.drawLineEvent.InvokeStarted(unityLine);
                             break;
 						case GeoJSON.GeoJSONGeometryType.Polygon:
 							if (!geoJsonURLData.drawGeometryEvent) continue;
@@ -161,8 +161,8 @@ namespace Amsterdam3D.Maps
 
             if (unityPolygon.Count > 0)
             {
-                if(geoJsonURLData.setObjectNameEvent) geoJsonURLData.setObjectNameEvent.started?.Invoke(geoJsonURLData.objectNameProperty);
-                geoJsonURLData.drawGeometryEvent.started?.Invoke(unityPolygon);
+                if(geoJsonURLData.setObjectNameEvent) geoJsonURLData.setObjectNameEvent.InvokeStarted(geoJsonURLData.objectNameProperty);
+                geoJsonURLData.drawGeometryEvent.InvokeStarted(unityPolygon);
             }
 
             yield return null;

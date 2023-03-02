@@ -17,7 +17,7 @@ public class StressTest : MonoBehaviour
 
     void Awake()
     {
-        startStressTestEvent.started.AddListener(SpawnParticles);
+        startStressTestEvent.AddListenerStarted(SpawnParticles);
     }
 
 	private void SpawnParticles(string amount)
@@ -31,7 +31,7 @@ public class StressTest : MonoBehaviour
                 0,
                 Mathf.Lerp(-spawnRadius, spawnRadius, Random.value)
             );
-            drawParticleEvent.started?.Invoke(randomPosition);
+            drawParticleEvent.InvokeStarted(randomPosition);
         }
     }
 }

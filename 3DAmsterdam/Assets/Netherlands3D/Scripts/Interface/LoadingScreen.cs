@@ -33,13 +33,13 @@ namespace Netherlands3D.Interface
 		{
 			Instance = this;
 
-			if (onProgressBarMessage) onProgressBarMessage.started.AddListener(SetProgressBarMessage);
-			if(onProgressBarDetailedMessage) onProgressBarDetailedMessage.started.AddListener(SetProgressBarDetailedMessage);
+			if (onProgressBarMessage) onProgressBarMessage.AddListenerStarted(SetProgressBarMessage);
+			if(onProgressBarDetailedMessage) onProgressBarDetailedMessage.AddListenerStarted(SetProgressBarDetailedMessage);
 			SetProgressBarMessage("");
 			SetProgressBarDetailedMessage("");
 
-			if(onProgressBarPercentage) onProgressBarPercentage.started.AddListener(SetProgressBarPercentage);
-			if(onProgressBarNormalisedValue) onProgressBarNormalisedValue.started.AddListener(SetProgressBarNormalisedValue);
+			if(onProgressBarPercentage) onProgressBarPercentage.AddListenerStarted(SetProgressBarPercentage);
+			if(onProgressBarNormalisedValue) onProgressBarNormalisedValue.AddListenerStarted(SetProgressBarNormalisedValue);
 		}
 
 		private void SetProgressBarDetailedMessage(string message)

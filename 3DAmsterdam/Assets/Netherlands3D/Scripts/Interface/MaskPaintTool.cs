@@ -31,18 +31,18 @@ namespace Netherlands3D.Interface.Tools
 
         private void Awake()
 		{
-            startCreatingMask.started.AddListener(StartPaintingMask);
-            abortSelection.started.AddListener(Abort);
+            startCreatingMask.AddListenerStarted(StartPaintingMask);
+            abortSelection.AddListenerStarted(Abort);
         }
 
 		private void StartPaintingMask()
         {
 
             this.gameObject.SetActive(true);
-            requestGridSelection.started.Invoke();
-            changeGridSelectionColor.started.Invoke(selectionColor);
-            receivedBounds.started.RemoveAllListeners();
-            receivedBounds.started.AddListener((bounds) => { SelectedMaskBounds((Bounds)bounds); });
+            requestGridSelection.InvokeStarted();
+            changeGridSelectionColor.InvokeStarted(selectionColor);
+            receivedBounds.RemoveAllListenersStarted();
+            receivedBounds.AddListenerStarted((bounds) => { SelectedMaskBounds((Bounds)bounds); });
         }
 
         private void Abort()
@@ -53,7 +53,7 @@ namespace Netherlands3D.Interface.Tools
 		private void SelectedMaskBounds(Bounds bounds)
         {
             runtimeRectangularMask.MoveToBounds(bounds);
-            createdMask.started.Invoke();
+            createdMask.InvokeStarted();
             PropertiesPanel.Instance.OpenLayers();
             gameObject.SetActive(false);
         }

@@ -37,13 +37,13 @@ namespace Netherlands3D.Cameras
 		{
 			HelpMessage.Show(helpMessage);
 			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-			firstPersonModeActive.started.Invoke(true);
+			firstPersonModeActive.InvokeStarted(true);
 		}
 
 		private void OnDisable()
 		{
 			HelpMessage.Hide();
-			firstPersonModeActive.started.Invoke(false);
+			firstPersonModeActive.InvokeStarted(false);
 		}
 
 		public void EnableKeyboardActionMap(bool enabled)

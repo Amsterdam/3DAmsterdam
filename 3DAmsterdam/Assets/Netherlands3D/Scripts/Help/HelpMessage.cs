@@ -32,7 +32,7 @@ namespace Netherlands3D.Help
         {
             Instance = this;
 
-            onShowHelpMessage.started.AddListener(Show);
+            onShowHelpMessage.AddListenerStarted(Show);
         }
 
         public static void Show(string textMessage)

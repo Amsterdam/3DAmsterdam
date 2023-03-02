@@ -18,7 +18,7 @@ namespace Netherlands3D.Masking
         void Awake()
         {
             runtimeMask = GetComponent<RuntimeMask>();
-            abortMasking.started.AddListener(Escape);
+            abortMasking.AddListenerStarted(Escape);
         }
 
 		private void OnEnable()

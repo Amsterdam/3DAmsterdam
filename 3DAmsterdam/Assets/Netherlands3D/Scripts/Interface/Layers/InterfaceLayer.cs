@@ -94,7 +94,7 @@ namespace Netherlands3D.Interface.Layers
 
 		public void OpenColorOptions()
 		{
-			openColorOptions.started.Invoke(gameObject);
+			openColorOptions.InvokeStarted(gameObject);
 		}
 		public void OpenTransformOptions()
 		{

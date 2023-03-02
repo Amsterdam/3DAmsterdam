@@ -12,7 +12,7 @@ public class InterfaceLayerCreator : MonoBehaviour
 
         void Start()
         {
-            onCreateLayerRequest.started.AddListener(CreateLayerForGameObject);
+            onCreateLayerRequest.AddListenerStarted(CreateLayerForGameObject);
         }
 
 		private void CreateLayerForGameObject(GameObject linkedGameObject)

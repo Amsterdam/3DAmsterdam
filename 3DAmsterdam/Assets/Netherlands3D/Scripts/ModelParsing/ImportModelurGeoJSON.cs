@@ -43,7 +43,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 	private void Awake()
 	{
-		filesImportedEvent.started.AddListener(FileImported);
+		filesImportedEvent.AddListenerStarted(FileImported);
 	}
 
 	private void FileImported(string files)
@@ -102,8 +102,8 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			var groundOffset  = geojson.GetPropertyFloatValue("Ground_to_Sea_Elevation"); 
 			var storeyHeight = (buildingHeight / numberOfStoreys) - storeyDividerHeight;
 
-			OnStoreyHeightDetermined.started?.Invoke(storeyHeight);
-			OnStoreyDividerHeightDetermined.started.Invoke(storeyDividerHeight);
+			OnStoreyHeightDetermined.InvokeStarted(storeyHeight);
+			OnStoreyDividerHeightDetermined.InvokeStarted(storeyDividerHeight);
 
 			//Draw all polygons as building storeys
 			for (int i = 0; i < numberOfStoreys; i++)
@@ -117,7 +117,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 		centroid /= amountOfPoints;
 		centroid.y = 0;
-		onCentroidCalculated.started.Invoke(centroid);
+		onCentroidCalculated.InvokeStarted(centroid);
 
 		//Collect this building
 		newParent.transform.position = centroid;
@@ -133,8 +133,8 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			CombineIntoOne(newParent);
 		}
 
-		onDoneParsing.started.Invoke(true);
-		onObjectReady.started.Invoke(newParent);
+		onDoneParsing.InvokeStarted(true);
+		onObjectReady.InvokeStarted(newParent);
 	}
 
 	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
@@ -153,7 +153,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		}
 		polyList.Add(outerContour);
 
-		OnPolygonParsed.started?.Invoke(polyList);
+		OnPolygonParsed.InvokeStarted(polyList);
 
 		//Draw the same polygon shape as a storey dividing line
 		for (int j = 0; j < outerContour.Count; j++)
@@ -161,7 +161,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			outerContour[j] = new Vector3(outerContour[j].x, outerContour[j].y - storeyDividerHeight, outerContour[j].z);
 		}
 
-		OnStoreyDividerParsed.started.Invoke(polyList);
+		OnStoreyDividerParsed.InvokeStarted(polyList);
 	}
 
 	private void CombineIntoOne(GameObject target){

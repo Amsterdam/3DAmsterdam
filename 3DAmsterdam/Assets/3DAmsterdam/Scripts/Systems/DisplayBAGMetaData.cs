@@ -17,10 +17,10 @@ public class DisplayBAGMetaData : MonoBehaviour
 
     void Awake()
     {
-        onSelectedBuildings.started.AddListener(SelectedBuildings);
+        onSelectedBuildings.AddListenerStarted(SelectedBuildings);
 
 		if(clickedPosition)
-			clickedPosition.started.AddListener(SetClickedPosition);
+			clickedPosition.AddListenerStarted(SetClickedPosition);
     }
 
 	private void SetClickedPosition(Vector3 arg0)

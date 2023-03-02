@@ -46,7 +46,7 @@ namespace Netherlands3D.Interface.SidePanel
 
 		public void Select()
 		{	
-			onSelect.started.Invoke(new List<string> { Id });
+			onSelect.InvokeStarted(new List<string> { Id });
 		}
 
 		public void Close()

@@ -40,13 +40,13 @@ namespace Netherlands3D.Interface {
 		private void Awake()
 		{
 			if(closeLegend)
-				closeLegend.started.AddListener(Close);
+				closeLegend.AddListenerStarted(Close);
 
 			if (openLegendFromImageURL)
-				openLegendFromImageURL.started.AddListener(GenerateFromImage);
+				openLegendFromImageURL.AddListenerStarted(GenerateFromImage);
 
 			if (openLegendFromColorPalette)
-				openLegendFromColorPalette.started.AddListener(GenerateFromColorPalette);
+				openLegendFromColorPalette.AddListenerStarted(GenerateFromColorPalette);
 		}
 
 		/// <summary>

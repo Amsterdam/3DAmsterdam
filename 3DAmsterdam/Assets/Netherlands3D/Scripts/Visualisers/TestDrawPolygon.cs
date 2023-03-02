@@ -73,7 +73,7 @@ namespace Netherlands3D.Visualisers
             testPolygons.Add(innerSquareHole);
             testPolygons.Add(innerRoundHole);
 
-            testDrawPolyEventTrigger.started.Invoke(testPolygons);
+            testDrawPolyEventTrigger.InvokeStarted(testPolygons);
         }
     }
 }
