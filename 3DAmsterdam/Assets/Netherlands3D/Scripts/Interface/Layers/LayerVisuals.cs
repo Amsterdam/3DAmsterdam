@@ -44,7 +44,7 @@ namespace Netherlands3D.Interface.Layers
 			hexColorField.selectedNewColor += ChangeMaterialColor;
 
 			if (openWithTargetLayer)
-				openWithTargetLayer.started.AddListener(OpenWithOptionsForLayer);
+				openWithTargetLayer.AddListenerStarted(OpenWithOptionsForLayer);
 		}
 
 		/// <summary>

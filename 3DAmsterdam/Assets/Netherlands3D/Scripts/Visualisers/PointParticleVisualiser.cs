@@ -48,7 +48,7 @@ namespace Netherlands3D.Visualisers
             mainModule.startSize = startSize;
             mainModule.maxParticles = int.MaxValue;
 
-            if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
+            if (receiveDrawPointEvent) receiveDrawPointEvent.AddListenerStarted(DrawPointInWorld);
         }
 
         public void DrawPointInWorld(Vector3 position)

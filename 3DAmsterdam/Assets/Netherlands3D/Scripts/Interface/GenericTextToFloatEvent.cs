@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GenericTextToFloatEvent : MonoBehaviour
 {
@@ -11,11 +12,11 @@ public class GenericTextToFloatEvent : MonoBehaviour
     private bool listen = true;
 
     [SerializeField]
-    private StringUnityEvent onReceivedEventFromOutside;
+    private UnityEvent<string> onReceivedEventFromOutside;
 
     private void Awake()
 	{
-        invokeFloatEvent.started.AddListener(CovertFloatToString);
+        invokeFloatEvent.AddListenerStarted(CovertFloatToString);
     }
 
 	private void CovertFloatToString(float value)
@@ -28,7 +29,7 @@ public class GenericTextToFloatEvent : MonoBehaviour
         if (float.TryParse(floatText, out float floatValue))
         {
             listen = false;
-            invokeFloatEvent.Invoke(floatValue);
+            invokeFloatEvent.InvokeStarted(floatValue);
             listen = true;
         }
         else

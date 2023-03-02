@@ -323,7 +323,7 @@ namespace Netherlands3D.Settings {
 			
 			minimap.gameObject.SetActive(settings.drawMap);
 
-			toggleBetaFeatures.started.Invoke(settings.showExperimentalFeatures);
+			toggleBetaFeatures.InvokeStarted(settings.showExperimentalFeatures);
 
 			canvasSettings.ChangeCanvasScale(settings.canvasScale * 0.01f);
             renderSettings.ChangeCameraFOV(settings.cameraFov);

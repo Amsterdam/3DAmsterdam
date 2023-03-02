@@ -58,9 +58,9 @@ namespace Netherlands3D.Interface
 		{
 			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
 
-			requestGridSelection.started.AddListener(StartSelection);
-			abortSelection.started.AddListener(AbortSelection);
-			setMaterialColor.started.AddListener(SetMaterialColor);
+			requestGridSelection.AddListenerStarted(StartSelection);
+			abortSelection.AddListenerStarted(AbortSelection);
+			setMaterialColor.AddListenerStarted(SetMaterialColor);
 		}
 
 		private void Start()
@@ -165,7 +165,7 @@ namespace Netherlands3D.Interface
 			base.Escape();
 			gameObject.SetActive(false);
 
-			abortSelection.started.Invoke();
+			abortSelection.InvokeStarted();
 		}
 
 		private void AbortSelection()
@@ -296,7 +296,7 @@ namespace Netherlands3D.Interface
 			{
 				var bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
 				Debug.Log("bbox="+(bounds.min.x + Config.activeConfiguration.RelativeCenterRD.x)+"," + (bounds.min.z + Config.activeConfiguration.RelativeCenterRD.y) + "," + (bounds.max.x + Config.activeConfiguration.RelativeCenterRD.x) + ","+(bounds.max.z + Config.activeConfiguration.RelativeCenterRD.y));
-				onGridSelected.started.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+				onGridSelected.InvokeStarted(scaleBlock.GetComponent<MeshRenderer>().bounds);
 			}
 		}
 	}

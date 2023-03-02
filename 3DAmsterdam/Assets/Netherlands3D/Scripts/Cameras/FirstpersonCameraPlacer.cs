@@ -36,7 +36,7 @@ namespace Netherlands3D.Interface
             releaseAction = releaseActionMap.FindAction("Click");
 
             worldPointFollower = GetComponent<WorldPointFollower>();
-            startPlacement.started.AddListener(StartPlacement);
+            startPlacement.AddListenerStarted(StartPlacement);
         }
 
         private void Placed()

@@ -37,7 +37,7 @@ namespace Netherlands3D.Traffic.VISSIM
 
 		private void Awake()
 		{
-            filesImportedEvent.started.AddListener(FileImported);
+            filesImportedEvent.AddListenerStarted(FileImported);
         }
 
         private void FileImported(string files)
@@ -95,7 +95,7 @@ namespace Netherlands3D.Traffic.VISSIM
             LoadingScreen.Instance.ProgressBar.Percentage(1f);
             yield return new WaitForSeconds(0.5f);
 
-            clearDataBaseEvent.started.Invoke(true);
+            clearDataBaseEvent.InvokeStarted(true);
             LoadingScreen.Instance.Hide();
         }
 

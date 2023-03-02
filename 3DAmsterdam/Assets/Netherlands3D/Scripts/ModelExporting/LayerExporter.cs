@@ -38,8 +38,8 @@ namespace Netherlands3D.Interface
 
 		private void Awake()
 		{
-			startAreaDownload.started.AddListener(StartSelectingArea);
-			abortSelection.started.AddListener(Abort);
+			startAreaDownload.AddListenerStarted(StartSelectingArea);
+			abortSelection.AddListenerStarted(Abort);
 		}
 		private void Abort()
 		{
@@ -49,10 +49,10 @@ namespace Netherlands3D.Interface
 		private void StartSelectingArea()
 		{
 			this.gameObject.SetActive(true);
-			changeGridSelectionColor.started.Invoke(selectionColor);
-			receivedBounds.started.RemoveAllListeners();
-			receivedBounds.started.AddListener((bounds) => { SetBounds((Bounds)bounds); });
-			requestGridSelection.started.Invoke();
+			changeGridSelectionColor.InvokeStarted(selectionColor);
+			receivedBounds.RemoveAllListenersStarted();
+			receivedBounds.AddListenerStarted((bounds) => { SetBounds((Bounds)bounds); });
+			requestGridSelection.InvokeStarted();
 		}
 
 		public void OnEnable()

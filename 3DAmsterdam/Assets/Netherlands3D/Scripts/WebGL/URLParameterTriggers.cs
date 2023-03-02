@@ -35,7 +35,7 @@ namespace Netherlands3D.WebGL
                 if (trigger.Any())
                 {
                     var targetElement = trigger.First();
-                    targetElement.started?.Invoke(paramAndValue.Value);
+                    targetElement.InvokeStarted(paramAndValue.Value);
                 }
             }
         }

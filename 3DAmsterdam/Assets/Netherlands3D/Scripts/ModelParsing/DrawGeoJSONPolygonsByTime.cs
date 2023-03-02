@@ -1,6 +1,7 @@
 using Netherlands3D.Core;
 using Netherlands3D.Core.Colors;
 using Netherlands3D.Events;
+using Netherlands3D.SelectionTools;
 using Netherlands3D.Timeline;
 using Netherlands3D.Utilities;
 using System;
@@ -84,7 +85,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     {
         if (!init) return;
 
-        if (colorPalette && openLegendWithColorPalette) openLegendWithColorPalette.started.Invoke(colorPalette);
+        if (colorPalette && openLegendWithColorPalette) openLegendWithColorPalette.InvokeStarted(colorPalette);
 
         LoadData();
     }
@@ -209,7 +210,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
         newPolygon.name = objectName;
         Debug.Log(newPolygon.name, newPolygon);
 #endif
-        onCurrentDateChange.started.AddListener(changeOpacityByDate.TimeChanged);
+        onCurrentDateChange.AddListenerStarted(changeOpacityByDate.TimeChanged);
     }
 
     private void DrawPolygon(List<List<GeoJSONPoint>> polygon, DateTime startDateTime, DateTime endDateTime)
@@ -240,7 +241,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             unityPolygon.Add(polyList);
         }
 
-        GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygon(unityPolygon);
+        GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygons(unityPolygon);
         if(newPolygonGameObject)
             PolygonDrawn(newPolygonGameObject, startDateTime, endDateTime);
     }

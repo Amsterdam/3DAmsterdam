@@ -18,14 +18,9 @@ using Netherlands3D.Core.Colors;
 
 public class CsvFileParser : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject marker;
-
-    [SerializeField]
-    private Transform GeneratedFieldsContainer;
-
-    [SerializeField]
-    private GameObject UIClearIgnoreObject;
+    [SerializeField] private GameObject marker;
+    [SerializeField] private Transform GeneratedFieldsContainer;
+    [SerializeField] private GameObject UIClearIgnoreObject;
 
     private Dictionary<string,bool> selectedColumnsToDisplay = new Dictionary<string,bool>();
 
@@ -38,38 +33,25 @@ public class CsvFileParser : MonoBehaviour
     private ActionDropDown currentFilterDropdown;
 
     [Header("Listeners")]
-    [SerializeField]
-    private IntEvent onSelectCSVContentType;
-    [SerializeField]
-    private TriggerEvent onClearData;
+    [SerializeField] private IntEvent onSelectCSVContentType;
+    [SerializeField] private TriggerEvent onClearData;
 
     [SerializeField]
     private StringEvent onFilesImported;
 
     [Header("Triggers")]
-    [SerializeField]
-    private ObjectEvent showColorsBasedOnIds;
-    [SerializeField]
-    private ObjectEvent showColorGradientBasedOnIds;
-    [SerializeField]
-    private FloatEvent setGradientValueMin;
-    [SerializeField]
-    private FloatEvent setGradientValueMax;
-    [SerializeField]
-    private GradientContainerEvent setGradient;
+    [SerializeField] private ObjectEvent showColorsBasedOnIds;
+    [SerializeField] private ObjectEvent showColorGradientBasedOnIds;
+    [SerializeField] private FloatEvent setGradientValueMin;
+    [SerializeField] private FloatEvent setGradientValueMax;
+    [SerializeField] private GradientContainerEvent setGradient;
 
 
-    [SerializeField]
-    private FloatEvent setProgressBarPercentage;
-    [SerializeField]
-    private StringEvent setProgressBarMessage;
-    [SerializeField]
-    private StringEvent setProgressBarDetailedMessage;
-    [SerializeField]
-    private BoolEvent setEnableDrawingColors;
-
-    [SerializeField]
-    private BoolEvent activateCSVLayer;
+    [SerializeField] private FloatEvent setProgressBarPercentage;
+    [SerializeField] private StringEvent setProgressBarMessage;
+    [SerializeField] private StringEvent setProgressBarDetailedMessage;
+    [SerializeField] private BoolEvent setEnableDrawingColors;
+    [SerializeField] private BoolEvent activateCSVLayer;
 
     public string[] Columns;
     public List<string[]> Rows;
@@ -90,17 +72,17 @@ public class CsvFileParser : MonoBehaviour
 
     private void Awake()
 	{
-		onFilesImported.started.AddListener(LoadCsvFromFile);
+		onFilesImported.AddListenerStarted(LoadCsvFromFile);
 
-        onSelectCSVContentType.started.AddListener(SelectCSVContentType);
+        onSelectCSVContentType.AddListenerStarted(SelectCSVContentType);
         
-        onClearData.started.AddListener(Restart);
-        activateCSVLayer.started.AddListener(ShowVisuals);
+        onClearData.AddListenerStarted(Restart);
+        activateCSVLayer.AddListenerStarted(ShowVisuals);
     }
 
 	private void ShowVisuals(bool showData)
 	{
-        setEnableDrawingColors.started.Invoke(showData);
+        setEnableDrawingColors.InvokeStarted(showData);
         foreach (Transform marker in LocationMarkersParent.transform)
         {
             marker.gameObject.SetActive(showData);
@@ -128,9 +110,9 @@ public class CsvFileParser : MonoBehaviour
 
         CleanUp();
 
-        setProgressBarPercentage.started.Invoke(0);
-        setProgressBarMessage.started.Invoke("CSV wordt uitgelezen..");
-        setProgressBarDetailedMessage.started.Invoke("");
+        setProgressBarPercentage.InvokeStarted(0);
+        setProgressBarMessage.InvokeStarted("CSV wordt uitgelezen..");
+        setProgressBarDetailedMessage.InvokeStarted("");
 
         StartCoroutine(ReadColumnsAndRows(filePath));
     }
@@ -148,7 +130,7 @@ public class CsvFileParser : MonoBehaviour
             (rows) => { Rows = rows; }
         );
 
-        setProgressBarPercentage.started.Invoke(100);
+        setProgressBarPercentage.InvokeStarted(100);
 
         // Seperate first line containing columns
         Columns = Rows[0];
@@ -167,7 +149,7 @@ public class CsvFileParser : MonoBehaviour
         CleanUp();
 
         //Stop drawing colors
-        setEnableDrawingColors.started.Invoke(false);
+        setEnableDrawingColors.InvokeStarted(false);
 
         //Clear finders from memory
         csvColorsFinder = null;
@@ -204,8 +186,8 @@ public class CsvFileParser : MonoBehaviour
 
     private void ReportProgress(int lineNr, int ofTotal)
     {
-        setProgressBarPercentage.started.Invoke(((float)lineNr / (float)ofTotal) * 100.0f);
-        setProgressBarDetailedMessage.started.Invoke($"Regels gelezen: {lineNr}/{ofTotal}");
+        setProgressBarPercentage.InvokeStarted(((float)lineNr / (float)ofTotal) * 100.0f);
+        setProgressBarDetailedMessage.InvokeStarted($"Regels gelezen: {lineNr}/{ofTotal}");
     }
 
     public void AutoDetectCSVContent()
@@ -299,7 +281,7 @@ public class CsvFileParser : MonoBehaviour
 
 	private void ShowColorToIDMappingOptions()
     {
-        activateCSVLayer.started.Invoke(true);
+        activateCSVLayer.InvokeStarted(true);
 
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
@@ -335,7 +317,7 @@ public class CsvFileParser : MonoBehaviour
 
     private void ShowGradientToIDMappingOptions()
     {
-        activateCSVLayer.started.Invoke(true);
+        activateCSVLayer.InvokeStarted(true);
 
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
@@ -386,7 +368,7 @@ public class CsvFileParser : MonoBehaviour
         {
             Button gradientButton = PropertiesPanel.Instance.AddGradientButton(gradientContainer.name, gradientContainer);
             gradientButton.onClick.AddListener(() => {
-                setGradient.started.Invoke(gradientContainer);
+                setGradient.InvokeStarted(gradientContainer);
 
                 double.TryParse(inputFieldMin.text, out double min);
                 double.TryParse(inputFieldMax.text, out double max);
@@ -400,7 +382,7 @@ public class CsvFileParser : MonoBehaviour
 
     private void ShowLocationBasedOptions()
     {
-        activateCSVLayer.started.Invoke(true);
+        activateCSVLayer.InvokeStarted(true);
 
         PropertiesPanel.Instance.AddLabel("Label");
         PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
@@ -433,17 +415,17 @@ public class CsvFileParser : MonoBehaviour
     private void ShowColors()
     {
         var colorsAndIDs = csvColorsFinder.GetColorsAndIDs();
-        showColorsBasedOnIds.started.Invoke(colorsAndIDs);
+        showColorsBasedOnIds.InvokeStarted(colorsAndIDs);
     }
 
     private void ShowGradientColors(double min, double max)
     {
         var colorsAndNumbers = csvNumbersFinder.GetNumbersAndIDs();
 
-        setGradientValueMin.started.Invoke((float)min);
-        setGradientValueMax.started.Invoke((float)max);
+        setGradientValueMin.InvokeStarted((float)min);
+        setGradientValueMax.InvokeStarted((float)max);
 
-        showColorGradientBasedOnIds.started.Invoke(colorsAndNumbers);
+        showColorGradientBasedOnIds.InvokeStarted(colorsAndNumbers);
     }
 
 	private void CleanUp()

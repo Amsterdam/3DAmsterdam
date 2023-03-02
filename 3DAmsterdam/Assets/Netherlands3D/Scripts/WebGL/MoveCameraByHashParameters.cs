@@ -21,7 +21,7 @@ public class MoveCameraByHashParameters : MonoBehaviour
 
     void Awake()
     {
-        moveCameraEvent.started.AddListener(MoveCamera);
+        moveCameraEvent.AddListenerStarted(MoveCamera);
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         if (reportCameraLocationBack) StartCoroutine(ReportBack());

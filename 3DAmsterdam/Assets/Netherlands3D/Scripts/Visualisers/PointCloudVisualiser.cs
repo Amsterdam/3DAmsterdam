@@ -32,7 +32,7 @@ namespace Netherlands3D.Visualisers
 
         void Awake()
         {
-            if (receiveDrawPointsEvent) receiveDrawPointsEvent.started.AddListener(DrawPointsInWorld);
+            if (receiveDrawPointsEvent) receiveDrawPointsEvent.AddListenerStarted(DrawPointsInWorld);
         }
 
         private void DrawPointsInWorld(List<Vector3> positions)
