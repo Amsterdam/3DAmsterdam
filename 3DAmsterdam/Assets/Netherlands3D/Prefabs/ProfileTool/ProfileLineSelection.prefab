@@ -318,18 +318,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActionAsset: {fileID: -944628639613478452, guid: 445da62e811e3254c927570f340ea56d,
     type: 3}
+  polygonReselectionInput: {fileID: 0}
   blockCameraDrag: {fileID: 11400000, guid: 47c8b030bc6354b42b9cb141903d6a4c, type: 2}
-  selectedPolygonArea: {fileID: 11400000, guid: 777e7bc0e0d3e4c4496e3278d9b50a7c,
+  createdNewPolygonArea: {fileID: 11400000, guid: 777e7bc0e0d3e4c4496e3278d9b50a7c,
     type: 2}
-  lineHasChanged: {fileID: 11400000, guid: 777e7bc0e0d3e4c4496e3278d9b50a7c, type: 2}
+  editedPolygonArea: {fileID: 0}
+  previewLineHasChanged: {fileID: 0}
   lineColor: {r: 1, g: 0.7202714, b: 0, a: 1}
   closedLoopLineColor: {r: 0, g: 1, b: 0, a: 1}
   lineWidthMultiplier: 1
   maxSelectionDistanceFromCamera: 10000
-  useWorldSpace: 0
   snapToStart: 0
   requireClosedPolygon: 0
   closeLoopAtStart: 0
+  createHandles: 0
   maxPoints: 1
   minPointsToCloseLoop: 3
   minPointDistance: 2
@@ -340,10 +342,11 @@ MonoBehaviour:
   doubleClickTimer: 0.5
   doubleClickDistance: 10
   displayLineUntilRedraw: 0
+  clearOnEnable: 0
   polygonLineRenderer: {fileID: 6195754652070294115}
   previewLineRenderer: {fileID: 1350614595420863712}
-  positions: []
   pointerRepresentation: {fileID: 965432690250480436}
+  handleTemplate: {fileID: 0}
 --- !u!114 &7587860457462740649
 MonoBehaviour:
   m_ObjectHideFlags: 0
