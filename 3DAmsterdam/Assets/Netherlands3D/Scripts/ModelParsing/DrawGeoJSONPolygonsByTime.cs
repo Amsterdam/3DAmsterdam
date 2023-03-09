@@ -26,11 +26,13 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField] private CoordinateType coordinateType = CoordinateType.WGS84;
 
     private int colorIndex = 0;
+    private int minYear = 1900;
     private string objectName = "";
 
     [Header("Color mapping")]
     [SerializeField] private ColorPalette colorPalette;
     [SerializeField] private ColorPropertyValue[] colorPropertyValues;
+    [SerializeField] private float gradientHeight = 100.0f;
     [SerializeField] private float defaultOpacity = 1.0f;
     [SerializeField] private float beforeTimeOpacity = 0.1f;
     [SerializeField] private float afterTimeOpacity = 0.1f;
@@ -123,7 +125,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 if (timePropertyIsNumber)
                 {
                     var year = geoJSON.GetPropertyFloatValue(startTimeProperty);
-                    startDateTime = new DateTime((int)year, 1, 1);
+                    if (year < minYear) year = minYear;
+                        startDateTime = new DateTime((int)year, 1, 1);
                 }
                 else
                 {
@@ -233,9 +236,14 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             unityPolygon.Add(polyList);
         }
 
-        var newPolygon = PolygonVisualisationUtility.CreateAndReturnPolygonObject(unityPolygon, 100, false, false, false, polygonMaterial);
+        var newPolygonGameObject = new GameObject("GeoJSONShape");
+        newPolygonGameObject.transform.SetParent(transform, true);
+        var mesh = PolygonVisualisationUtility.CreatePolygonMesh(unityPolygon, gradientHeight, false);
+        newPolygonGameObject.AddComponent<MeshFilter>().mesh = mesh;
+        newPolygonGameObject.AddComponent<MeshRenderer>().sharedMaterial = polygonMaterial;
+        newPolygonGameObject.transform.Translate(Vector3.up * gradientHeight);
 
-        if (newPolygon.gameObject)
-            PolygonDrawn(newPolygon.gameObject, startDateTime, endDateTime);
+        if (mesh)
+            PolygonDrawn(newPolygonGameObject, startDateTime, endDateTime);
     }
 }
