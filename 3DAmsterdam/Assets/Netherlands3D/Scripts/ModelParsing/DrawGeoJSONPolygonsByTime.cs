@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(PolygonVisualiser))] 
 public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 {
     [SerializeField] private string description = "";
@@ -36,6 +35,7 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField] private float beforeTimeOpacity = 0.1f;
     [SerializeField] private float afterTimeOpacity = 0.1f;
     [SerializeField] private int featuresBeforeDraw = 50;
+    [SerializeField] private Material polygonMaterial;
 
     [Header("Listen to")]
     [SerializeField] private DateTimeEvent onCurrentDateChange;
@@ -43,8 +43,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [Header("Invoke events")]
     [SerializeField] ColorPaletteEvent openLegendWithColorPalette;
     private Coroutine runningDataload;
-
-    private PolygonVisualiser polyonVisualiser;
 
     private bool init = false;
 
@@ -61,11 +59,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     {
         RD,
         WGS84
-    }
-
-    private void Awake()
-    { 
-        polyonVisualiser = GetComponent<PolygonVisualiser>();
     }
 
     private void OnDisable()
@@ -215,15 +208,14 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 
     private void DrawPolygon(List<List<GeoJSONPoint>> polygon, DateTime startDateTime, DateTime endDateTime)
     {
-        List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
+        List<List<Vector3>> unityPolygon = new List<List<Vector3>>();
 
         //Grouped polys
         for (int i = 0; i < polygon.Count; i++)
         {
             var contour = polygon[i];
 
-            IList<Vector3> polyList = new List<Vector3>();
-
+            List<Vector3> polyList = new List<Vector3>();
             if (coordinateType == CoordinateType.RD)
             {
                 for (int j = 0; j < contour.Count; j++)
@@ -241,8 +233,9 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             unityPolygon.Add(polyList);
         }
 
-        GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygons(unityPolygon);
-        if(newPolygonGameObject)
-            PolygonDrawn(newPolygonGameObject, startDateTime, endDateTime);
+        var newPolygon = PolygonVisualisationUtility.CreateAndReturnPolygonObject(unityPolygon, 100, false, false, false, polygonMaterial);
+
+        if (newPolygon.gameObject)
+            PolygonDrawn(newPolygon.gameObject, startDateTime, endDateTime);
     }
 }

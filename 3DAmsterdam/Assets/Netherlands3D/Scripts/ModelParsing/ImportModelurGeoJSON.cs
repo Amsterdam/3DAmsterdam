@@ -139,7 +139,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
 	{
-		List<IList<Vector3>> polyList = new List<IList<Vector3>>();
+		List<List<Vector3>> polyList = new List<List<Vector3>>();
 		List<Vector3> outerContour = new List<Vector3>();
 
 		foreach (var point in polygon)
