@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(PolygonVisualiser))] 
 public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 {
     [SerializeField] private string description = "";
@@ -27,15 +26,18 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [SerializeField] private CoordinateType coordinateType = CoordinateType.WGS84;
 
     private int colorIndex = 0;
+    private int minYear = 1900;
     private string objectName = "";
 
     [Header("Color mapping")]
     [SerializeField] private ColorPalette colorPalette;
     [SerializeField] private ColorPropertyValue[] colorPropertyValues;
+    [SerializeField] private float gradientHeight = 100.0f;
     [SerializeField] private float defaultOpacity = 1.0f;
     [SerializeField] private float beforeTimeOpacity = 0.1f;
     [SerializeField] private float afterTimeOpacity = 0.1f;
     [SerializeField] private int featuresBeforeDraw = 50;
+    [SerializeField] private Material polygonMaterial;
 
     [Header("Listen to")]
     [SerializeField] private DateTimeEvent onCurrentDateChange;
@@ -43,8 +45,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     [Header("Invoke events")]
     [SerializeField] ColorPaletteEvent openLegendWithColorPalette;
     private Coroutine runningDataload;
-
-    private PolygonVisualiser polyonVisualiser;
 
     private bool init = false;
 
@@ -61,11 +61,6 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
     {
         RD,
         WGS84
-    }
-
-    private void Awake()
-    { 
-        polyonVisualiser = GetComponent<PolygonVisualiser>();
     }
 
     private void OnDisable()
@@ -130,7 +125,8 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
                 if (timePropertyIsNumber)
                 {
                     var year = geoJSON.GetPropertyFloatValue(startTimeProperty);
-                    startDateTime = new DateTime((int)year, 1, 1);
+                    if (year < minYear) year = minYear;
+                        startDateTime = new DateTime((int)year, 1, 1);
                 }
                 else
                 {
@@ -215,15 +211,14 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
 
     private void DrawPolygon(List<List<GeoJSONPoint>> polygon, DateTime startDateTime, DateTime endDateTime)
     {
-        List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
+        List<List<Vector3>> unityPolygon = new List<List<Vector3>>();
 
         //Grouped polys
         for (int i = 0; i < polygon.Count; i++)
         {
             var contour = polygon[i];
 
-            IList<Vector3> polyList = new List<Vector3>();
-
+            List<Vector3> polyList = new List<Vector3>();
             if (coordinateType == CoordinateType.RD)
             {
                 for (int j = 0; j < contour.Count; j++)
@@ -241,8 +236,14 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             unityPolygon.Add(polyList);
         }
 
-        GameObject newPolygonGameObject = polyonVisualiser.CreateAndReturnPolygons(unityPolygon);
-        if(newPolygonGameObject)
+        var newPolygonGameObject = new GameObject("GeoJSONShape");
+        newPolygonGameObject.transform.SetParent(transform, true);
+        var mesh = PolygonVisualisationUtility.CreatePolygonMesh(unityPolygon, gradientHeight, false);
+        newPolygonGameObject.AddComponent<MeshFilter>().mesh = mesh;
+        newPolygonGameObject.AddComponent<MeshRenderer>().sharedMaterial = polygonMaterial;
+        newPolygonGameObject.transform.Translate(Vector3.up * gradientHeight);
+
+        if (mesh)
             PolygonDrawn(newPolygonGameObject, startDateTime, endDateTime);
     }
 }

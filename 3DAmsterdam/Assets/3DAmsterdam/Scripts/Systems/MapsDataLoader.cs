@@ -144,14 +144,14 @@ namespace Amsterdam3D.Maps
 
 		private IEnumerator DrawPolygonRequest(GeoJsonURLS geoJsonURLData, List<List<GeoJSONPoint>> polygon)
 		{            
-			List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
+			List<List<Vector3>> unityPolygon = new List<List<Vector3>>();
 
 			//Grouped polys
 			for (int i = 0; i < polygon.Count; i++)
 			{
 				var contour = polygon[i];
 
-                IList<Vector3> polyList = new List<Vector3>();
+                List<Vector3> polyList = new List<Vector3>();
 				for (int j = 0; j < contour.Count; j++)
 				{
                     polyList.Add(CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));

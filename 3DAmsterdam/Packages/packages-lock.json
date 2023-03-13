@@ -12,15 +12,6 @@
       "source": "builtin",
       "dependencies": {}
     },
-    "com.unity.ads": {
-      "version": "3.7.5",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.analytics": {
       "version": "3.6.12",
       "depth": 0,
@@ -79,7 +70,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.4.4",
+      "version": "1.5.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -111,7 +102,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.performance.profile-analyzer": {
-      "version": "1.1.1",
+      "version": "1.2.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -127,7 +118,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.5.2",
+      "version": "4.6.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -136,13 +127,13 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.androidjni": "1.0.0",
-        "com.unity.services.core": "1.3.1",
-        "com.unity.services.analytics": "4.0.1"
+        "com.unity.services.core": "1.5.2",
+        "com.unity.services.analytics": "4.2.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
-      "version": "12.1.9",
+      "version": "12.1.10",
       "depth": 2,
       "source": "builtin",
       "dependencies": {
@@ -152,14 +143,14 @@
       }
     },
     "com.unity.render-pipelines.universal": {
-      "version": "12.1.9",
+      "version": "12.1.10",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
         "com.unity.burst": "1.8.2",
-        "com.unity.render-pipelines.core": "12.1.9",
-        "com.unity.shadergraph": "12.1.9"
+        "com.unity.render-pipelines.core": "12.1.10",
+        "com.unity.shadergraph": "12.1.10"
       }
     },
     "com.unity.searcher": {
@@ -170,17 +161,18 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.analytics": {
-      "version": "4.2.0",
+      "version": "4.3.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.services.core": "1.4.0"
+        "com.unity.services.core": "1.4.0",
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
-      "version": "1.7.0",
+      "version": "1.7.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -190,12 +182,31 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.services.mediation": {
+      "version": "1.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.3",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.services.core": "1.4.0",
+        "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.3",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.shadergraph": {
-      "version": "12.1.9",
+      "version": "12.1.10",
       "depth": 2,
       "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "12.1.9",
+        "com.unity.render-pipelines.core": "12.1.10",
         "com.unity.searcher": "4.9.1"
       }
     },
@@ -266,7 +277,7 @@
         "com.unity.inputsystem": "1.3.0",
         "com.unity.render-pipelines.universal": "1.3.0"
       },
-      "hash": "0a99c48111599bf4d8cf79054585a690862f6752"
+      "hash": "908a66730b1327d33e5ecaafe58bc7480923a4c4"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
