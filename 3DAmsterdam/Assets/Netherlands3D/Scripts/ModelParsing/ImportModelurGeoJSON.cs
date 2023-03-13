@@ -6,43 +6,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Netherlands3D.SelectionTools;
+using Netherlands3D.Interface;
 
 public class ImportModelurGeoJSON : MonoBehaviour
 {
 	[Header("Listen to events:")]
-    [SerializeField]
-    private StringEvent filesImportedEvent;
+    [SerializeField] private StringEvent filesImportedEvent;
 
 	[Header("Trigger events:")]
-	[SerializeField]
-    private BoolEvent onDoneParsing;
-	[SerializeField]
-	private FloatEvent OnStoreyHeightDetermined;
-	[SerializeField]
-	private FloatEvent OnStoreyDividerHeightDetermined;
-	[SerializeField]
-	private Vector3ListsEvent OnPolygonParsed;
-	[SerializeField]
-	private Vector3ListsEvent OnStoreyDividerParsed;
-	[SerializeField]
-	private Vector3Event onCentroidCalculated;
-
-	[SerializeField]
-	private ObjectEvent onObjectReady;
+	[SerializeField] private Vector3Event onCentroidCalculated;
 
 	private List<Dictionary<string, object>> propertyList = new List<Dictionary<string, object>>();
 
-	[SerializeField]
-	private float storeyDividerHeight = 0.2f;
+	[SerializeField] private Material storeyMaterial;
+	[SerializeField] private Material dividerMaterial;
 
-	[SerializeField]
-	private bool combineIntoOneMesh = true;
+	[SerializeField] private float storeyDividerHeight = 0.2f;
+	[SerializeField] private bool combineIntoOneMesh = true;
 
+	private PlaceCustomObject placeCustomObject;
 	private Texture2D colorMappedTexture;
 	private int colorSlots = 8;
 
 	private void Awake()
 	{
+		placeCustomObject = GetComponent<PlaceCustomObject>();
 		filesImportedEvent.AddListenerStarted(FileImported);
 	}
 
@@ -102,9 +91,6 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			var groundOffset  = geojson.GetPropertyFloatValue("Ground_to_Sea_Elevation"); 
 			var storeyHeight = (buildingHeight / numberOfStoreys) - storeyDividerHeight;
 
-			OnStoreyHeightDetermined.InvokeStarted(storeyHeight);
-			OnStoreyDividerHeightDetermined.InvokeStarted(storeyDividerHeight);
-
 			//Draw all polygons as building storeys
 			for (int i = 0; i < numberOfStoreys; i++)
 			{
@@ -132,9 +118,6 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		{
 			CombineIntoOne(newParent);
 		}
-
-		onDoneParsing.InvokeStarted(true);
-		onObjectReady.InvokeStarted(newParent);
 	}
 
 	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
@@ -153,15 +136,21 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		}
 		polyList.Add(outerContour);
 
-		OnPolygonParsed.InvokeStarted(polyList);
+		var newPolygonGameObject = new GameObject("GeoJSON");
+		newPolygonGameObject.transform.SetParent(transform, true);
+		var mesh = PolygonVisualisationUtility.CreatePolygonMesh(polyList, storeyHeight, false);
+		newPolygonGameObject.AddComponent<MeshFilter>().mesh = mesh;
+		newPolygonGameObject.AddComponent<MeshRenderer>().sharedMaterial = storeyMaterial;
+		newPolygonGameObject.transform.Translate(Vector3.up * storeyHeight);
+
+		if (mesh)
+			placeCustomObject.ObjectPlaced(newPolygonGameObject);
 
 		//Draw the same polygon shape as a storey dividing line
 		for (int j = 0; j < outerContour.Count; j++)
 		{
 			outerContour[j] = new Vector3(outerContour[j].x, outerContour[j].y - storeyDividerHeight, outerContour[j].z);
 		}
-
-		OnStoreyDividerParsed.InvokeStarted(polyList);
 	}
 
 	private void CombineIntoOne(GameObject target){
