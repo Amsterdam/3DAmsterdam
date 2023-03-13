@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7790539252213156817}
   - component: {fileID: 7790539252213156846}
+  - component: {fileID: 920159451652311703}
+  - component: {fileID: 2145471422220568699}
   m_Layer: 0
   m_Name: WMSLayerManager
   m_TagString: Untagged
@@ -58,6 +60,10 @@ MonoBehaviour:
   ShowWMSOnTerrain: {fileID: 0}
   ShowWMSOnBuildingsAndTerrain: {fileID: 0}
   UnloadWMSService: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+  RenderObjectTerrainAsTarget: {fileID: 0}
+  RenderObjectTerrainNOTAsTarget: {fileID: 0}
+  RenderObjectBuildingsAsTarget: {fileID: 0}
+  RenderObjectBuildingsNOTAsTarget: {fileID: 0}
   wmsLods:
   - textureSize: 256
     maximumDistance: 4000
@@ -65,3 +71,65 @@ MonoBehaviour:
     maximumDistance: 2000
   tileSize: 1500
   compressLoadedTextures: 1
+--- !u!114 &920159451652311703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7790539252213156847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: fe70798b6e4ef024f95344cd3325c012, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: a7d11970de24b0f4e9b9c778a960f0f3, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Buildings
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 5782edab41ef3b843843f9721bda6d1f, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Buildings
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2145471422220568699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7790539252213156847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9509dbe4ef5ec594ebc4e3f4c2e47b5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableStencilForLayer: {fileID: 11400000, guid: a7d11970de24b0f4e9b9c778a960f0f3,
+    type: 2}
+  disableStencilForLayer: {fileID: 11400000, guid: 5782edab41ef3b843843f9721bda6d1f,
+    type: 2}
