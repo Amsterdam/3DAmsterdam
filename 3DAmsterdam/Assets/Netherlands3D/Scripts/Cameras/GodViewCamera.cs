@@ -308,7 +308,7 @@ namespace Netherlands3D.Cameras
         {
             if(cameraComponent.orthographic)
             {
-                cameraComponent.farClipPlane = cameraComponent.transform.position.y + 200;
+                cameraComponent.farClipPlane = cameraComponent.transform.position.y + 2000;
             }
             else{
                 cameraComponent.farClipPlane = farClipPlane;
