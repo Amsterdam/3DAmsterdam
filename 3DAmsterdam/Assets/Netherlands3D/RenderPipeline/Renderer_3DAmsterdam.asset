@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: NewScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}
   m_Settings:
     Downsample: 0
@@ -119,9 +119,9 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -1083103802268186242}
   - {fileID: 5905213883972695138}
-  - {fileID: -4474021348188035600}
   - {fileID: -8540687902898676516}
-  m_RendererFeatureMap: 7e09ee92d40af8f062b4e584bd88f351f0e5bcc74915e9c1dc9c3f529a617989
+  - {fileID: -4474021348188035600}
+  m_RendererFeatureMap: 7e09ee92d40af8f062b4e584bd88f351dc9c3f529a617989f0e5bcc74915e9c1
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 64567
+    m_Bits: 130871
   m_TransparentLayerMask:
     serializedVersion: 2
     m_Bits: 130103

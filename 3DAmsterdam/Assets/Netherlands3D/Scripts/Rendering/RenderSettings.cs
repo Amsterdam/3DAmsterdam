@@ -100,8 +100,11 @@ namespace Netherlands3D.Rendering
         {
             aoRenderFeature.SetActive(enabled);
 
-            if(switchLayerMaskOnSSAO)
+            if (switchLayerMaskOnSSAO)
+            {
                 forwardRendererData.opaqueLayerMask = (enabled) ? aoEnabledLayerMask : aoDisabledLayerMask;
+                forwardRendererData.SetDirty();
+            }
         }
 
         public void SetRenderScale(float renderScale)
