@@ -35,6 +35,13 @@ namespace Netherlands3D
             BottomLeft
         }
 
+        [System.Serializable]
+        public class WMSLayer
+        {
+            public string url = "";
+            public string legendUrl = "";
+        }
+
         [Header("Bounding Box coordinates")]
         public Vector2RD RelativeCenterRD;
         public Vector2RD BottomLeftRD;
@@ -74,5 +81,8 @@ namespace Netherlands3D
 
         public Color primaryColor;
         public Color secondaryColor;
+
+        [Header("WMS layers")]
+        public WMSLayer[] wmsLayers;
 	}
 }
