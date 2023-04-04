@@ -62,16 +62,22 @@ namespace Netherlands3D
 
         [Header("Bag Api URLs")]
         public BagApyType BagApiType = BagApyType.Kadaster;
-        public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-        public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand=";
-        public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";
-        public string monumentURL = "https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=";
-        public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
-        public string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
-        public string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-        public string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
-        public string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";
 
+        //Pdok api url ( Key required )
+        public string kadasterBuildingURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}";
+        public string kadasterBuildingAdressesURL = " https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}";
+
+        public string developmentKey = "";
+        public string productionKey = "";
+
+        //Amsterdam specific paths
+        [HideInInspector] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/";
+        [HideInInspector] public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}";
+        [HideInInspector] public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/{bagid}/";
+        [HideInInspector] public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
+        [HideInInspector] public string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
+
+        [Header("Color overrides")]
         public Color primaryColor;
         public Color secondaryColor;
 	}

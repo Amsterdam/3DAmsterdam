@@ -1,9 +1,156 @@
-﻿namespace Netherlands3D.BAG
+﻿using System;
+
+namespace Netherlands3D.BAG
 {
-    public enum BagApyType { Amsterdam, KadasterBagViewer, Kadaster }
+    public enum BagApyType { Amsterdam, Kadaster }
+    [System.Serializable]
+    public class BagDataKadasterBuildingAdresses
+    {
+        [System.Serializable]
+        public class Rootobject
+        {
+            public _Links _links;
+            public _Embedded _embedded;
+        }
+        [System.Serializable]
+        public class _Links
+        {
+            public Self self;
+            public Next next;
+            public Last last;
+        }
+        [System.Serializable]
+        public class Self
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Next
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Last
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class _Embedded
+        {
+            public Adressen[] adressen;
+        }
+        [System.Serializable]
+        public class Adressen
+        {
+            public string openbareRuimteNaam;
+            public string korteNaam;
+            public int huisnummer;
+            public string postcode;
+            public string woonplaatsNaam;
+            public string nummeraanduidingIdentificatie;
+            public string openbareRuimteIdentificatie;
+            public string woonplaatsIdentificatie;
+            public string adresseerbaarObjectIdentificatie;
+            public string[] pandIdentificaties;
+            public string adresregel5;
+            public string adresregel6;
+            public _Links1 _links;
+        }
+        [System.Serializable]
+        public class _Links1
+        {
+            public Self1 self;
+            public Openbareruimte openbareRuimte;
+            public Nummeraanduiding nummeraanduiding;
+            public Woonplaats woonplaats;
+            public Adresseerbaarobject adresseerbaarObject;
+            public Panden[] panden;
+        }
+        [System.Serializable]
+        public class Self1
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Openbareruimte
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Nummeraanduiding
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Woonplaats
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Adresseerbaarobject
+        {
+            public string href;
+        }
+        [System.Serializable]
+        public class Panden
+        {
+            public string href;
+        }
+
+    }
 
     [System.Serializable]
-    public class BagData
+    public class BagDataKadasterBuilding
+    {
+        [System.Serializable]
+        public class Rootobject
+        {
+            public Pand pand;
+            public _Links _links;
+        }
+        [System.Serializable]
+        public class Pand
+        {
+            public string identificatie;
+            public string domein;
+            public Geometrie geometrie;
+            public string oorspronkelijkBouwjaar;
+            public string status;
+            public string geconstateerd;
+            public string documentdatum;
+            public string documentnummer;
+            public Voorkomen voorkomen;
+        }
+        [System.Serializable]
+        public class Geometrie
+        {
+            public string type;
+            public float[] coordinates = new float[0];
+        }
+        [System.Serializable]
+        public class Voorkomen
+        {
+            public DateTime tijdstipRegistratie;
+            public int versie;
+            public string beginGeldigheid;
+            public DateTime tijdstipRegistratieLV;
+        }
+        [System.Serializable]
+        public class _Links
+        {
+            public Self self;
+        }
+        [System.Serializable]
+        public class Self
+        {
+            public string href;
+        }
+
+    }
+
+
+    [System.Serializable]
+    public class BagDataAmsterdam
     {
         [System.Serializable]
         public class Rootobject
@@ -39,7 +186,7 @@
             public string dataset;
 
             // simpele operator die de resultaten van het pand toevoegd aan het aangemaakte pand
-            public static BagData.Rootobject operator +(Rootobject a, Rootobject b)
+            public static BagDataAmsterdam.Rootobject operator +(Rootobject a, Rootobject b)
             {
                 a.count = b.count;
                 a.results = b.results;
