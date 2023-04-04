@@ -3,6 +3,56 @@
 namespace Netherlands3D.BAG
 {
     public enum BagApyType { Amsterdam, Kadaster }
+
+    [System.Serializable]
+    public class BagDataKadasterBuilding
+    {
+        [System.Serializable]
+        public class Rootobject
+        {
+            public Pand pand;
+            public _Links _links;
+        }
+        [System.Serializable]
+        public class Pand
+        {
+            public string identificatie;
+            public string domein;
+            public Geometrie geometrie;
+            public string oorspronkelijkBouwjaar;
+            public string status;
+            public string geconstateerd;
+            public string documentdatum;
+            public string documentnummer;
+            public Voorkomen voorkomen;
+        }
+        [System.Serializable]
+        public class Geometrie
+        {
+            public string type;
+            public float[] coordinates = new float[0];
+        }
+        [System.Serializable]
+        public class Voorkomen
+        {
+            public DateTime tijdstipRegistratie;
+            public int versie;
+            public string beginGeldigheid;
+            public DateTime tijdstipRegistratieLV;
+        }
+        [System.Serializable]
+        public class _Links
+        {
+            public Self self;
+        }
+        [System.Serializable]
+        public class Self
+        {
+            public string href;
+        }
+
+    }
+
     [System.Serializable]
     public class BagDataKadasterBuildingAdresses
     {
@@ -98,56 +148,6 @@ namespace Netherlands3D.BAG
         }
 
     }
-
-    [System.Serializable]
-    public class BagDataKadasterBuilding
-    {
-        [System.Serializable]
-        public class Rootobject
-        {
-            public Pand pand;
-            public _Links _links;
-        }
-        [System.Serializable]
-        public class Pand
-        {
-            public string identificatie;
-            public string domein;
-            public Geometrie geometrie;
-            public string oorspronkelijkBouwjaar;
-            public string status;
-            public string geconstateerd;
-            public string documentdatum;
-            public string documentnummer;
-            public Voorkomen voorkomen;
-        }
-        [System.Serializable]
-        public class Geometrie
-        {
-            public string type;
-            public float[] coordinates = new float[0];
-        }
-        [System.Serializable]
-        public class Voorkomen
-        {
-            public DateTime tijdstipRegistratie;
-            public int versie;
-            public string beginGeldigheid;
-            public DateTime tijdstipRegistratieLV;
-        }
-        [System.Serializable]
-        public class _Links
-        {
-            public Self self;
-        }
-        [System.Serializable]
-        public class Self
-        {
-            public string href;
-        }
-
-    }
-
 
     [System.Serializable]
     public class BagDataAmsterdam

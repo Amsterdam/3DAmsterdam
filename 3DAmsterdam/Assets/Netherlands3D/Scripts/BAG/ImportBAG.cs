@@ -34,9 +34,13 @@ namespace Netherlands3D.BAG
             }
             else
             {
-                var flattenedGeometry = request.downloadHandler.text.Replace("[[[", "[").Replace("]]]", "]").Replace("],[", ",");
+                //TODO: Change entire BAG logic to use SimpleJSON to avoid this unsupported nesting problems by JsonUtility
+                var jsonWithFlattenedGeometryArray = request.downloadHandler.text.
+                    Replace("[", "").Replace("]", ""). //Clear all double brackets
+                    Replace("coordinates\":", "coordinates\":["). //Restore single opening bracket
+                    Replace("},\"oorspronkelijkBouwjaar", "]},\"oorspronkelijkBouwjaar"); //Restore single closing bracket
 
-                callback?.Invoke(JsonUtility.FromJson<BagDataKadasterBuilding.Rootobject>(flattenedGeometry));
+                callback?.Invoke(JsonUtility.FromJson<BagDataKadasterBuilding.Rootobject>(jsonWithFlattenedGeometryArray));
             }
         }
 

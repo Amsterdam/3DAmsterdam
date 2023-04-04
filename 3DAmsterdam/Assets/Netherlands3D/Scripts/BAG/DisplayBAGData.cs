@@ -72,7 +72,6 @@ namespace Netherlands3D.BAG
                         if (geometry != null && geometry.coordinates.Length > 0)
                         {
                             List<Vector3> geometryPoints = new List<Vector3>();
-                            Debug.Log(geometry.coordinates.Length);
                             for (int i = 0; i < geometry.coordinates.Length; i+=3)
                             {
                                 var unityCoordinate = CoordConvert.RDtoUnity(geometry.coordinates[i], geometry.coordinates[i + 1], geometry.coordinates[i + 2]);
@@ -95,7 +94,7 @@ namespace Netherlands3D.BAG
                         {
                             foreach (var address in addressList._embedded.adressen)
                             {
-                                //We create a field and make it clickable, so addresses cant contain more data
+                                //We can make this clickable later like the one from amsterdam does ( to get more data )
                                 var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address.adresregel5+","+ address.adresregel6, "");
                             }
                             PropertiesPanel.Instance.AddSpacer(20);
