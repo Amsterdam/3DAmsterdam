@@ -66,7 +66,7 @@ namespace Netherlands3D
         [Header("Kadaster")]
         //Pdok api url ( Key required )
         public string kadasterBuildingURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}";
-        public string kadasterBuildingAdressesURL = " https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}";
+        public string kadasterBuildingAdressesURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}";
         public string developmentKey = "";
         public string productionKey = "";
 
