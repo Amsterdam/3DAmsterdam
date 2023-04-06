@@ -71,10 +71,11 @@ namespace Netherlands3D
         public string productionKey = "";
 
         //Amsterdam specific paths
-        [HideInInspector] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/";
+        [HideInInspector] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/?format=json";
         [HideInInspector] public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}";
-        [HideInInspector] public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/{bagid}/";
-        [HideInInspector] public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
+        [HideInInspector] public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}&format=json";
+        
+        public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
         [HideInInspector] public string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
 
         [Header("Color overrides")]

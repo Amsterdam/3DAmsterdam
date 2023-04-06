@@ -129,7 +129,7 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetAddressData(string bagId, Action<BagDataAmsterdam.AddressInstance> callback)
         {
             // adds data id and url in one string
-            string url = Config.activeConfiguration.numberIndicatorInstanceURL.Replace("{bagid}", bagId)+ "?format=" + format;
+            string url = Config.activeConfiguration.numberIndicatorInstanceURL.Replace("{bagid}", bagId);
 
             // send http request
             var request = UnityWebRequest.Get(url);
