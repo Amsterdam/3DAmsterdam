@@ -79,7 +79,7 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetBuildingDataAmsterdam(string bagId, Action<BagDataAmsterdam.Rootobject> callback)
         {
             // adds data id and url in one string
-            string url = Config.activeConfiguration.buildingUrl.Replace("{bagid}", bagId) + "?format=" + format;
+            string url = Config.activeConfiguration.buildingUrl.Replace("{bagid}", bagId);
 
             // send http request
             var request = UnityWebRequest.Get(url);
@@ -104,8 +104,8 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetBuildingAdressesAmsterdam(string bagId, Action<BagDataAmsterdam.Rootobject> callback)
         {
             // adds data id and url in one string
-            string url = Config.activeConfiguration.numberIndicatorURL.Replace("{bagid}", bagId)+ "&format=" + format;
-
+            string url = Config.activeConfiguration.numberIndicatorURL.Replace("{bagid}", bagId);
+            Debug.Log($"Adress requests: {url}");
             // send http request
             var request = UnityWebRequest.Get(url);
             yield return request.SendWebRequest();

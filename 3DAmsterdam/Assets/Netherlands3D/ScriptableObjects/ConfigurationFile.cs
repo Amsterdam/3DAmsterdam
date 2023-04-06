@@ -21,7 +21,7 @@ using Netherlands3D.BAG;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 
 namespace Netherlands3D
 {
@@ -63,20 +63,20 @@ namespace Netherlands3D
         [Header("Bag Api URLs")]
         public BagApyType BagApiType = BagApyType.Kadaster;
 
+        [Header("Kadaster")]
         //Pdok api url ( Key required )
         public string kadasterBuildingURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}";
         public string kadasterBuildingAdressesURL = " https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}";
-
         public string developmentKey = "";
         public string productionKey = "";
 
-        //Amsterdam specific paths
-        [HideInInspector] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/?format=json";
-        [HideInInspector] public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}";
-        [HideInInspector] public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}&format=json";
-        
+        //Amsterdam specifics
+        [NonSerialized] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/?format=json";
+        [NonSerialized] public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}&format=json";
+        [NonSerialized] public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}&format=json";
+        [NonSerialized] public string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
+
         public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
-        [HideInInspector] public string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
 
         [Header("Color overrides")]
         public Color primaryColor;

@@ -34,13 +34,9 @@ MonoBehaviour:
   sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolknopen&OUTPUTFORMAT=geojson&bbox=
   BagApiType: 1
   kadasterBuildingURL: https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}
-  kadasterBuildingAdressesURL: ' https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}'
+  kadasterBuildingAdressesURL: https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}
   developmentKey: l703de3635748b4cd5adb98ff45bbf7b66
   productionKey: l7b8a3ff2c6eda4ce9ad86477973dae44d
-  buildingUrl: https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}
-  numberIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand=
-  numberIndicatorInstanceURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/
   moreBuildingInfoUrl: https://data.amsterdam.nl/data/bag/pand/id{bagid}/
-  moreAddressInfoUrl: https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
   secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
