@@ -25,7 +25,7 @@ namespace Netherlands3D.BAG
                 if (Config.activeConfiguration.BagApiType == BagApyType.Amsterdam)
                 {
 
-                    StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
+                    StartCoroutine(ImportBAG.GetBuildingDataAmsterdam(bagId, (buildingData) =>
                     {
                         EstimateBuildingThumbnailFrame(buildingData.bbox);
                         PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
@@ -37,17 +37,16 @@ namespace Netherlands3D.BAG
                         CheckAddDataField("Bouwlagen", buildingData.bouwlagen);
                         CheckAddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count);
                         PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
-
                         PropertiesPanel.Instance.AddSeperatorLine();
 
-                    //Load up the list of addresses tied to this building (in a Seperate API call)
-                    PropertiesPanel.Instance.AddTitle("Adressen");
-                        StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
+                        //Load up the list of addresses tied to this building (in a Seperate API call)
+                        PropertiesPanel.Instance.AddTitle("Adressen");
+                        StartCoroutine(ImportBAG.GetBuildingAdressesAmsterdam(bagId, (addressList) =>
                         {
                             foreach (var address in addressList.results)
                             {
-                            //We create a field and make it clickable, so addresses cant contain more data
-                            var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address._display, "");
+                                //We create a field and make it clickable, so addresses cant contain more data
+                                var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address._display, "");
                                 var button = dataKeyAndValue.GetComponent<Button>();
                                 button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
                             }
@@ -55,57 +54,51 @@ namespace Netherlands3D.BAG
                         }));
                     }));
                 }
-                else if (Config.activeConfiguration.BagApiType == BagApyType.KadasterBagViewer)
+                else if (Config.activeConfiguration.BagApiType == BagApyType.Kadaster)
                 {
-                    StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
+                    //Pdok requires a key requested from https://www.kadaster.nl/zakelijk/producten/adressen-en-gebouwen/bag-api-individuele-bevragingen
+#if UNITY_EDITOR
+                    var key = Config.activeConfiguration.developmentKey;
+#else
+                    var key = Config.activeConfiguration.productionKey;
+#endif
+
+                    StartCoroutine(ImportBAG.GetBuildingData(bagId, key, (buildingData) =>
                     {
                         if (buildingData == null) return;
-                        Debug.Log($"buildingData.adresseerbaarobject.geometry.type: {buildingData.adresseerbaarobject.geometry.type}");
 
-                        var geometry = buildingData.adresseerbaarobject.geometry;
-
-                        var firstpand = buildingData.panden.First();
-
-                        if (geometry.type == null && firstpand != null)
+                        Debug.Log("YESSS " + buildingData.pand.identificatie);
+                        var geometry = buildingData.pand.geometrie;
+                        if (geometry != null && geometry.coordinates.Length > 0)
                         {
-                            geometry = firstpand.geometry;
+                            List<Vector3> geometryPoints = new List<Vector3>();
+                            for (int i = 0; i < geometry.coordinates.Length; i+=3)
+                            {
+                                var unityCoordinate = CoordConvert.RDtoUnity(geometry.coordinates[i], geometry.coordinates[i + 1], geometry.coordinates[i + 2]);
+                                geometryPoints.Add(unityCoordinate);
+                            }
+                            PropertiesPanel.Instance.RenderThumbnailContaining(geometryPoints.ToArray(), PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
                         }
 
-                        if (geometry.type == "Point")
+                        PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
+
+                        CheckAddDataField("Naam", buildingData.pand.identificatie);
+                        CheckAddDataField("Bouwjaar", buildingData.pand.oorspronkelijkBouwjaar);
+                        CheckAddDataField("Status", buildingData.pand.status);
+                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", bagId));
+                        PropertiesPanel.Instance.AddSeperatorLine();
+
+                        //Load up the list of addresses tied to this building (in a Seperate API call)
+                        PropertiesPanel.Instance.AddTitle("Adressen");
+                        StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, key, (addressList) =>
                         {
-                        //create bounding box 50x50 meter
-                        float[] bbox = new float[4];
-                            var point = geometry.coordinates;
-                            bbox[0] = point[0] - 25;
-                            bbox[1] = point[1] - 25;
-                            bbox[2] = point[0] + 25;
-                            bbox[3] = point[1] + 25;
-                            EstimateBuildingThumbnailFrame(bbox);
-                        }
-
-                        Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
-
-                        CheckAddDataField("Naam", buildingData.openbareruimte.naam);
-                        CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);
-                        CheckAddDataField("Postcode", buildingData.nummeraanduiding.postcode);
-                        CheckAddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
-                        CheckAddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
-                        CheckAddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
-
-                        if (firstpand != null)
-                        {
-                            CheckAddDataField("Status", firstpand.status);
-                            CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
-                        }
-
-                        List<KeyValuePair<string, object>> keyvals = new List<KeyValuePair<string, object>>()
-                        {
-                            new KeyValuePair<string, object>("x", geometry.coordinates[0]),
-                            new KeyValuePair<string, object>("y", geometry.coordinates[1]),
-                            new KeyValuePair<string, object>("id", bagId),
-                        };
-                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(keyvals));
-                        PropertiesPanel.Instance.AddSpacer(20);
+                            foreach (var address in addressList._embedded.adressen)
+                            {
+                                //We can make this clickable later like the one from amsterdam does ( to get more data )
+                                var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address.adresregel5+","+ address.adresregel6, "");
+                            }
+                            PropertiesPanel.Instance.AddSpacer(20);
+                        }));
                     }));
                 }
                 else
