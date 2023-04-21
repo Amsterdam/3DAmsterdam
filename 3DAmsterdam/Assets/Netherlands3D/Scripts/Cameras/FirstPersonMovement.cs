@@ -55,7 +55,7 @@ namespace Netherlands3D.Cameras
         {
             //Find grounding
             var playerCenter = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
-            var rayGround = new Ray(playerCenter + Vector3.up * 100.0f, Vector3.down);
+            var rayGround = new Ray(playerCenter + Vector3.up * 500.0f, Vector3.down);
             var rayCustom = new Ray(playerCenter, Vector3.down);
 
             // add Meshcollider to terrain if not already exists
