@@ -95,7 +95,7 @@ namespace Netherlands3D.BAG
                             foreach (var address in addressList._embedded.adressen)
                             {
                                 //We can make this clickable later like the one from amsterdam does ( to get more data )
-                                var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address.adresregel5+","+ address.adresregel6, "");
+                                var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address.adresregel5, address.adresregel6);
                             }
                             PropertiesPanel.Instance.AddSpacer(20);
                         }));
