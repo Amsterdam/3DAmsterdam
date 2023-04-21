@@ -57,13 +57,7 @@ namespace Netherlands3D.BAG
                 else if (Config.activeConfiguration.BagApiType == BagApyType.Kadaster)
                 {
                     //Pdok requires a key requested from https://www.kadaster.nl/zakelijk/producten/adressen-en-gebouwen/bag-api-individuele-bevragingen
-#if UNITY_EDITOR
-                    var key = Config.activeConfiguration.developmentKey;
-#else
-                    var key = Config.activeConfiguration.productionKey;
-#endif
-
-                    StartCoroutine(ImportBAG.GetBuildingData(bagId, key, (buildingData) =>
+                    StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
                     {
                         if (buildingData == null) return;
 
@@ -90,7 +84,7 @@ namespace Netherlands3D.BAG
 
                         //Load up the list of addresses tied to this building (in a Seperate API call)
                         PropertiesPanel.Instance.AddTitle("Adressen");
-                        StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, key, (addressList) =>
+                        StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
                         {
                             foreach (var address in addressList._embedded.adressen)
                             {

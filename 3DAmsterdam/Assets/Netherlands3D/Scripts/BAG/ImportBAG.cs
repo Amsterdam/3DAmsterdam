@@ -16,16 +16,13 @@ namespace Netherlands3D.BAG
         /// </summary>
         /// <param name="bagId">The unique building BAG id</param>
         /// <param name="callback">The callback action containing the building data object</param>
-        public static IEnumerator GetBuildingData(string bagId, string key, Action<BagDataKadasterBuilding.Rootobject> callback)
+        public static IEnumerator GetBuildingData(string bagId, Action<BagDataKadasterBuilding.Rootobject> callback)
         {
             // adds data id and url in one string
             string url = Config.activeConfiguration.kadasterBuildingURL.Replace("{bagid}", bagId);
             Debug.Log("Kadaster request: " + url);
             // send http request
             var request = UnityWebRequest.Get(url);
-            request.SetRequestHeader("X-Api-Key", key);
-            request.SetRequestHeader("Accept-Crs", "epsg:28992");
-
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
@@ -49,16 +46,13 @@ namespace Netherlands3D.BAG
         /// </summary>
         /// <param name="bagId">The building Bag ID</param>
         /// <param name="callback">The callback action containing the building adresses data object</param>
-        public static IEnumerator GetBuildingAdresses(string bagId, string key , Action<BagDataKadasterBuildingAdresses.Rootobject> callback)
+        public static IEnumerator GetBuildingAdresses(string bagId, Action<BagDataKadasterBuildingAdresses.Rootobject> callback)
         {
             // adds data id and url in one string
             string url = Config.activeConfiguration.kadasterBuildingAdressesURL.Replace("{bagid}", bagId);
             Debug.Log("Kadaster request: " + url);
             // send http request
             var request = UnityWebRequest.Get(url);
-            request.SetRequestHeader("X-Api-Key", key);
-            request.SetRequestHeader("Accept-Crs", "epsg:28992");
-
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
