@@ -26,12 +26,19 @@ public class SingleAccordionController : MonoBehaviour
         //Chevron is (not) shown depending if there are children
         chevron.SetActive(children.Length > 0);
 
-        image = this.gameObject.GetComponent<Image>(); // we are accessing the SpriteRenderer that is attached to the Gameobject
+        SetImage();
+    }
+
+    private void SetImage()
+    {
+        if (image == null) image = this.gameObject.GetComponent<Image>();
     }
 
 
     public void ChevronPressed()
     {
+        SetImage();
+
         if (isOpen)
         {
             CloseChildren();
