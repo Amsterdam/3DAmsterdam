@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SingleAccordionController : MonoBehaviour
 {
@@ -19,14 +20,14 @@ public class SingleAccordionController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetImage();
+
         //By default
         //Tabs are closed
-        CloseChildren();
+        ToggleChildren(false);
 
         //Chevron is (not) shown depending if there are children
         chevron.SetActive(children.Length > 0);
-
-        SetImage();
     }
 
     private void SetImage()
@@ -38,42 +39,45 @@ public class SingleAccordionController : MonoBehaviour
     public void ChevronPressed()
     {
         SetImage();
-
-        if (isOpen)
-        {
-            CloseChildren();
-        }
-        else
-        {
-            OpenChildren();
-        }
-
         isOpen = !isOpen;
+        ToggleChildren(isOpen);
+
         Debug.Log($"Chevron pressed: {isOpen}");
     }
 
-    private void OpenChildren()
+    private void ToggleChildren(bool turnOff)
     {
-        foreach(var child in children)
+        Debug.Log($"ToggleChildren: {turnOff} {gameObject.name}");
+
+        if (turnOff) //Close
         {
-            child.gameObject.SetActive(true);
+            CascadeChildren(children, false);
+
+        } else //Opem
+        {
+            foreach(var child in children)
+            {
+                child.SetActive(true);
+                Debug.Log($"child: {child.name}");
+            }
         }
 
-
-        Debug.Log($"OpenChildren1: {image.sprite}");
-        Debug.Log($"OpenChildren2: {openedSprite}");
-
-        image.sprite = openedSprite;
+        image.sprite = turnOff ? openedSprite : defaultSprite;
     }
 
-
-    private void CloseChildren()
+    private void CascadeChildren(GameObject[] children, bool setActive)
     {
-        foreach (var child in children)
+        foreach (GameObject child in children)
         {
-            child.gameObject.SetActive(false);
-        }
+            var accordion = child.GetComponent<SingleAccordionController>();
+            if (accordion == null) return;
 
-        image.sprite = defaultSprite;
+            child.SetActive(setActive);
+            CascadeChildren(accordion.children, setActive);
+
+            Debug.Log($"child: {child.name}");
+
+        }
     }
+
 }
