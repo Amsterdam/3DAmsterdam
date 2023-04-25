@@ -165,9 +165,8 @@ GameObject:
   - component: {fileID: 4220683101739128958}
   - component: {fileID: 8024371915375094396}
   - component: {fileID: 8228677906642650527}
-  - component: {fileID: 7275359156166519847}
   - component: {fileID: 700167125502517093}
-  - component: {fileID: 5949090772769141192}
+  - component: {fileID: 1490197785437769218}
   m_Layer: 5
   m_Name: Tab
   m_TagString: Untagged
@@ -283,7 +282,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7275359156166519847}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Netherlands3D.Interface.Tab, Assembly-CSharp
         m_MethodName: OpenTab
         m_Mode: 0
@@ -309,22 +308,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: 
---- !u!114 &7275359156166519847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5183125865731708666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tabPaneTitle: 
-  tabPanel: {fileID: 0}
-  toggleOjects:
-  - {fileID: 7870885572510958922}
 --- !u!114 &700167125502517093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &5949090772769141192
+--- !u!114 &1490197785437769218
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -347,10 +330,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5183125865731708666}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4b679cd9b33acb42875fd7e11dc530e, type: 3}
+  m_Script: {fileID: 11500000, guid: d2d798aa1d5cf5449b77bff8cd8b4737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorStyle: 1
+  tabPanel: {fileID: 0}
 --- !u!1 &7870885572510958922
 GameObject:
   m_ObjectHideFlags: 0
