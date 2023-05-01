@@ -6,6 +6,9 @@ using System.Linq;
 
 public class SingleAccordionController : MonoBehaviour
 {
+    [SerializeField]
+    private VerticalLayoutGroup verticalLayout;
+
     //Logic
     public bool isOpen = false;
     public GameObject[] children;
@@ -42,6 +45,9 @@ public class SingleAccordionController : MonoBehaviour
         isOpen = !isOpen;
         ToggleChildren(isOpen);
 
+        verticalLayout.CalculateLayoutInputVertical();
+        //verticalLayout.enabled = false;
+        //verticalLayout.enabled = true;
         Debug.Log($"Chevron pressed: {isOpen}");
     }
 
