@@ -3135,6 +3135,11 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0.5529412
       objectReference: {fileID: 0}
+    - target: {fileID: 6304671326914904069, guid: a9ade1bdfd5f5ce488daa2f20f63c831,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6827391914169341958, guid: a9ade1bdfd5f5ce488daa2f20f63c831,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -3165,7 +3170,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3679139675099538924, guid: a9ade1bdfd5f5ce488daa2f20f63c831, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a9ade1bdfd5f5ce488daa2f20f63c831, type: 3}
 --- !u!224 &6739768474651296255 stripped
 RectTransform:

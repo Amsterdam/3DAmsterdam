@@ -12,6 +12,20 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.SidePanel
 {
+    public enum Panels
+    {
+        Search,
+        Layer,
+        SunTime,
+        Car,
+        Timeline,
+        Measure,
+        Viewpoints,
+        Comments,
+        Underground,
+        Profile
+    }
+
     public class SideTabPanel : MonoBehaviour
     {
         public static SideTabPanel Instance = null;
@@ -20,13 +34,12 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private RectTransform movePanelRectTransform;
 
-        [Header("Tabs")]
+        [Header("Main Tabs")]
         [SerializeField]
         private Tabv2 startingActiveTab;
 
+        //Main tabs
         [SerializeField]
-
-
         private Tabv2 objectInformationTab;
         [SerializeField]
         private Tabv2 layersTab;
@@ -34,6 +47,18 @@ namespace Netherlands3D.Interface.SidePanel
         private Tabv2 searchTab;
         [SerializeField]
         private Tabv2 settingsTab;
+        [SerializeField]
+        private Tabv2 sunTimeTab;
+
+        [Header("Sub Tabs")]
+        //Sub tabs
+        [SerializeField]
+        private Tabv2 profileTab;
+        [SerializeField]
+        private Tabv2 viewpointsTab;
+        [SerializeField]
+        private Tabv2 annotationsTab;
+
 
         [Header("Animation")]
         [SerializeField]
@@ -41,7 +66,7 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private float collapsedShift = 300;
         private Coroutine panelAnimation;
-        private bool open = true;
+        public bool open = true;
 
 
         [Header("Dynamic")]
@@ -77,7 +102,7 @@ namespace Netherlands3D.Interface.SidePanel
         public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; } 
         
 
-		void Awake()
+		void Start()
 		{
             //Find the transformpanel
             transformPanel = FindObjectOfType<TransformPanel>();
@@ -109,6 +134,42 @@ namespace Netherlands3D.Interface.SidePanel
         {
             generatedFieldsRootContainer = targetContainer;
             targetFieldsContainer = targetContainer;
+        }
+
+        public void OpenPanel(Panels panel)
+        {
+            switch (panel)
+            {
+                case Panels.Search:
+                    searchTab.OpenTab(true);
+                    break;
+                case Panels.Layer:
+                    layersTab.OpenTab(true);
+                    break;
+                case Panels.SunTime:
+                    sunTimeTab.OpenTab(true);   
+                    break;
+                case Panels.Car:
+                    //
+                    break;
+                case Panels.Timeline:
+                    //
+                    break;
+                case Panels.Measure:
+                    //
+                    break;
+                case Panels.Viewpoints:
+                    viewpointsTab.OpenTab(true);   
+                    break;
+                case Panels.Comments:
+                    break;
+                case Panels.Underground:
+                    break;
+                case Panels.Profile:
+                    profileTab.OpenTab(true);
+                    break;
+
+            }
         }
 
         /// <summary>
@@ -144,6 +205,7 @@ namespace Netherlands3D.Interface.SidePanel
         {
             layersTab.OpenTab(true);
         }
+
 
         /// <summary>
         /// Open the custom objects tab
@@ -197,13 +259,18 @@ namespace Netherlands3D.Interface.SidePanel
 
         private void CloseAllTabs()
         {
-            //objectInformationTab.gameObject.SetActive(false);
+            objectInformationTab.TabPanel.gameObject.SetActive(false);
             layersTab.TabPanel.gameObject.SetActive(false);
             searchTab.TabPanel.gameObject.SetActive(false);
-            //settingsTab.gameObject.SetActive(false);
+            //settingsTab.TabPanel.gameObject.SetActive(false);
+            searchTab.TabPanel.gameObject.SetActive(false);
+            sunTimeTab.TabPanel.gameObject.SetActive(false);
+            profileTab.TabPanel.gameObject.SetActive(false);
+            viewpointsTab.TabPanel.gameObject.SetActive(false);
+            annotationsTab.TabPanel.gameObject.SetActive(false);
         }
 
-    public void ClosePanel()
+        public void ClosePanel()
         {
             open = false;
             if (panelAnimation != null) StopCoroutine(panelAnimation);

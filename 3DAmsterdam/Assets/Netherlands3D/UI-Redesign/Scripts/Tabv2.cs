@@ -33,7 +33,7 @@ public class Tabv2 : MonoBehaviour
         Debug.Log($"OpenTab {tabPanel.name}");
 
         GetComponent<Toggle>().isOn = open;
-        if (open)
+        if (SideTabPanel.Instance.open)
         {
             SideTabPanel.Instance.OpenPanel(tabPanel);
         } else
