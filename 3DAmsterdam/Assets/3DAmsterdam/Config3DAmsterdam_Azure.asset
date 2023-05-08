@@ -32,11 +32,9 @@ MonoBehaviour:
   sewerageApiType: 1
   sewerPipesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolleidingen&OUTPUTFORMAT=geojson&bbox=
   sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolknopen&OUTPUTFORMAT=geojson&bbox=
-  BagApiType: 0
-  kadasterBuildingURL: https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}
+  BagApiType: 1
+  kadasterBuildingURL: https://3da-o-functions.azurewebsites.net/api/getbag/{bagid}
   kadasterBuildingAdressesURL: https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}
-  developmentKey: l703de3635748b4cd5adb98ff45bbf7b66
-  productionKey: l7b8a3ff2c6eda4ce9ad86477973dae44d
   moreBuildingInfoUrl: https://data.amsterdam.nl/data/bag/pand/id{bagid}/
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
   secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
