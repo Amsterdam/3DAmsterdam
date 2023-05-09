@@ -19,7 +19,7 @@ public class AccordionController : MonoBehaviour
 
     [SerializeField]
     private GameObject accordionChildrenGroup;
-    private List<AccordionController> directChildren;
+    private List<GameObject> directChildren;
     private List<AccordionController> allChildren;
 
 
@@ -52,11 +52,6 @@ public class AccordionController : MonoBehaviour
     [Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
     public bool usingRuntimeInstancedMaterials = false;
 
-
-
-
-
-
     [Header("Visuals")]
     [SerializeField]
     private TMP_Text titleField;
@@ -85,14 +80,10 @@ public class AccordionController : MonoBehaviour
     void Awake()
     {
         //Get the children accordion
-        directChildren = new List<AccordionController>();
+        directChildren = new List<GameObject>();
         foreach (Transform transform in accordionChildrenGroup.transform)
         {
-            AccordionController component;
-            if ((component = transform.GetComponent<AccordionController>()) != null)
-            {
-                directChildren.Add(component);
-            }
+            directChildren.Add(transform.gameObject);
         }
 
         allChildren = GetAllAccordionChildren(gameObject.transform);
@@ -221,7 +212,7 @@ public class AccordionController : MonoBehaviour
         {
             foreach (var child in directChildren)
             {
-                child.gameObject.SetActive(true);
+                child.SetActive(true);
                 Debug.Log($"Open 1: {child}");
 
             }

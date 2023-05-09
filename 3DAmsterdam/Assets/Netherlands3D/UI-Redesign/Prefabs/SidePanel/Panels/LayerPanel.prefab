@@ -193,7 +193,7 @@ PrefabInstance:
     - target: {fileID: 4687944294671379186, guid: a9ade1bdfd5f5ce488daa2f20f63c831,
         type: 3}
       propertyPath: m_Name
-      value: LayerPanel-2
+      value: LayerPanel
       objectReference: {fileID: 0}
     - target: {fileID: 6304671326914904069, guid: a9ade1bdfd5f5ce488daa2f20f63c831,
         type: 3}
@@ -1389,6 +1389,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2451913933932695138, guid: fd200122c3f3f2843ae1d7926c1040d2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 8a011ce11969f81499364acdff0d9656,
+        type: 2}
+    - target: {fileID: 2451913933932695138, guid: fd200122c3f3f2843ae1d7926c1040d2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: InvokeStarted
+      objectReference: {fileID: 0}
+    - target: {fileID: 2451913933932695138, guid: fd200122c3f3f2843ae1d7926c1040d2,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Events.BoolEvent, Netherlands3D.Core.Runtime
+      objectReference: {fileID: 0}
     - target: {fileID: 3624404205777871944, guid: fd200122c3f3f2843ae1d7926c1040d2,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2259,6 +2275,32 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -108
       objectReference: {fileID: 0}
+    - target: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_MinValue
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 926cb618d5dc750439fdfa517fc1d103,
+        type: 2}
+    - target: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: InvokeStarted
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Events.FloatEvent, Netherlands3D.Core.Runtime
+      objectReference: {fileID: 0}
     - target: {fileID: 3624404205777871944, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2424,6 +2466,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Accordion_Slider
       objectReference: {fileID: 0}
+    - target: {fileID: 6134278655174753428, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6849109209348033402, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2461,6 +2508,98 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd, type: 3}
+--- !u!1 &307119699934485351 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5378859493268154191, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685398192571743272}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8939379060760942651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307119699934485351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3531de719a1564e4b80f2899eb59bc45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  invokeFloatEvent: {fileID: 11400000, guid: 926cb618d5dc750439fdfa517fc1d103, type: 2}
+  onReceivedEventFromOutside:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4540279057675102433}
+        m_TargetAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
+        m_MethodName: SetTextWithoutNotify
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4540279057675102433 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8206922155053307081, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685398192571743272}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307119699934485351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4683866930131407975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1145857832735500367, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685398192571743272}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1092691300899114799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683866930131407975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 161fc7dbadbff74448bf577d9a025fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 926cb618d5dc750439fdfa517fc1d103, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6623878092668989678}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
+        m_MethodName: SetValueWithoutNotify
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6623878092668989678 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1516069920195218630, guid: 02f72cf5d0dc7e54e93376e22dc0a3dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685398192571743272}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683866930131407975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7806238517140156514
 PrefabInstance:
   m_ObjectHideFlags: 0

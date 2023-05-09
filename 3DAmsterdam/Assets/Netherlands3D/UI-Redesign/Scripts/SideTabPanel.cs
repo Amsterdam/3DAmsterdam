@@ -49,6 +49,8 @@ namespace Netherlands3D.Interface.SidePanel
         private Tabv2 settingsTab;
         [SerializeField]
         private Tabv2 sunTimeTab;
+        [SerializeField]
+        private Tabv2 timelineTab;
 
         [Header("Sub Tabs")]
         //Sub tabs
@@ -58,6 +60,11 @@ namespace Netherlands3D.Interface.SidePanel
         private Tabv2 viewpointsTab;
         [SerializeField]
         private Tabv2 annotationsTab;
+        [SerializeField]
+        private Tabv2 measureTab;
+        [SerializeField]
+        private Tabv2 gridTab;
+
 
 
         [Header("Animation")]
@@ -268,6 +275,10 @@ namespace Netherlands3D.Interface.SidePanel
             profileTab.TabPanel.gameObject.SetActive(false);
             viewpointsTab.TabPanel.gameObject.SetActive(false);
             annotationsTab.TabPanel.gameObject.SetActive(false);
+            timelineTab.TabPanel.gameObject.SetActive(false);
+
+            measureTab.TabPanel.gameObject.SetActive(false);
+            gridTab.TabPanel.gameObject.SetActive(false);
         }
 
         public void ClosePanel()
