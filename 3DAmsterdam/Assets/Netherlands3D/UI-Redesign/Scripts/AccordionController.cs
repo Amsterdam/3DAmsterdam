@@ -22,43 +22,43 @@ public class AccordionController : MonoBehaviour
     private List<GameObject> directChildren;
     private List<AccordionController> allChildren;
 
+    [SerializeField]
+    private bool generateChildrenWithLinkedObject = false;
+    [SerializeField]
+    private GameObject accordion3Prefab;
 
     [Header("Customizations")]
     [SerializeField]
     private GameObjectEvent openColorOptions;
     [SerializeField]
+    private MaterialEvent selectedMaterialEvent;
+    [SerializeField]
     private GameObject linkedObject;
     public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
     [SerializeField]
     private Toggle toggleActiveLayer;
-
-
-
     [SerializeField]
     protected LayerType layerType = LayerType.STATIC;
     public LayerType LayerType { get => layerType; }
 
-    //Color
-    [SerializeField]
-    private List<Material> uniqueLinkedObjectMaterials;
-    public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
 
-    public Material opaqueShaderSourceOverride;
-    public Material transparentShaderSourceOverride;
-    public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
-    private List<Color> resetColorValues;
-    [Tooltip("Override shaders instead of copying material source properties")]
-    public bool swapTransparentMaterialSources = false;
-    [Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
-    public bool usingRuntimeInstancedMaterials = false;
-
-    [Header("Visuals")]
-    [SerializeField]
-    private TMP_Text titleField;
+    [Header("Visual")]
     [SerializeField]
     private string title;
+    [SerializeField]
+    private Sprite defaultSprite;
+    [SerializeField]
+    private Sprite openedSprite;
+    [SerializeField]
+    private Material legendColorMaterial;
+    public Material LegendColorMaterial { get => legendColorMaterial; set => legendColorMaterial = value; }
+    [SerializeField]
+    private bool activateCheckMark = true;
 
 
+    [Header("Link to components")]
+    [SerializeField]
+    private TMP_Text titleField;
     [SerializeField]
     private GameObject legendColor;
     [SerializeField]
@@ -70,55 +70,69 @@ public class AccordionController : MonoBehaviour
     [SerializeField]
     private GameObject chevron;
     [SerializeField]
-    private Sprite defaultSprite;
+    private Image backgroundImage;
+
+    [Header("Listening events")]
     [SerializeField]
-    private Sprite openedSprite;
-    [SerializeField]
-    private Image image;
+    private ColorEvent selectedColorEvent;
 
     // Start is called before the first frame update
     void Awake()
     {
-        //Get the children accordion
+        //Get the direct children accordion
         directChildren = new List<GameObject>();
         foreach (Transform transform in accordionChildrenGroup.transform)
         {
             directChildren.Add(transform.gameObject);
         }
 
+        //Get all the accordions under parent
         allChildren = GetAllAccordionChildren(gameObject.transform);
+
+        //If yes: parent to generated accordions
+        if (generateChildrenWithLinkedObject & linkedObject)
+        {
+            foreach (var material in linkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
+            {
+                var generatedAccordion = Instantiate(accordion3Prefab, accordionChildrenGroup.transform);
+
+                var controller = generatedAccordion.GetComponent<AccordionController>();
+                controller.linkedObject = linkedObject;
+                controller.title = material.name;
+                controller.legendColorMaterial = material;
+                controller.activateCheckMark = false;
+
+                //generatedAccordion.SetActive(true);
+                directChildren.Add(generatedAccordion);
+            }
+        }
+
+    }
+
+    private void SetAccordionComponents()
+    {
+        if (titleField) titleField.text = title;
 
         //Chevron is (not) shown depending if there are children
         if (chevron) chevron.SetActive(directChildren.Count > 0);
 
         //Making sure the right data is there for the paintbrush
-        if (colorButton) colorButton.SetActive(openColorOptions && linkedObject && directChildren.Count == 0);
+        if (colorButton) colorButton.SetActive(directChildren.Count == 0);
+
+        //TODO: Set color?
         if (legendColor)
         {
-            legendColor.SetActive(openColorOptions && linkedObject); //TODO: not just this,also if just color withotu edit
-            //TODO: color should be set
+            legendColor.SetActive(openColorOptions && legendColorMaterial);
+            if (legendColorMaterial) legendColor.GetComponent<Image>().color = legendColorMaterial.GetColor("_BaseColor");
         }
 
-        //TODO: change
-        //if (checkmark) checkmark.SetActive(directChildren.Count > 0);
-
-        /*
-        //If we set a linkedObject manualy, get the color.
-        if (LinkedObject)
-        {
-            var binaryMeshLayer = LinkedObject.GetComponent<BinaryMeshLayer>();
-            if (binaryMeshLayer && UniqueLinkedObjectMaterials)
-                UniqueLinkedObjectMaterials = binaryMeshLayer.DefaultMaterialList[0];
-
-            UpdateLayerPrimaryColor();
-            //GetResetColorValues();
-        }
-        */
+        if (checkmark) checkmark.SetActive(activateCheckMark);
     }
 
-        void Start()
+    void Start()
     {
-        if (titleField) titleField.text = title;
+        SetAccordionComponents();
+
         //By default
         //Tabs are closed
         ToggleChildren(false);
@@ -159,33 +173,37 @@ public class AccordionController : MonoBehaviour
 
     public void OpenColorOptions()
     {
-        openColorOptions.InvokeStarted(gameObject);
+        //So that not all legend color are listening
+        selectedColorEvent.RemoveAllListenersStarted();
+
+        //Invokers
+        openColorOptions.InvokeStarted(gameObject); //to open the color popup
+        selectedMaterialEvent.InvokeStarted(legendColorMaterial); //
+
+        //Listeners
+        selectedColorEvent.AddListenerStarted(SetIconColor); //if color in color popup is changed, change the icon color
+        selectedColorEvent.AddListenerStarted(SetMaterialColor); //if color in color popup is changed, change the  
     }
 
-    public void UpdateLayerPrimaryColor()
+    private void SetIconColor(Color pickedColor)
     {
-        if (uniqueLinkedObjectMaterials.Count > 0)
-        {
-            var primaryColor = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
-            primaryColor.a = 1.0f;
-            legendColor.GetComponent<Renderer>().material.color = primaryColor;
-        }
+        legendColor.GetComponent<Image>().color = pickedColor;
     }
-    //Visual logic
+
+    private void SetMaterialColor(Color pickedColor)
+    {
+        legendColorMaterial.SetColor("_BaseColor", pickedColor);
+    }
 
     public void ChevronPressed()
     {
-
         //Logic
         isOpen = !isOpen;
         ToggleChildren(isOpen);
 
         //Visuals
         if (chevron) FlipChevron();
-        //Background imagge
-        image.sprite = isOpen ? openedSprite : defaultSprite;
-
-        Debug.Log($"Chevron pressed: {isOpen}");
+        backgroundImage.sprite = isOpen ? openedSprite : defaultSprite;
     }
 
     private void FlipChevron()
@@ -201,10 +219,7 @@ public class AccordionController : MonoBehaviour
             foreach (var child in allChildren)
             {
                 child.gameObject.SetActive(false);
-                Debug.Log($"Close 1: {child}");
-
             }
-            Debug.Log($"Close 2:");
 
         }
         //Open
@@ -213,12 +228,7 @@ public class AccordionController : MonoBehaviour
             foreach (var child in directChildren)
             {
                 child.SetActive(true);
-                Debug.Log($"Open 1: {child}");
-
             }
-
-            Debug.Log($"Open 2:");
-
         }
     }
 
@@ -238,167 +248,5 @@ public class AccordionController : MonoBehaviour
 
         return accordions;
 
-
-
-
     }
-    /*
-
-    //Interface layer
-
-
-
-    //Color
-    [SerializeField]
-    private Material transparentMaterialSource;
-    [SerializeField]
-    private Material opaqueMaterialSource;
-    [SerializeField]
-    private TextMeshProUGUI materialTitle;
-
-    private Color resetMaterialColor;
-
-    private Material targetMaterial;
-    private LayerVisualsv2 layerVisuals;
-
-    private bool selected = false;
-
-    public float materialOpacity = 1.0f;
-
-    private bool swapLowOpacityMaterialProperties = false;
-    public Color GetMaterialColor => targetMaterial.GetColor("_BaseColor");
-
-
-
-    /// <summary>
-    /// Changes the color of the Material that is linked to this slot
-    /// </summary>
-    /// <param name="pickedColor">The new color for the linked Material</param>
-    public void ChangeColor(Color pickedColor)
-    {
-        legendColor.GetComponent<Renderer>().material.color = pickedColor;
-
-        if (targetMaterial)
-            targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
-
-        if (layerVisuals && layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
-            CopyPropertiesToAllChildMaterials();
-    }
-
-    /// <summary>
-    /// Sets the material target and reference the target LayerVisuals where this slot is in.
-    /// </summary>
-    /// <param name="target">The Material this slot targets</param>
-    /// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-    public void Init(Material target, Color resetColor, LayerVisualsv2 targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null, bool swapMaterialSources = false)
-    {
-        targetMaterial = target;
-        swapLowOpacityMaterialProperties = swapMaterialSources;
-
-        //Optional non standard shader type overrides ( for layers with custom shaders )
-        if (swapMaterialSources)
-        {
-            swapLowOpacityMaterialProperties = true;
-            transparentMaterialSource = transparentMaterialSourceOverride;
-            opaqueMaterialSource = opaqueMaterialSourceOverride;
-        }
-        //Set tooltip text. Users do not need to know if a material is an instance.
-        var materialName = targetMaterial.name.Replace(" (Instance)", "");
-
-        //Filter out our externail textures tag
-        if (materialName.Contains("[texture="))
-            materialName = materialName.Split('[')[0].Trim();
-
-        GetComponent<TooltipTrigger>().TooltipText = materialName;
-        materialTitle.text = materialName;
-
-        var materialColor = GetMaterialColor;
-        legendColor.GetComponent<Renderer>().material.color = new Color(materialColor.r, materialColor.g, materialColor.b, 1.0f);
-        materialOpacity = materialColor.a;
-
-        resetMaterialColor = resetColor;
-
-        layerVisuals = targetLayerVisuals;
-    }
-
-    /// <summary>
-    /// Copies the target material of this material slot to all child materials found within the layer linked object
-    /// </summary>
-    private void CopyPropertiesToAllChildMaterials()
-    {
-        MeshRenderer[] childRenderers = layerVisuals.targetInterfaceLayer.LinkedObject.GetComponentsInChildren<MeshRenderer>();
-        foreach (MeshRenderer meshRenderer in childRenderers)
-        {
-            if (meshRenderer.sharedMaterial != targetMaterial)
-            {
-                var optionalColorIDMap = meshRenderer.sharedMaterial.GetTexture("_HighlightMap");
-                meshRenderer.sharedMaterial.shader = targetMaterial.shader;
-                meshRenderer.sharedMaterial.CopyPropertiesFromMaterial(targetMaterial);
-                if (optionalColorIDMap)
-                    meshRenderer.sharedMaterial.SetTexture("_HighlightMap", optionalColorIDMap);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Changes the opacity of the material, and always swap the shader type to the faster Opaque surface when opacity is 1.
-    /// </summary>
-    /// <param name="opacity">Opacity value from 0.0 to 1.0</param>
-    public void ChangeOpacity(float opacity)
-    {
-        if (materialOpacity == opacity)
-        {
-            return;
-        }
-        else
-        {
-            materialOpacity = opacity;
-            SwitchShaderAccordingToOpacity();
-        }
-
-        //We may not have to do this if we can force the sunlight shadow to ignore cutout.
-        targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
-
-        if (layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
-            CopyPropertiesToAllChildMaterials();
-    }
-
-    private void SwitchShaderAccordingToOpacity()
-    {
-        if (materialOpacity < 1.0f)
-        {
-            SwapShaderToTransparent();
-        }
-        else
-        {
-            SwapShaderToOpaque();
-        }
-    }
-
-    private void SwapShaderToOpaque()
-    {
-        if (swapLowOpacityMaterialProperties)
-        {
-            targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
-            targetMaterial.SetFloat("_Surface", 0); //0 Opaque
-        }
-        targetMaterial.SetColor("_BaseColor", legendColor.GetComponent<Renderer>().material.color);
-    }
-
-    private void SwapShaderToTransparent()
-    {
-        if (swapLowOpacityMaterialProperties)
-        {
-            targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
-            targetMaterial.SetFloat("_Surface", 1); //1 Alpha
-        }
-        var color = legendColor.GetComponent<Renderer>().material.color;
-        color.a = materialOpacity;
-        targetMaterial.SetColor("_BaseColor", color);
-    }
-
-    */
-
-
-
 }

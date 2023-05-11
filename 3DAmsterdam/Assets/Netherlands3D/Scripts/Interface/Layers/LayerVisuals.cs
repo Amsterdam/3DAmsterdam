@@ -144,6 +144,8 @@ namespace Netherlands3D.Interface.Layers
 		{
 			ClearMaterialSlots();
 
+			return; //For ui redesign
+
 			for (int i = 0; i < targetInterfaceLayer.UniqueLinkedObjectMaterials.Count; i++)
 			{
 				var uniqueMaterial = targetInterfaceLayer.UniqueLinkedObjectMaterials[i];
