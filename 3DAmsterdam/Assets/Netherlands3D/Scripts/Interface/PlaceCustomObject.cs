@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Events;
 using Netherlands3D.Interface.Layers;
+using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
@@ -30,6 +31,10 @@ namespace Netherlands3D.Interface
         [SerializeField] private bool startStuckToMouse = false;
         [SerializeField] private bool moveCameraToRenderer = true;
         [SerializeField] private Vector3 cameraOffsetDirection = new Vector3(0, 1, -1);
+
+        [Header("Re-Design")]
+        [SerializeField] private Transform accordionParent;
+        [SerializeField] private GameObject accordionPrefab;
 
         public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
 
@@ -103,10 +108,21 @@ namespace Netherlands3D.Interface
             {
                 //Set container layer for objects that have a connection with an interfacelayer
                 spawnedObject.GetComponent<PlaceOnClick>().interfaceLayer = interfaceLayer;
-            }
+            } 
             else{
                 spawnedObject.transform.position = pointer.WorldPosition;
             }
+
+            //Re-design
+            var accordion = Instantiate(accordionPrefab, accordionParent);
+            var actionButton = accordion.GetComponent<ActionButton>();
+            if (actionButton != null)
+            {
+                actionButton.ButtonText.text = spawnedObject.name;
+                actionButton.LinkedObject = spawnedObject;
+                actionButton.LayerType = layerType;
+            }
+
         }
     }
 }

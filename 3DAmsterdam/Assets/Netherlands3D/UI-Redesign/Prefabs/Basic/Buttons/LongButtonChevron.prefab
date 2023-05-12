@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2332312319701856149
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -114,7 +114,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 180, y: 0}
-  m_SizeDelta: {x: 360, y: 50}
+  m_SizeDelta: {x: 360, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5662348841287190562
 CanvasRenderer:
@@ -249,11 +249,11 @@ RectTransform:
   m_Father: {fileID: 4858897891047592588}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 158.2, y: 0}
-  m_SizeDelta: {x: 18, y: 18}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -16, y: 0}
+  m_SizeDelta: {x: 336, y: 18}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &481607368305678624
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -374,6 +374,7 @@ GameObject:
   - component: {fileID: 447551660604098213}
   - component: {fileID: -5253948569191503774}
   - component: {fileID: -2734441626199941667}
+  - component: {fileID: 6760821298034704909}
   m_Layer: 5
   m_Name: LongButtonChevron
   m_TagString: Untagged
@@ -400,7 +401,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 360, y: 48}
+  m_SizeDelta: {x: 336, y: 48}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3028105687230221640
 CanvasRenderer:
@@ -455,8 +456,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: -5253948569191503774}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Select
+        m_TargetAssemblyTypeName: Netherlands3D.Interface.SidePanel.ActionButton,
+          Assembly-CSharp
+        m_MethodName: OnViewpointClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -480,6 +482,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonText: {fileID: 2036293875754909147}
   button: {fileID: 447551660604098213}
+  linkedObject: {fileID: 0}
+  layerType: 2
 --- !u!114 &-2734441626199941667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,3 +497,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
+--- !u!114 &6760821298034704909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204464804396968670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 336
+  m_MinHeight: 48
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1

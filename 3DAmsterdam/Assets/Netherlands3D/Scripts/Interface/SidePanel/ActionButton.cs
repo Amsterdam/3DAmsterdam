@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Netherlands3D.Interface.Layers;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -38,6 +39,26 @@ namespace Netherlands3D.Interface.SidePanel
             gameObject.name = title;
             buttonText.text = title;
             clickAction = action;
+        }
+
+
+        //Re-design
+        [SerializeField]
+        protected LayerType layerType = LayerType.STATIC;
+        public LayerType LayerType { get => layerType; set => layerType = value; }
+
+        public TextMeshProUGUI ButtonText { get => buttonText; set => buttonText = value; }
+
+        [SerializeField]
+        private GameObject linkedObject;
+        public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
+
+        public void OnViewpointClick()
+        {
+            if (layerType == LayerType.CAMERA || layerType == LayerType.ANNOTATION)
+            {
+                Camera.main.transform.SetPositionAndRotation(LinkedObject.transform.position, LinkedObject.transform.rotation);
+            }
         }
     }
 }

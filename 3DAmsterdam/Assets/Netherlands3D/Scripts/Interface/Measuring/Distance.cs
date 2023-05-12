@@ -12,13 +12,17 @@ namespace Netherlands3D.Interface
     {
         [SerializeField]
         private TextMeshProUGUI distanceText;
+        [SerializeField]
+        private TextMeshProUGUI distancePanelText;
+
 
         public void DrawDistance(float distance, string suffix)
         {
             distanceText.text = "~"+ distance.ToString("F2") + suffix;
+            distancePanelText.text = distance.ToString("F2") + suffix;
         }
 
-		public void ResetInput()
+        public void ResetInput()
 		{
             var input = GetComponentInChildren<TMP_InputField>();
             if(input) input.text = distanceText.text;
