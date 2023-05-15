@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7790539252213156846}
   - component: {fileID: 920159451652311703}
   - component: {fileID: 1238720481990659719}
-  - component: {fileID: 2145471422220568699}
+  - component: {fileID: -5090911290875431958}
   m_Layer: 0
   m_Name: WMSLayerManager
   m_TagString: Untagged
@@ -91,33 +91,31 @@ MonoBehaviour:
   onTrue:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2145471422220568699}
-        m_TargetAssemblyTypeName: Netherlands3D.Rendering.ToggleStencilForRenderFeatures,
-          Netherlands3D.WMS.Runtime
-        m_MethodName: EnableForFeature
+      - m_Target: {fileID: -5090911290875431958}
+        m_TargetAssemblyTypeName: SwapFeatures, Assembly-CSharp
+        m_MethodName: EnableStencilByLayer
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: buildings
+          m_StringArgument: Buildings
           m_BoolArgument: 0
         m_CallState: 2
   onFalse:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2145471422220568699}
-        m_TargetAssemblyTypeName: Netherlands3D.Rendering.ToggleStencilForRenderFeatures,
-          Netherlands3D.WMS.Runtime
-        m_MethodName: DisableForFeature
+      - m_Target: {fileID: -5090911290875431958}
+        m_TargetAssemblyTypeName: SwapFeatures, Assembly-CSharp
+        m_MethodName: DisableStencilByLayer
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: buildings
+          m_StringArgument: Buildings
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1238720481990659719
@@ -139,36 +137,34 @@ MonoBehaviour:
   onTrue:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2145471422220568699}
-        m_TargetAssemblyTypeName: Netherlands3D.Rendering.ToggleStencilForRenderFeatures,
-          Netherlands3D.WMS.Runtime
-        m_MethodName: EnableForFeature
+      - m_Target: {fileID: -5090911290875431958}
+        m_TargetAssemblyTypeName: SwapFeatures, Assembly-CSharp
+        m_MethodName: EnableStencilByLayer
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: terrain
+          m_StringArgument: Terrain
           m_BoolArgument: 0
         m_CallState: 2
   onFalse:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2145471422220568699}
-        m_TargetAssemblyTypeName: Netherlands3D.Rendering.ToggleStencilForRenderFeatures,
-          Netherlands3D.WMS.Runtime
-        m_MethodName: DisableForFeature
+      - m_Target: {fileID: -5090911290875431958}
+        m_TargetAssemblyTypeName: SwapFeatures, Assembly-CSharp
+        m_MethodName: DisableStencilByLayer
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: terrain
+          m_StringArgument: Terrain
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2145471422220568699
+--- !u!114 &-5090911290875431958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -177,6 +173,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7790539252213156847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9509dbe4ef5ec594ebc4e3f4c2e47b5b, type: 3}
+  m_Script: {fileID: 11500000, guid: c95a2451947f3e2489896cb7c3c7dc41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
