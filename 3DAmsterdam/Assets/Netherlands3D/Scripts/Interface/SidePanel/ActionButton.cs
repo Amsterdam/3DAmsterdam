@@ -55,9 +55,16 @@ namespace Netherlands3D.Interface.SidePanel
 
         public void OnViewpointClick()
         {
-            if (layerType == LayerType.CAMERA || layerType == LayerType.ANNOTATION)
+            switch(layerType) 
             {
-                Camera.main.transform.SetPositionAndRotation(LinkedObject.transform.position, LinkedObject.transform.rotation);
+                case LayerType.CAMERA:
+                    Camera.main.transform.SetPositionAndRotation(LinkedObject.transform.position, LinkedObject.transform.rotation);
+                    break;
+                case LayerType.ANNOTATION:
+                    Camera.main.transform.SetPositionAndRotation(LinkedObject.GetComponent<WorldPointFollower>().WorldPosition, LinkedObject.transform.rotation);
+                    break;
+                default:
+                    break;
             }
         }
     }

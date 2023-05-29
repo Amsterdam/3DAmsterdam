@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Netherlands3D.Events;
+using UnityEngine.Events;
 
 public class Tabv2 : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class Tabv2 : MonoBehaviour
 
     private Toggle toggle;
 
+    [SerializeField] private UnityEvent resetToDefault;
+
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
@@ -21,7 +25,10 @@ public class Tabv2 : MonoBehaviour
 
     private void ToggleChanged()
     {
+        resetToDefault.Invoke();
+        //TODO: Remove all efects
 
+        //if(toggle.isOn)
     }
 
     /// <summary>

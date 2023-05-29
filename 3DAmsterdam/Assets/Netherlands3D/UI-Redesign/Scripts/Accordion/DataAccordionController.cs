@@ -15,7 +15,7 @@ public class DataAccordionController : MonoBehaviour
     private GameObject accordionChildPrefab;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _controller = GetComponent<DefaultAccordionController>();
 

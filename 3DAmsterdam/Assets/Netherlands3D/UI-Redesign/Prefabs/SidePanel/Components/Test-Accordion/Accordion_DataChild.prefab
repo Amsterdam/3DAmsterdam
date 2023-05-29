@@ -436,6 +436,7 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   layerType: 2
   title: Title
+  toggleIsOn: 1
   defaultSprite: {fileID: 21300000, guid: efca07ec1fafdda46b9ed4ab0286ee2e, type: 3}
   openedSprite: {fileID: 21300000, guid: efca07ec1fafdda46b9ed4ab0286ee2e, type: 3}
   activateCheckMark: 0
@@ -702,7 +703,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'New Text '
+  m_text: Title
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d1aaa692001149048b71b5b5c5bf4392, type: 2}
   m_sharedMaterial: {fileID: -5256588669169998648, guid: d1aaa692001149048b71b5b5c5bf4392,
@@ -788,7 +789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4645342453816840302
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1129,7 +1130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &474425968723968948
 RectTransform:
   m_ObjectHideFlags: 0

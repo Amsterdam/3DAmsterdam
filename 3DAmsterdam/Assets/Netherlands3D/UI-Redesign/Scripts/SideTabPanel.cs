@@ -64,6 +64,9 @@ namespace Netherlands3D.Interface.SidePanel
         private Tabv2 measureTab;
         [SerializeField]
         private Tabv2 gridTab;
+        [SerializeField]
+        private Tabv2 undergroundTab;
+
 
 
 
@@ -141,42 +144,6 @@ namespace Netherlands3D.Interface.SidePanel
         {
             generatedFieldsRootContainer = targetContainer;
             targetFieldsContainer = targetContainer;
-        }
-
-        public void OpenPanel(Panels panel)
-        {
-            switch (panel)
-            {
-                case Panels.Search:
-                    searchTab.OpenTab(true);
-                    break;
-                case Panels.Layer:
-                    layersTab.OpenTab(true);
-                    break;
-                case Panels.SunTime:
-                    sunTimeTab.OpenTab(true);   
-                    break;
-                case Panels.Car:
-                    //
-                    break;
-                case Panels.Timeline:
-                    //
-                    break;
-                case Panels.Measure:
-                    //
-                    break;
-                case Panels.Viewpoints:
-                    viewpointsTab.OpenTab(true);   
-                    break;
-                case Panels.Comments:
-                    break;
-                case Panels.Underground:
-                    break;
-                case Panels.Profile:
-                    profileTab.OpenTab(true);
-                    break;
-
-            }
         }
 
         /// <summary>
@@ -269,7 +236,7 @@ namespace Netherlands3D.Interface.SidePanel
             objectInformationTab.TabPanel.gameObject.SetActive(false);
             layersTab.TabPanel.gameObject.SetActive(false);
             searchTab.TabPanel.gameObject.SetActive(false);
-            //settingsTab.TabPanel.gameObject.SetActive(false);
+            settingsTab.TabPanel.gameObject.SetActive(false);
             searchTab.TabPanel.gameObject.SetActive(false);
             sunTimeTab.TabPanel.gameObject.SetActive(false);
             profileTab.TabPanel.gameObject.SetActive(false);
@@ -279,6 +246,9 @@ namespace Netherlands3D.Interface.SidePanel
 
             measureTab.TabPanel.gameObject.SetActive(false);
             gridTab.TabPanel.gameObject.SetActive(false);
+            undergroundTab.TabPanel.gameObject.SetActive(false);
+
+
         }
 
         public void ClosePanel()
@@ -286,18 +256,21 @@ namespace Netherlands3D.Interface.SidePanel
             open = false;
             if (panelAnimation != null) StopCoroutine(panelAnimation);
             panelAnimation = StartCoroutine(Animate());
+
+            //panel.gameObject.SetActive(true);
         }
 
         private IEnumerator Animate()
         {
-            while (open && movePanelRectTransform.anchoredPosition.x > 0)
+            while (open && movePanelRectTransform.anchoredPosition.x < 0)
             {
                 movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.zero, animationSpeed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
-            while (!open && movePanelRectTransform.anchoredPosition.x < collapsedShift)
+            //while (!open && movePanelRectTransform.anchoredPosition.x < collapsedShift)
+            while (!open && movePanelRectTransform.anchoredPosition.x > collapsedShift)
             {
-                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.right * collapsedShift, animationSpeed * Time.deltaTime);
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.left * collapsedShift, animationSpeed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
             yield return null;

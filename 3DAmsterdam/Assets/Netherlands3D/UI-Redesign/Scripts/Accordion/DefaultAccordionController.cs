@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class DefaultAccordionController : MonoBehaviour
 {
     [Header("Logic")]
@@ -60,7 +59,15 @@ public class DefaultAccordionController : MonoBehaviour
         allChildrenGroup = new List<GameObject>();
         foreach (var component in GetComponentsInChildren<DefaultAccordionController>()) {
             allChildrenGroup.Add(component.AccordionChildrenGroup);
-        } 
+        }
+
+        SetAccordionComponents();
+    }
+
+
+    private void OnValidate()
+    {
+        SetAccordionComponents();
     }
 
 
@@ -69,7 +76,9 @@ public class DefaultAccordionController : MonoBehaviour
         if (titleField) titleField.text = title;
 
         //Chevron is (not) shown depending if there are children
-        if (chevron) chevron.SetActive(accordionChildrenGroup.GetComponentsInChildren<DefaultAccordionController>().Length > 0);
+        if (chevron) { 
+            chevron.SetActive(accordionChildrenGroup.GetComponentsInChildren<DefaultAccordionController>().Length > 0); 
+        }
 
         if (toggle)
         {
@@ -83,7 +92,7 @@ public class DefaultAccordionController : MonoBehaviour
 
     void Start()
     {
-        SetAccordionComponents();
+        //SetAccordionComponents();
 
         //By default
         //Tabs are closed

@@ -31,7 +31,8 @@ public class DataChildAccordionController : MonoBehaviour
 
     void Awake()
     {
-        _defaultController = GetComponent<DefaultAccordionController>();    
+        _defaultController = GetComponent<DefaultAccordionController>();
+        //SetAccordionComponents();
     }
 
     private void Start()
