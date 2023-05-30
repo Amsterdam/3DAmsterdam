@@ -109,7 +109,7 @@ namespace Netherlands3D.Interface
         public void ApplyText()
         {
             BodyText = editInputField.text;
-            interfaceLayer.RenameLayer(BodyText);
+            //interfaceLayer.RenameLayer(BodyText);
         }
 
 		/// <summary>

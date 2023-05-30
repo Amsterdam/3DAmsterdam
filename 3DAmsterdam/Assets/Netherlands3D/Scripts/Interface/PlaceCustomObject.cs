@@ -103,7 +103,8 @@ namespace Netherlands3D.Interface
             spawnedObject = Instantiate(customObject, targetParent);
             spawnedObject.name = (objectName!="") ? objectName : spawnedObject.name.Replace("(Clone)", "");
 
-            CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(spawnedObject, layerType);
+            CustomLayer interfaceLayer = null;
+            if (layers) interfaceLayer = layers.AddNewCustomObjectLayer(spawnedObject, layerType);
             if (layerType == LayerType.ANNOTATION)
             {
                 //Set container layer for objects that have a connection with an interfacelayer

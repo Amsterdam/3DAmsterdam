@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: eac168551ab770f44aaa25f6144b66e1, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -206,7 +206,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1490197785437769218}
-        m_TargetAssemblyTypeName: Tabv2, Assembly-CSharp
+        m_TargetAssemblyTypeName: TabItem, Assembly-CSharp
         m_MethodName: OpenTab
         m_Mode: 0
         m_Arguments:
@@ -257,4 +257,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tabPanel: {fileID: 0}
-  resetToDefault: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
+  onChange:
+    m_PersistentCalls:
+      m_Calls: []
+  turnOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1490197785437769218}
+        m_TargetAssemblyTypeName: TabItem, Assembly-CSharp
+        m_MethodName: SetActivePanel
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  turnOff:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1490197785437769218}
+        m_TargetAssemblyTypeName: TabItem, Assembly-CSharp
+        m_MethodName: SetActivePanel
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 99e2dd3abdbff77459fdf09aa91b3ea3, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  image: {fileID: 3536162796379056309}
+  sprite: {fileID: 0}

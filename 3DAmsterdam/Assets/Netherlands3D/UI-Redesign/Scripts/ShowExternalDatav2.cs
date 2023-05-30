@@ -12,7 +12,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         public void Load(string metaDataPath = "metadata.json")
         {
-            SideTabPanel.Instance.OpenObjectInformation();
+            //SideTabPanel.Instance.OpenObjectInformation();
             PropertiesPanel.Instance.AddLoadingSpinner();
             StartCoroutine(GetText(metaDataPath));
         }

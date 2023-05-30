@@ -129,7 +129,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: eac168551ab770f44aaa25f6144b66e1, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 8228677906642650527}
   - component: {fileID: 4163619074560165053}
   - component: {fileID: 700167125502517093}
+  - component: {fileID: 787515279603096551}
   m_Layer: 5
   m_Name: TabParent
   m_TagString: Untagged
@@ -281,18 +282,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 4163619074560165053}
-        m_TargetAssemblyTypeName: TabChildren, Assembly-CSharp
-        m_MethodName: ResetImage
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   m_IsOn: 1
 --- !u!114 &8228677906642650527
 MonoBehaviour:
@@ -319,7 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7669ad307623e7a4eb1360a9d709c85c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 3536162796379056309}
 --- !u!114 &700167125502517093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,3 +321,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
+--- !u!114 &787515279603096551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5183125865731708666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2d798aa1d5cf5449b77bff8cd8b4737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tabPanel: {fileID: 0}
+  resetToDefault:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4163619074560165053}
+        m_TargetAssemblyTypeName: TabItemGroup, Assembly-CSharp
+        m_MethodName: ToggleChildren
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  turnOn:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4163619074560165053}
+        m_TargetAssemblyTypeName: TabItemGroup, Assembly-CSharp
+        m_MethodName: ToggleChildren
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  turnOff:
+    m_PersistentCalls:
+      m_Calls: []
+  image: {fileID: 3536162796379056309}
+  sprite: {fileID: 0}
