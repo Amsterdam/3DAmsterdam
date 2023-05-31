@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using System.IO;
+using UnityEngine.Events;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -16,6 +17,11 @@ public class CityJSONDownloader : MonoBehaviour
 #endif
 
     private GameObject cityJsonDataContainer;
+
+    [Header("Progress indiction events")]
+    [SerializeField] private UnityEvent<float> progress = new();
+    [SerializeField] private UnityEvent<string> description = new();
+    [SerializeField] private UnityEvent<string> stageDescription = new();
 
     public void DownloadMeshAsCityJSON(GameObject gameObjectWithMesh)
     {
@@ -32,10 +38,26 @@ public class CityJSONDownloader : MonoBehaviour
 
     public void DownloadMeshAsCityJSON(Mesh mesh)
     {
+        description.Invoke("Downloaden als CityJSON");
+        stageDescription.Invoke("Converteren...");
+        progress.Invoke(0.0f);
+
+        StartCoroutine(DownloadWithProgress(mesh));
+    }
+
+    private IEnumerator DownloadWithProgress(Mesh mesh)
+    {
+        yield return new WaitForEndOfFrame();
+
         if (!cityJsonDataContainer) cityJsonDataContainer = this.gameObject;
 
         var cityObjectFromMesh = cityJsonDataContainer.AddComponent<MeshToCityObject>();
         cityObjectFromMesh.CreateGeometryFromMesh(mesh);
+
+        progress.Invoke(0.5f);
+        yield return new WaitForEndOfFrame();
+
+        stageDescription.Invoke("Genereren van json...");
 
         CityJSONFormatter.Reset();
         CityJSONFormatter.AddCityObject(cityObjectFromMesh);
@@ -52,5 +74,8 @@ public class CityJSONDownloader : MonoBehaviour
             Debug.Log($"{selectedPath} saved.");
         }
 #endif
+
+        stageDescription.Invoke("Gereed");
+        progress.Invoke(1.0f);
     }
 }

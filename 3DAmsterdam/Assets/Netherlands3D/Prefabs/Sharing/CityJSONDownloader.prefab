@@ -45,6 +45,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da3f2eb8580ad4247a60c31fee90f79d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  progress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 5ec0a9f132b109c4a829cd53685b5303, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.FloatEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  description:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: afffc457724b26b49a907469fc10d70e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  stageDescription:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 4b151383a0387674795b089cbc7a143a, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &725738279059821947
 MonoBehaviour:
   m_ObjectHideFlags: 0
