@@ -298,8 +298,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOpen: 1
   accordionChildrenGroup: {fileID: 7477409953865805208}
-  linkedObject: {fileID: 0}
-  layerType: 2
+  checkmarkAction:
+    m_PersistentCalls:
+      m_Calls: []
   title: Title
   toggleIsOn: 1
   defaultSprite: {fileID: 21300000, guid: efca07ec1fafdda46b9ed4ab0286ee2e, type: 3}
@@ -961,7 +962,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1832367310468793542
 RectTransform:
   m_ObjectHideFlags: 0

@@ -299,8 +299,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOpen: 0
   accordionChildrenGroup: {fileID: 7477409953865805208}
-  linkedObject: {fileID: 0}
-  layerType: 2
+  checkmarkAction:
+    m_PersistentCalls:
+      m_Calls: []
   title: Title
   toggleIsOn: 1
   defaultSprite: {fileID: 21300000, guid: efca07ec1fafdda46b9ed4ab0286ee2e, type: 3}
@@ -325,6 +326,7 @@ MonoBehaviour:
   generateChildrenWithLinkedObject: 1
   accordionChildPrefab: {fileID: 4218974868196227845, guid: 17e894c0e9e92ff47bd9faaf66edf2dc,
     type: 3}
+  linkedObject: {fileID: 0}
 --- !u!1 &4245741475608517280
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 134, y: -4}
+  m_AnchoredPosition: {x: 106, y: -4}
   m_SizeDelta: {x: 164, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &556471695187044153
@@ -722,7 +724,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -3505380444353439691}
         m_TargetAssemblyTypeName: DefaultAccordionController, Assembly-CSharp
-        m_MethodName: ToggleLinkedObject
+        m_MethodName: ToggleCheckmark
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

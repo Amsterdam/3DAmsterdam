@@ -223,8 +223,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOpen: 1
   accordionChildrenGroup: {fileID: 4898001906976131083}
-  linkedObject: {fileID: 0}
-  layerType: 2
+  checkmarkAction:
+    m_PersistentCalls:
+      m_Calls: []
   title: Title
   toggleIsOn: 1
   defaultSprite: {fileID: 21300000, guid: efca07ec1fafdda46b9ed4ab0286ee2e, type: 3}
@@ -647,10 +648,10 @@ RectTransform:
   m_Father: {fileID: 1495711680485205909}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 134, y: -4}
-  m_SizeDelta: {x: 164, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 270.7, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2559406307819209386
 CanvasRenderer:

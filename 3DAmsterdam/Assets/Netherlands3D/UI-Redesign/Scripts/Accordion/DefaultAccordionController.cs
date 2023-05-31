@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 public class DefaultAccordionController : MonoBehaviour
 {
     [Header("Logic")]
@@ -17,13 +18,9 @@ public class DefaultAccordionController : MonoBehaviour
     public GameObject AccordionChildrenGroup { get => accordionChildrenGroup; set => accordionChildrenGroup = value; }
     private List<GameObject> allChildrenGroup;
 
-    [Header("Customizations")]
-    [SerializeField]
-    private GameObject linkedObject;
-    public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
-    [SerializeField]
-    protected LayerType layerType = LayerType.STATIC;
-    public LayerType LayerType { get => layerType; }
+
+    [Header("Actions")]
+    [SerializeField] private UnityEvent<bool> checkmarkAction;
 
 
     [Header("Visual")]
@@ -85,9 +82,6 @@ public class DefaultAccordionController : MonoBehaviour
             toggle.gameObject.SetActive(activateCheckMark);
             toggle.isOn = toggleIsOn;
         }
-
-
-
     }
 
     void Start()
@@ -96,44 +90,16 @@ public class DefaultAccordionController : MonoBehaviour
 
         //By default
         //Tabs are closed
-        ToggleChildren(false);
+        ToggleChildren(isOpen);
 
     }
-
-    //Functional/event logic
-    /// <summary>
-    /// Enable or Disable the linked GameObject
-    /// </summary>
-    /// <param name="isOn"></param>
-    public void ToggleLinkedObject(bool isOn)
+    public void ToggleCheckmark(bool isOn)
     {
         CascadeToggle(isOn);
-
-        if (!linkedObject)
-        {
-            return;
-        }
-        if (layerType == LayerType.STATIC)
-        {
-            var staticLayer = LinkedObject.GetComponent<Layer>();
-            if (staticLayer == null)
-            {
-                LinkedObject.SetActive(isOn);
-            }
-            else
-            {
-                //Static layer components better use their method to enable/disable, because maybe only the children should be disabled/reenabled
-                staticLayer.isEnabled = isOn;
-            }
-        }
-        else
-        {
-            LinkedObject.SetActive(isOn);
-        }
-
         toggle.SetIsOnWithoutNotify(isOn);
-    }
 
+        checkmarkAction.Invoke(isOn);
+    }
     private void CascadeToggle(bool isOn)
     {
         foreach (var component in GetComponentsInChildren<DefaultAccordionController>())

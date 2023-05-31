@@ -14,15 +14,19 @@ public class DataAccordionController : MonoBehaviour
     [SerializeField]
     private GameObject accordionChildPrefab;
 
+    [SerializeField]
+    private GameObject linkedObject;
+
+
     // Start is called before the first frame update
     void Awake()
     {
         _controller = GetComponent<DefaultAccordionController>();
 
         //If yes: parent to generated accordions
-        if (generateChildrenWithLinkedObject & _controller.LinkedObject)
+        if (generateChildrenWithLinkedObject & linkedObject)
         {
-            foreach (var material in _controller.LinkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
+            foreach (var material in linkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
             {
                 var generatedAccordion = Instantiate(accordionChildPrefab, _controller.AccordionChildrenGroup.transform);
 
