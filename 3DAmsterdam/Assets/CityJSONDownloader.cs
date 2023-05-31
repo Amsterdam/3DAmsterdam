@@ -38,26 +38,24 @@ public class CityJSONDownloader : MonoBehaviour
 
     public void DownloadMeshAsCityJSON(Mesh mesh)
     {
-        description.Invoke("Downloaden als CityJSON");
-        stageDescription.Invoke("Converteren...");
-        progress.Invoke(0.0f);
-
+        if (!cityJsonDataContainer) cityJsonDataContainer = this.gameObject;
         StartCoroutine(DownloadWithProgress(mesh));
     }
 
     private IEnumerator DownloadWithProgress(Mesh mesh)
     {
+        description.Invoke("Downloaden als CityJSON");
+        stageDescription.Invoke("Converteren...");
+        progress.Invoke(0.0f);
         yield return new WaitForEndOfFrame();
-
-        if (!cityJsonDataContainer) cityJsonDataContainer = this.gameObject;
+        
 
         var cityObjectFromMesh = cityJsonDataContainer.AddComponent<MeshToCityObject>();
-        cityObjectFromMesh.CreateGeometryFromMesh(mesh);
-
+        cityObjectFromMesh.CreateGeometryFromMesh(mesh);      
         progress.Invoke(0.5f);
+        stageDescription.Invoke("Genereren van json...");
         yield return new WaitForEndOfFrame();
 
-        stageDescription.Invoke("Genereren van json...");
 
         CityJSONFormatter.Reset();
         CityJSONFormatter.AddCityObject(cityObjectFromMesh);
