@@ -74,11 +74,11 @@ public class CityJSONDownloader : MonoBehaviour
             for (int i = 0; i < triangles.Length; i+=3)
             {
                 if (i > 0) streamWriter.Write(",");
-                //The 3 indices making up the triangle
-                var a = triangles[i];
+                //The 3 indices making up the triangle (inversed winding order)
+                var a = triangles[i]; 
                 var b = triangles[i + 1];
                 var c = triangles[i + 2];
-                streamWriter.Write(string.Format("[[{0},{1},{2}]]", a, b, c));
+                streamWriter.Write(string.Format("[[{0},{1},{2}]]", c, b, a));
 
                 currentWrite++;
                 if (currentWrite % writesToShowFeedback == 0)
