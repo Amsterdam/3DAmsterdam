@@ -89,6 +89,7 @@ public class CityJSONDownloader : MonoBehaviour
                 }
             }
 
+            //Make sure to apply our transformations to the CityJSON transform
             var scale = targetGameObject.transform.localScale;
             streamWriter.Write("]}]}},\"transform\":{\"scale\":[" + scale.x + "," + scale.z + "," + scale.y + "],\"translate\":[" + rdCoordinate.x +","+ rdCoordinate.y+","+ rdCoordinate.z + "]},\"vertices\":[");
             
