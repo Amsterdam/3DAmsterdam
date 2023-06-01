@@ -36,6 +36,11 @@ public class CityJSONDownloader : MonoBehaviour
     private string tempStreamwritePath = "";
     [SerializeField] private int writesToShowFeedback = 100;
 
+    /// <summary>
+    /// StreamWrite a Mesh using a Coroutine to have a small-as-possible memory footprint and provide user progress feedback on a single thread (WebGL requirement)
+    /// On WebGL IndexedDB is used to streamwrite to instead of having to build the large .json in memory.
+    /// </summary>
+    /// <param name="gameObjectWithMesh">The GameObject that contains a MeshFilter with the target Mesh</param>
     public void DownloadMeshAsCityJSON(GameObject gameObjectWithMesh)
     {
         if (gameObjectWithMesh.TryGetComponent(out MeshFilter meshFilter) && meshFilter.sharedMesh)
@@ -61,8 +66,9 @@ public class CityJSONDownloader : MonoBehaviour
 
         float totalWrites = (triangles.Length/3) + vertices.Length;
         float currentWrite = 0;
+        bool enoughGeometry = (triangles.Length > 2 && vertices.Length > 0);
 
-        if (triangles.Length > 2 && vertices.Length > 0)
+        if (enoughGeometry)
         {
             //stream write cityjson lines
             tempFileName = targetGameObject.name + "_CityJSON.json";
@@ -90,8 +96,7 @@ public class CityJSONDownloader : MonoBehaviour
             }
 
             //Make sure to apply our transformations to the CityJSON transform
-            var scale = targetGameObject.transform.localScale;
-            streamWriter.Write("]}]}},\"transform\":{\"scale\":[" + scale.x + "," + scale.z + "," + scale.y + "],\"translate\":[" + rdCoordinate.x +","+ rdCoordinate.y+","+ rdCoordinate.z + "]},\"vertices\":[");
+            streamWriter.Write("]}]}},\"transform\":{\"scale\":[1,1,1],\"translate\":[" + rdCoordinate.x +","+ rdCoordinate.y+","+ rdCoordinate.z + "]},\"vertices\":[");
             
             //Streamwrite own vertices array
             for (int i = 0; i < vertices.Length; i++)
@@ -152,6 +157,9 @@ public class CityJSONDownloader : MonoBehaviour
         progress.Invoke(1.0f);
     }
 
+    /// <summary>
+    /// Clean up temporary file
+    /// </summary>
     private void ClearTempFile()
     {
         if (File.Exists(tempStreamwritePath))
