@@ -31,7 +31,7 @@ public class TabItemGroup : MonoBehaviour
 
         foreach (var child in children)
         {
-            //If you want to close the chidl group AND the toggle is on
+            //If you want to close the child group AND the toggle is on
             if (!isOpen && child.gameObject.GetComponent<Toggle>().isOn)
             {
                 child.gameObject.GetComponent<Toggle>().isOn = false;

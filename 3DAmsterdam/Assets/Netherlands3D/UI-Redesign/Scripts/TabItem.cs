@@ -16,7 +16,7 @@ public class TabItem : MonoBehaviour
     private Toggle toggle;
 
     [Header("Events")]
-    [SerializeField] private UnityEvent onChange;
+    [SerializeField] private UnityEvent<bool> onChange;
     [SerializeField] private UnityEvent turnOn;
     [SerializeField] private UnityEvent turnOff;
 
@@ -40,17 +40,12 @@ public class TabItem : MonoBehaviour
         toggle = GetComponent<Toggle>();
         toggle.onValueChanged.AddListener(delegate { ToggleChanged(); });
     }
-
-    public void SetActivePanel(bool isActive)
-    {
-        if (tabPanel) tabPanel.gameObject.SetActive(isActive);
-    }
-
+    
     private void ToggleChanged()
     {  
-        onChange.Invoke();
+        onChange.Invoke(toggle.isOn);
 
-        if (GetComponent<Toggle>().isOn)
+        if (toggle.isOn)
         {
             turnOn.Invoke();
         } else
@@ -58,6 +53,13 @@ public class TabItem : MonoBehaviour
             turnOff.Invoke();
         }
     }
+
+    public void SetActivePanel(bool isActive)
+    {
+        if (tabPanel) tabPanel.gameObject.SetActive(isActive);
+    }
+
+
 
     /// <summary>
     /// Method to use as dynamic bool in the editor (nice for toggles)

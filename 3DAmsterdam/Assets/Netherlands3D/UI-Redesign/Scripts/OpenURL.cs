@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class OpenURL : MonoBehaviour
+namespace Netherlands3D.Interface.Redesign
 {
-    [SerializeField] private string URL;
-    public void Open()
+    public class OpenURL : MonoBehaviour
     {
-        Debug.Log("Trying to open URL: " + URL);
-        Application.OpenURL(URL);
+        [SerializeField] private string URL;
+
+        public void SetUrl(string url)
+        {
+            this.URL = url;
+        }
+
+        public void Open()
+        {
+            Debug.Log("Trying to open URL: " + URL);
+            Application.OpenURL(URL);
+        }
     }
 }
