@@ -140,8 +140,9 @@ public class CityJSONDownloader : MonoBehaviour
     /// <summary>
     /// Download method done on IndexedDB/JS side
     /// </summary>
-    public void DownloadDoneFromIndexedDB()
-    {
+    public void DownloadDoneFromIndexedDB(string filename)
+    { 
+        Debug.Log($"Done downloading via IndexedDB {filename}");
         ClearTempFile();
         stageDescription.Invoke("Gereed");
         progress.Invoke(1.0f);
