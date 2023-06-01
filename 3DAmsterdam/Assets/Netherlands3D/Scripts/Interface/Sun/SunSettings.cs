@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using Netherlands3D.Interface;
 using TMPro;
+using Netherlands3D.Coordinates;
 
 public class SunSettings : MonoBehaviour
 {
@@ -81,7 +82,7 @@ public class SunSettings : MonoBehaviour
     private void SetGPSCoordinates()
     {
         //Get the GPS coordinates for our world centre
-        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
+        var coordinates = CoordinateConverter.UnitytoWGS84(Vector3.zero);
         longitude = coordinates.lon;
         latitude = coordinates.lat;
     }

@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Core;
+﻿using Netherlands3D.Coordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.TileSystem;
 using System.Collections;
@@ -22,8 +23,8 @@ public class ColladaCreation : ModelFormatCreation
     {
         FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
-        Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
-        Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
+        Vector3RD bottomLeftRD = CoordinateConverter.UnitytoRD(UnityBounds.min);
+        Vector3RD topRightRD = CoordinateConverter.UnitytoRD(UnityBounds.max);
         boundingbox = new MeshClipper.RDBoundingBox(bottomLeftRD.x, bottomLeftRD.y, topRightRD.x, topRightRD.y);
         ColladaFile colladaFile = new ColladaFile();
 
@@ -87,7 +88,7 @@ public class ColladaCreation : ModelFormatCreation
         yield return new WaitForEndOfFrame();
 
         //Create the collada file XML contents, and add our geo info (supported from collada 1.5)
-        colladaFile.CreateCollada(false,CoordConvert.UnitytoWGS84(UnityBounds.min));
+        colladaFile.CreateCollada(false, CoordinateConverter.UnitytoWGS84(UnityBounds.min));
 
         //Save the collada file, with the coordinates embedded in the name.
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");

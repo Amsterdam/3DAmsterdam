@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Netherlands3D.Core.Colors;
+using Netherlands3D.Coordinates;
 
 public class CsvFileParser : MonoBehaviour
 {
@@ -507,11 +508,11 @@ public class CsvFileParser : MonoBehaviour
 
 		if (isRd)
 		{
-			pos = CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
+			pos = CoordinateConverter.RDtoUnity(new Vector3RD(x, y, 7));
 		}
 		else
 		{
-			pos = CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
+			pos = CoordinateConverter.WGS84toUnity(new Vector3WGS(y, x, 7));
 		}
 
 		locationMarker.transform.position = pos;

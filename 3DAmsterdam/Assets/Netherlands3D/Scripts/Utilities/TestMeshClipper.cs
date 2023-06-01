@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.TileSystem;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 
 public class TestMeshClipper : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class TestMeshClipper : MonoBehaviour
         List<int> indices = new List<int>();
         for (int i = 0; i < points.Count; i++)
         {
-            vertices.Add(CoordConvert.RDtoUnity(points[i]));
+            vertices.Add(CoordinateConverter.RDtoUnity(points[i]));
             indices.Add(i);
         }
         Mesh mesh = new Mesh();

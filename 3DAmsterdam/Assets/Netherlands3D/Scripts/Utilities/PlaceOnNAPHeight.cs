@@ -1,3 +1,4 @@
+using Netherlands3D.Coordinates;
 using Netherlands3D.Core;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Netherlands3D.Utilities
 
         void Start()
         {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, NAP - CoordConvert.zeroGroundLevelY);
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, NAP - CoordinateConverter.zeroGroundLevelY);
         }
     }
 }

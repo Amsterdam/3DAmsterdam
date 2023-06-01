@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D
 {

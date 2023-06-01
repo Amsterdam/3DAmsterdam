@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 using Netherlands3D.Core;
 using System;
 using System.Linq;
+using Netherlands3D.Coordinates;
 
 public class UnitTests 
 {

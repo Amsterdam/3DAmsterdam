@@ -6,9 +6,9 @@ using System.Globalization;
 using System;
 using Netherlands3D.TileSystem;
 using Netherlands3D.Utilities;
-using Netherlands3D.Core;
 using Netherlands3D;
 using System.Linq;
+using Netherlands3D.Coordinates;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -332,7 +332,7 @@ namespace Amsterdam3D.Sewerage
 						(i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture) + napOffset : double.Parse(endHeight, CultureInfo.InvariantCulture) + napOffset
 				);
 
-				Vector3 unityCoordinate = CoordConvert.WGS84toUnity(newWGSVector3);
+				Vector3 unityCoordinate = CoordinateConverter.WGS84toUnity(newWGSVector3);
 				newVector3Array.Add(unityCoordinate);
 
 			}
@@ -365,11 +365,11 @@ namespace Amsterdam3D.Sewerage
 		{
 			if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
 			{
-				return CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+				return CoordinateConverter.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
 			}
 			else
 			{
-				return CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+				return CoordinateConverter.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
 			}
 		}
 

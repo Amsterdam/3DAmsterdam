@@ -6,6 +6,7 @@ using System;
 using UnityEngine.Networking;
 using System.IO;
 using System.Globalization;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D
 {
@@ -78,8 +79,8 @@ namespace Netherlands3D
 
         private void ApplySettings()
 		{
-            CoordConvert.zeroGroundLevelY = Config.activeConfiguration.zeroGroundLevelY;
-            CoordConvert.relativeCenterRD = Config.activeConfiguration.RelativeCenterRD;
+            CoordinateConverter.zeroGroundLevelY = Config.activeConfiguration.zeroGroundLevelY;
+            CoordinateConverter.relativeCenterRD = Config.activeConfiguration.RelativeCenterRD;
         }
 
         [ContextMenu("Load config from json file")]

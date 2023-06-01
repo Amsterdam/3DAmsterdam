@@ -8,6 +8,7 @@ using netDxf.Tables;
 using System.IO;
 using System.Runtime.InteropServices;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 
 public class DxfFile 
 {

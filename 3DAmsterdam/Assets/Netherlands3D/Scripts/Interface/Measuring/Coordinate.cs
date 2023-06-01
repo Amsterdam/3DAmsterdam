@@ -1,3 +1,4 @@
+using Netherlands3D.Coordinates;
 using Netherlands3D.Core;
 using System;
 using System.Collections;
@@ -15,7 +16,7 @@ namespace Netherlands3D.Interface
 
         public void DrawCoordinate(Vector3 coordinate, bool drawHeight = false)
         {
-            var rd = CoordConvert.UnitytoRD(coordinate);
+            var rd = CoordinateConverter.UnitytoRD(coordinate);
             AlignWithWorldPosition(coordinate);
 
             coordinateText.text = FormattableString.Invariant($"x {rd.x}\ny {rd.y}");

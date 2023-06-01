@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Interface.Search
 {
@@ -92,7 +93,7 @@ namespace Netherlands3D.Interface.Search
             double.TryParse(lonLat[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double lon);
             double.TryParse(lonLat[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double lat);
 
-            Vector3 unityLocation = CoordConvert.WGS84toUnity(lon, lat);
+            Vector3 unityLocation = CoordinateConverter.WGS84toUnity(lon, lat);
             return unityLocation;
         }
     }

@@ -7,6 +7,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.Events;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -40,7 +41,7 @@ public class CityJSONDownloader : MonoBehaviour
         if (gameObjectWithMesh.TryGetComponent(out MeshFilter meshFilter) && meshFilter.sharedMesh)
         {
             targetGameObject = gameObjectWithMesh;
-            StartCoroutine(DownloadWithProgress(meshFilter.sharedMesh, CoordConvert.UnitytoRD(gameObjectWithMesh.transform.position)));
+            StartCoroutine(DownloadWithProgress(meshFilter.sharedMesh, CoordinateConverter.UnitytoRD(gameObjectWithMesh.transform.position)));
         }
         else
         {
