@@ -88,15 +88,17 @@ public class CityJSONDownloader : MonoBehaviour
                     yield return null;
                 }
             }
-            streamWriter.Write("]}]}},\"vertices\":[");
 
+            var scale = targetGameObject.transform.localScale;
+            streamWriter.Write("]}]}},\"transform\":{\"scale\":[" + scale.x + "," + scale.z + "," + scale.y + "],\"translate\":[" + rdCoordinate.x +","+ rdCoordinate.y+","+ rdCoordinate.z + "]},\"vertices\":[");
+            
             //Streamwrite own vertices array
             for (int i = 0; i < vertices.Length; i++)
             {
                 if (i > 0) streamWriter.Write(",");
-                //Triangle indices
+                //Triangle indices. Flip Y and Z ( CityJSON is Z-up and Y-north )
                 var vertex = vertices[i];
-                streamWriter.Write(string.Format("[{0},{1},{2}]", vertex.x, vertex.y, vertex.z));
+                streamWriter.Write(string.Format("[{0},{1},{2}]", vertex.x, vertex.z, vertex.y));
 
                 currentWrite++;
                 if (currentWrite % writesToShowFeedback == 0)
