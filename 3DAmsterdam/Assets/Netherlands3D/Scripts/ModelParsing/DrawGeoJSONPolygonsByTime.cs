@@ -1,3 +1,4 @@
+using Netherlands3D.Coordinates;
 using Netherlands3D.Core;
 using Netherlands3D.Core.Colors;
 using Netherlands3D.Events;
@@ -223,14 +224,14 @@ public class DrawGeoJSONPolygonsByTime : MonoBehaviour
             {
                 for (int j = 0; j < contour.Count; j++)
                 {
-                    polyList.Add(CoordConvert.RDtoUnity(new Vector2RD(contour[j].x, contour[j].y)));
+                    polyList.Add(CoordinateConverter.RDtoUnity(new Vector2RD(contour[j].x, contour[j].y)));
                 }
             }
             else
             {
                 for (int j = 0; j < contour.Count; j++)
                 {
-                    polyList.Add(CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
+                    polyList.Add(CoordinateConverter.WGS84toUnity(contour[j].x, contour[j].y));
                 }
             }
             unityPolygon.Add(polyList);

@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using Netherlands3D.Core;
 using System.Globalization;
 using UnityEngine.Rendering;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Traffic.VISSIM
 {
@@ -167,7 +168,7 @@ namespace Netherlands3D.Traffic.VISSIM
             double y = double.Parse(splitString[1], CultureInfo.InvariantCulture);
             double z = double.Parse(splitString[2], CultureInfo.InvariantCulture);
             Vector3RD rdVector = new Vector3RD(x, y, z); // Creates the Double Vector
-            Vector3 convertedCoordinates = CoordConvert.RDtoUnity(rdVector);
+            Vector3 convertedCoordinates = CoordinateConverter.RDtoUnity(rdVector);
             // Y Coordinates will be calculated by the vehicle to connect with the Map (Maaiveld).
 
             return convertedCoordinates;

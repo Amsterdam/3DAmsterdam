@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Interface.Minimap
 {
@@ -135,7 +136,7 @@ namespace Netherlands3D.Interface.Minimap
 			var meterX = localClickPosition.x * startMeterInPixels;
 			var meterY = localClickPosition.y * startMeterInPixels;
 
-			var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
+			var RDcoordinate = CoordinateConverter.RDtoUnity(new Vector3RD
 			{
 				x = (float)Config.activeConfiguration.BottomLeftRD.x + meterX,
 				y = (float)Config.activeConfiguration.TopRightRD.y + meterY,
@@ -257,7 +258,7 @@ namespace Netherlands3D.Interface.Minimap
 			fov.SetAsLastSibling(); //Fov is on top of map
 			pointer.SetAsLastSibling(); //Pointer is on top of fov
 
-			PositionObjectOnMap(pointer, CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position));
+			PositionObjectOnMap(pointer, CoordinateConverter.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position));
 
 			if(CenterPointerInView)
 			{

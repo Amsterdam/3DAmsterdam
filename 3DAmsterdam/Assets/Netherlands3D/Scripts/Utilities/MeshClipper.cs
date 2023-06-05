@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 
 public class MeshClipper
 {
@@ -153,7 +154,7 @@ public class MeshClipper
         rdVertices = new Vector3RD[verts.Length];
         for (int i = 0; i < verts.Length; i++)
         {
-            rdVertices[i] = CoordConvert.UnitytoRD((verts[i]+tileOrigin));
+            rdVertices[i] = CoordinateConverter.UnitytoRD((verts[i]+tileOrigin));
         }
     }
 

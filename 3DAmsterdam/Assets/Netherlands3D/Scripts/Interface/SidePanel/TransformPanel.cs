@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Core;
+﻿using Netherlands3D.Coordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
 using RuntimeHandle;
@@ -259,7 +260,7 @@ namespace Netherlands3D.Interface.SidePanel
                     float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture)
                 );
 
-                Vector3RD previewTranslation = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+                Vector3RD previewTranslation = CoordinateConverter.UnitytoRD(transformableTarget.transform.position);
                 rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
                 rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
                 napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
@@ -270,7 +271,7 @@ namespace Netherlands3D.Interface.SidePanel
                 previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
                 previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
 
-                transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+                transformableTarget.transform.position = CoordinateConverter.RDtoUnity(previewTranslation);
 
                 //Preview the RD coordinates directly in the RD input
                 rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
@@ -350,7 +351,7 @@ namespace Netherlands3D.Interface.SidePanel
         private void ApplyTranslation()
         {
             basePositionUnity = transformableTarget.transform.position;
-            basePosition = CoordConvert.UnitytoRD(basePositionUnity);
+            basePosition = CoordinateConverter.UnitytoRD(basePositionUnity);
 
             //Reset field values to 0 meter
             translateX.text = "0";
@@ -389,7 +390,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// </summary>
         private void SetRDCoordinateFields()
         {
-            rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+            rdCoordinates = CoordinateConverter.UnitytoRD(transformableTarget.transform.position);
             rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
             rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
             napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
@@ -411,7 +412,7 @@ namespace Netherlands3D.Interface.SidePanel
             rdCoordinates.y = double.Parse(MakeInputParsable(rdY.text), CultureInfo.InvariantCulture);
             rdCoordinates.z = double.Parse(MakeInputParsable(napZ.text), CultureInfo.InvariantCulture);
 
-            transformableTarget.transform.position = CoordConvert.RDtoUnity(rdCoordinates);
+            transformableTarget.transform.position = CoordinateConverter.RDtoUnity(rdCoordinates);
         }
     }
 }

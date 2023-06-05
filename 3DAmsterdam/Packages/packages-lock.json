@@ -94,9 +94,19 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.meshopt.decompress": {
+      "version": "0.1.0-preview.5",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.burst": "1.4.11"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.1.0",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -257,15 +267,17 @@
       "hash": "af4278a9bc2705943b7624bc06067c7892ba6434"
     },
     "nl.netherlands3d": {
-      "version": "https://github.com/Amsterdam/Netherlands3D.git?path=/Packages/Netherlands3D#v1.0.0",
+      "version": "https://github.com/Amsterdam/Netherlands3D.git?path=/Packages/Netherlands3D",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.textmeshpro": "3.0.6",
         "com.unity.inputsystem": "1.3.0",
-        "com.unity.render-pipelines.universal": "1.3.0"
+        "com.unity.render-pipelines.universal": "1.3.0",
+        "com.unity.nuget.newtonsoft-json": "3.1.0",
+        "com.unity.meshopt.decompress": "0.1.0-preview.5"
       },
-      "hash": "567b87a5f272b951f02da95fa846c7ac88812232"
+      "hash": "24e9f4c70bc78c16bc53ec85742ba635080cfd94"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

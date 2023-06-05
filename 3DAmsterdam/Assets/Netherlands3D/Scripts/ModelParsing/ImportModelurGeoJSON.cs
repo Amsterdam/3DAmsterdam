@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Netherlands3D.Coordinates;
 
 public class ImportModelurGeoJSON : MonoBehaviour
 {
@@ -144,7 +145,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 		foreach (var point in polygon)
 		{
-			var unityPoint = CoordConvert.WGS84toUnity(point.x, point.y);
+			var unityPoint = CoordinateConverter.WGS84toUnity(point.x, point.y);
 			unityPoint.y = groundOffset + (i * storeyHeight) + (i * storeyDividerHeight);
 			outerContour.Add(unityPoint);
 

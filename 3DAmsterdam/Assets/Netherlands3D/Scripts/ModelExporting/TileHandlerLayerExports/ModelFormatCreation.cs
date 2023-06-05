@@ -4,6 +4,7 @@ using UnityEngine;
 using Netherlands3D.Core;
 using Netherlands3D.TileSystem;
 using Netherlands3D.Interface;
+using Netherlands3D.Coordinates;
 
 public class ModelFormatCreation : MonoBehaviour
 {

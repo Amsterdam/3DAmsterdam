@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Core;
+﻿using Netherlands3D.Coordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using System.Runtime.InteropServices;
@@ -157,7 +158,7 @@ namespace Netherlands3D.Cameras
             var latitude = double.Parse(coordinates[0]);
             var longitude = double.Parse(coordinates[1]);
 
-            var convertedCoordinate = CoordConvert.WGS84toUnity(longitude, latitude);
+            var convertedCoordinate = CoordinateConverter.WGS84toUnity(longitude, latitude);
             currentCamera.transform.position = new Vector3(convertedCoordinate.x, Mathf.Max(this.transform.position.y,300), convertedCoordinate.z);
         }
     }

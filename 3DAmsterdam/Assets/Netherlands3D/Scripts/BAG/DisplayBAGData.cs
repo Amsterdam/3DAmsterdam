@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.BAG
 {
@@ -68,7 +69,7 @@ namespace Netherlands3D.BAG
                             List<Vector3> geometryPoints = new List<Vector3>();
                             for (int i = 0; i < geometry.coordinates.Length; i+=3)
                             {
-                                var unityCoordinate = CoordConvert.RDtoUnity(geometry.coordinates[i], geometry.coordinates[i + 1], geometry.coordinates[i + 2]);
+                                var unityCoordinate = CoordinateConverter.RDtoUnity(geometry.coordinates[i], geometry.coordinates[i + 1], geometry.coordinates[i + 2]);
                                 geometryPoints.Add(unityCoordinate);
                             }
                             PropertiesPanel.Instance.RenderThumbnailContaining(geometryPoints.ToArray(), PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
@@ -113,8 +114,8 @@ namespace Netherlands3D.BAG
 		{
             //Create our building area using bbox coming from the building data
             List<Vector3> points = new List<Vector3>();
-			var rdA = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0.0));
-			var rdB = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0.0));
+			var rdA = CoordinateConverter.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0.0));
+			var rdB = CoordinateConverter.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0.0));
            
             //Estimate height using a raycast shot from above at the center of the bounding box
             float estimatedHeight = 100.0f;
@@ -125,8 +126,8 @@ namespace Netherlands3D.BAG
             }
 
             //Add extra points giving our points shape a height
-            var rdC = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0));
-			var rdD = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0));
+            var rdC = CoordinateConverter.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0));
+			var rdD = CoordinateConverter.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0));
             rdC.y = estimatedHeight;
             rdD.y = estimatedHeight;
 

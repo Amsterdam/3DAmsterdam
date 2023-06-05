@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.Networking;
 using Netherlands3D;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -60,7 +61,7 @@ namespace Amsterdam3D.Sewerage
 
 		private void GetBoundingBoxCameraIsIn()
 		{
-            var cameraRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            var cameraRD = CoordinateConverter.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
             cameraRD.x = Mathf.Round((float)cameraRD.x);
             cameraRD.y = Mathf.Round((float)cameraRD.y);
 
@@ -143,7 +144,7 @@ namespace Amsterdam3D.Sewerage
 
                 sewerManholeFeature = sewerManholes.features[i];
                 sewerManholeSpawner.CreateManhole(
-                    CoordConvert.WGS84toUnity(new Vector3WGS(
+                    CoordinateConverter.WGS84toUnity(new Vector3WGS(
                         sewerManholeFeature.geometry.coordinates[0],
                         sewerManholeFeature.geometry.coordinates[1],
                         (float.Parse(sewerManholeFeature.properties.putdekselhoogte, CultureInfo.InvariantCulture) +napOffset)
@@ -227,7 +228,7 @@ namespace Amsterdam3D.Sewerage
                         (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture)+napOffset : double.Parse(endHeight, CultureInfo.InvariantCulture)+napOffset
                 );
 
-                Vector3 unityCoordinate = CoordConvert.WGS84toUnity(newWGSVector3);
+                Vector3 unityCoordinate = CoordinateConverter.WGS84toUnity(newWGSVector3);
                 newVector2Array.Add(unityCoordinate);
 
             }

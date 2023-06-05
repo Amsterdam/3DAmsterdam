@@ -10,6 +10,7 @@ using Netherlands3D.Utilities;
 using Netherlands3D;
 using System.Linq;
 using Netherlands3D.Core.Colors;
+using Netherlands3D.Coordinates;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -125,7 +126,7 @@ namespace Amsterdam3D.Sewerage
 							for (int i = 0; i < coordinates.Count; i++)
 							{
 								//Add coordinate with vertex color
-								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i].x, (float)coordinates[i].y, 0));
+								var point = CoordinateConverter.RDtoUnity(new Vector3((float)coordinates[i].x, (float)coordinates[i].y, 0));
 								point.y = height;
 								vertices.Add(point);
 								colors.Add(lineColor);

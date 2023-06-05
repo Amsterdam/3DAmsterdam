@@ -4,6 +4,7 @@ using UnityEngine;
 using Netherlands3D.Core;
 using Netherlands3D.TileSystem;
 using Netherlands3D.Interface;
+using Netherlands3D.Coordinates;
 
 public class DXFCreation : ModelFormatCreation
 {
@@ -18,8 +19,8 @@ public class DXFCreation : ModelFormatCreation
     {
         FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
-        Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
-        Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
+        Vector3RD bottomLeftRD = CoordinateConverter.UnitytoRD(UnityBounds.min);
+        Vector3RD topRightRD = CoordinateConverter.UnitytoRD(UnityBounds.max);
         boundingbox = new MeshClipper.RDBoundingBox(bottomLeftRD.x, bottomLeftRD.y, topRightRD.x, topRightRD.y);
         DxfFile dxfFile = new DxfFile();
         dxfFile.SetupDXF();

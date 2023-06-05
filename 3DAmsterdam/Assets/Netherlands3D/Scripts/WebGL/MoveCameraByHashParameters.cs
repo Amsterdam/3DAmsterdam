@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Core;
 using System.Runtime.InteropServices;
+using Netherlands3D.Coordinates;
 
 public class MoveCameraByHashParameters : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class MoveCameraByHashParameters : MonoBehaviour
         var currentMainCamera = Camera.main;
         if (currentMainCamera.transform.position != lastCameraPosition || currentMainCamera.transform.eulerAngles != lastCameraRotation)
         {
-            var rdCoordinates = CoordConvert.UnitytoRD(currentMainCamera.transform.position);
+            var rdCoordinates = CoordinateConverter.UnitytoRD(currentMainCamera.transform.position);
 
             coordinates[0] = rdCoordinates.x;
             coordinates[1] = rdCoordinates.y;
@@ -68,13 +69,13 @@ public class MoveCameraByHashParameters : MonoBehaviour
                 {
                     //Assume RD x,y
                     Debug.Log($"Moving camera to RD: {x},{y}");
-                    Camera.main.transform.position = CoordConvert.RDtoUnity(new Vector2RD(x, y));
+                    Camera.main.transform.position = CoordinateConverter.RDtoUnity(new Vector2RD(x, y));
                 }
                 else
                 {
                     //Assume WGS84 lat,long
                     Debug.Log($"Moving camera to Lat,Long: {x},{y}");
-                    Camera.main.transform.position = CoordConvert.WGS84toUnity(y, x);
+                    Camera.main.transform.position = CoordinateConverter.WGS84toUnity(y, x);
                 }
             }
         }

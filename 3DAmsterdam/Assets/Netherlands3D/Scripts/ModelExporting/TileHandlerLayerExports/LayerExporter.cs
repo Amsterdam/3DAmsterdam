@@ -7,6 +7,7 @@ using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Logging;
 using Netherlands3D.Help;
 using Netherlands3D.Events;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Interface
 {
@@ -133,8 +134,8 @@ namespace Netherlands3D.Interface
 
 				var amountOfCellsInBounds = (exportBounds.size.x / VisualGrid.Instance.CellSize) * (exportBounds.size.z / VisualGrid.Instance.CellSize);
 
-				var bottomLeftRD = CoordConvert.UnitytoRD(exportBounds.min);
-				var topRightRD = CoordConvert.UnitytoRD(exportBounds.max);
+				var bottomLeftRD = CoordinateConverter.UnitytoRD(exportBounds.min);
+				var topRightRD = CoordinateConverter.UnitytoRD(exportBounds.max);
 
 				Analytics.SendEvent("LayersExport", selectedExportFormat, $"{amountOfCellsInBounds} cells with bounds: {bottomLeftRD.x},{bottomLeftRD.y},{topRightRD.x},{topRightRD.y}");
 

@@ -14,13 +14,10 @@ namespace Netherlands3D.Interface
 {
 	public class ContextPointerMenu : MonoBehaviour
 	{
-		[SerializeField]
-		private RectTransform contextItemsPanel = default;
+		[SerializeField] private RectTransform contextItemsPanel = default;
 
-		[SerializeField]
-		private Button transformSubmenuItem;
-		[SerializeField]
-		private RectTransform transformSubMenu = default;
+		[SerializeField] private Button transformSubmenuItem;
+		[SerializeField] private RectTransform transformSubMenu = default;
 
 		public static ContextPointerMenu Instance = null;
 
@@ -35,6 +32,7 @@ namespace Netherlands3D.Interface
 
 		private Button[] allButtons;
 
+		[SerializeField] private UnityEvent<GameObject> downloadGameObject;
 
 		[Serializable]
 		public class StateButtons
@@ -72,6 +70,12 @@ namespace Netherlands3D.Interface
 			targetInteractable = newTargetInteractable;
 			if(newTargetInteractable)
 				targetTransformable = newTargetInteractable.GetComponent<Transformable>();
+		}
+
+		public void Download()
+        {
+			if (targetTransformable)
+				downloadGameObject.Invoke(targetTransformable.gameObject);
 		}
 
 		/// <summary>

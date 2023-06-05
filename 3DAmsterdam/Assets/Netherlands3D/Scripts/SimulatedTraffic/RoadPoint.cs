@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Core;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Traffic
 {
@@ -10,7 +11,7 @@ namespace Netherlands3D.Traffic
         public Vector3 pointCoordinates;
         public void Initiate(double longitude, double latitude)
         {
-            Vector3 tempCoordinates = CoordConvert.WGS84toUnity(longitude, latitude);
+            Vector3 tempCoordinates = CoordinateConverter.WGS84toUnity(longitude, latitude);
             tempCoordinates.y = Config.activeConfiguration.zeroGroundLevelY;
             pointCoordinates = tempCoordinates;
             transform.position = pointCoordinates;

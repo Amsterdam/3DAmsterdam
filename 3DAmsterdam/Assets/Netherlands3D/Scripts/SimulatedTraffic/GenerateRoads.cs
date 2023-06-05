@@ -11,6 +11,7 @@ using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Events;
+using Netherlands3D.Coordinates;
 
 namespace Netherlands3D.Traffic
 {
@@ -72,8 +73,8 @@ namespace Netherlands3D.Traffic
 
         public void ShowTraffic(Bounds bounds)
         {
-            bottomLeftWGS = CoordConvert.UnitytoWGS84(bounds.min);
-            topRightWGS = CoordConvert.UnitytoWGS84(bounds.max);
+            bottomLeftWGS = CoordinateConverter.UnitytoWGS84(bounds.min);
+            topRightWGS = CoordinateConverter.UnitytoWGS84(bounds.max);
             StartSimulation();
         }
 
