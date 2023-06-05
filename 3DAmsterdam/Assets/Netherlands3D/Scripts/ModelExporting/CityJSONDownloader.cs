@@ -74,7 +74,7 @@ public class CityJSONDownloader : MonoBehaviour
             tempFileName = targetGameObject.name + "_CityJSON.json";
             tempStreamwritePath = Application.persistentDataPath + "/" + tempFileName;
             var streamWriter = new StreamWriter(tempStreamwritePath);
-            streamWriter.Write("{\"type\":\"CityJSON\",\"version\":\"1.0\",\"CityObjects\":{\"" + targetGameObject.name + "\":{\"type\":\"Building\",\"geometry\":[{\"type\":\"MultiSurface\",\"lod\":3.3,\"boundaries\":[");
+            streamWriter.Write("{\"type\":\"CityJSON\",\"version\":\"1.0\",\"metadata\":{\"referenceSystem\":\"https://www.opengis.net/def/crs/EPSG/0/7415\"},\"CityObjects\":{\"" + targetGameObject.name + "\":{\"type\":\"Building\",\"geometry\":[{\"type\":\"MultiSurface\",\"lod\":3.3,\"boundaries\":[");
             
             //Streamwrite own triangle array
             for (int i = 0; i < triangles.Length; i+=3)
@@ -95,8 +95,11 @@ public class CityJSONDownloader : MonoBehaviour
                 }
             }
 
+            var relativeCenter = EPSG7415.relativeCenter;
+
             //Make sure to apply our transformations to the CityJSON transform
-            streamWriter.Write("]}]}},\"transform\":{\"scale\":[1,1,1],\"translate\":[" + rdCoordinate.x +","+ rdCoordinate.y+","+ rdCoordinate.z + "]},\"vertices\":[");
+            //Scale is set to 1 here, our scale is applied when we transform the vertex positions to world space (applying rotation and scale at the same time)
+            streamWriter.Write("]}]}},\"transform\":{\"scale\":[1,1,1],\"translate\":[" + relativeCenter.x + "," + relativeCenter.y + ","+ EPSG7415.zeroGroundLevelY + "]},\"vertices\":[");
             
             //Streamwrite own vertices array
             for (int i = 0; i < vertices.Length; i++)
@@ -104,7 +107,9 @@ public class CityJSONDownloader : MonoBehaviour
                 if (i > 0) streamWriter.Write(",");
                 //Triangle indices. Flip Y and Z ( CityJSON is Z-up and Y-north )
                 var vertex = vertices[i];
-                streamWriter.Write(string.Format("[{0},{1},{2}]", vertex.x, vertex.z, vertex.y));
+
+                var vertexWorldSpace = targetGameObject.transform.TransformPoint(vertex);
+                streamWriter.Write(string.Format("[{0},{1},{2}]", vertexWorldSpace.x, vertexWorldSpace.z, vertexWorldSpace.y));
 
                 currentWrite++;
                 if (currentWrite % writesToShowFeedback == 0)
