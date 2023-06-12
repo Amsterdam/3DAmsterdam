@@ -25,7 +25,12 @@ public class SubmittedModel : MonoBehaviour
 
     private IEnumerator ChangeStage(string targetStage)
     {
-        var changeUrl = config.changeModelStageURL.Replace("{modelpath}", modelPath).Replace("{newstage}", targetStage) + $"?={parentList.code}";
+        var changeUrl = config.changeModelStageURL.
+            Replace("/changerequests/", "").
+            Replace("{modelpath}", modelPath).
+            Replace("{newstage}", targetStage) 
+            + $"?={parentList.code}";
+
         Debug.Log($"Moving {modelPath} to {targetStage} using {changeUrl}");
 
         using UnityWebRequest webRequest = UnityWebRequest.Get(changeUrl);
