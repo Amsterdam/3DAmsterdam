@@ -26,10 +26,9 @@ public class SubmittedModel : MonoBehaviour
     private IEnumerator ChangeStage(string targetStage)
     {
         var changeUrl = config.changeModelStageURL.
-            Replace("/changerequests/", "").
-            Replace("{modelpath}", modelPath).
+            Replace("{modelpath}", modelPath.Replace("/changerequests/", "")).
             Replace("{newstage}", targetStage) 
-            + $"?={parentList.code}";
+            + $"?code={parentList.code}";
 
         Debug.Log($"Moving {modelPath} to {targetStage} using {changeUrl}");
 
