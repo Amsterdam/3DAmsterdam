@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c116977dd92e40f5bd0bb30b26694d1c, type: 3}
+  m_Name: MicrosoftAD
+  m_EditorClassIdentifier: 
+  identityProvider: 3
+  clientId: c45f06aa-005a-4e79-ad5e-c4294f8234f9
+  clientSecret: 5a88Q~fzIQYASok4zbsYp1NF4DDg9DTkOa8yebMd
+  redirectUri: http://localhost:8080/oauth/callback.html
+  scope: openid
+  identityProviderSpecificSettings:
+  - Key: tenant
+    Value: 72fca1b1-2c2e-4376-a445-294d80196804
+  OnSignedIn:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSignInFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSignedOut:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserInfoReceived:
+    m_PersistentCalls:
+      m_Calls: []

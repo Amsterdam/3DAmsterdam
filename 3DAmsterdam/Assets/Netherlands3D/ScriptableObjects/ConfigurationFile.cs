@@ -69,6 +69,11 @@ namespace Netherlands3D
         public string kadasterBuildingURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagid}";
         public string kadasterBuildingAdressesURL = "https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}";
 
+        [Header("Admin")]
+        //Pdok api url ( Key required )
+        public string submittedModelsURL = "https://3da-o-functions.azurewebsites.net/api/GetSubmittedModels";
+        public string changeModelStageURL = "http://localhost:7071/api/ChangeModelStage/{modelpath}/{newstage}";
+
         //Amsterdam specifics
         [NonSerialized] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/?format=json";
         [NonSerialized] public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand={bagid}&format=json";
