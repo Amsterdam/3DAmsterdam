@@ -2,6 +2,7 @@ using Netherlands3D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +12,7 @@ using UnityEngine.UI;
 
 public class SubmittedModels : MonoBehaviour
 {
-    private string code = "";
+    [HideInInspector] public string code = "";
     [SerializeField] private ConfigurationFile config;
 
     [SerializeField] private UnityEvent<string> loadModel;
@@ -48,7 +49,6 @@ public class SubmittedModels : MonoBehaviour
         {
             var item = items[i];
             Destroy(item);
-
             items.RemoveAt(i);
         }
     }
@@ -64,7 +64,11 @@ public class SubmittedModels : MonoBehaviour
         foreach(var item in approvalStagesLists.submitted)
         {
             var newListItem = Instantiate(template,template.transform.parent);
-            newListItem.GetComponentInChildren<TMP_Text>().text = item;
+            var submittedModel = newListItem.GetComponent<SubmittedModel>();
+            submittedModel.modelPath = item;
+            submittedModel.GetComponentInChildren<TMP_Text>().text = Path.GetFileName(item);
+            submittedModel.parentList = this;
+
             newListItem.SetActive(true);
 
             items.Add(newListItem);
