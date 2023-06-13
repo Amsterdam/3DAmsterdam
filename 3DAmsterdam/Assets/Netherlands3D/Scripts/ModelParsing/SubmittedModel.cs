@@ -11,7 +11,7 @@ public class SubmittedModel : MonoBehaviour
 
     [SerializeField] private ConfigurationFile config;
 
-    public SubmittedModels parentList;
+    public SubmittedModelsList parentList;
 
     public void Approve()
     {

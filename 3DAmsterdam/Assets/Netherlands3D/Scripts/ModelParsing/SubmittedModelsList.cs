@@ -11,13 +11,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class SubmittedModels : MonoBehaviour
+public class SubmittedModelsList : MonoBehaviour
 {
     [HideInInspector] public string code = "";
 
     [SerializeField] private ConfigurationFile config;
-    [SerializeField] private UnityEvent<string> loadModel;
-    [SerializeField] private UnityEvent<string> unloadModel;
+    [SerializeField] private UnityEvent<string> selectModel;
+    [SerializeField] private UnityEvent<string> deselectModel;
     [SerializeField] private GameObject template;
 
     private List<GameObject> items = new List<GameObject>();
@@ -35,7 +35,7 @@ public class SubmittedModels : MonoBehaviour
         template.gameObject.SetActive(false);
     }
 
-    public void SetCode(string code)
+    public void GetListWithCode(string code)
     {
         this.code = code;
         this.gameObject.SetActive(true);
@@ -105,13 +105,10 @@ public class SubmittedModels : MonoBehaviour
         if (isOn)
         {
             //Toggle on atm? This click will disable/ unload model
-            unloadModel.Invoke(submittedModel.modelPath);
+            deselectModel.Invoke(submittedModel.modelPath);
         }
         else{
-            ImportFileFromURL.Import(config.submittedModelsURL + submittedModel.modelPath + $"?code={code}");
-            LoadingScreen.Instance.ShowMessage($"{submittedModel.modelPath} wordt gedownload..");
-            LoadingScreen.Instance.SetProgressBarNormalisedValue(0.001f);
-            loadModel.Invoke(submittedModel.modelPath);
+            selectModel.Invoke(config.downloadSubmittedModel + submittedModel.modelPath + $"?code={code}");
         }
     }
 }

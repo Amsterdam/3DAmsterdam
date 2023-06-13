@@ -19,6 +19,7 @@ mergeInto(LibraryManager.library, {
 
                 //Use same method that is used with local file imports
                 //This way we trigger native parsers
+                unityInstance.SendMessage('UserFileUploads', 'FileCount', 1);
                 window.SaveData(uint8Array, fileName);
                 console.log('Saving file from url:', url);
             } 

@@ -726,9 +726,10 @@ GameObject:
   - component: {fileID: 7332013429622828718}
   - component: {fileID: 7368123819598616537}
   - component: {fileID: 1396081315579998968}
-  - component: {fileID: 8802370054322783102}
-  - component: {fileID: 2695594054795616512}
   - component: {fileID: 6373838454421111893}
+  - component: {fileID: 2695594054795616512}
+  - component: {fileID: 8802370054322783102}
+  - component: {fileID: 1726196847617511471}
   m_Layer: 5
   m_Name: SubmittedModels
   m_TagString: Untagged
@@ -883,7 +884,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8802370054322783102
+--- !u!114 &6373838454421111893
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -892,18 +893,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4074747145419318772}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 481804cd7be7776478f285395ec637d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  code: 
-  config: {fileID: 11400000, guid: 38bde468629443041bca656b1fadd1fb, type: 2}
-  loadModel:
-    m_PersistentCalls:
-      m_Calls: []
-  unloadModel:
-    m_PersistentCalls:
-      m_Calls: []
-  template: {fileID: 1289349564694898682}
+  m_AllowSwitchOff: 1
 --- !u!114 &2695594054795616512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,8 +914,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8802370054322783102}
-        m_TargetAssemblyTypeName: SubmittedModels, Assembly-CSharp
-        m_MethodName: SetCode
+        m_TargetAssemblyTypeName: SubmittedModelsList, Assembly-CSharp
+        m_MethodName: GetListWithCode
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -932,7 +925,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6373838454421111893
+--- !u!114 &8802370054322783102
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -941,10 +934,57 @@ MonoBehaviour:
   m_GameObject: {fileID: 4074747145419318772}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cdf38c9918d9a6438cab027c68d86b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 1
+  code: 
+  config: {fileID: 11400000, guid: 38bde468629443041bca656b1fadd1fb, type: 2}
+  selectModel:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1726196847617511471}
+        m_TargetAssemblyTypeName: ImportFileFromURL, Assembly-CSharp
+        m_MethodName: Import
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselectModel:
+    m_PersistentCalls:
+      m_Calls: []
+  template: {fileID: 1289349564694898682}
+--- !u!114 &1726196847617511471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4074747145419318772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd740c7b8fdc33245b065d1aa465f095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filesImportedEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, Netherlands3D.Core.Runtime
+        m_MethodName: InvokeStarted
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6315336750776535795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,7 +1272,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281479730
   m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
