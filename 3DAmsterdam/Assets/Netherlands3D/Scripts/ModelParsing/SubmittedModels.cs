@@ -1,4 +1,5 @@
 using Netherlands3D;
+using Netherlands3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,11 +14,10 @@ using UnityEngine.UI;
 public class SubmittedModels : MonoBehaviour
 {
     [HideInInspector] public string code = "";
-    [SerializeField] private ConfigurationFile config;
 
+    [SerializeField] private ConfigurationFile config;
     [SerializeField] private UnityEvent<string> loadModel;
     [SerializeField] private UnityEvent<string> unloadModel;
-
     [SerializeField] private GameObject template;
 
     private List<GameObject> items = new List<GameObject>();
@@ -99,16 +99,19 @@ public class SubmittedModels : MonoBehaviour
     public void LoadModel(BaseEventData modelBullet)
     {
         var isOn = modelBullet.selectedObject.GetComponent<Toggle>().isOn;
-        var textMesh = modelBullet.selectedObject.GetComponentInChildren<TMP_Text>();
-        Debug.Log(textMesh.text);
+        var submittedModel = modelBullet.selectedObject.GetComponent<SubmittedModel>();
+        Debug.Log(submittedModel.modelPath);
 
         if (isOn)
         {
             //Toggle on atm? This click will disable/ unload model
-            unloadModel.Invoke(textMesh.text);
+            unloadModel.Invoke(submittedModel.modelPath);
         }
         else{
-            loadModel.Invoke(textMesh.text);
+            ImportFileFromURL.Import(config.submittedModelsURL + submittedModel.modelPath + $"?code={code}");
+            LoadingScreen.Instance.ShowMessage($"{submittedModel.modelPath} wordt gedownload..");
+            LoadingScreen.Instance.SetProgressBarNormalisedValue(0.001f);
+            loadModel.Invoke(submittedModel.modelPath);
         }
     }
 }

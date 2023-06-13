@@ -72,7 +72,8 @@ namespace Netherlands3D
         [Header("Admin")]
         //Pdok api url ( Key required )
         public string submittedModelsURL = "https://3da-o-functions.azurewebsites.net/api/GetSubmittedModels";
-        public string changeModelStageURL = "http://localhost:7071/api/ChangeModelStage/{modelpath}/{newstage}";
+        public string downloadSubmittedModel = "https://3da-o-functions.azurewebsites.net/api/DownloadSubmittedModel/{modelpath}";
+        public string changeModelStageURL = "https://3da-o-functions.azurewebsites.net/api/ChangeModelStage/{modelpath}/{newstage}";
 
         //Amsterdam specifics
         [NonSerialized] public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/{bagid}/?format=json";
