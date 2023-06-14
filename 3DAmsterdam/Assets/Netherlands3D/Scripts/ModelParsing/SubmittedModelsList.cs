@@ -108,7 +108,7 @@ public class SubmittedModelsList : MonoBehaviour
             deselectModel.Invoke(submittedModel.modelPath);
         }
         else{
-            selectModel.Invoke(config.downloadSubmittedModel + submittedModel.modelPath + $"?code={code}");
+            selectModel.Invoke(config.downloadSubmittedModel.Replace("{modelpath}", submittedModel.modelPath) + $"?code={code}");
         }
     }
 }
