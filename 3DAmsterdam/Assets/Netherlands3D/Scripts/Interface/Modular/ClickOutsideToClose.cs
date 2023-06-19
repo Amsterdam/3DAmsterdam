@@ -17,11 +17,13 @@ namespace Netherlands3D.Interface.Modular
 		private void OnEnable()
 		{
             //Listen to general clicks from selector
-            Selector.Instance.registeredClickInput.AddListener(GotAClick);
+            if (Selector.Instance)
+                Selector.Instance.registeredClickInput.AddListener(GotAClick);
         }
 		private void OnDisable()
 		{
-            Selector.Instance.registeredClickInput.RemoveListener(GotAClick);
+            if (Selector.Instance)
+                Selector.Instance.registeredClickInput.RemoveListener(GotAClick);
         }
 
 		void GotAClick()
