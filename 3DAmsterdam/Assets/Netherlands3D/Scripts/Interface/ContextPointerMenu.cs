@@ -62,7 +62,6 @@ namespace Netherlands3D.Interface
 				button.onClick.AddListener(CloseContextMenu);
 
 			SwitchState(ContextState.DEFAULT);
-			contextItemsPanel.gameObject.SetActive(false);
 		}
 
 		public void SetTargetInteractable(Interactable newTargetInteractable)
