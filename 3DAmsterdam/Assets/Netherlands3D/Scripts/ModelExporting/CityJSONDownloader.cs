@@ -148,7 +148,9 @@ public class CityJSONDownloader : MonoBehaviour
     /// </summary>
     public void SyncedFromIndexedDB()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         DownloadFromIndexedDB(tempFileName, this.gameObject.name, nameof(DownloadDoneFromIndexedDB));
+#endif
     }
 
     /// <summary>

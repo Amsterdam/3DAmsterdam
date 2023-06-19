@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 
 namespace Netherlands3D.WebGL
 {
@@ -18,6 +19,13 @@ namespace Netherlands3D.WebGL
 
         void Start()
         {
+            //Check params next frame to make sure all our inits/listeners are done
+            StartCoroutine(CheckNextFrame());
+        }
+
+        private IEnumerator CheckNextFrame()
+        {
+            yield return new WaitForEndOfFrame();
             ReadURLAndTrigger();
         }
 
@@ -59,7 +67,8 @@ namespace Netherlands3D.WebGL
                 {
                     var nameAndValue = parameter.Split('=');
                     var parameterName = nameAndValue[0];
-                    var value = (nameAndValue.Length == 2) ? nameAndValue[1] : "";
+                    var value = UnityWebRequest.UnEscapeURL((nameAndValue.Length == 2) ? nameAndValue[1] : "");                  
+
                     Debug.Log($"{parameterName}={value}");
                     nameAndValueCombination.Add(parameterName, value);
                 }

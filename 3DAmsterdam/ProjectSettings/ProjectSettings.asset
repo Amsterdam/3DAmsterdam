@@ -135,7 +135,8 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: azure
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: d5f272a8231831941994b3ff3281aa1d, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -788,7 +789,7 @@ PlayerSettings:
     PS5: UNITY_POST_PROCESSING_STACK_V2
     Stadia: UNITY_POST_PROCESSING_STACK_V2
     Standalone: UNITY_POST_PROCESSING_STACK_V2
-    WebGL: DEVELOPMENT;UNITY_POST_PROCESSING_STACK_V2;USE_UNSAFE_READING
+    WebGL: DEVELOPMENT;UNITY_POST_PROCESSING_STACK_V2;USE_UNSAFE_READING;WEBGL_COPY_AND_PASTE_SUPPORT_TEXTMESH_PRO
     Windows Store Apps: UNITY_POST_PROCESSING_STACK_V2
     XboxOne: UNITY_POST_PROCESSING_STACK_V2
     iPhone: UNITY_POST_PROCESSING_STACK_V2
@@ -804,7 +805,7 @@ PlayerSettings:
   allowUnsafeCode: 1
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
-  selectedPlatform: 4
+  selectedPlatform: 0
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 0
