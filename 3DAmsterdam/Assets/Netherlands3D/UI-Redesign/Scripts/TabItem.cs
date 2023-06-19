@@ -32,13 +32,13 @@ public class TabItem : MonoBehaviour
 
     public void SetImageToDefault()
     {
-        image.GetComponent<Image>().sprite = sprite;
+        if (image) image.GetComponent<Image>().sprite = sprite;
     }
 
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
-        toggle.onValueChanged.AddListener(delegate { ToggleChanged(); });
+        if (toggle) toggle.onValueChanged.AddListener(delegate { ToggleChanged(); });
     }
     
     private void ToggleChanged()
@@ -78,7 +78,7 @@ public class TabItem : MonoBehaviour
             }
             else
             {
-                SideTabPanel.Instance.ClosePanel();
+                //SideTabPanel.Instance.ClosePanel();
             }
         }
         

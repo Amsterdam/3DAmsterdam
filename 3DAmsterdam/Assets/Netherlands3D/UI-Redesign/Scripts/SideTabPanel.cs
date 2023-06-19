@@ -60,6 +60,8 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="title">Title to show on top of the panel</param>
         public void OpenPanel()
         {
+            Debug.Log("hello open");
+
             open = true;
 
             if (panelAnimation != null) StopCoroutine(panelAnimation);
@@ -71,6 +73,8 @@ namespace Netherlands3D.Interface.SidePanel
      
         public void ClosePanel()
         {
+            Debug.Log("hello close");
+
             open = false;
 
             if (panelAnimation != null) StopCoroutine(panelAnimation);
@@ -89,9 +93,9 @@ namespace Netherlands3D.Interface.SidePanel
             }
 
             //Close
-            while (!open && movePanelRectTransform.anchoredPosition.x > -1 * collapsedShift)
+            while (!open && movePanelRectTransform.anchoredPosition.x > collapsedShift)
             {
-                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.left * collapsedShift, animationSpeed * Time.deltaTime);
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.right * collapsedShift, animationSpeed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
 
