@@ -3,10 +3,11 @@ using Netherlands3D.Interface.Layers;
 using Netherlands3D.JavascriptConnection;
 using Netherlands3D.TileSystem;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DataAccordionController : MonoBehaviour
 {
-    private DefaultAccordionController _controller;
+    //private DefaultAccordionController _controller;
 
     [SerializeField]
     private bool generateChildrenWithLinkedObject = false;
@@ -18,26 +19,84 @@ public class DataAccordionController : MonoBehaviour
     private GameObject linkedObject;
 
 
+    [Header("Transform necessities")]
+    [SerializeField] private bool enableTransform = false;
+    [SerializeField] private GameObject transformObject;
+    [SerializeField] private UnityEvent<GameObject> openTransformOptions;
+
+
+    public void SetFields(bool generateChildrenWithLinkedObject, GameObject accordionChildPrefab, GameObject linkedObject, bool enableTransform)
+    {
+        this.generateChildrenWithLinkedObject = generateChildrenWithLinkedObject;
+        this.accordionChildPrefab = accordionChildPrefab;
+        this.linkedObject = linkedObject;
+        this.enableTransform = enableTransform;
+
+        Setup();
+    }
+
+    public void OnTransformButtonClick()
+    {
+        openTransformOptions.Invoke(linkedObject);
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
-        _controller = GetComponent<DefaultAccordionController>();
+        Setup();
+    }
+    void Setup()
+    {
+        transformObject.SetActive(enableTransform);
+
+        Transform childGroup = GetComponent<DefaultAccordionController>()?.AccordionChildrenGroup.transform ?? GetComponent<DefaultAccordionController2>()?.AccordionChildrenGroup.transform;
 
         //If yes: parent to generated accordions
         if (generateChildrenWithLinkedObject & linkedObject)
         {
-            foreach (var material in linkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
+            //For material
+            if (linkedObject.GetComponent<BinaryMeshLayer>())
             {
-                var generatedAccordion = Instantiate(accordionChildPrefab, _controller.AccordionChildrenGroup.transform);
-
-                var defaultController = generatedAccordion.GetComponent<DefaultAccordionController>();
-                defaultController.Title = material.name;
-                defaultController.ActivateCheckMark = false;
-
-                var dataController = generatedAccordion.GetComponent<DataChildAccordionController>();
-                dataController.LegendColorMaterial = material;
+                GenerateMaterialAccordions(childGroup);
+            }
+            else 
+            {
+                //Debug.Log($"WAS HERE 5 -> {linkedObject.GetComponent<Renderer>().material.color}");
             }
         }
+    }
 
+    private void GenerateMaterialAccordions(Transform childGroup)
+    {
+        foreach (var material in linkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
+        {
+            Debug.Log($"!! -> {material}");
+
+            var generatedAccordion = Instantiate(accordionChildPrefab, childGroup);
+
+            var defaultController = generatedAccordion.GetComponent<DefaultAccordionController>();
+            if (defaultController)
+            {
+                defaultController.Title = material.name;
+                defaultController.ActivateCheckMark = false;
+            }
+
+            var defaultController2 = generatedAccordion.GetComponent<DefaultAccordionController2>();
+            if (defaultController2)
+            {
+                var name = material.name.Contains('[') ? material.name.Substring(0, material.name.IndexOf('[')) : material.name;
+                defaultController2.Title = name;
+                defaultController2.ToggleCheckmark(false);
+            }
+
+
+            var dataController = generatedAccordion.GetComponent<DataChildAccordionController>();
+            dataController.LegendColorMaterial = material;
+        }
+    }
+
+    public void SetActiveLinkedObject(bool isOn)
+    {
+        linkedObject.SetActive(isOn);
     }
 }

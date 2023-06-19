@@ -6,8 +6,6 @@ using Netherlands3D.Events;
 
 public class DataChildAccordionController : MonoBehaviour
 {
-    private DefaultAccordionController _defaultController;
-
     [Header("Invoked events")]
     [SerializeField]
     private GameObjectEvent openColorOptions;
@@ -29,12 +27,6 @@ public class DataChildAccordionController : MonoBehaviour
     private Material legendColorMaterial;
     public Material LegendColorMaterial { get => legendColorMaterial; set => legendColorMaterial = value; }
 
-    void Awake()
-    {
-        _defaultController = GetComponent<DefaultAccordionController>();
-        //SetAccordionComponents();
-    }
-
     private void Start()
     {
         SetAccordionComponents();
@@ -42,7 +34,8 @@ public class DataChildAccordionController : MonoBehaviour
 
     private void SetAccordionComponents()
     {
-        _defaultController.ActivateCheckMark = false;
+        if (GetComponent<DefaultAccordionController>()) GetComponent<DefaultAccordionController>().ActivateCheckMark = false;
+        if (GetComponent<DefaultAccordionController2>()) GetComponent<DefaultAccordionController2>().ToggleCheckmark(false);
 
         //TODO: Set color?
         if (legendColor && legendColorMaterial)
@@ -58,7 +51,7 @@ public class DataChildAccordionController : MonoBehaviour
 
         //Invokers
         openColorOptions.InvokeStarted(gameObject); //to open the color popup
-        selectedMaterialEvent.InvokeStarted(legendColorMaterial); //
+        selectedMaterialEvent.InvokeStarted(legendColorMaterial); //to set the color
 
         //Listeners
         selectedColorEvent.AddListenerStarted(SetIconColor); //if color in color popup is changed, change the icon color
