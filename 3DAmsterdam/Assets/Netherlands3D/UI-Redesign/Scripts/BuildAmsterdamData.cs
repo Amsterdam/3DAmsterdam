@@ -31,7 +31,7 @@ public class BuildAmsterdamData : MonoBehaviour
         setDataEvent.AddListener(SetData);
     }
 
-    void Start()
+    void StartNope()
     {
         //Example
         SetData(new AmsterdamData(
@@ -86,6 +86,8 @@ public class AmsterdamData {
     public string ResidenceObjects => residenceObjects;
     public string Url => url;
     public List<string> Addresses => addresses;
+
+    public AmsterdamData() { } 
 
     public AmsterdamData(
         string bagId,

@@ -22,19 +22,19 @@ public class DataAccordionController : MonoBehaviour
     private RootAccordionController rootAccordion;
 
 
-
     [Header("Transform necessities")]
     [SerializeField] private bool enableTransform = false;
     [SerializeField] private GameObject transformObject;
     [SerializeField] private UnityEvent<GameObject> openTransformOptions;
 
 
-    public void SetFields(bool generateChildrenWithLinkedObject, GameObject accordionChildPrefab, GameObject linkedObject, bool enableTransform)
+    public void SetFields(bool generateChildrenWithLinkedObject, GameObject accordionChildPrefab, GameObject linkedObject, bool enableTransform, RootAccordionController rootAccordion)
     {
         this.generateChildrenWithLinkedObject = generateChildrenWithLinkedObject;
         this.accordionChildPrefab = accordionChildPrefab;
         this.linkedObject = linkedObject;
         this.enableTransform = enableTransform;
+        this.rootAccordion = rootAccordion; 
 
         Setup();
     }

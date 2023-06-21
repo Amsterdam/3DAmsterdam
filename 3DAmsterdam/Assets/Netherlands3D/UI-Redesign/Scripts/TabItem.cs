@@ -10,8 +10,8 @@ public class TabItem : MonoBehaviour
 {
 
     [SerializeField]
-    private TabPanelv2 tabPanel;
-    public TabPanelv2 TabPanel { get => tabPanel; }
+    private SidePanel tabPanel;
+    public SidePanel TabPanel { get => tabPanel; }
 
     private Toggle toggle;
 
