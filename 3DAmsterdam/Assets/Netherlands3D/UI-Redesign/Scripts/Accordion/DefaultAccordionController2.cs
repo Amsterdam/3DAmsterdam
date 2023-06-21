@@ -93,7 +93,7 @@ public class DefaultAccordionController2 : MonoBehaviour
 
     private void OnValidate()
     {
-        SetAccordionComponents();
+        //SetAccordionComponents();
     }
 
     public void SetAccordionComponents()
@@ -112,13 +112,14 @@ public class DefaultAccordionController2 : MonoBehaviour
         if (chevron)
         {
             //chevron.transform.parent.gameObject.SetActive(childrenPanels.Count > 0);
-            chevron.gameObject.SetActive(childrenPanels.Count > 0);
+            chevron.transform.parent.gameObject.SetActive(childrenPanels.Count > 0);
         }
 
         if (toggle)
         {
             toggle.gameObject.SetActive(ToggleEnabled);
             toggle.isOn = ToggleIsOn;
+            ChevronPressed(toggle.isOn);
         }
     }
 

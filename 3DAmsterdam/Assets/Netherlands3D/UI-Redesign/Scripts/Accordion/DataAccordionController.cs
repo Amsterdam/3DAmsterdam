@@ -18,6 +18,10 @@ public class DataAccordionController : MonoBehaviour
     [SerializeField]
     private GameObject linkedObject;
 
+    [SerializeField]
+    private RootAccordionController rootAccordion;
+
+
 
     [Header("Transform necessities")]
     [SerializeField] private bool enableTransform = false;
@@ -64,6 +68,9 @@ public class DataAccordionController : MonoBehaviour
                 //Debug.Log($"WAS HERE 5 -> {linkedObject.GetComponent<Renderer>().material.color}");
             }
         }
+
+        //To ensure the design is properly set
+        rootAccordion.SetupAccordion();
     }
 
     private void GenerateMaterialAccordions(Transform childGroup)
