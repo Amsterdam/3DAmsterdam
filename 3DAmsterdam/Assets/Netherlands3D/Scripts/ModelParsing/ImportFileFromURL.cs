@@ -24,7 +24,8 @@ public class ImportFileFromURL : MonoBehaviour
         LoadingScreen.Instance.ShowMessage($"{url} wordt gedownload..");
         LoadingScreen.Instance.SetProgressBarNormalisedValue(0.001f);
 
-        var filenameWithExtention = Path.GetFileName(url);
+        var filenameWithExtention = Path.GetFileName(url).Split(".")[0];
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         //Callbacks for WebGL go through FileInputIndexDB        
         ImportFromURL(url, filenameWithExtention);

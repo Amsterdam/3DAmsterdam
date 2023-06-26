@@ -24,8 +24,7 @@ mergeInto(LibraryManager.library, {
 				var dbConnectionRequest = window.indexedDB.open("/idbfs", window.dbVersion);
 							
 				dbConnectionRequest.onsuccess = function () {
-					window.databaseConnection = dbConnectionRequest.result;	
-					
+					window.databaseConnection = dbConnectionRequest.result;			
 					window.SaveData(uint8Array, fileName);	
 				}
 				dbConnectionRequest.onerror = function () {
