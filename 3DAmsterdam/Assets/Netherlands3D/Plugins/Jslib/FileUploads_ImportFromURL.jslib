@@ -20,7 +20,17 @@ mergeInto(LibraryManager.library, {
                 //Use same method that is used with local file imports
                 //This way we trigger native parsers
                 unityInstance.SendMessage('UserFileUploads', 'FileCount', 1);
-                window.SaveData(uint8Array, fileName);
+				
+				var dbConnectionRequest = window.indexedDB.open("/idbfs", window.dbVersion);
+							
+				dbConnectionRequest.onsuccess = function () {
+					window.databaseConnection = dbConnectionRequest.result;	
+					
+					window.SaveData(uint8Array, fileName);	
+				}
+				dbConnectionRequest.onerror = function () {
+					console.error("Could not save file");
+				}
                 console.log('Saving file from url:', url);
             } 
             else {
