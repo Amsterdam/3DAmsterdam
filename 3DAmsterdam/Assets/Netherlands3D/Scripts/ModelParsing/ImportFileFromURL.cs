@@ -29,7 +29,7 @@ public class ImportFileFromURL : MonoBehaviour
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         //Callbacks for WebGL go through FileInputIndexDB        
-        ImportFromURL(url, filenameWithExtention);
+        ImportFromURL(url, filename);
 #else
         StartCoroutine(DownloadAndImport(url, filename));    
 #endif
