@@ -23,6 +23,10 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private TabItem startingActiveTab;
 
+        [SerializeField]
+        private GameObject closingChevron;
+
+
 
         [Header("Animation")]
         [SerializeField]
@@ -53,6 +57,17 @@ namespace Netherlands3D.Interface.SidePanel
             }
         }
 
+        public void OpenClosePanel()
+        {
+            if (open)
+            {
+                ClosePanel();
+            } else
+            {
+                OpenPanel();
+            }
+        }
+
 
         /// <summary>
         /// Slide the panel open (if it is closed)
@@ -60,9 +75,8 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="title">Title to show on top of the panel</param>
         public void OpenPanel()
         {
-            Debug.Log("hello open");
-
             open = true;
+            closingChevron.SetActive(true);
 
             if (panelAnimation != null) StopCoroutine(panelAnimation);
 
@@ -73,9 +87,8 @@ namespace Netherlands3D.Interface.SidePanel
      
         public void ClosePanel()
         {
-            Debug.Log("hello close");
-
             open = false;
+            closingChevron.SetActive(false);
 
             if (panelAnimation != null) StopCoroutine(panelAnimation);
             panelAnimation = StartCoroutine(Animate());

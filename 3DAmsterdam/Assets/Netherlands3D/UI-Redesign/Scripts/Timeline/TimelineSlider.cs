@@ -14,6 +14,7 @@ public class TimelineSlider : MonoBehaviour
     [SerializeField] private Transform dateContainer;
     [SerializeField] private TimelineFormat format = TimelineFormat.Year;
     [SerializeField] private float distanceIncrease = 120;
+    private int edgeSpacing = 64;
 
     [Header("Controls")]
     [SerializeField] private TMP_InputField dayText;
@@ -31,22 +32,21 @@ public class TimelineSlider : MonoBehaviour
 
 
     private int playSpeed = 1;
+    private int playSpeedMultiplier = 2;
     private DateTime startingDate;
     private DateTime endDate;
     private int amountInstances = 0;
     private List<DateTime> allDatesBetweenStartAndEnd;
 
-    void Awake()
+    void Start()
     {
-        setTimelineDataEvent.AddListener(Setup);
-        //startingDate = DateTime.Now;
-        //endDate = startingDate.AddYears(20).AddMonths(4);
-
-        //Setup(this.format);
+        setTimelineDataEvent.AddListener(TimelineSetup);
     }
 
-    private void Setup(TimelineElement timelineElement)
+    public void TimelineSetup(TimelineElement timelineElement)
     {
+        Debug.Log($"!! TimelineSetup {timelineElement.StartDate} - {timelineElement.EndDate}");
+
         startingDate = timelineElement.StartDate;
         endDate = timelineElement.EndDate;
 
@@ -56,6 +56,12 @@ public class TimelineSlider : MonoBehaviour
     private void Setup(TimelineFormat format)
     {
         SetAllDates();
+
+        //Reset all
+        foreach(Transform child in dateContainer)
+        {
+            Destroy(child.gameObject);
+        }
 
         List<DateTime> allDates = GetAllGeneratedDates(format);
         foreach (DateTime date in allDates)
@@ -68,13 +74,13 @@ public class TimelineSlider : MonoBehaviour
 
         //transform.parent.transform.GetComponent<RectTransform>().rect.width
         int minimumValue = Screen.width + (int) transform.transform.GetComponent<RectTransform>().sizeDelta.x; //Idealy is the size of the conatiner
+        Debug.Log($"!! - {distanceIncrease} * {(allDates.Count - 1)} < {minimumValue}");
         if (distanceIncrease * (allDates.Count - 1) < minimumValue)
         {
             distanceIncrease = minimumValue / (allDates.Count - 1);
         }
 
         //This will determine the scale between the times
-        int edgeSpacing = 64;
         float horizontalSpacing = (((int)distanceIncrease * (allDates.Count - 1)) - edgeSpacing) / (allDates.Count - 1);
 
         dateContainer.GetComponent<HorizontalLayoutGroup>().spacing = horizontalSpacing;
@@ -82,7 +88,7 @@ public class TimelineSlider : MonoBehaviour
         slider.minValue = 0;
         slider.maxValue = allDatesBetweenStartAndEnd.Count - 1;
 
-        //Set initial posution
+        //Set initial position
         int index = (int)allDatesBetweenStartAndEnd.Count / 2;
         slider.value = index;
         SetDateToTextfield(allDatesBetweenStartAndEnd[index]);
@@ -202,11 +208,9 @@ public class TimelineSlider : MonoBehaviour
 
     private IEnumerator Play()
     {
-        int multiplier = 2;
-
         while (slider.value < slider.maxValue && playButton.isOn)
         {
-            slider.value += playSpeed * multiplier;
+            slider.value += playSpeed * playSpeedMultiplier;
             yield return null;
         }
     }
