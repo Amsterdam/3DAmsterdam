@@ -458,7 +458,7 @@ MonoBehaviour:
       - m_Target: {fileID: -5253948569191503774}
         m_TargetAssemblyTypeName: Netherlands3D.Interface.SidePanel.ActionButton,
           Assembly-CSharp
-        m_MethodName: OnViewpointClick
+        m_MethodName: OnLinkedObjectClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -482,8 +482,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonText: {fileID: 2036293875754909147}
   button: {fileID: 447551660604098213}
-  linkedObject: {fileID: 0}
   layerType: 2
+  linkedObject: {fileID: 0}
 --- !u!114 &-2734441626199941667
 MonoBehaviour:
   m_ObjectHideFlags: 0

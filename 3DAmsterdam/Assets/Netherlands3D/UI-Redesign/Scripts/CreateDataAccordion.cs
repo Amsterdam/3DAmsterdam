@@ -18,7 +18,8 @@ public class CreateDataAccordion : MonoBehaviour
         var accordion = Instantiate(dataAccordion, container);
         accordion.GetComponent<DefaultAccordionController2>().ToggleEnabled = true;
         var dataController = accordion.GetComponent<DataAccordionController>();
-        dataController.SetFields(true, dataChildAccordion, linkedObject, true);
+        dataController.SetFields(true, dataChildAccordion, linkedObject, true, rootAccordion);
+
 
         rootAccordion.SetupAccordion();
 

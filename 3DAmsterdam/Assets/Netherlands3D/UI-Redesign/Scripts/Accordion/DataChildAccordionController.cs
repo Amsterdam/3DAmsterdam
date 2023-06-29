@@ -34,14 +34,23 @@ public class DataChildAccordionController : MonoBehaviour
 
     private void SetAccordionComponents()
     {
-        if (GetComponent<DefaultAccordionController>()) GetComponent<DefaultAccordionController>().ActivateCheckMark = false;
         if (GetComponent<DefaultAccordionController2>()) GetComponent<DefaultAccordionController2>().ToggleCheckmark(false);
 
         //TODO: Set color?
         if (legendColor && legendColorMaterial)
         {
-            if (legendColorMaterial) legendColor.GetComponent<Image>().color = legendColorMaterial.GetColor("_BaseColor");
+            SetLegendColour(legendColorMaterial.GetColor("_BaseColor"));
         }
+    }
+
+    public void ActivateColorButton(bool showColorButton = true)
+    {
+        colorButton.SetActive(showColorButton);
+    }
+
+    public void SetLegendColour(Color colour)
+    {
+        if (legendColor) legendColor.GetComponent<Image>().color = colour;
     }
 
     public void OpenColorOptions()
@@ -54,13 +63,8 @@ public class DataChildAccordionController : MonoBehaviour
         selectedMaterialEvent.InvokeStarted(legendColorMaterial); //to set the color
 
         //Listeners
-        selectedColorEvent.AddListenerStarted(SetIconColor); //if color in color popup is changed, change the icon color
+        selectedColorEvent.AddListenerStarted(SetLegendColour); //if color in color popup is changed, change the icon color
         selectedColorEvent.AddListenerStarted(SetMaterialColor); //if color in color popup is changed, change the  
-    }
-
-    private void SetIconColor(Color pickedColor)
-    {
-        legendColor.GetComponent<Image>().color = pickedColor;
     }
 
     private void SetMaterialColor(Color pickedColor)

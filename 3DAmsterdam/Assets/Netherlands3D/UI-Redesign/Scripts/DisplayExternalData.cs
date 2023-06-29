@@ -3,9 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Events;
+using Netherlands3D.BAG;
+using Netherlands3D;
+using Netherlands3D.Events;
 
 public class DisplayExternalData : MonoBehaviour
 {
+    [Header("Listening events")]
+    [SerializeField]
+    private StringListEvent onSelectedBuildings;
+
+    [Header("Invoking events")]
+    [SerializeField] private UnityEvent<AmsterdamData> setDataEvent;
+
+
     [SerializeField]
     private ExternalData parsedJson;
     public void Load(string metaDataPath = "metadata.json")
@@ -16,7 +28,49 @@ public class DisplayExternalData : MonoBehaviour
         StartCoroutine(GetText(metaDataPath));
     }
 
-    private void Start()
+    private void Awake()
+    {
+        onSelectedBuildings.AddListenerStarted(Test);
+    }
+
+
+    // Works as a mapper
+    private void Test(List<string> bagId)
+    {
+
+        Debug.Log($"LESGO 2");
+
+
+        List<string> addresses = new List<string>();
+
+        StartCoroutine(ImportBAG.GetBuildingAdressesAmsterdam(bagId[0], (addressList) =>
+        {
+            foreach (var address in addressList.results)
+            {
+                addresses.Add(address._display);
+            }
+        }));
+
+        AmsterdamData data = new AmsterdamData();
+
+        StartCoroutine(ImportBAG.GetBuildingDataAmsterdam(bagId[0], (buildingData) =>
+        {
+            data = new AmsterdamData(
+                buildingData._display,
+                buildingData._stadsdeel.naam,
+                buildingData._buurtcombinatie.naam,
+                buildingData._buurt.naam,
+                buildingData.oorspronkelijk_bouwjaar,
+                buildingData.bouwlagen.ToString(),
+                buildingData.verblijfsobjecten.count.ToString(),
+                Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display),
+                addresses);
+        }));
+
+        setDataEvent.Invoke(data);
+       }
+
+    void DontStart()
     {
         var data = new ExternalData()
         {
@@ -35,6 +89,7 @@ public class DisplayExternalData : MonoBehaviour
 
         parsedJson = data;
         DrawFields();
+
 
     }
 

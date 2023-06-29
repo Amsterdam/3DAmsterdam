@@ -4,6 +4,8 @@ using Netherlands3D.JavascriptConnection;
 using Netherlands3D.TileSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
+using System.Collections.Generic;
 
 public class DataAccordionController : MonoBehaviour
 {
@@ -49,23 +51,25 @@ public class DataAccordionController : MonoBehaviour
     {
         Setup();
     }
+
     void Setup()
     {
-        transformObject.SetActive(enableTransform);
+        if (transformObject)  transformObject.SetActive(enableTransform);
 
-        Transform childGroup = GetComponent<DefaultAccordionController>()?.AccordionChildrenGroup.transform ?? GetComponent<DefaultAccordionController2>()?.AccordionChildrenGroup.transform;
+        Transform childGroup = GetComponent<DefaultAccordionController2>()?.AccordionChildrenGroup.transform;
 
         //If yes: parent to generated accordions
         if (generateChildrenWithLinkedObject & linkedObject)
         {
-            //For material
+            //For object that has materials
             if (linkedObject.GetComponent<BinaryMeshLayer>())
             {
                 GenerateMaterialAccordions(childGroup);
             }
-            else 
+            //For object that has other subitsm
+            else
             {
-                //Debug.Log($"WAS HERE 5 -> {linkedObject.GetComponent<Renderer>().material.color}");
+                //
             }
         }
 
@@ -73,24 +77,42 @@ public class DataAccordionController : MonoBehaviour
         rootAccordion.SetupAccordion();
     }
 
+    public void SetUp(List<ColorLegendItem> legendItems)
+    {
+
+        Transform childGroup = GetComponent<DefaultAccordionController2>()?.AccordionChildrenGroup.transform;
+
+        //Generate child accordions for the color accordion
+        foreach (var item in legendItems)
+        {
+            var generatedAccordion = Instantiate(accordionChildPrefab, childGroup);
+            var defaultController2 = generatedAccordion.GetComponent<DefaultAccordionController2>();
+            if (defaultController2)
+            {
+                defaultController2.Title = item.Name;
+                defaultController2.ToggleCheckmark(false);
+            }
+
+
+            var dataController = generatedAccordion.GetComponent<DataChildAccordionController>();
+            dataController.SetLegendColour(item.Colour);
+            dataController.ActivateColorButton(false);
+        }
+
+        //To ensure the design is properly set
+        rootAccordion.SetupAccordion();
+
+    }
+
     private void GenerateMaterialAccordions(Transform childGroup)
     {
         foreach (var material in linkedObject.GetComponent<BinaryMeshLayer>().DefaultMaterialList)
         {
-            Debug.Log($"!! -> {material}");
-
             var generatedAccordion = Instantiate(accordionChildPrefab, childGroup);
-
-            var defaultController = generatedAccordion.GetComponent<DefaultAccordionController>();
-            if (defaultController)
-            {
-                defaultController.Title = material.name;
-                defaultController.ActivateCheckMark = false;
-            }
-
             var defaultController2 = generatedAccordion.GetComponent<DefaultAccordionController2>();
             if (defaultController2)
             {
+                //Removes uneedec chars
                 var name = material.name.Contains('[') ? material.name.Substring(0, material.name.IndexOf('[')) : material.name;
                 defaultController2.Title = name;
                 defaultController2.ToggleCheckmark(false);
