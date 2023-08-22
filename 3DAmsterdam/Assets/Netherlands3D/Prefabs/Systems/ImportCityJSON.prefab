@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1722725588334058768}
-  - component: {fileID: 2159174928788230387}
+  - component: {fileID: 4073581408159162785}
+  - component: {fileID: 4854426805579923252}
   m_Layer: 0
   m_Name: ImportCityJSON
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2159174928788230387
+--- !u!114 &4073581408159162785
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,3 +45,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b3ad7f91a3ec1f4d8bb4a47deb1bfee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
+  maxParseSteps: 30000
+  spawnImportedGameObject:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4854426805579923252}
+        m_TargetAssemblyTypeName: Netherlands3D.Interface.PlaceCustomObject, Assembly-CSharp
+        m_MethodName: ObjectPlaced
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4854426805579923252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722725588334058783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8253b97eeb205343b3c7fd7dc1a9f0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customObject: {fileID: 0}
+  layerType: 1
+  targetParent: {fileID: 0}
+  makeTransformable: 1
+  startStuckToMouse: 0
+  moveCameraToRenderer: 1
+  cameraOffsetDirection: {x: 0, y: 1, z: -1}
