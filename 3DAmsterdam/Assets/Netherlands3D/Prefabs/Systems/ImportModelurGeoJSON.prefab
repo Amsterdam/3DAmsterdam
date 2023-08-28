@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6995420915570099997}
   - component: {fileID: 6995420915570099996}
-  - component: {fileID: 5262945688360668574}
-  - component: {fileID: 1940536440391763312}
   - component: {fileID: 4216279594573540903}
   m_Layer: 0
   m_Name: ImportModelurGeoJSON
@@ -27,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6995420915570099986}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6995420915570099996
 MonoBehaviour:
@@ -61,54 +59,6 @@ MonoBehaviour:
   onObjectReady: {fileID: 11400000, guid: 39598ea6c45be8c408cd04395d141b76, type: 2}
   storeyDividerHeight: 0.2
   combineIntoOneMesh: 1
---- !u!114 &5262945688360668574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6995420915570099986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawPolygonEvent: {fileID: 11400000, guid: 85bb9ffcb84ee104c9023c4f13f647b7, type: 2}
-  setDrawingObjectName: {fileID: 0}
-  setExtrusionHeightEvent: {fileID: 11400000, guid: 276050865e1dda7468a00f21fdd801f1,
-    type: 2}
-  defaultMaterial: {fileID: 2100000, guid: 2097409fc020d2c4b93e76d5fe1882bc, type: 2}
-  extrusionHeight: 50
-  setUVCoordinates: 1
-  uvCoordinate: {x: 0.75, y: 0.5}
-  reverseWindingOrder: 1
-  addColliders: 0
-  createdPolygonGameObject: {fileID: 11400000, guid: eb123526ec7badb4fbd3d353533275e5,
-    type: 2}
---- !u!114 &1940536440391763312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6995420915570099986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawPolygonEvent: {fileID: 11400000, guid: 0450592ecbc867543b2652ed7bb4cfef, type: 2}
-  setDrawingObjectName: {fileID: 0}
-  setExtrusionHeightEvent: {fileID: 11400000, guid: 6a6c4ce4f23d4f34eadbc07ad4d63141,
-    type: 2}
-  defaultMaterial: {fileID: 2100000, guid: 2097409fc020d2c4b93e76d5fe1882bc, type: 2}
-  extrusionHeight: 50
-  setUVCoordinates: 1
-  uvCoordinate: {x: 0.25, y: 0.5}
-  reverseWindingOrder: 1
-  addColliders: 0
-  createdPolygonGameObject: {fileID: 11400000, guid: eb123526ec7badb4fbd3d353533275e5,
-    type: 2}
 --- !u!114 &4216279594573540903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,3 +76,5 @@ MonoBehaviour:
   targetParent: {fileID: 0}
   makeTransformable: 1
   startStuckToMouse: 0
+  moveCameraToRenderer: 1
+  cameraOffsetDirection: {x: 0, y: 1, z: -1}

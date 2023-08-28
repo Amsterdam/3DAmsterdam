@@ -27,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7790539252213156847}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7790539252213156846
 MonoBehaviour:
@@ -48,30 +48,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layer: {fileID: 0}
-  TilePrefab: {fileID: 5158941830003718476, guid: 616c1bd220ce58340aca5b841fcbb4d3,
+  projectorPrefab: {fileID: -4832976049876314616, guid: 616c1bd220ce58340aca5b841fcbb4d3,
     type: 3}
-  buildingStencilID: 8
-  terrainStencilID: 9
-  OnWMSUrlDefined_String: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c,
-    type: 2}
-  AleenOpMaaiveld_Bool: {fileID: 11400000, guid: 76d129116677407498ed0b51b7644b3c,
-    type: 2}
-  ShowLayer_Bool: {fileID: 11400000, guid: f32a56508d5e8e0479dd293aaa6adc6b, type: 2}
-  ShowWMSOnBuildings: {fileID: 0}
-  ShowWMSOnTerrain: {fileID: 0}
-  ShowWMSOnBuildingsAndTerrain: {fileID: 0}
-  UnloadWMSService: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
-  RenderObjectTerrainAsTarget: {fileID: 0}
-  RenderObjectTerrainNOTAsTarget: {fileID: 0}
-  RenderObjectBuildingsAsTarget: {fileID: 0}
-  RenderObjectBuildingsNOTAsTarget: {fileID: 0}
+  tileSize: 1500
+  compressLoadedTextures: 1
   wmsLods:
   - textureSize: 256
     maximumDistance: 4000
   - textureSize: 2048
     maximumDistance: 2000
-  tileSize: 1500
-  compressLoadedTextures: 1
+  tileHandler: {fileID: 0}
+  onLogMessage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &920159451652311703
 MonoBehaviour:
   m_ObjectHideFlags: 0
