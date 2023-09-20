@@ -27,8 +27,8 @@ MonoBehaviour:
   sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/UploadModel/{sceneId}/{modelToken}
   sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/DownloadModel/{sceneId}/{modelToken}
   sharingViewScenePath: ?view={sceneId}
-  LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
-  LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
+  LocationSuggestionUrl: https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
+  LookupUrl: https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup?id={ID}
   sewerageApiType: 1
   sewerPipesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolleidingen&OUTPUTFORMAT=geojson&bbox=
   sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=waternet_rioolknopen&OUTPUTFORMAT=geojson&bbox=
@@ -36,6 +36,7 @@ MonoBehaviour:
   kadasterBuildingURL: https://3da-o-functions.azurewebsites.net/api/getbag/{bagid}
   kadasterBuildingAdressesURL: https://api.bag.acceptatie.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagid}
   submittedModelsURL: https://3da-o-functions.azurewebsites.net/api/GetSubmittedModels
+  downloadSubmittedModel: https://3da-o-functions.azurewebsites.net/api/DownloadSubmittedModel/{modelpath}
   changeModelStageURL: https://3da-o-functions.azurewebsites.net/api/ChangeModelStage/{modelpath}/{newstage}
   moreBuildingInfoUrl: https://data.amsterdam.nl/data/bag/pand/id{bagid}/
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}

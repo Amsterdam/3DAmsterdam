@@ -53,8 +53,8 @@ namespace Netherlands3D
         public string sharingViewScenePath = "https://3d.amsterdam.nl/web/app/index.html?view={sceneId}";
 
         [Header("External URLs")]
-        public string LocationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
-        public string LookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
+        public string LocationSuggestionUrl = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
+        public string LookupUrl = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup?id={ID}";
 
         [Header("Sewerage Api URLs")]
         public SewerageApiType sewerageApiType = SewerageApiType.Pdok;
