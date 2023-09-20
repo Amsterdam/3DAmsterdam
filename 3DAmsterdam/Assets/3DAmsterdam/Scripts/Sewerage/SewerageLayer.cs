@@ -23,6 +23,9 @@ namespace Amsterdam3D.Sewerage
 		[SerializeField]
 		private SewerManholeSpawner sewerManholeSpawner;
 
+		[SerializeField]
+		private float defaultDiameter = 500.0f;
+
 		private const int maxSpawnsPerFrame = 50;
 		private const int maxParsesPerFrame = 50;
 		private float napOffset = 0;
@@ -148,7 +151,6 @@ namespace Amsterdam3D.Sewerage
 			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
 
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
-
 			tile.runningWebRequest = sewerageRequest;
 			yield return sewerageRequest.SendWebRequest();
 			tile.runningWebRequest = null;
@@ -167,9 +169,10 @@ namespace Amsterdam3D.Sewerage
 					parseCounter++;
 					if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
 					double diameter = customJsonHandler.GetPropertyFloatValue(DiameterString);
+
                     if (diameter==0)
                     {
-						continue;
+						diameter = defaultDiameter; //default mm
                     }
 					double bobBeginPunt = customJsonHandler.GetPropertyFloatValue(BobBeginPuntString);
 
