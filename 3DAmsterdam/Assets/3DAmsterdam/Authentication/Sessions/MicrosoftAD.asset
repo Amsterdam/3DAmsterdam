@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identityProvider: 3
   clientId: c45f06aa-005a-4e79-ad5e-c4294f8234f9
-  clientSecret: 5a88Q~fzIQYASok4zbsYp1NF4DDg9DTkOa8yebMd
+  clientSecret: 
   redirectUri: http://localhost:8080/oauth/callback.html
-  scope: openid
+  scope: openid profile
   identityProviderSpecificSettings:
   - Key: tenant
     Value: 72fca1b1-2c2e-4376-a445-294d80196804
