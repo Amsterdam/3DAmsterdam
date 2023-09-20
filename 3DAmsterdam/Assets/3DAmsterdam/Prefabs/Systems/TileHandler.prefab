@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 864134818718728904}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2225582094044424291
 MonoBehaviour:
@@ -51,6 +51,7 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: 
+    pathQuery: 
     maximumDistance: 2000
     maximumDistanceSquared: 0
     enabled: 1
@@ -104,13 +105,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2414556347840939529}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -10, z: 0}
   m_LocalScale: {x: 4075.2502, y: 4075.2502, z: 4075.2502}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2414556347840939527
 MeshFilter:
@@ -186,13 +187,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2724983311661744432}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3505991015010181756}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8460642000037265059
 MonoBehaviour:
@@ -232,13 +233,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3010782992317326908}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7981405137232490983
 MonoBehaviour:
@@ -259,6 +260,7 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: 
+    pathQuery: 
     maximumDistance: 10000
     maximumDistanceSquared: 0
     enabled: 1
@@ -312,13 +314,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4877600026857737625}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2563834892029269
 MonoBehaviour:
@@ -339,6 +341,7 @@ MonoBehaviour:
   - Description: LOD0
     geoLOD: 
     path: hardcoded
+    pathQuery: 
     maximumDistance: 2000
     maximumDistanceSquared: 0
     enabled: 1
@@ -390,13 +393,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5343549401214437733}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3505991015010181756}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4763983603622777379
 MonoBehaviour:
@@ -456,13 +459,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5761171081850723658}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3505991015010181756}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &135933744205307347
 MonoBehaviour:
@@ -502,13 +505,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6735491048409549640}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3180177119318747206
 MonoBehaviour:
@@ -529,6 +532,7 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: /data/trees1.1/trees_{x}-{y}-lod1.bin
+    pathQuery: 
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -570,6 +574,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6735491049249484867}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -586,7 +591,6 @@ Transform:
   - {fileID: 7745888483742543625}
   - {fileID: 7976567360589711357}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4293808997148806720
 MonoBehaviour:
@@ -612,6 +616,10 @@ MonoBehaviour:
   - {fileID: 261412772941551813}
   - {fileID: 7981405137232490983}
   pendingTileChanges: []
+  tileCreatedEvent: {fileID: 0}
+  tileUpgradeEvent: {fileID: 0}
+  tileDowngradeEvent: {fileID: 0}
+  tileDestroyedEvent: {fileID: 0}
 --- !u!114 &616229442462763187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -664,13 +672,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6735491049897729531}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &607520655949060780
 MonoBehaviour:
@@ -691,12 +699,14 @@ MonoBehaviour:
   - Description: LOD1.2
     geoLOD: 
     path: /data/buildings1.1/buildings_{x}_{y}.1.2.bin
+    pathQuery: 
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: LOD2.2
     geoLOD: 
     path: /data/buildings1.1/buildings_{x}_{y}.2.2.bin
+    pathQuery: 
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -731,6 +741,7 @@ MonoBehaviour:
     m_Bits: 256
   submeshIndex: 0
   applyHideOnReload: 1
+  applyOnExistingTiles: 1
   maxSelectDistance: 8000
   selectionVertexColor: {r: 0, g: 1.0870034, b: 2.1185474, a: 1}
   clickedOnObject: {fileID: 11400000, guid: c449128a54e1de445b8b7bce6ce3da26, type: 2}
@@ -773,10 +784,12 @@ MonoBehaviour:
   onReceiveIdsAndFloats: {fileID: 11400000, guid: fb2cf9652db7b5543805d7d32c265542,
     type: 2}
   onReceiveIdsAndFloatsForAlpha: {fileID: 0}
+  onReceiveTileKeysIdsAndFloats: {fileID: 0}
   onSetGradient: {fileID: 11400000, guid: 304e0e4c1f30bc846ad069df7a892b3c, type: 2}
   onReceiveMinRange: {fileID: 11400000, guid: 84ac3174f13dc9e44960250748b72a2e, type: 2}
   onReceiveMaxRange: {fileID: 11400000, guid: 102194ef148d69c40af1842e74c88a3f, type: 2}
   onClearData: {fileID: 11400000, guid: 84e22a875f085554fa32d2ef0bbef43d, type: 2}
+  onClearTileData: {fileID: 0}
   minimumValue: 0
   maximumValue: 0
   gradientContainer: {fileID: 11400000, guid: a8677e00698bac441a4d2bce5c3869cb, type: 2}
@@ -805,13 +818,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7139907241435937829}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8613057891838618557
 MonoBehaviour:
@@ -832,12 +845,14 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: /data/terrain1.1/terrain_{x}-{y}-lod0.bin
+    pathQuery: 
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: 
     geoLOD: 
     path: /data/terrain1.1/terrain_{x}-{y}-lod1.bin
+    pathQuery: 
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -891,6 +906,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8708070488555238395}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -900,7 +916,6 @@ Transform:
   - {fileID: 2539255928781844701}
   - {fileID: 5441485394220023273}
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &157211687204711347
 MonoBehaviour:
@@ -921,6 +936,7 @@ MonoBehaviour:
   - Description: LOD0
     geoLOD: 
     path: hardcoded
+    pathQuery: 
     maximumDistance: 2000
     maximumDistanceSquared: 0
     enabled: 1
@@ -934,6 +950,7 @@ MonoBehaviour:
   sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
   sewerPipeSpawner: {fileID: 8615278685490826979}
   sewerManholeSpawner: {fileID: 2667209574998233542}
+  defaultDiameter: 300
   maxSimultaneous: 1
   SewerLineObjectPool: {fileID: 8460642000037265059}
   manHoleObjectPool: {fileID: 135933744205307347}
@@ -1009,13 +1026,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8775616856006132822}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1504032226909871150
 MonoBehaviour:
@@ -1036,12 +1053,14 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: /data/other1.0/Other-{x}_{y}.1.bin
+    pathQuery: 
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: 
     geoLOD: 
     path: /data/other1.0/Other-{x}_{y}.2.bin
+    pathQuery: 
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -1081,13 +1100,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8897654862082139398}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6735491049249484866}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &261412772941551813
 MonoBehaviour:
@@ -1108,6 +1127,7 @@ MonoBehaviour:
   - Description: 
     geoLOD: 
     path: 
+    pathQuery: 
     maximumDistance: 10000
     maximumDistanceSquared: 0
     enabled: 1
