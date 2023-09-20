@@ -273,7 +273,7 @@ MonoBehaviour:
       m_Calls: []
   textPrefab: {fileID: 6092693534695716574, guid: 652d96200dc108142aa8ae8863852f91,
     type: 3}
-  geoJsonUrl: https://service.pdok.nl/cbs/wijkenbuurten/2021/wfs/v1_0?request=GetFeature&service=wfs&outputFormat=json&version=2.0.0&typeName=wijkenbuurten:cbs_wijken_2021&propertyName=wijknaam,geom&bbox=
+  geoJsonUrl: https://service.pdok.nl/cbs/wijkenbuurten/2022/wfs/v1_0?request=GetFeature&service=wfs&outputFormat=json&version=2.0.0&typeName=wijkenbuurten:wijken&propertyName=wijknaam,geom&bbox=
   maxSpawnsPerFrame: 20
   textsAndSizes:
   - textPropertyName: wijknaam
@@ -1140,7 +1140,7 @@ MonoBehaviour:
       m_Calls: []
   textPrefab: {fileID: 6092693534695716574, guid: 652d96200dc108142aa8ae8863852f91,
     type: 3}
-  geoJsonUrl: https://service.pdok.nl/cbs/wijkenbuurten/2021/wfs/v1_0?request=GetFeature&service=wfs&outputFormat=json&version=2.0.0&typeName=wijkenbuurten:cbs_buurten_2021&propertyName=buurtnaam,geom&bbox=
+  geoJsonUrl: https://service.pdok.nl/cbs/wijkenbuurten/2022/wfs/v1_0?request=GetFeature&service=wfs&outputFormat=json&version=2.0.0&typeName=wijkenbuurten:buurten&propertyName=buurtnaam,geom&bbox=
   maxSpawnsPerFrame: 20
   textsAndSizes:
   - textPropertyName: buurtnaam
