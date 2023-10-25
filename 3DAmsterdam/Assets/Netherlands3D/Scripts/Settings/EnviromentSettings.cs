@@ -131,7 +131,7 @@ public class EnviromentSettings : MonoBehaviour
  #endif
 
             Debug.Log("Loading skybox texture:" + skyboxTextureUrl);
-            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(skyboxTextureUrl,true))
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(skyboxTextureUrl, true))
             {
                 yield return uwr.SendWebRequest();
                 if (uwr.result != UnityWebRequest.Result.Success)
@@ -141,9 +141,9 @@ public class EnviromentSettings : MonoBehaviour
                 else
                 {
                     // Get downloaded asset bundle
-                    activeEnviromentProfile.loadedTexture = (Texture2D)DownloadHandlerTexture.GetContent(uwr);
+                    activeEnviromentProfile.loadedTexture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    activeEnviromentProfile.loadedTexture.LoadImage(uwr.downloadHandler.data, false);
                     texturedSkyMaterial.SetTexture("_Tex", activeEnviromentProfile.loadedTexture);
-                    //texturedSkyMaterial.SetColor();
                     RenderSettings.skybox = texturedSkyMaterial;
 
                     SetReflections(useSkyboxForReflections);
