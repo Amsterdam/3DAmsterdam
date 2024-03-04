@@ -1,3 +1,10 @@
+## ⚠️ Development Has Moved!
+
+**Attention:** Development for this project has moved to a new location.
+Please refer to [github.com/netherlands3d](https://www.github.com/netherlands3d) for the latest updates and contributions.
+
+If you have any questions or concerns, feel free to reach out to us.
+
 # 3DAmsterdam
 
 3D Amsterdam is a platform ( available at 3d.amsterdam.nl ) where the city of Amsterdam can be experienced interactively in 3D.
