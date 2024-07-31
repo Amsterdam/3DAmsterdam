@@ -64,7 +64,7 @@ MonoBehaviour:
       m_Calls: []
   textPrefab: {fileID: 8383371600766724334, guid: df9bf3c7606b1f641ae57a685fe745b7,
     type: 3}
-  geoJsonUrl: https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=
+  geoJsonUrl: https://service.pdok.nl/kadaster/kadastralekaart/wfs/v5_0?SERVICE=WFS&&version=2.0.0&request=GetFeature&TypeNames=kadastralekaart:OpenbareRuimteNaam&propertyName=tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=
   maxSpawnsPerFrame: 100
   textsAndSizes:
   - textPropertyName: tekst
